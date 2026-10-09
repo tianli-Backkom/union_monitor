@@ -437,10 +437,13 @@
         return;
       }
       const pool = searchPool();
+      /* REQ-026 AC01: the grouping strategy, threshold and labels come from G
+         (pageSet) and its valid-sample count; the search only filters the rows
+         inside each group and never changes the strategy. */
       const groups = showAll
         ? [{ key: 'all', label: '全部批次', rows: pool.slice().sort((a, b) => +new Date(b.start_at) - +new Date(a.start_at)) }]
-        : core.attentionGroups(pool, summary.p90);
-      priorityNoteEl.textContent = summary.valid < 10 ? '有效完成样本少于 10 个，展示耗时最长批次。' : '优先显示超过 P90、执行中和失败的批次。';
+        : core.attentionGroups(pageSet(), summary.p90, searchInput.value);
+      priorityNoteEl.textContent = core.attentionNote(summary.valid);
       attentionEl.innerHTML = groups.map(group => `<div class="group-title">${group.label}<span class="count">${group.rows.length}</span></div><div class="rows">${group.rows.length ? group.rows.map(rowHtml).join('') : '<div class="empty">当前没有此类批次</div>'}</div>`).join('');
       all('.row-main').forEach(x => { x.onclick = () => x.parentElement.classList.toggle('open'); });
     }

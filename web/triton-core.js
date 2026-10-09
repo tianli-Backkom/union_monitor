@@ -118,7 +118,11 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return validDuration(batch && batch.duration_seconds) && p90 != null && batch.status !== 'running' && batch.duration_seconds >= p90;
   }
 
-  function attentionGroups(rows, p90) {
+  /* REQ-026: the strategy (P90 slow group vs top-5 longest), the threshold
+     and the group labels are decided from G — the rows passed in — and its
+     valid completed-sample count before any search filtering; the query only
+     narrows the rows shown inside each already-decided group. */
+  function attentionGroups(rows, p90, query) {
     const list = Array.isArray(rows) ? rows : [];
     const completed = list.filter(row => row.status === 'success' || row.status === 'failure');
     const valid = completed.filter(row => validDuration(row.duration_seconds)).length;
@@ -133,11 +137,21 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
       .sort((a, b) => (b.duration_seconds || 0) - (a.duration_seconds || 0));
     const failure = list.filter(row => row.status === 'failure')
       .sort((a, b) => +new Date(a.start_at) - +new Date(b.start_at));
+    const searched = row => matchesQuery(row, query);
     return [
-      { key: 'slow', label: valid < 10 ? '耗时最长' : '耗时偏长', rows: slow },
-      { key: 'running', label: '执行中', rows: running },
-      { key: 'failure', label: '失败', rows: failure },
+      { key: 'slow', label: valid < 10 ? '耗时最长' : '耗时偏长', rows: slow.filter(searched) },
+      { key: 'running', label: '执行中', rows: running.filter(searched) },
+      { key: 'failure', label: '失败', rows: failure.filter(searched) },
     ];
+  }
+
+  /* REQ-026: the note names the same G sample denominator that picks the
+     strategy and states that the three groups may overlap. */
+  function attentionNote(valid) {
+    const n = Number.isFinite(valid) ? valid : 0;
+    return n < 10
+      ? '有效完成样本少于 10 个（页级范围 ' + n + ' 个），展示耗时最长批次；三组之间可能有批次重叠，组计数之和不是唯一批次数。'
+      : '优先显示超过 P90（按页级范围 ' + n + ' 个有效完成样本计算）、执行中和失败的批次；三组之间可能有批次重叠，组计数之和不是唯一批次数。';
   }
 
   function freshnessSlots(now, collectedAt) {
@@ -186,5 +200,5 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return { start: newEnd - L, end: newEnd, adjusted: true, reason: '原选区与新采集窗口无有效交集，已恢复为新窗口末尾选区' };
   }
 
-  return { isSlow, attentionGroups, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow };
+  return { isSlow, attentionGroups, attentionNote, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow };
 });

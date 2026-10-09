@@ -71,7 +71,7 @@ test('circleMark renders solid circles with a larger hit area', () => {
 });
 
 /* ---- T8 additions: pure helpers for the merged Triton view ---- */
-const { isSlow, attentionGroups, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow } = require('../web/triton-core.js');
+const { isSlow, attentionGroups, attentionNote, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow } = require('../web/triton-core.js');
 
 test('isSlow flags completed batches at or beyond P90 and excludes running ones', () => {
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, 3620), true);
@@ -183,6 +183,79 @@ test('attentionGroups tolerates empty input', () => {
   const groups = attentionGroups([], 1000);
   assert.deepEqual(groups.map(group => [group.key, group.rows.length]), [['slow', 0], ['running', 0], ['failure', 0]]);
   assert.equal(groups[0].label, '耗时最长');
+});
+
+/* ---- REQ-026: strategy from G, search only filters inside the groups ---- */
+
+test('REQ-026 AC01: searching the frozen snapshot for PR2455 keeps the G strategy', () => {
+  const freeze = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/triton-audit-freeze.json'), 'utf8'));
+  const page = dashboardStats(freeze.batches);
+  assert.equal(page.valid, 65);
+  assert.equal(freeze.batches.filter(b => matchesQuery(b, '2455')).length, 1, 'the search narrows the list to a single batch');
+  const unsearched = attentionGroups(freeze.batches, page.p90);
+  assert.equal(unsearched[0].label, '耗时偏长');
+  assert.equal(unsearched[0].rows.length, 8, 'the G-based P90 group holds the eight batches at or beyond P90');
+  const groups = attentionGroups(freeze.batches, page.p90, '2455');
+  assert.deepEqual(groups.map(group => [group.label, group.rows.length]), [['耗时偏长', 0], ['执行中', 0], ['失败', 1]],
+    'a single search hit must not flip G to the top-5 耗时最长 strategy');
+  assert.equal(groups[2].rows[0].pr, 2455, 'the matched failure batch lands in the failure group, not a slow group');
+  assert.ok(groups[0].rows.every(b => matchesQuery(b, '2455') && isSlow(b, page.p90)));
+  const note = attentionNote(page.valid);
+  assert.ok(note.includes('65') && note.includes('P90'), 'the note keeps the G sample denominator');
+});
+
+test('REQ-026 AC02: 9 and 10 valid samples pick different strategies with the same denominator in the note', () => {
+  const rowsFor = n => Array.from({ length: n }, (_, i) => ({ pr: i + 1, status: 'success', duration_seconds: (i + 1) * 100, start_at: '2026-10-08T01:00:00Z' }));
+  const nine = attentionGroups(rowsFor(9), 850);
+  assert.equal(nine[0].label, '耗时最长', '9 valid samples use the top-5 longest strategy');
+  assert.deepEqual(nine[0].rows.map(row => row.pr), [9, 8, 7, 6, 5]);
+  assert.ok(attentionNote(9).includes('页级范围 9 个'), 'the note names the 9-sample denominator');
+  const tenRows = rowsFor(10);
+  const tenPage = dashboardStats(tenRows);
+  assert.equal(tenPage.valid, 10);
+  const ten = attentionGroups(tenRows, tenPage.p90);
+  assert.equal(ten[0].label, '耗时偏长', '10 valid samples use the P90 strategy');
+  assert.deepEqual(ten[0].rows.map(row => row.pr), [10], 'the P90 group holds batches at or beyond the threshold');
+  assert.ok(attentionNote(10).includes('页级范围 10 个'), 'the note names the 10-sample denominator');
+});
+
+test('REQ-026 AC03: search keeps group names and counts consistent; groups may overlap', () => {
+  const rows = [];
+  for (let i = 1; i <= 12; i++) rows.push({ pr: i, title: 'chore batch', status: 'success', duration_seconds: i * 100, start_at: '2026-10-08T01:00:00Z' });
+  rows.push({ pr: 13, title: 'flaky gate', status: 'failure', duration_seconds: 1300, start_at: '2026-10-08T02:00:00Z' });
+  rows.push({ pr: 14, title: 'chore batch', status: 'running', duration_seconds: 500, start_at: '2026-10-08T03:00:00Z' });
+  const page = dashboardStats(rows);
+  assert.equal(page.valid, 13);
+  const all = attentionGroups(rows, page.p90, '');
+  assert.deepEqual(all.map(group => group.label), ['耗时偏长', '执行中', '失败']);
+  assert.deepEqual(all.map(group => group.rows.length), [2, 1, 1]);
+  const overlapRow = all[0].rows.find(row => row.pr === 13);
+  assert.ok(overlapRow, 'a failed batch beyond P90 stays in the slow group');
+  assert.equal(all[2].rows[0], overlapRow, 'the same record also appears in the failure group');
+  const shown = all.flatMap(group => group.rows);
+  assert.ok(new Set(shown).size < shown.length, 'group counts must not be summed into a unique batch count');
+
+  const zero = attentionGroups(rows, page.p90, 'zzz');
+  assert.deepEqual(zero.map(group => group.label), ['耗时偏长', '执行中', '失败'], 'zero search hits keep the G-based group names');
+  assert.deepEqual(zero.map(group => group.rows.length), [0, 0, 0]);
+
+  const one = attentionGroups(rows, page.p90, 'flaky');
+  assert.deepEqual(one.map(group => group.rows.length), [1, 0, 1], 'one searched record shows in every group it belongs to');
+
+  const multi = attentionGroups(rows, page.p90, 'chore');
+  assert.deepEqual(multi.map(group => group.rows.length), [1, 1, 0]);
+  assert.ok(multi.every(group => group.rows.every(row => matchesQuery(row, 'chore'))), 'group counts match the records shown');
+});
+
+test('REQ-026 AC04: the CSV scope stays G × search even under the top-5 attention strategy', () => {
+  const rows = Array.from({ length: 7 }, (_, i) => ({ pr: 101 + i, title: 'export probe', status: 'success', duration_seconds: (i + 1) * 100, start_at: '2026-10-08T01:00:00Z' }));
+  const page = dashboardStats(rows);
+  assert.equal(page.valid, 7, 'fewer than 10 valid samples: the attention list falls back to the top-5 longest');
+  const groups = attentionGroups(rows, page.p90, 'export');
+  assert.equal(groups[0].label, '耗时最长');
+  assert.equal(groups[0].rows.length, 5, 'the attention list caps the highlighted slow group at five');
+  const exportScope = rows.filter(b => matchesQuery(b, 'export'));
+  assert.equal(exportScope.length, 7, 'the CSV still exports every searched batch of G, not just the highlighted five');
 });
 
 test('freshnessSlots finds the latest grace-elapsed Beijing slot', () => {
