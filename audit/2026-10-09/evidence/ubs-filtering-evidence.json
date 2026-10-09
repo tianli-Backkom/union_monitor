@@ -1,0 +1,301 @@
+{
+  "requirement": "REQ-042",
+  "generated_at": "2026-10-09T22:17:51.100321+00:00",
+  "input": {
+    "repositories": [
+      "ubs-engine",
+      "ubs-comm",
+      "ubs-virt",
+      "ubs-io",
+      "ubs-mem",
+      "OmniStateStore",
+      "ham",
+      "ubturbo",
+      "ubs-atomic"
+    ],
+    "repos_checked": 9,
+    "bundle_fingerprint": "sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39",
+    "manifest_state": "verified",
+    "matches_audit_frozen_input": true
+  },
+  "combos": {
+    "total_compared": 522,
+    "per_repo": {
+      "ubs-engine": 58,
+      "ubs-comm": 58,
+      "ubs-virt": 58,
+      "ubs-io": 58,
+      "ubs-mem": 58,
+      "OmniStateStore": 58,
+      "ham": 58,
+      "ubturbo": 58,
+      "ubs-atomic": 58
+    },
+    "dimensions": {
+      "states": [
+        "",
+        "open",
+        "merged",
+        "closed"
+      ],
+      "qualities": [
+        "",
+        "complete",
+        "incomplete"
+      ],
+      "triggers": [
+        "",
+        "create",
+        "push",
+        "retest"
+      ],
+      "query_variants": [
+        "编号",
+        "作者",
+        "作者大写",
+        "作者首尾空格",
+        "SHA 前 8 位",
+        "标题小写片段",
+        "无结果"
+      ]
+    }
+  },
+  "identity": {
+    "combo_mismatches": [],
+    "combo_mismatch_count": 0,
+    "query_normalization": {
+      "ubs-engine": {
+        "agree": true,
+        "sizes": {
+          "author": 1,
+          "author_upper": 1,
+          "author_padded": 1
+        }
+      },
+      "ubs-comm": {
+        "agree": true,
+        "sizes": {
+          "author": 1,
+          "author_upper": 1,
+          "author_padded": 1
+        }
+      },
+      "ubs-virt": {
+        "agree": true,
+        "sizes": {
+          "author": 1,
+          "author_upper": 1,
+          "author_padded": 1
+        }
+      },
+      "ubs-io": {
+        "agree": true,
+        "sizes": {
+          "author": 3,
+          "author_upper": 3,
+          "author_padded": 3
+        }
+      },
+      "ubs-mem": {
+        "agree": true,
+        "sizes": {
+          "author": 7,
+          "author_upper": 7,
+          "author_padded": 7
+        }
+      },
+      "OmniStateStore": {
+        "agree": true,
+        "sizes": {
+          "author": 9,
+          "author_upper": 9,
+          "author_padded": 9
+        }
+      },
+      "ham": {
+        "agree": true,
+        "sizes": {
+          "author": 1,
+          "author_upper": 1,
+          "author_padded": 1
+        }
+      },
+      "ubturbo": {
+        "agree": true,
+        "sizes": {
+          "author": 3,
+          "author_upper": 3,
+          "author_padded": 3
+        }
+      },
+      "ubs-atomic": {
+        "agree": true,
+        "sizes": {
+          "author": 2,
+          "author_upper": 2,
+          "author_padded": 2
+        }
+      }
+    }
+  },
+  "trigger_dedup": {
+    "prs_compared": 203,
+    "mismatches": [],
+    "mismatch_count": 0,
+    "audit_predicate": {
+      "compared": 609,
+      "divergences": [],
+      "divergence_count": 0,
+      "note": "审计 ownFilter 以 events.some(kind) 非去重谓词取期望值；生产契约按事件 id 去重。冻结输入两者一致，分歧仅记录事实、不作为门禁"
+    }
+  },
+  "quality": {
+    "rule_complete": "有批次 且 全部批次可测量(eligible) 且 无 PR 级问题",
+    "rule_incomplete": "无批次 或 有 PR 级问题 或 存在不可测量批次",
+    "agreement": "独立谓词与生产 filterPRs 逐仓逐组合一致"
+  },
+  "orphan_tracking": {
+    "unknown_batches_prs": 5,
+    "unknown_batches_total": 6,
+    "unlinked_event_prs": 10,
+    "unlinked_events_total": 12,
+    "all_in_default_set": true
+  },
+  "representative_invariance": {
+    "prs": 203,
+    "prs_with_rep": 203,
+    "null_e2e_prs": 0,
+    "stored_mismatches": [],
+    "stored_mismatch_count": 0,
+    "fact_mismatches": [],
+    "fact_mismatch_count": 0,
+    "nulls_preserved": true,
+    "note": "代表批次 URL 与 E2E/x86 排队/总耗时在全部组合中与存储值一致，空值保持为空、不补 0"
+  },
+  "no_result_and_reset": {
+    "no_result_empty": true,
+    "default_full": true,
+    "reset_semantics": "重置清空 搜索/状态/完整性/触发 四项筛选并回第一页，恢复默认 PR 集合（app.js reset 处理器）"
+  },
+  "cross_repo": {
+    "": {
+      "python": 203,
+      "node": 203,
+      "match": true
+    },
+    "open": {
+      "python": 38,
+      "node": 38,
+      "match": true
+    },
+    "merged": {
+      "python": 139,
+      "node": 139,
+      "match": true
+    },
+    "closed": {
+      "python": 26,
+      "node": 26,
+      "match": true
+    }
+  },
+  "audit_baseline_comparison": {
+    "status": "matched",
+    "u12_replay": [
+      {
+        "combo": {
+          "state": "open"
+        },
+        "computed": 11,
+        "baseline": 11,
+        "match": true
+      },
+      {
+        "combo": {
+          "state": "merged",
+          "trigger": "retest"
+        },
+        "computed": 20,
+        "baseline": 20,
+        "match": true
+      },
+      {
+        "combo": {
+          "quality": "incomplete"
+        },
+        "computed": 9,
+        "baseline": 9,
+        "match": true
+      },
+      {
+        "combo": {
+          "quality": "complete",
+          "trigger": "push"
+        },
+        "computed": 38,
+        "baseline": 38,
+        "match": true
+      },
+      {
+        "combo": {
+          "q": "1655"
+        },
+        "computed": 1,
+        "baseline": 1,
+        "match": true
+      },
+      {
+        "combo": {
+          "q": "xuke--"
+        },
+        "computed": 1,
+        "baseline": 1,
+        "match": true
+      },
+      {
+        "combo": {
+          "q": "4cf1f74e"
+        },
+        "computed": 1,
+        "baseline": 1,
+        "match": true
+      },
+      {
+        "combo": {
+          "q": "__NO_RESULTS__"
+        },
+        "computed": 0,
+        "baseline": 0,
+        "match": true
+      }
+    ],
+    "u19": {
+      "first_pr": 1600,
+      "representative_url": {
+        "computed": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7469/",
+        "baseline": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7469/",
+        "match": true
+      },
+      "x86_queue_ms": {
+        "computed": 4125,
+        "baseline": 4125,
+        "match": true
+      },
+      "x86_duration_ms": {
+        "computed": 127,
+        "baseline": 127,
+        "match": true
+      },
+      "x86_total_ms": {
+        "computed": 4252,
+        "baseline": 4252,
+        "match": true
+      },
+      "queue_plus_duration_equals_total": true
+    }
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}
