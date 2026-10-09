@@ -16,7 +16,8 @@ SHARED_CACHE_PATHS = (
 )
 
 
-def write_bundle(root, repos=('ubs-engine', 'ubs-comm'), *, compat=True, mirrors=True):
+def write_bundle(root, repos=('ubs-engine', 'ubs-comm'), *, compat=True, mirrors=True,
+                 generated_at='2026-10-08T03:01:57+00:00', pr_count=1):
     web = root / 'web' / 'data'
     (web / 'repos').mkdir(parents=True, exist_ok=True)
     entries = []
@@ -24,14 +25,15 @@ def write_bundle(root, repos=('ubs-engine', 'ubs-comm'), *, compat=True, mirrors
         repository = 'openeuler/' + name
         snapshot = {
             'meta': {'repository': repository, 'collected_at': '2026-10-08T02:54:55+00:00',
-                     'start_ms': 1, 'end_ms': 2, 'expected_prs': 1},
-            'prs': [{'number': 1, 'state': 'merged', 'batches': []}],
+                     'start_ms': 1, 'end_ms': 2, 'expected_prs': pr_count},
+            'prs': [{'number': number, 'state': 'merged', 'batches': []}
+                    for number in range(1, pr_count + 1)],
         }
         (web / 'repos' / (name + '.json')).write_text(json.dumps(snapshot, ensure_ascii=False), 'utf-8')
         entries.append({'name': name, 'repository': repository, 'status': 'success',
                         'snapshot': 'repos/' + name + '.json'})
     index = {'schema_version': 3, 'start_ms': 1, 'end_ms': 2,
-             'generated_at': '2026-10-08T03:01:57+00:00', 'repositories': entries}
+             'generated_at': generated_at, 'repositories': entries}
     (web / 'repositories.json').write_text(json.dumps(index, ensure_ascii=False), 'utf-8')
     if compat:
         (web / 'snapshot.json').write_bytes((web / 'repos' / 'ubs-engine.json').read_bytes())

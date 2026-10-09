@@ -102,6 +102,7 @@ jobs:
           if [ -s data/snapshot.json ]; then
             echo "[ensure-UBS-data] data/snapshot.json already present (cache hit)"
           elif [ -s web/data/snapshot.json ]; then
+            mkdir -p data
             cp web/data/snapshot.json data/snapshot.json
             mirror_count=$((mirror_count+1))
             echo "[ensure-UBS-data] data/snapshot.json mirrored from web/data/snapshot.json"
@@ -147,6 +148,7 @@ jobs:
 
           # Repo-root index mirror: keeps the shared cache path set complete.
           if [ ! -s data/repositories.json ] && [ -s web/data/repositories.json ]; then
+            mkdir -p data
             cp web/data/repositories.json data/repositories.json
             mirror_count=$((mirror_count+1))
             echo "[ensure-UBS-data] data/repositories.json mirrored from web/data/repositories.json"
