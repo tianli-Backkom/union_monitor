@@ -114,3 +114,13 @@ test('REQ-010: per-repo read failures degrade locally with distinct notices',()=
   assert.ok(source.includes("$('loading').hidden=!ubs||(cross?!!repositoryIndex:!!snapshot)"),'the overview keeps its status line visible while the index is unread and hides it once data exists');
   assert.ok(source.includes("'仓库索引未读取，UBS 视图暂不可用'"),'a missing index must not be misreported as 未找到仓库');
 });
+
+test('REQ-011: the methodology page renders without waiting for snapshot reads',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+ assert.ok(source.includes('navigate(location.hash);load();'),'the current route must render at startup, before load() fetches any snapshot (AC02: 直接打开#method不隐藏口径正文)');
+ assert.ok(source.includes("ubsStatus='loading';tritonStatus='loading';"),'both domains start as loading so a pending read is never reported as failed');
+ assert.ok(source.includes("ubsStatus==='failed'?'仓库索引未读取，UBS 视图暂不可用':''"),'the missing-index notice appears only after a failure, not while the read is in flight (AC01/AC03)');
+ assert.ok(source.includes("ubsStatus='ok';"),'a successful index read marks the UBS domain ok');
+ assert.ok(source.includes("ubsStatus='failed';"),'a failed index read marks the UBS domain failed');
+ assert.ok(source.includes("'数据读取中…':'快照未读取'"),'freshness distinguishes in-flight reads from never-read data');
+});
