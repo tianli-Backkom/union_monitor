@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration } = require('../web/triton-core.js');
+const { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration, startSourceLabel } = require('../web/triton-core.js');
 
 test('selectWindow keeps the lower boundary of the requested range', () => {
   const rows = [
@@ -364,4 +364,14 @@ test('recoverWindow: invalid old selections and degenerate new windows', () => {
   const tinyDomain = recoverWindow(5 * H, 15 * H, 0, 20 * 60000);
   assert.equal(tinyDomain.start, 0, 'a new window under 30 minutes always recovers its full span');
   assert.equal(tinyDomain.end, 20 * 60000);
+});
+
+test('REQ-014 AC02/AC04: startSourceLabel reports the start source and approximate flag', () => {
+  assert.equal(startSourceLabel({ start_source: 'trigger_event', approximate: false }), '触发事件');
+  assert.equal(startSourceLabel({ start_source: 'attempt_start', approximate: true }), '本次重跑开始，近似');
+  assert.equal(startSourceLabel({ start_source: 'workflow_created', approximate: true }), '最早 workflow 创建，近似');
+  assert.equal(startSourceLabel({ start_source: null }), '无起点证据');
+  assert.equal(startSourceLabel({}), '无起点证据');
+  assert.equal(startSourceLabel(null), '无起点证据');
+  assert.equal(startSourceLabel({ start_source: 'unknown_source', approximate: false }), 'unknown_source');
 });

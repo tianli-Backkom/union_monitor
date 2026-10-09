@@ -20,7 +20,7 @@
   };
   const focusDefs = [['a3-py310', 'A3 · py3.10'], ['a3-py311', 'A3 · py3.11'], ['a5-py312', 'A5 · py3.12']];
   const csvFields = ['pr', 'title', 'sha', 'base_branch', 'kind', 'start_at', 'end_at', 'status',
-    'duration_seconds', 'npu_queue_seconds', 'approximate', 'critical_workflow', 'missing', 'pr_url', 'action_url'];
+    'duration_seconds', 'npu_queue_seconds', 'approximate', 'start_source', 'critical_workflow', 'missing', 'pr_url', 'action_url'];
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
   const fmtDate = stamp => new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(stamp));
@@ -375,7 +375,7 @@
           ? `<div class="tip-job"><a href="${esc(j.url)}" target="_blank" rel="noopener">${label} ↗</a><span>${j.status === 'completed' ? (j.conclusion === 'success' ? '完成' : '异常') : esc(j.status)}</span><span>排队 ${dur(j.wait_seconds)} · 执行 ${dur(j.run_seconds)}</span></div>`
           : `<div class="tip-job"><b>${label}</b><span class="missing">未触发或未发现该任务</span></div>`;
       }).join('');
-      return `<div class="tip-head"><a href="${esc(b.action_url || (b.workflows && b.workflows[0] && b.workflows[0].url) || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>${statusLabels[b.status] || esc(b.status)} · ${dur(b.duration_seconds)}</span></div><div class="tip-title">PR #${b.pr || '?'} · 第 ${b.e2e_index || 1}/${b.e2e_total || 1} 次 E2E · ${esc((b.sha || '未知').slice(0, 7))}</div><div class="tip-summary"><a href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">查看 PR</a> · ${fmtDate(b.start_at)}${b.approximate ? ' · 近似起点' : ''}</div><div class="tip-actions"><div class="tip-label">本次 E2E 的 GitHub Actions</div>${actions}</div><div class="tip-jobs"><div class="tip-label">重点任务</div>${jobs}</div><div class="tip-hint">点击任一链接进入对应 GitHub Actions；点击散点可固定卡片。</div>`;
+      return `<div class="tip-head"><a href="${esc(b.action_url || (b.workflows && b.workflows[0] && b.workflows[0].url) || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>${statusLabels[b.status] || esc(b.status)} · ${dur(b.duration_seconds)}</span></div><div class="tip-title">PR #${b.pr || '?'} · 第 ${b.e2e_index || 1}/${b.e2e_total || 1} 次 E2E · ${esc((b.sha || '未知').slice(0, 7))}</div><div class="tip-summary"><a href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">查看 PR</a> · ${b.start_at ? fmtDate(b.start_at) + ' · ' + core.startSourceLabel(b) : core.startSourceLabel(b)}</div><div class="tip-actions"><div class="tip-label">本次 E2E 的 GitHub Actions</div>${actions}</div><div class="tip-jobs"><div class="tip-label">重点任务</div>${jobs}</div><div class="tip-hint">点击任一链接进入对应 GitHub Actions；点击散点可固定卡片。</div>`;
     }
 
     function npuTipHtml(b) {
@@ -425,7 +425,7 @@
     }
 
     function rowHtml(b) {
-      return `<article class="row" id="triton-batch-${esc(b.id)}"><div class="row-main"><div><a class="pr link" href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">PR #${b.pr || '?'}</a><div class="sub">${esc((b.sha || '未知').slice(0, 7))}${b.kind === 'rerun' ? ' · 重跑' : ''}</div></div><div class="title">${esc(b.title)}<div class="sub">${esc(b.author || '未知作者')} · ${esc(b.branch || '未知来源')} → ${esc(b.base_branch)}</div></div><div class="status ${esc(b.status)}">${statusLabels[b.status] || esc(b.status)}</div><div class="sub">${fmtDate(b.start_at)}</div><div class="duration">${dur(b.duration_seconds)}${b.approximate ? '*' : ''}</div><div class="critical">${b.status === 'running' ? '仍在等待 / 执行：' : '最后结束：'}${esc(b.critical_workflow || '未知')}</div></div><div class="detail"><div class="detail-meta">起点：${fmtDate(b.start_at)}（${b.approximate ? '最早 workflow 创建时间，近似' : '提交事件时间'}） · 合入分支：${esc(b.base_branch)} · ${b.end_at ? '结束：' + fmtDate(b.end_at) : '截至采集时间仍未结束'}</div>${(b.missing || []).map(x => `<div class="notice">${esc(x)}</div>`).join('')}${(b.workflows || []).map(w => wfHtml(w, b)).join('')}</div></article>`;
+      return `<article class="row" id="triton-batch-${esc(b.id)}"><div class="row-main"><div><a class="pr link" href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">PR #${b.pr || '?'}</a><div class="sub">${esc((b.sha || '未知').slice(0, 7))}${b.kind === 'rerun' ? ' · 重跑' : ''}</div></div><div class="title">${esc(b.title)}<div class="sub">${esc(b.author || '未知作者')} · ${esc(b.branch || '未知来源')} → ${esc(b.base_branch)}</div></div><div class="status ${esc(b.status)}">${statusLabels[b.status] || esc(b.status)}</div><div class="sub">${b.start_at ? fmtDate(b.start_at) : '起点未知'}</div><div class="duration">${dur(b.duration_seconds)}${b.approximate ? '*' : ''}</div><div class="critical">${b.status === 'running' ? '仍在等待 / 执行：' : '最后结束：'}${esc(b.critical_workflow || '未知')}</div></div><div class="detail"><div class="detail-meta">起点：${b.start_at ? fmtDate(b.start_at) + '（' + core.startSourceLabel(b) + '）' : '无本次起点证据，E2E 留空'} · 合入分支：${esc(b.base_branch)} · ${b.end_at ? '结束：' + fmtDate(b.end_at) : '截至采集时间仍未结束'}</div>${(b.missing || []).map(x => `<div class="notice">${esc(x)}</div>`).join('')}${(b.workflows || []).map(w => wfHtml(w, b)).join('')}</div></article>`;
     }
 
     function renderRows() {
@@ -452,7 +452,7 @@
       freshnessEl.textContent = result.stale ? '数据更新已延迟：当前展示最后一次成功采集结果，请检查 GitHub Actions。' : '';
     }
 
-    /* ---- 导出批次 CSV：G × 列表搜索后的完整唯一批次集合（字段与 triton-batches.csv 同集 15 项） ---- */
+    /* ---- 导出批次 CSV：G × 列表搜索后的完整唯一批次集合（字段与 triton-batches.csv 同集 16 项） ---- */
     async function exportBatches() {
       if (!root.Metrics || typeof root.Metrics.saveCsv !== 'function') return;
       exportBtn.disabled = true;

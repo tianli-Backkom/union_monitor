@@ -88,12 +88,20 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     };
   }
 
+  /* REQ-014: one start-source label shared by hover card, batch detail and CSV. */
+  const START_SOURCE_LABELS = { trigger_event: '触发事件', attempt_start: '本次重跑开始', workflow_created: '最早 workflow 创建' };
+  function startSourceLabel(batch) {
+    if (!batch || !batch.start_source) return '无起点证据';
+    const base = START_SOURCE_LABELS[batch.start_source] || batch.start_source;
+    return batch.approximate ? base + '，近似' : base;
+  }
+
   function circleMark(batch, cx, cy, index, color, kind) {
     const radius = batch.status === 'success' ? 3.2 : 4.2;
     return `<g class="mark-hit" data-i="${index}" data-kind="${kind || 'e2e'}" transform="translate(${cx} ${cy})"><circle class="hit-area" r="8"/><circle class="dot" r="${radius}" fill="${color}"/></g>`;
   }
 
-  return { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration };
+  return { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration, startSourceLabel };
 });
 
 /* ---- T8 additions (appended; the prefix above is the original module plus

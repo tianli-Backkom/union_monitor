@@ -285,6 +285,7 @@ def build_batches(runs, as_of, window_start=None):
         missing = []
         if inverted: missing.append("workflow 时间倒置，E2E 无效")
         if not running and start and end is None: missing.append("无完成时间证据，E2E 留空")
+        if key[2] == "rerun" and start is None: missing.append("无本次 attempt 起点证据，E2E 留空")
         if any(not r.get("jobs_complete") for r in rows): missing.append("部分 workflow 的 job 明细未采集")
         if not first.get("pr"): missing.append("未可靠关联 PR")
         batches.append({
@@ -519,7 +520,7 @@ def build_payload(runs, window_start, window_end, collected_at, calls=0):
 
 def export_csv(payload):
     path=REPO_ROOT/"web"/"data"/"triton-batches.csv"
-    fields=["pr","title","sha","base_branch","kind","start_at","end_at","status","duration_seconds","npu_queue_seconds","approximate","critical_workflow","missing","pr_url","action_url"]
+    fields=["pr","title","sha","base_branch","kind","start_at","end_at","status","duration_seconds","npu_queue_seconds","approximate","start_source","critical_workflow","missing","pr_url","action_url"]
     with path.open("w",encoding="utf-8-sig",newline="") as f:
         w=csv.DictWriter(f,fieldnames=fields);w.writeheader()
         for b in payload["batches"]: w.writerow({k:"; ".join(b[k]) if k=="missing" else b.get(k) for k in fields})

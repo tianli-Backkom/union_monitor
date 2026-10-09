@@ -395,5 +395,55 @@ class SummaryValidityTests(unittest.TestCase):
         self.assertEqual([row["duration_seconds"] for row in rows], ["0", ""])
 
 
+class RerunStartEvidenceTests(unittest.TestCase):
+    """REQ-014: rerun E2E uses this attempt's provable start, never the original run creation."""
+
+    def rerun(self, run_id, started, trigger_at=None, trigger_exact=False):
+        row = run(run_id, "Integration Tests", "abc", "2026-09-22T00:00:00Z", "2026-09-22T02:05:00Z", attempt=2)
+        row["run_started_at"] = started
+        row["trigger_at"] = trigger_at
+        row["trigger_exact"] = trigger_exact
+        return row
+
+    def test_trusted_trigger_spans_only_this_attempt(self):
+        batch = build_batches([self.rerun(1, None, "2026-09-22T02:00:00Z", True)], "2026-09-23T00:00:00Z")[0]
+        self.assertEqual(batch["duration_seconds"], 300)
+        self.assertEqual(batch["start_at"], "2026-09-22T02:00:00Z")
+        self.assertEqual(batch["start_source"], "trigger_event")
+        self.assertFalse(batch["approximate"])
+
+    def test_attempt_start_is_reported_as_approximate_span(self):
+        batch = build_batches([self.rerun(1, "2026-09-22T02:00:00Z")], "2026-09-23T00:00:00Z")[0]
+        self.assertEqual(batch["duration_seconds"], 300)
+        self.assertEqual(batch["start_source"], "attempt_start")
+        self.assertTrue(batch["approximate"])
+
+    def test_missing_start_evidence_keeps_batch_visible_with_explicit_gap(self):
+        row = self.rerun(1, None)
+        payload = build_payload([row], "2026-09-22T00:00:00Z", "2026-09-22T03:00:00Z", "2026-09-22T03:00:00Z")
+        batch = payload["batches"][0]
+        self.assertIsNone(batch["start_at"])
+        self.assertIsNone(batch["duration_seconds"])
+        self.assertTrue(any("起点" in m for m in batch["missing"]))
+        self.assertEqual(len(batch["workflows"]), 1)
+        self.assertFalse(batch["complete"])
+        self.assertEqual(payload["summary"]["valid"], 0)
+
+    def test_csv_carries_the_same_start_source_and_approximate_flags(self):
+        rows = [self.rerun(1, None, "2026-09-22T02:00:00Z", True), self.rerun(2, "2026-09-22T02:00:00Z")]
+        payload = build_payload(rows, "2026-09-22T00:00:00Z", "2026-09-23T00:00:00Z", "2026-09-23T00:00:00Z")
+        tmp = Path(tempfile.mkdtemp(prefix="triton-csv-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        (tmp / "web" / "data").mkdir(parents=True)
+        with patch("triton.dashboard.REPO_ROOT", tmp):
+            export_csv(payload)
+        with (tmp / "web" / "data" / "triton-batches.csv").open(encoding="utf-8-sig") as handle:
+            csv_rows = list(csv.DictReader(handle))
+        by_source = {row["start_source"]: row for row in csv_rows}
+        self.assertEqual(set(by_source), {"trigger_event", "attempt_start"})
+        self.assertEqual(by_source["trigger_event"]["approximate"], "False")
+        self.assertEqual(by_source["attempt_start"]["approximate"], "True")
+
+
 if __name__ == "__main__":
     unittest.main()
