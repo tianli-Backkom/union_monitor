@@ -255,6 +255,73 @@ class BundleVerifierTests(unittest.TestCase):
         code, out = run_verifier(self.tmp)
         self.assertEqual(code, 0, out)
 
+    def test_current_scope_snapshot_must_match_index_range(self):
+        # REQ-021 AC01/AC03: a snapshot shipping a different window would
+        # masquerade stale data as current scope — the gate fails and says why.
+        write_bundle(self.tmp)
+        path = self.tmp / 'web/data/repos/ubs-comm.json'
+        snapshot = json.loads(path.read_text('utf-8'))
+        snapshot['meta']['start_ms'] = 999
+        tampered = json.dumps(snapshot, ensure_ascii=False)
+        path.write_text(tampered, 'utf-8')
+        (self.tmp / 'data/repos/ubs-comm.json').write_text(tampered, 'utf-8')
+        code, out = run_verifier(self.tmp)
+        self.assertNotEqual(code, 0)
+        self.assertIn('index window', out)
+        self.assertIn('ubs-comm', out)
+        # partial is current scope too: relabeling the entry must not bypass the gate
+        index_path = self.tmp / 'web/data/repositories.json'
+        index = json.loads(index_path.read_text('utf-8'))
+        index['repositories'][1]['status'] = 'partial'
+        updated = json.dumps(index, ensure_ascii=False)
+        index_path.write_text(updated, 'utf-8')
+        (self.tmp / 'data/repositories.json').write_text(updated, 'utf-8')
+        code, out = run_verifier(self.tmp)
+        self.assertNotEqual(code, 0)
+        self.assertIn('index window', out)
+
+    def test_failed_retained_snapshot_with_old_range_is_legal(self):
+        # REQ-021 AC02: a failed repo may keep its last snapshot with an old
+        # window, but relabeling the very same bundle as success must fail.
+        write_bundle(self.tmp)
+        path = self.tmp / 'web/data/repos/ubs-comm.json'
+        snapshot = json.loads(path.read_text('utf-8'))
+        snapshot['meta']['start_ms'] = 999
+        snapshot['meta']['end_ms'] = 1998
+        tampered = json.dumps(snapshot, ensure_ascii=False)
+        path.write_text(tampered, 'utf-8')
+        (self.tmp / 'data/repos/ubs-comm.json').write_text(tampered, 'utf-8')
+        index_path = self.tmp / 'web/data/repositories.json'
+        index = json.loads(index_path.read_text('utf-8'))
+        index['repositories'][1]['status'] = 'failed'
+        updated = json.dumps(index, ensure_ascii=False)
+        index_path.write_text(updated, 'utf-8')
+        (self.tmp / 'data/repositories.json').write_text(updated, 'utf-8')
+        code, out = run_verifier(self.tmp)
+        self.assertEqual(code, 0, out)
+        index['repositories'][1]['status'] = 'success'
+        restored = json.dumps(index, ensure_ascii=False)
+        index_path.write_text(restored, 'utf-8')
+        (self.tmp / 'data/repositories.json').write_text(restored, 'utf-8')
+        code, out = run_verifier(self.tmp)
+        self.assertNotEqual(code, 0)
+        self.assertIn('index window', out)
+
+    def test_current_scope_entry_without_snapshot_fails(self):
+        # REQ-021 AC01: success without a snapshot file cannot prove range
+        # consistency — it must not slip into cross-repo aggregation.
+        write_bundle(self.tmp)
+        index_path = self.tmp / 'web/data/repositories.json'
+        index = json.loads(index_path.read_text('utf-8'))
+        index['repositories'][1]['snapshot'] = None
+        updated = json.dumps(index, ensure_ascii=False)
+        index_path.write_text(updated, 'utf-8')
+        (self.tmp / 'data/repositories.json').write_text(updated, 'utf-8')
+        code, out = run_verifier(self.tmp)
+        self.assertNotEqual(code, 0)
+        self.assertIn('ubs-comm', out)
+        self.assertIn('no snapshot', out)
+
 
 if __name__ == '__main__':
     unittest.main()

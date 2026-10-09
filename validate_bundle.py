@@ -13,6 +13,9 @@ Failures (exit 1, must block the deploy and the cache save):
   * an entry referencing a snapshot points outside web/data, to a missing file,
     to invalid JSON, or to a snapshot whose meta.repository disagrees with the
     index entry (cross-repo borrowing / mixed versions)
+  * a success/partial entry ships without a snapshot file to prove its window,
+    or its snapshot's meta.start_ms/end_ms differ from the index window — a
+    stale retained snapshot must never ship as current scope (REQ-021)
   * a repo-root mirror (data/...) disagrees with its web/data counterpart
   * data/snapshot.json disagrees with the current ubs-engine snapshot
   * a present ubs-manifest.json does not match the fingerprint of the files on
@@ -67,8 +70,8 @@ def load_index(web):
 
 
 def bundle_targets(web, index):
-    """Ordered snapshot targets: (relpath, path, required, expected_repository)."""
-    targets = [('repositories.json', web / 'repositories.json', True, None)]
+    """Ordered snapshot targets: (relpath, path, required, expected_repository, expected_range)."""
+    targets = [('repositories.json', web / 'repositories.json', True, None, None)]
     names, snapshot_paths = set(), set()
     for entry in index['repositories']:
         if not isinstance(entry, dict) or not entry.get('name') or not entry.get('repository'):
@@ -77,8 +80,12 @@ def bundle_targets(web, index):
             raise ValueError(f"duplicate repository name in the index: {entry['name']}")
         names.add(entry['name'])
         snapshot = entry.get('snapshot')
+        current_scope = entry.get('status') in ('success', 'partial')
         if snapshot is None or snapshot == '':
-            continue  # pending repository: never collected, no snapshot file expected
+            if current_scope:
+                raise ValueError(f"index entry {entry['name']} has status {entry.get('status')!r} but no "
+                                 'snapshot file to prove its window matches the index range')
+            continue  # pending or first-failed repository: no snapshot file expected yet
         if not isinstance(snapshot, str):
             raise ValueError(f"index entry {entry['name']} has a non-string snapshot reference: {snapshot!r}")
         if snapshot in snapshot_paths:
@@ -87,8 +94,9 @@ def bundle_targets(web, index):
         path = (web / snapshot).resolve()
         if web.resolve() not in path.parents:
             raise ValueError(f"index entry {entry['name']} references a snapshot outside web/data: {snapshot}")
-        targets.append((snapshot, path, True, entry['repository']))
-    targets.append(('snapshot.json', web / 'snapshot.json', False, None))
+        expected_range = (index.get('start_ms'), index.get('end_ms')) if current_scope else None
+        targets.append((snapshot, path, True, entry['repository'], expected_range))
+    targets.append(('snapshot.json', web / 'snapshot.json', False, None, None))
     return targets
 
 
@@ -102,11 +110,11 @@ def verify(root):
     except ValueError as error:
         fail(str(error))
         return None, [], 'absent', 1
-    referenced = sum(1 for _, _, required, _ in targets if required) - 1
+    referenced = sum(1 for _, _, required, _, _ in targets if required) - 1
     info(f'index ok: {len(index["repositories"])} repositories, {referenced} snapshots referenced')
     errors = 0
     digests = []
-    for rel, path, required, expected in targets:
+    for rel, path, required, expected, expected_range in targets:
         if not path.exists():
             if required:
                 fail(f'missing snapshot {path} referenced by the index')
@@ -124,6 +132,14 @@ def verify(root):
             repository = payload.get('meta', {}).get('repository') if isinstance(payload, dict) else None
             if repository != expected:
                 fail(f'{path} belongs to {repository!r} but the index entry says {expected!r} (no cross-repo borrowing)')
+                errors += 1
+                continue
+        if expected_range is not None:
+            meta = payload.get('meta', {}) if isinstance(payload, dict) else {}
+            covered = (meta.get('start_ms'), meta.get('end_ms'))
+            if covered != expected_range:
+                fail(f'{path} covers {covered[0]}–{covered[1]} but the index window is '
+                     f'{expected_range[0]}–{expected_range[1]} (a stale snapshot must not ship as current scope)')
                 errors += 1
                 continue
         digests.append((rel, sha256_file(path)))

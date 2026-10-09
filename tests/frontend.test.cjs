@@ -167,3 +167,41 @@ test('REQ-020 AC02: first-failed and pending repositories show 未获取, never 
   assert.ok(source.includes("'采集失败 · 保留快照'"),'a failed repo keeping its last snapshot is labelled distinctly from first failure');
   assert.ok(source.includes("'未获取数据 · 待采集'"),'a pending repo reads 未获取数据 · 待采集');
 });
+
+test('REQ-021 AC01/AC02: repositoryRows keeps stale and failed data out of cross-repo metrics while showing every repo',()=>{
+  const index={start_ms:1,end_ms:2,repositories:[
+    {name:'ubs-ok',repository:'openEuler/ubs-ok',status:'success',snapshot:'repos/ubs-ok.json'},
+    {name:'ubs-stale',repository:'openEuler/ubs-stale',status:'success',snapshot:'repos/ubs-stale.json'},
+    {name:'ubs-failed',repository:'openEuler/ubs-failed',status:'failed',snapshot:'repos/ubs-failed.json'},
+    {name:'ubs-pending',repository:'openEuler/ubs-pending',status:'pending',snapshot:null},
+    {name:'ubs-empty',repository:'openEuler/ubs-empty',status:'success',snapshot:'repos/ubs-empty.json'}
+  ]};
+  const meta=(start_ms,end_ms)=>({repository:'openEuler/x',start_ms,end_ms,collected_at:'2026-10-08T00:00:00Z'});
+  const pr=n=>({number:n,state:'merged',created_ms:n,title:'t'+n,author:'a',batches:[]});
+  const snapshots={
+    'ubs-ok':{meta:meta(1,2),prs:[pr(1),pr(2)]},
+    'ubs-stale':{meta:meta(999,1998),prs:[pr(3)]},
+    'ubs-failed':{meta:meta(1,2),prs:[pr(4)]},
+    'ubs-empty':{meta:meta(1,2),prs:[]}
+  };
+  const rows=M.repositoryRows(index,snapshots,'');
+  assert.equal(rows.length,5,'every repository stays visible, including pending and zero-PR ones (AC02)');
+  const by=Object.fromEntries(rows.map(r=>[r.name,r]));
+  assert.equal(by['ubs-ok'].current,true);
+  assert.equal(by['ubs-ok'].included,true);
+  assert.equal(by['ubs-ok'].prs.length,2,'a current success repo contributes its PRs to aggregation');
+  assert.equal(by['ubs-ok'].counts.merged,2);
+  assert.equal(by['ubs-stale'].current,false,'a snapshot outside the index window is not current');
+  assert.equal(by['ubs-stale'].included,false,'stale data never enters cross-repo metrics (AC01)');
+  assert.equal(by['ubs-failed'].current,true,'a failed repo may keep a current-window snapshot');
+  assert.equal(by['ubs-failed'].included,false,'but failed status still excludes it from cross-repo metrics (AC01)');
+  assert.equal(by['ubs-pending'].current,false);
+  assert.equal(by['ubs-pending'].included,false);
+  assert.deepEqual(by['ubs-pending'].prs,[],'a repo without a snapshot contributes no PRs');
+  assert.equal(by['ubs-empty'].current,true);
+  assert.equal(by['ubs-empty'].included,true);
+  assert.equal(by['ubs-empty'].prs.length,0);
+  assert.deepEqual(by['ubs-empty'].metrics.e2e,{n:0,mean:null,p90:null},'a zero-PR success repo shows explicit zero metrics, not a dropped repo (AC02)');
+  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+  assert.ok(source.includes("'过期快照 · 不计跨仓汇总'"),'the stale snapshot keeps its own label and never mixes into cross-repo metrics (AC02)');
+});

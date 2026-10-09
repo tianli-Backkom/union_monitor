@@ -1,8 +1,8 @@
 import copy,json,shutil,tempfile,unittest
 from pathlib import Path
 from unittest.mock import patch
-from triton.dashboard import GitHub,build_batches,build_payload,collect
-from triton.quality import validate,fingerprint,verify_page
+from triton.dashboard import GitHub,build_batches,build_payload,collect,write_payload
+from triton.quality import validate,fingerprint,verify_artifacts,verify_page
 
 class QualityTests(unittest.TestCase):
     def fixture(self):
@@ -136,3 +136,82 @@ class GitHubContractTests(unittest.TestCase):
         self.assertIn("/actions/runs", message)
         self.assertNotIn("Bearer", message)
         self.assertFalse((tmp / "enriched-runs.json").exists())
+
+
+class ArtifactConsistencyTests(unittest.TestCase):
+    """REQ-021 AC04: triton.json, the CSV export, the manifest and the build evidence must agree before upload."""
+    def setUp(self):
+        self.root=Path(tempfile.mkdtemp(prefix="triton-artifacts-"))
+        self.addCleanup(shutil.rmtree,self.root,ignore_errors=True)
+        self.data=self.root/"web"/"data";self.data.mkdir(parents=True)
+        self.evidence=self.root/"evidence"/"triton";self.evidence.mkdir(parents=True)
+
+    def payload(self):
+        return {"repo":"triton-lang/triton-ascend","window_start":"2026-09-27T00:00:00Z","window_end":"2026-09-29T00:00:00Z",
+                "collected_at":"2026-09-29T00:05:00Z","summary":{"prs":1,"batches":1,"valid":1},
+                "batches":[{"id":"b1","pr":42,"title":"Improve compiler","sha":"abc123","base_branch":"main","kind":"initial",
+                            "start_at":"2026-09-28T01:00:00Z","end_at":"2026-09-28T02:00:00Z","status":"success",
+                            "duration_seconds":3600.0,"npu_queue_seconds":None,"approximate":True,
+                            "start_source":"workflow_created","critical_workflow":"Integration Tests","missing":[],
+                            "pr_url":"https://github.com/triton-lang/triton-ascend/pull/42",
+                            "action_url":"https://github.com/triton-lang/triton-ascend/actions/runs/1"}]}
+
+    def write_artifacts(self,payload):
+        with patch("triton.dashboard.REPO_ROOT",self.root),patch("triton.dashboard.EVIDENCE",self.evidence):
+            write_payload(payload)
+        (self.data/"triton-manifest.json").write_text(
+            json.dumps({"sha256":fingerprint(payload),"collected_at":payload["collected_at"]}),encoding="utf-8")
+
+    def test_consistent_artifacts_pass_the_gate(self):
+        payload=self.payload();self.write_artifacts(payload)
+        self.assertEqual(verify_artifacts(self.data,self.evidence),[])
+
+    def test_tampered_json_breaks_manifest_fingerprint_and_csv_row(self):
+        payload=self.payload();self.write_artifacts(payload)
+        payload["batches"][0]["duration_seconds"]=1.0
+        (self.data/"triton.json").write_text(json.dumps(payload,ensure_ascii=False)+"\n",encoding="utf-8")
+        problems=verify_artifacts(self.data,self.evidence)
+        self.assertTrue(any("sha256" in p for p in problems),problems)
+        self.assertTrue(any("duration_seconds" in p for p in problems),problems)
+
+    def test_dropped_csv_row_fails_the_gate(self):
+        payload=self.payload();self.write_artifacts(payload)
+        lines=(self.data/"triton-batches.csv").read_text(encoding="utf-8-sig").splitlines()
+        (self.data/"triton-batches.csv").write_text("\r\n".join(lines[:1])+"\r\n",encoding="utf-8-sig")
+        problems=verify_artifacts(self.data,self.evidence)
+        self.assertTrue(any("rows" in p for p in problems),problems)
+
+    def test_collected_at_disagreement_fails_the_gate(self):
+        payload=self.payload();self.write_artifacts(payload)
+        manifest=json.loads((self.data/"triton-manifest.json").read_text(encoding="utf-8"))
+        manifest["collected_at"]="2026-09-29T09:09:00Z"
+        (self.data/"triton-manifest.json").write_text(json.dumps(manifest),encoding="utf-8")
+        problems=verify_artifacts(self.data,self.evidence)
+        self.assertTrue(any("collected_at" in p for p in problems),problems)
+
+    def test_diverged_evidence_copy_fails_the_gate(self):
+        payload=self.payload();self.write_artifacts(payload)
+        payload["batches"][0]["title"]="A different title"
+        (self.evidence/"dashboard-data.json").write_text(json.dumps(payload,ensure_ascii=False),encoding="utf-8")
+        problems=verify_artifacts(self.data,self.evidence)
+        self.assertTrue(any("dashboard-data.json" in p for p in problems),problems)
+
+    def test_missing_evidence_copy_fails_the_gate(self):
+        payload=self.payload();self.write_artifacts(payload)
+        (self.evidence/"dashboard-data.json").unlink()
+        problems=verify_artifacts(self.data,self.evidence)
+        self.assertTrue(any("missing" in p for p in problems),problems)
+
+    def test_main_gates_the_upload_on_artifact_consistency(self):
+        source=(Path(__file__).resolve().parents[1]/"triton"/"dashboard.py").read_text(encoding="utf-8")
+        self.assertIn("verify_artifacts(",source)
+        self.assertLess(source.index('triton-manifest.json",{"sha256"'),source.index("verify_artifacts("),
+                        "the gate must run after the manifest is written and before the run can succeed")
+        self.assertIn("Artifact consistency gate failed",source)
+
+    def test_live_artifacts_stay_consistent_when_present(self):
+        root=Path(__file__).resolve().parents[1]
+        data,evidence=root/"web"/"data",root/"evidence"/"triton"
+        if not (data/"triton-manifest.json").exists():
+            self.skipTest("no local Triton artifacts (collect first)")
+        self.assertEqual(verify_artifacts(data,evidence),[])

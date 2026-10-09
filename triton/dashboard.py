@@ -17,6 +17,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from .quality import CSV_FIELDS
+
 REPO = "triton-lang/triton-ascend"
 API = f"https://api.github.com/repos/{REPO}"
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -532,10 +534,9 @@ def build_payload(runs, window_start, window_end, collected_at, calls=0):
 
 def export_csv(payload):
     path=REPO_ROOT/"web"/"data"/"triton-batches.csv"
-    fields=["pr","title","sha","base_branch","kind","start_at","end_at","status","duration_seconds","npu_queue_seconds","approximate","start_source","critical_workflow","missing","pr_url","action_url"]
     with path.open("w",encoding="utf-8-sig",newline="") as f:
-        w=csv.DictWriter(f,fieldnames=fields);w.writeheader()
-        for b in payload["batches"]: w.writerow({k:"; ".join(b[k]) if k=="missing" else b.get(k) for k in fields})
+        w=csv.DictWriter(f,fieldnames=CSV_FIELDS);w.writeheader()
+        for b in payload["batches"]: w.writerow({k:"; ".join(b[k]) if k=="missing" else b.get(k) for k in CSV_FIELDS})
 
 
 def write_payload(payload):
@@ -557,13 +558,15 @@ def main():
             runs=augment_focus_jobs(runs,meta["window_end"]);_write_json(EVIDENCE/"enriched-runs.json",runs)
         payload=build_payload(runs,meta["window_start"],meta["window_end"],meta["collected_at"])
     else: payload=collect(args.hours,args.as_of)
-    from .quality import validate, fingerprint
+    from .quality import fingerprint, validate, verify_artifacts
     report=validate(runs if args.from_evidence else json.loads((EVIDENCE/"enriched-runs.json").read_text(encoding="utf-8")),payload)
     _write_json(EVIDENCE/"quality-report.json",report)
     if not report["passed"]:
         raise RuntimeError("Data quality gate failed: "+"; ".join(report["errors"][:10]))
     write_payload(payload)
     _write_json(REPO_ROOT/"web"/"data"/"triton-manifest.json",{"sha256":fingerprint(payload),"collected_at":payload["collected_at"],**report})
+    problems=verify_artifacts(REPO_ROOT/"web"/"data",EVIDENCE)
+    if problems: raise RuntimeError("Artifact consistency gate failed: "+"; ".join(problems[:10]))
     print(f"Generated web/data/triton.json with {len(payload['batches'])} batches")
 
 

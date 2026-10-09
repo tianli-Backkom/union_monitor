@@ -1,4 +1,5 @@
 """Fail closed on missing measurements; never require an arbitrary NPU count."""
+import csv
 import hashlib
 import json
 import re
@@ -101,3 +102,44 @@ def verify_page(source, manifest):
     payload=json.loads(match[1])
     if fingerprint(payload)!=manifest['sha256']: raise ValueError("Published data differs from this build")
     return payload
+
+
+CSV_FIELDS=["pr","title","sha","base_branch","kind","start_at","end_at","status","duration_seconds","npu_queue_seconds","approximate","start_source","critical_workflow","missing","pr_url","action_url"]
+
+
+def verify_artifacts(data_dir,evidence_dir=None):
+    """Cross-check triton.json, the CSV export, the manifest and the build evidence (REQ-021 AC04).
+
+    Returns a list of human-readable problems; an empty list means the artifacts
+    agree on batch identity, statistics scope and collection time and may upload.
+    """
+    errors=[]
+    payload=json.loads((data_dir/"triton.json").read_text(encoding="utf-8"))
+    manifest=json.loads((data_dir/"triton-manifest.json").read_text(encoding="utf-8"))
+    if manifest.get("sha256")!=fingerprint(payload):
+        errors.append("triton-manifest.json sha256 does not match web/data/triton.json")
+    if manifest.get("collected_at")!=payload.get("collected_at"):
+        errors.append(f"manifest collected_at {manifest.get('collected_at')!r} differs from the payload {payload.get('collected_at')!r}")
+    batches=payload.get("batches",[])
+    with (data_dir/"triton-batches.csv").open(encoding="utf-8-sig",newline="") as handle:
+        reader=csv.DictReader(handle)
+        rows=list(reader)
+        if reader.fieldnames!=CSV_FIELDS:
+            errors.append(f"CSV header {reader.fieldnames!r} differs from the export contract")
+    if len(rows)!=len(batches):
+        errors.append(f"CSV carries {len(rows)} rows but triton.json has {len(batches)} batches")
+    for position,(row,batch) in enumerate(zip(rows,batches)):
+        for field in CSV_FIELDS:
+            value=batch.get(field)
+            if field=="missing" and isinstance(value,list): value="; ".join(value)
+            expected="" if value is None else str(value)
+            if (row.get(field) or "")!=expected:
+                errors.append(f"CSV row {position} (PR {batch.get('pr')}/{batch.get('sha')}) field {field}: {row.get(field)!r} differs from {expected!r}")
+                break
+    if evidence_dir is not None:
+        evidence=evidence_dir/"dashboard-data.json"
+        if not evidence.exists():
+            errors.append(f"{evidence} missing (the build-input evidence must ship with the artifacts)")
+        elif json.loads(evidence.read_text(encoding="utf-8"))!=payload:
+            errors.append("evidence dashboard-data.json differs from web/data/triton.json")
+    return errors
