@@ -170,6 +170,7 @@ PR 列表、详情和 CSV 区分创建、推送和重跑的平台请求次数，
 ### Triton-Ascend
 
 - 批次按 PR head SHA 聚合：一次推送的提交是 E2E 的身份单位，辅助 workflow 即使更晚启动也归入同一 head SHA，不产生额外数据点；手动重跑单独成批。
+- 重跑按 run 与 attempt 编号独立成批并保留历史：同一 run 的 attempt 1 归入初次提交批次，attempt 2 起各自独立，重复采集同一 attempt 不重复计数；采集发现窗口向前回溯 14 天，只要本次 attempt 起点落在展示窗口内即被识别（原 run 创建在窗口外的重跑不遗漏），完全在窗口外的运行仅作关联证据，不计入当前窗口批次。重跑 E2E 从本次 attempt 起点计算，不沿用原 run 创建时间。
 - **E2E 口径**：E2E 从提交事件到该批次最后一项自动检查结束，包含排队与依赖等待；并行任务不相加。
 - **近似起点规则**：无法恢复精确提交事件时使用最早 workflow 创建时间，并在悬浮卡片中注明；页面数据边界显示使用近似起点的批次数。
 - **展示规则**：成功和失败批次参与趋势；取消与运行中仅展示已观测耗时。
@@ -188,7 +189,7 @@ GitHub 源时间戳倒置的任务显式标记异常，相关批次不参与排�
 
 Fork PR 的 workflow `pull_requests` 和 commit 关联接口可能同时返回空数组。采集器优先使用 run 显式 PR 关联；回退以来源仓库、分支、真实 head SHA 或 PR 提交历史校验候选，查询包括已关闭 PR，并完整分页和缓存。PR 编号、标题、链接及目标分支均从 PR 元数据获取，不以运行标题或时间接近猜测关联，也不再按最近 run 覆盖 `pull_request_target` 的 SHA。
 
-关联依据写入 `evidence/triton/pr-associations/`。无法唯一关联或 API 查询失败会保存 `pr-association-errors.json`，阻止本次发布；质量检查同时验证关联证据及聚合前后 PR/SHA 一致性。未知运行按 run ID 隔离，避免相同 SHA 被误并。
+关联依据写入 `evidence/triton/pr-associations/`。无法唯一关联或 API 查询失败会保存 `pr-association-errors.json`，阻止本次发布；质量检查同时验证关联证据及聚合前后 PR/SHA 一致性。未知运行按 run ID 与 attempt 隔离，避免相同 SHA 被误并。
 
 ## 自动发布
 

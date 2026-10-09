@@ -1,8 +1,17 @@
+import shutil
+import tempfile
 import unittest
+import urllib.parse
 from datetime import datetime, timezone
+from pathlib import Path
+from unittest.mock import patch
 
 from triton.dashboard import (
+    GitHub,
     build_batches,
+    build_payload,
+    collect,
+    dt,
     extract_focus_job_links,
     extract_pr_base_ref,
     merge_run_evidence,
@@ -10,6 +19,7 @@ from triton.dashboard import (
     parse_pr_base_html,
     parse_run_html,
     percentile,
+    run_in_window,
 )
 
 
@@ -173,6 +183,157 @@ class HtmlEvidenceTests(unittest.TestCase):
         self.assertEqual(job["run_seconds"], 838)
         self.assertEqual(job["wait_seconds"], 25)
         self.assertEqual(job["status"], "completed")
+
+
+class AttemptIdentityTests(unittest.TestCase):
+    """REQ-015: attempt identity, history retention and rerun window recognition."""
+
+    def attempt_run(self, run_id, sha, created, started, updated, attempt=1, jobs=None, pr=42):
+        row = run(run_id, "Integration Tests", sha, created, updated, attempt=attempt, jobs=jobs)
+        row["run_started_at"] = started
+        row["trigger_at"] = None
+        row["trigger_exact"] = False
+        row["pr"] = pr
+        return row
+
+    def job(self, job_id):
+        return {"id": job_id, "name": f"job {job_id}", "created_at": "2026-09-22T02:00:00Z",
+                "started_at": "2026-09-22T02:00:10Z", "completed_at": "2026-09-22T02:04:00Z",
+                "status": "completed", "conclusion": "success"}
+
+    def test_same_run_attempts_keep_both_identities_and_jobs(self):
+        first = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", "2026-09-22T00:00:00Z",
+                                 "2026-09-22T00:05:00Z", attempt=1, jobs=[self.job(11)])
+        second = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", "2026-09-22T02:00:00Z",
+                                  "2026-09-22T02:05:00Z", attempt=2, jobs=[self.job(22)])
+        batches = build_batches([first, second], "2026-09-23T00:00:00Z")
+        self.assertEqual(len(batches), 2)
+        by_kind = {batch["kind"]: batch for batch in batches}
+        self.assertEqual([j["id"] for j in by_kind["initial"]["workflows"][0]["jobs"]], [11])
+        self.assertEqual([j["id"] for j in by_kind["rerun"]["workflows"][0]["jobs"]], [22])
+        self.assertEqual(by_kind["rerun"]["workflows"][0]["attempt"], 2)
+        self.assertEqual({batch["e2e_total"] for batch in batches}, {2})
+
+    def test_recollecting_the_same_attempt_never_doubles_it(self):
+        first = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", "2026-09-22T00:00:00Z",
+                                 "2026-09-22T00:05:00Z", attempt=1)
+        second = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", "2026-09-22T02:00:00Z",
+                                  "2026-09-22T02:05:00Z", attempt=2)
+        batches = build_batches([first, second, dict(first), dict(second)], "2026-09-23T00:00:00Z")
+        self.assertEqual(len(batches), 2)
+        for batch in batches:
+            self.assertEqual(len(batch["workflows"]), 1)
+
+    def test_rerun_e2e_spans_only_the_current_attempt(self):
+        first = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", "2026-09-22T00:00:00Z",
+                                 "2026-09-22T00:05:00Z", attempt=1)
+        second = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", "2026-09-22T02:00:00Z",
+                                  "2026-09-22T02:05:00Z", attempt=2)
+        batches = build_batches([first, second], "2026-09-22T03:00:00Z")
+        rerun = next(batch for batch in batches if batch["kind"] == "rerun")
+        self.assertEqual(rerun["duration_seconds"], 300)
+        self.assertEqual(rerun["start_at"], "2026-09-22T02:00:00Z")
+        self.assertEqual(rerun["start_source"], "attempt_start")
+        self.assertTrue(rerun["approximate"])
+
+    def test_rerun_without_attempt_start_leaves_e2e_empty(self):
+        row = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", None,
+                               "2026-09-22T02:05:00Z", attempt=2)
+        batch = build_batches([row], "2026-09-22T03:00:00Z")[0]
+        self.assertIsNone(batch["start_at"])
+        self.assertIsNone(batch["duration_seconds"])
+        self.assertIsNone(batch["start_source"])
+        self.assertFalse(batch["approximate"])
+
+    def test_window_recognition_keeps_only_current_window_attempts(self):
+        first = self.attempt_run(1, "abc", "2026-09-20T00:00:00Z", "2026-09-20T00:00:00Z",
+                                 "2026-09-20T00:05:00Z", attempt=1)
+        second = self.attempt_run(1, "abc", "2026-09-20T00:00:00Z", "2026-09-26T10:00:00Z",
+                                  "2026-09-26T10:05:00Z", attempt=2)
+        payload = build_payload([first, second], "2026-09-25T00:00:00Z",
+                                "2026-09-28T00:00:00Z", "2026-09-28T00:00:00Z")
+        self.assertEqual([batch["kind"] for batch in payload["batches"]], ["rerun"])
+        self.assertEqual(payload["batches"][0]["start_at"], "2026-09-26T10:00:00Z")
+        self.assertEqual(payload["batches"][0]["e2e_index"], 1)
+
+    def test_aux_workflows_join_initial_but_rerun_stays_separate(self):
+        main = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", "2026-09-22T00:00:00Z",
+                                "2026-09-22T00:10:00Z", jobs=[self.job(11)])
+        aux = self.attempt_run(2, "abc", "2026-09-22T00:20:00Z", "2026-09-22T00:20:00Z",
+                               "2026-09-22T00:25:00Z", jobs=[self.job(12)])
+        rerun = self.attempt_run(1, "abc", "2026-09-22T00:00:00Z", "2026-09-22T02:00:00Z",
+                                 "2026-09-22T02:05:00Z", attempt=2, jobs=[self.job(13)])
+        batches = build_batches([main, aux, rerun], "2026-09-23T00:00:00Z")
+        self.assertEqual(len(batches), 2)
+        initial = next(batch for batch in batches if batch["kind"] == "initial")
+        rerun_batch = next(batch for batch in batches if batch["kind"] == "rerun")
+        self.assertEqual([workflow["id"] for workflow in initial["workflows"]], [1, 2])
+        self.assertEqual(len(rerun_batch["workflows"]), 1)
+        self.assertEqual([job["id"] for workflow in rerun_batch["workflows"]
+                          for job in workflow["jobs"]], [13])
+
+    def test_unresolved_runs_are_isolated_by_run_and_attempt(self):
+        first = self.attempt_run(7, "abc", "2026-09-22T00:00:00Z", "2026-09-22T00:00:00Z",
+                                 "2026-09-22T00:05:00Z", pr=None)
+        second = self.attempt_run(7, "abc", "2026-09-22T00:00:00Z", "2026-09-22T02:00:00Z",
+                                  "2026-09-22T02:05:00Z", attempt=2, pr=None)
+        batches = build_batches([first, second], "2026-09-23T00:00:00Z")
+        self.assertEqual(len(batches), 2)
+        self.assertEqual({batch["id"] for batch in batches}, {"abc-unresolved-7-1", "abc-rerun-7-2"})
+        for batch in batches:
+            self.assertIsNone(batch["pr"])
+            self.assertIn("未可靠关联 PR", " ".join(batch["missing"]))
+
+
+class RunWindowTests(unittest.TestCase):
+    def test_run_in_window_uses_current_attempt_start(self):
+        row = {"created_at": "2026-09-20T00:00:00Z", "run_started_at": "2026-09-26T10:00:00Z"}
+        self.assertTrue(run_in_window(row, dt("2026-09-25T00:00:00Z"), dt("2026-09-28T00:00:00Z")))
+
+    def test_run_fully_outside_window_is_excluded(self):
+        row = {"created_at": "2026-09-20T00:00:00Z", "run_started_at": "2026-09-20T00:00:00Z"}
+        self.assertFalse(run_in_window(row, dt("2026-09-25T00:00:00Z"), dt("2026-09-28T00:00:00Z")))
+
+    def test_run_created_inside_window_is_included(self):
+        row = {"created_at": "2026-09-26T00:00:00Z"}
+        self.assertTrue(run_in_window(row, dt("2026-09-25T00:00:00Z"), dt("2026-09-28T00:00:00Z")))
+
+
+class CollectWindowTests(unittest.TestCase):
+    def test_collect_discovers_rerun_created_before_window(self):
+        inside = {"id": 1, "name": "Integration Tests", "head_sha": "abc", "event": "pull_request",
+                  "created_at": "2026-09-21T00:00:00Z", "run_started_at": "2026-09-26T10:00:00Z",
+                  "updated_at": "2026-09-26T10:05:00Z", "status": "completed", "conclusion": "success",
+                  "run_attempt": 2, "html_url": "https://github.com/example/actions/runs/1",
+                  "actor": {"login": "dev"}, "head_branch": "feature"}
+        outside = {**inside, "id": 2, "created_at": "2026-09-20T00:00:00Z",
+                   "run_started_at": "2026-09-20T00:00:00Z", "updated_at": "2026-09-20T00:10:00Z",
+                   "run_attempt": 1}
+        paths = []
+
+        def fake_get(self, url):
+            paths.append(url)
+            if url.endswith("per_page=1"):
+                return {"total_count": 2, "workflow_runs": [inside, outside]}, {}
+            if "/jobs" in url:
+                return {"total_count": 0, "jobs": []}, {}
+            return {"workflow_runs": [inside, outside]}, {}
+
+        tmp = Path(tempfile.mkdtemp(prefix="triton-collect-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        pr_fields = {"pr": 42, "pr_url": "https://github.com/triton-lang/triton-ascend/pull/42",
+                     "pr_title": "Rerun", "base_branch": "main", "head_sha": "abc",
+                     "pr_evidence": {"method": "run.pull_requests.head.sha", "run_id": 1,
+                                     "pr": 42, "resolved_head_sha": "abc"}}
+        with patch.object(GitHub, "get", fake_get), \
+                patch("triton.pr_identity.PRResolver.resolve", return_value=pr_fields), \
+                patch("triton.dashboard.EVIDENCE", tmp):
+            payload = collect(hours=72, as_of="2026-09-28T12:00:00Z")
+        created = next(p for p in paths if "created=" in p)
+        range_raw = urllib.parse.unquote(created.split("created=")[1].split("&")[0])
+        self.assertEqual(range_raw.split("..")[0], "2026-09-11T12:00:00Z")
+        self.assertEqual([batch["kind"] for batch in payload["batches"]], ["rerun"])
+        self.assertEqual(payload["batches"][0]["start_at"], "2026-09-26T10:00:00Z")
 
 
 if __name__ == "__main__":

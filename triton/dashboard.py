@@ -187,26 +187,60 @@ def _is_npu_job(job):
     return bool(re.search(r"linux-(?:aarch64|amd64)-a\d",identity) or "ascend950" in identity)
 
 
-def build_batches(runs, as_of):
-    """Group independently-triggered workflows by PR head SHA; keep reruns separate."""
+RERUN_LOOKBACK = timedelta(days=14)
+
+
+def run_in_window(row, start, end):
+    """A run belongs to the window when the current attempt started inside it
+    (a rerun may target a run first created long before the window) or when the
+    run itself was created inside it; fully out-of-window runs are association
+    evidence only and never counted into the current window."""
+    for field in ("run_started_at", "created_at"):
+        value = dt(row.get(field))
+        if value and start <= value <= end:
+            return True
+    return False
+
+
+def build_batches(runs, as_of, window_start=None):
+    """Group independently-triggered workflows by PR head SHA; keep reruns separate.
+
+    Attempt identity is (run_id, run_attempt): attempt 1 rows join the initial
+    PR+SHA batch together with auxiliary workflows, every later attempt is its
+    own batch keyed by run and attempt, so history is never overwritten by the
+    latest attempt and re-collecting an attempt never doubles it."""
     now = dt(as_of)
-    groups = defaultdict(list)
+    unique = {}
     for row in sorted(runs,key=lambda r:r.get("created_at") or ""):
+        unique[(row.get("id"), int(row.get("run_attempt") or 1))] = row
+    groups = defaultdict(list)
+    for row in unique.values():
         attempt = int(row.get("run_attempt") or 1)
         if attempt > 1:
             key = (row.get("pr"), row.get("head_sha"), "rerun", row.get("id"), attempt)
         else:
             # A pushed commit is the E2E identity. Auxiliary workflows may start much later,
             # but they still belong to the same PR head SHA and must not create extra dots.
-            key = (row.get("pr"), row.get("head_sha"), "initial") if row.get("pr") else (None, row.get("head_sha"), "unresolved", row.get("id"))
+            key = (row.get("pr"), row.get("head_sha"), "initial") if row.get("pr") else (None, row.get("head_sha"), "unresolved", row.get("id"), attempt)
         groups[key].append(row)
     batches = []
     for key, rows in groups.items():
         rows.sort(key=lambda r: r.get("created_at") or "")
         exact_times = [dt(r.get("trigger_at")) for r in rows if r.get("trigger_exact") and dt(r.get("trigger_at"))]
-        created_times = [dt(r.get("created_at")) for r in rows if dt(r.get("created_at"))]
-        exact = bool(exact_times)
-        start = min(exact_times) if exact else min(created_times)
+        if exact_times:
+            # A trusted trigger event for this attempt wins over any derived start.
+            exact = True; start = min(exact_times); start_source = "trigger_event"
+        elif key[2] == "rerun":
+            # The run's created_at is the FIRST attempt's start; using it here would bill
+            # the gap between attempts to this rerun. Only the attempt's own start
+            # (run_started_at) is provable for this attempt; without it E2E stays empty.
+            attempt_starts = [dt(r.get("run_started_at")) for r in rows if dt(r.get("run_started_at"))]
+            exact = False; start = min(attempt_starts) if attempt_starts else None
+            start_source = "attempt_start" if start else None
+        else:
+            created_times = [dt(r.get("created_at")) for r in rows if dt(r.get("created_at"))]
+            exact = False; start = min(created_times) if created_times else None
+            start_source = "workflow_created" if start else None
         running = any(r.get("status") != "completed" for r in rows)
         ends = [dt(r.get("updated_at")) for r in rows if r.get("status") == "completed" and dt(r.get("updated_at"))]
         end = max(ends) if ends and not running else None
@@ -252,15 +286,21 @@ def build_batches(runs, as_of):
             "pr_url": first.get("pr_url"), "author": first.get("author"),
             "branch": first.get("branch"), "base_branch":base_branch or "未知目标分支", "sha": first.get("head_sha"),
             "kind": "rerun" if key[2] == "rerun" else "initial",
-            "start_at": iso(start), "end_at": iso(end) if end else None,
+            "start_at": iso(start) if start else None, "end_at": iso(end) if end else None,
             "duration_seconds": duration, "status": status,
             "complete": status in ("success", "failure") and not missing,
-            "approximate": not exact, "critical_workflow": critical.get("name"),
+            "approximate": start is not None and not exact, "start_source": start_source,
+            "critical_workflow": critical.get("name"),
             "action_url": action.get("html_url"), "action_name": action.get("name") or "GitHub Actions",
             "workflows": workflows, "focus_jobs":focus_jobs, "npu_jobs":npu_jobs,
             "npu_data_missing": npu_missing, "npu_queue_seconds":max(npu_waits) if npu_waits and not npu_missing else None, "missing": missing,
         })
-    batches.sort(key=lambda b: b["start_at"])
+    batches.sort(key=lambda b: b["start_at"] or "")
+    if window_start:
+        # Out-of-window attempts are association evidence only: batches whose own
+        # start falls before the display window are never counted into it.
+        boundary = dt(window_start)
+        batches = [b for b in batches if not b["start_at"] or dt(b["start_at"]) >= boundary]
     by_pr=defaultdict(list)
     for batch in batches: by_pr[batch.get("pr")].append(batch)
     for rows in by_pr.values():
@@ -391,6 +431,10 @@ def collect(hours=72, as_of=None):
     api=GitHub(); end=dt(as_of) if as_of else datetime.now(UTC).replace(microsecond=0); start=end-timedelta(hours=hours)
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     # Query the two native PR event types separately; recursively split intervals to avoid GitHub's 1,000-result cap.
+    # A rerun may target a run first created before the window, so discovery reaches
+    # RERUN_LOOKBACK further back; run_in_window() then keeps only runs whose current
+    # attempt actually acted inside the display window.
+    fetch_start=start-RERUN_LOOKBACK
     runs=[]
     def interval(a,b,event):
         created=urllib.parse.quote(f"{iso(a)}..{iso(b)}", safe="")
@@ -400,10 +444,10 @@ def collect(hours=72, as_of=None):
             mid=a+(b-a)/2; interval(a,mid,event); interval(mid+timedelta(seconds=1),b,event); return
         runs.extend(api.pages(path,"workflow_runs"))
     for event in ("pull_request","pull_request_target"):
-        interval(start,end,event)
-    unique={r["id"]:r for r in runs}
-    runs=list(unique.values())
-    _write_json(EVIDENCE/"runs.json", {"collected_at":iso(datetime.now(UTC)),"window_start":iso(start),"window_end":iso(end),"runs":runs})
+        interval(fetch_start,end,event)
+    unique={(r["id"], r.get("run_attempt") or 1):r for r in runs}
+    runs=[r for r in unique.values() if run_in_window(r,start,end)]
+    _write_json(EVIDENCE/"runs.json", {"collected_at":iso(datetime.now(UTC)),"window_start":iso(start),"fetch_window_start":iso(fetch_start),"window_end":iso(end),"runs":runs})
 
     # PRs from forks can have empty run.pull_requests and commit/pulls responses.
     from .pr_identity import PRResolver
@@ -443,7 +487,7 @@ def collect(hours=72, as_of=None):
 def build_payload(runs, window_start, window_end, collected_at, calls=0):
     for row in runs:
         if row.get("conclusion") in ("skipped","neutral"): row["jobs_complete"]=True
-    batches=build_batches(runs, window_end)
+    batches=build_batches(runs, window_end, window_start)
     complete=[b for b in batches if b["status"] in ("success","failure") and b["duration_seconds"] is not None]
     values=[b["duration_seconds"] for b in complete]
     return {"repo":REPO,"window_start":window_start,"window_end":window_end,"collected_at":collected_at,
