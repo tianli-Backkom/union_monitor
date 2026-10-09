@@ -69,7 +69,7 @@ test('circleMark renders solid circles with a larger hit area', () => {
 });
 
 /* ---- T8 additions: pure helpers for the merged Triton view ---- */
-const { isSlow, attentionGroups, freshnessSlots } = require('../web/triton-core.js');
+const { isSlow, attentionGroups, freshnessSlots, matchesQuery } = require('../web/triton-core.js');
 
 test('isSlow flags completed batches at or beyond P90 and excludes running ones', () => {
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, 3620), true);
@@ -200,4 +200,39 @@ test('chart-local stats and the page-level threshold are distinct computations',
   ];
   assert.equal(dashboardStats(rows).p90, 1080, 'page-level P90 covers all completed batches in G');
   assert.equal(chartStats(rows.filter(r => r.status === 'failure')).p90, 1110, 'chart-local P90 covers only locally filtered batches');
+});
+
+/* ---- REQ-003: the shared list/CSV search predicate ---- */
+
+test('matchesQuery: shared predicate for the list and CSV export scope', () => {
+  const b = { pr: 2475, title: 'Bump actions/download-artifact from 4 to 7' };
+  assert.equal(matchesQuery(b, ''), true, 'empty query matches every batch');
+  assert.equal(matchesQuery(b, '   '), true, 'whitespace-only query matches every batch');
+  assert.equal(matchesQuery(b, '2475'), true, 'PR number substring matches');
+  assert.equal(matchesQuery(b, ' 2475 '), true, 'the query is trimmed before matching');
+  assert.equal(matchesQuery(b, 'download-artifact'), true, 'title substring matches');
+  assert.equal(matchesQuery(b, 'DOWNLOAD'), true, 'title matching is case-insensitive');
+  assert.equal(matchesQuery({ pr: 1 }, 'xyz'), false, 'missing title does not throw and does not match');
+  assert.equal(matchesQuery({ title: 'x' }, '24'), false, 'missing pr does not throw and does not match');
+  assert.equal(matchesQuery(b, 'nonexistent'), false);
+});
+
+test('REQ-003: export scope is the page-level set G filtered by the list search', () => {
+  const rows = [
+    { pr: 1, base_branch: 'main', start_at: '2026-10-08T20:00:00Z', title: 'alpha first push' },
+    { pr: 1, base_branch: 'main', start_at: '2026-10-08T21:00:00Z', title: 'alpha second push' },
+    { pr: 2, base_branch: 'main-dev', start_at: '2026-10-08T22:00:00Z', title: 'beta' },
+    { pr: 3, base_branch: 'main', start_at: '2026-10-07T10:00:00Z', title: 'gamma outside window' },
+  ];
+  const start = +new Date('2026-10-08T18:00:00Z');
+  const end = +new Date('2026-10-09T00:00:00Z');
+  const exportScope = (selected, query) => selectWindow(filterBranches(rows, selected), start, end)
+    .filter(b => matchesQuery(b, query));
+  assert.deepEqual(exportScope(new Set(), '').map(b => b.title), ['alpha first push', 'alpha second push', 'beta'],
+    'no search: full G with both batches of PR1 retained separately');
+  assert.deepEqual(exportScope(new Set(), 'alpha').map(b => b.title), ['alpha first push', 'alpha second push'],
+    'different batches of the same PR are each retained under search');
+  assert.deepEqual(exportScope(new Set(['main']), '').map(b => b.title), ['alpha first push', 'alpha second push'],
+    'branch predicate composes with the time window');
+  assert.deepEqual(exportScope(new Set(), 'gamma'), [], 'batches outside the time window never enter the export');
 });

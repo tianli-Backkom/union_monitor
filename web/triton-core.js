@@ -137,5 +137,11 @@
     return { slots, latest, stale };
   }
 
-  return { isSlow, attentionGroups, freshnessSlots };
+  function matchesQuery(batch, query) {
+    const q = String(query || '').trim().toLowerCase();
+    if (!q) return true;
+    return String(batch.pr || '').includes(q) || String(batch.title || '').toLowerCase().includes(q);
+  }
+
+  return { isSlow, attentionGroups, freshnessSlots, matchesQuery };
 });

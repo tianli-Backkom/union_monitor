@@ -169,6 +169,7 @@
     const branchPool = () => core.filterBranches(D.batches, selectedBranches);
     const pageSet = () => core.selectWindow(branchPool(), viewStart, viewEnd);
     const currentSummary = () => core.dashboardStats(pageSet());
+    const searchPool = () => pageSet().filter(b => core.matchesQuery(b, searchInput.value));
 
     function e2eRows(threshold) {
       return pageSet().filter(b => filter === 'all' || (filter === 'slow' && core.isSlow(b, threshold)) || b.status === filter);
@@ -399,7 +400,6 @@
     }
 
     function renderRows() {
-      const q = searchInput.value.trim().toLowerCase();
       const summary = currentSummary();
       showAllBtn.textContent = showAll ? '返回关注列表' : '查看全部批次';
       if (!summary.batches) {
@@ -407,7 +407,7 @@
         attentionEl.innerHTML = '<div class="empty">当前合入分支与时间范围内没有批次，请调整分支筛选或扩大时间范围。</div>';
         return;
       }
-      const pool = pageSet().filter(b => !q || String(b.pr || '').includes(q) || (b.title || '').toLowerCase().includes(q));
+      const pool = searchPool();
       const groups = showAll
         ? [{ key: 'all', label: '全部批次', rows: pool.slice().sort((a, b) => +new Date(b.start_at) - +new Date(a.start_at)) }]
         : core.attentionGroups(pool, summary.p90);
@@ -423,7 +423,7 @@
       freshnessEl.textContent = result.stale ? '数据更新已延迟：当前展示最后一次成功采集结果，请检查 GitHub Actions。' : '';
     }
 
-    /* ---- 导出批次 CSV（字段与 triton-batches.csv 同集 15 项） ---- */
+    /* ---- 导出批次 CSV：G × 列表搜索后的完整唯一批次集合（字段与 triton-batches.csv 同集 15 项） ---- */
     async function exportBatches() {
       if (!root.Metrics || typeof root.Metrics.saveCsv !== 'function') return;
       exportBtn.disabled = true;
@@ -437,7 +437,7 @@
       }
       notice.textContent = '正在保存 CSV…';
       try {
-        const rows = [csvFields, ...D.batches.map(b => csvFields.map(key =>
+        const rows = [csvFields, ...searchPool().map(b => csvFields.map(key =>
           key === 'missing' ? (b.missing || []).join('; ') : key === 'approximate' ? (b.approximate ? 'True' : 'False') : b[key] ?? ''))];
         const file = await root.Metrics.saveCsv(rows, 'triton-batches.csv');
         notice.innerHTML = file.mode === 'saved'
