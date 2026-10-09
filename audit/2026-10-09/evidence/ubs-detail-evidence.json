@@ -1,0 +1,675 @@
+{
+  "requirement": "REQ-045",
+  "tool": "scripts/verify_ubs_detail.py",
+  "executed_at": "2026-10-10T07:30:05+08:00",
+  "input": {
+    "bundle_fingerprint": "sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39",
+    "matches_audit_frozen_input": true,
+    "manifest_state": "verified",
+    "bundle_errors": 0
+  },
+  "participation": [
+    {
+      "name": "ubs-engine",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    },
+    {
+      "name": "ubs-comm",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    },
+    {
+      "name": "ubs-virt",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    },
+    {
+      "name": "ubs-io",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    },
+    {
+      "name": "ubs-mem",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    },
+    {
+      "name": "OmniStateStore",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    },
+    {
+      "name": "ham",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    },
+    {
+      "name": "ubturbo",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    },
+    {
+      "name": "ubs-atomic",
+      "status": "success",
+      "current": true,
+      "participates": true,
+      "reason": "participates"
+    }
+  ],
+  "detail_groups": {
+    "per_repo": {
+      "ubs-engine": {
+        "prs": 68,
+        "groups": 258,
+        "prs_with_unmatched_group": 3,
+        "unmatched_batches": 4,
+        "empty_event_id_batches": 4,
+        "coverage_all_batches_ok": true
+      },
+      "ubs-comm": {
+        "prs": 28,
+        "groups": 111,
+        "prs_with_unmatched_group": 0,
+        "unmatched_batches": 0,
+        "empty_event_id_batches": 0,
+        "coverage_all_batches_ok": true
+      },
+      "ubs-virt": {
+        "prs": 29,
+        "groups": 221,
+        "prs_with_unmatched_group": 0,
+        "unmatched_batches": 0,
+        "empty_event_id_batches": 0,
+        "coverage_all_batches_ok": true
+      },
+      "ubs-io": {
+        "prs": 6,
+        "groups": 12,
+        "prs_with_unmatched_group": 0,
+        "unmatched_batches": 0,
+        "empty_event_id_batches": 0,
+        "coverage_all_batches_ok": true
+      },
+      "ubs-mem": {
+        "prs": 12,
+        "groups": 39,
+        "prs_with_unmatched_group": 0,
+        "unmatched_batches": 0,
+        "empty_event_id_batches": 0,
+        "coverage_all_batches_ok": true
+      },
+      "OmniStateStore": {
+        "prs": 20,
+        "groups": 64,
+        "prs_with_unmatched_group": 0,
+        "unmatched_batches": 0,
+        "empty_event_id_batches": 0,
+        "coverage_all_batches_ok": true
+      },
+      "ham": {
+        "prs": 1,
+        "groups": 7,
+        "prs_with_unmatched_group": 0,
+        "unmatched_batches": 0,
+        "empty_event_id_batches": 0,
+        "coverage_all_batches_ok": true
+      },
+      "ubturbo": {
+        "prs": 27,
+        "groups": 96,
+        "prs_with_unmatched_group": 2,
+        "unmatched_batches": 2,
+        "empty_event_id_batches": 2,
+        "coverage_all_batches_ok": true
+      },
+      "ubs-atomic": {
+        "prs": 12,
+        "groups": 29,
+        "prs_with_unmatched_group": 0,
+        "unmatched_batches": 0,
+        "empty_event_id_batches": 0,
+        "coverage_all_batches_ok": true
+      }
+    },
+    "semantics": "批次按 event_id||空串 分组；事件按 id 去重（后写覆盖值、保留首插位置）；失配批次进入关联未知/失配组并注明原因，不伪造事件",
+    "node_equal": true,
+    "mismatches": {}
+  },
+  "representative_expand": {
+    "per_repo": {
+      "ubs-engine": {
+        "prs_with_representative": 68
+      },
+      "ubs-comm": {
+        "prs_with_representative": 28
+      },
+      "ubs-virt": {
+        "prs_with_representative": 29
+      },
+      "ubs-io": {
+        "prs_with_representative": 6
+      },
+      "ubs-mem": {
+        "prs_with_representative": 12
+      },
+      "OmniStateStore": {
+        "prs_with_representative": 20
+      },
+      "ham": {
+        "prs_with_representative": 1
+      },
+      "ubturbo": {
+        "prs_with_representative": 27
+      },
+      "ubs-atomic": {
+        "prs_with_representative": 12
+      }
+    },
+    "locked_by": "app.js:rep_expand_flag+batch_details_attrs 源码契约"
+  },
+  "failed_wait": {
+    "per_repo": {
+      "ubs-engine": {
+        "prs_with_failed_wait": 39,
+        "cancelled_batches": 2,
+        "later_success_prs": 31
+      },
+      "ubs-comm": {
+        "prs_with_failed_wait": 20,
+        "cancelled_batches": 1,
+        "later_success_prs": 12
+      },
+      "ubs-virt": {
+        "prs_with_failed_wait": 23,
+        "cancelled_batches": 1,
+        "later_success_prs": 19
+      },
+      "ubs-io": {
+        "prs_with_failed_wait": 4,
+        "cancelled_batches": 0,
+        "later_success_prs": 2
+      },
+      "ubs-mem": {
+        "prs_with_failed_wait": 9,
+        "cancelled_batches": 0,
+        "later_success_prs": 7
+      },
+      "OmniStateStore": {
+        "prs_with_failed_wait": 12,
+        "cancelled_batches": 1,
+        "later_success_prs": 8
+      },
+      "ham": {
+        "prs_with_failed_wait": 1,
+        "cancelled_batches": 0,
+        "later_success_prs": 0
+      },
+      "ubturbo": {
+        "prs_with_failed_wait": 15,
+        "cancelled_batches": 3,
+        "later_success_prs": 13
+      },
+      "ubs-atomic": {
+        "prs_with_failed_wait": 4,
+        "cancelled_batches": 0,
+        "later_success_prs": 3
+      }
+    },
+    "cross_total": 127,
+    "cancelled_total": 8,
+    "later_success_total": 95,
+    "later_success_rule": "存在成功批次 request_ms 晚于失败批次（JS null 按 0 参与比较）；取消终态status=failure 纳入失败等待",
+    "top8": [
+      [
+        "ubs-engine",
+        1600,
+        7469
+      ],
+      [
+        "ubs-engine",
+        1601,
+        7470
+      ],
+      [
+        "OmniStateStore",
+        137,
+        277
+      ],
+      [
+        "OmniStateStore",
+        139,
+        281
+      ],
+      [
+        "OmniStateStore",
+        138,
+        282
+      ],
+      [
+        "ubs-comm",
+        1095,
+        4291
+      ],
+      [
+        "OmniStateStore",
+        134,
+        272
+      ],
+      [
+        "ubs-engine",
+        1602,
+        7475
+      ]
+    ],
+    "node_equal": true,
+    "sequence_node_equal": true
+  },
+  "cross_max_e2e": {
+    "value": {
+      "repo": "ubturbo",
+      "pr": 442,
+      "e2e_ms": 50640069,
+      "rep_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2274/"
+    },
+    "node_equal": true
+  },
+  "exceptions": {
+    "total_valid": 203,
+    "top8": [
+      [
+        "ubturbo",
+        442
+      ],
+      [
+        "ubs-engine",
+        1600
+      ],
+      [
+        "ubs-engine",
+        1601
+      ],
+      [
+        "OmniStateStore",
+        137
+      ],
+      [
+        "OmniStateStore",
+        139
+      ],
+      [
+        "OmniStateStore",
+        136
+      ],
+      [
+        "OmniStateStore",
+        138
+      ],
+      [
+        "OmniStateStore",
+        135
+      ]
+    ],
+    "sequence_node_equal": true
+  },
+  "minute_exact": {
+    "samples_checked": 24,
+    "mismatches": {},
+    "examples": {
+      "0": {
+        "minute": "0.00",
+        "exact": "0 ms"
+      },
+      "1": {
+        "minute": "<0.01",
+        "exact": "1 ms"
+      },
+      "60": {
+        "minute": "<0.01",
+        "exact": "60 ms"
+      },
+      "599": {
+        "minute": "<0.01",
+        "exact": "599 ms"
+      },
+      "600": {
+        "minute": "0.01",
+        "exact": "600 ms"
+      },
+      "999": {
+        "minute": "0.02",
+        "exact": "999 ms"
+      },
+      "1000": {
+        "minute": "0.02",
+        "exact": "1.000 s"
+      },
+      "61470": {
+        "minute": "1.02",
+        "exact": "61.470 s"
+      },
+      "232188": {
+        "minute": "3.87",
+        "exact": "232.188 s"
+      },
+      "4288049": {
+        "minute": "71.47",
+        "exact": "4,288.049 s"
+      },
+      "11064101": {
+        "minute": "184.40",
+        "exact": "11,064.101 s"
+      },
+      "50640069": {
+        "minute": "844.00",
+        "exact": "50,640.069 s"
+      },
+      "11021462": {
+        "minute": "183.69",
+        "exact": "11,021.462 s"
+      },
+      "9892176": {
+        "minute": "164.87",
+        "exact": "9,892.176 s"
+      },
+      "8587554": {
+        "minute": "143.13",
+        "exact": "8,587.554 s"
+      },
+      "8351556": {
+        "minute": "139.19",
+        "exact": "8,351.556 s"
+      },
+      "7082089": {
+        "minute": "118.03",
+        "exact": "7,082.089 s"
+      },
+      "4108754": {
+        "minute": "68.48",
+        "exact": "4,108.754 s"
+      },
+      "4041584": {
+        "minute": "67.36",
+        "exact": "4,041.584 s"
+      },
+      "3785943": {
+        "minute": "63.10",
+        "exact": "3,785.943 s"
+      },
+      "908456": {
+        "minute": "15.14",
+        "exact": "908.456 s"
+      },
+      "1418609": {
+        "minute": "23.64",
+        "exact": "1,418.609 s"
+      },
+      "524917": {
+        "minute": "8.75",
+        "exact": "524.917 s"
+      }
+    }
+  },
+  "drill_targets": {
+    "failed_wait_top8_ok": true,
+    "exceptions_top8_ok": true,
+    "quality_per_repo": {
+      "ubs-engine": {
+        "targets": [
+          1573,
+          1583,
+          1591,
+          1596,
+          1599,
+          1612,
+          1618,
+          1633,
+          1645
+        ],
+        "targets_exist": true
+      },
+      "ubs-comm": {
+        "targets": [
+          1087,
+          1089,
+          1092,
+          1095
+        ],
+        "targets_exist": true
+      },
+      "ubs-virt": {
+        "targets": [
+          260,
+          267,
+          271,
+          279
+        ],
+        "targets_exist": true
+      },
+      "ubs-io": {
+        "targets": [],
+        "targets_exist": true
+      },
+      "ubs-mem": {
+        "targets": [
+          92
+        ],
+        "targets_exist": true
+      },
+      "OmniStateStore": {
+        "targets": [
+          138,
+          139,
+          141,
+          142,
+          144,
+          145
+        ],
+        "targets_exist": true
+      },
+      "ham": {
+        "targets": [],
+        "targets_exist": true
+      },
+      "ubturbo": {
+        "targets": [
+          432,
+          440,
+          447,
+          453
+        ],
+        "targets_exist": true
+      },
+      "ubs-atomic": {
+        "targets": [
+          72
+        ],
+        "targets_exist": true
+      }
+    }
+  },
+  "source_contracts": {
+    "checked": 40,
+    "missing": []
+  },
+  "baseline": {
+    "status": "matched",
+    "checks": {
+      "U24_detail_keeps_all_batches": {
+        "pr": 1600,
+        "batches": 5,
+        "groups": 5,
+        "covered_batches": 5,
+        "expected": {
+          "batches": 5,
+          "groups": 5
+        },
+        "passed": true
+      },
+      "U25_representative_expanded": {
+        "rep_trigger": 7469,
+        "expected_rep_trigger": 7469,
+        "locked_by": "app.js:rep_expand_flag+batch_details_attrs 源码契约",
+        "passed": true
+      },
+      "U27_esc_close": {
+        "expected": "Esc 关闭后 dialog.open=false",
+        "locked_by": "app.js:open_detail_show_modal（原生 dialog Esc）源码契约",
+        "passed": true
+      },
+      "U28_close_button": {
+        "expected": "关闭按钮关闭后 dialog.open=false",
+        "locked_by": "app.js:close_button+close_cleanup 源码契约",
+        "passed": true
+      },
+      "A07_outside_click_close": {
+        "expected": "点击弹窗外部关闭后 dialog.open=false",
+        "locked_by": "app.js:outside_click_close 源码契约",
+        "passed": true
+      },
+      "U30_quality_drill": {
+        "engine_quality_targets": [
+          1573,
+          1583,
+          1591,
+          1596,
+          1599,
+          1612,
+          1618,
+          1633,
+          1645
+        ],
+        "targets_exist": true,
+        "locked_by": "app.js:quality_drill 源码契约",
+        "passed": true
+      },
+      "U32_cross_max_drill": {
+        "top": [
+          [
+            "ubturbo",
+            442
+          ],
+          [
+            "ubs-engine",
+            1600
+          ],
+          [
+            "ubs-engine",
+            1601
+          ],
+          [
+            "OmniStateStore",
+            137
+          ],
+          [
+            "OmniStateStore",
+            139
+          ],
+          [
+            "OmniStateStore",
+            136
+          ],
+          [
+            "OmniStateStore",
+            138
+          ],
+          [
+            "OmniStateStore",
+            135
+          ]
+        ],
+        "expected_top1": [
+          "ubturbo",
+          442
+        ],
+        "targets_exist": true,
+        "locked_by": "app.js:exceptions_attrs+exceptions_onclick 源码契约",
+        "passed": true
+      },
+      "U33_failed_wait_drill": {
+        "top": [
+          [
+            "ubs-engine",
+            1600,
+            7469
+          ],
+          [
+            "ubs-engine",
+            1601,
+            7470
+          ],
+          [
+            "OmniStateStore",
+            137,
+            277
+          ],
+          [
+            "OmniStateStore",
+            139,
+            281
+          ],
+          [
+            "OmniStateStore",
+            138,
+            282
+          ],
+          [
+            "ubs-comm",
+            1095,
+            4291
+          ],
+          [
+            "OmniStateStore",
+            134,
+            272
+          ],
+          [
+            "ubs-engine",
+            1602,
+            7475
+          ]
+        ],
+        "expected_top1": [
+          "ubs-engine",
+          1600,
+          7469
+        ],
+        "targets_exist": true,
+        "locked_by": "app.js:failed_wait_batch_attr+failed_wait_onclick 源码契约",
+        "passed": true
+      }
+    }
+  },
+  "node_cross_check": {
+    "status": "ok",
+    "compared": [
+      "detailGroups_per_pr",
+      "failedWait_per_pr",
+      "max_e2e_per_repo",
+      "fw_sequence",
+      "exc_sequence",
+      "cross_max_e2e",
+      "minute_exact_samples"
+    ]
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}
