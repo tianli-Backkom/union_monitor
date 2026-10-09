@@ -1,0 +1,24 @@
+{
+  "schema_version": 3,
+  "start_ms": 1,
+  "end_ms": 2,
+  "generated_at": "2026-10-01T00:00:00+00:00",
+  "repositories": [
+    {
+      "name": "ubs-engine",
+      "repository": "openeuler/ubs-engine",
+      "status": "success",
+      "snapshot": "repos/ubs-engine.json",
+      "meta": {
+        "repository": "openeuler/ubs-engine",
+        "branch": "master",
+        "start_ms": 1,
+        "end_ms": 2,
+        "collected_at": "2026-10-01T00:00:00+00:00",
+        "days": 30,
+        "errors": []
+      },
+      "error": null
+    }
+  ]
+}

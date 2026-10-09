@@ -1,0 +1,230 @@
+{
+  "repo": "triton-lang/triton-ascend",
+  "window_start": "2026-10-06T00:00:00Z",
+  "window_end": "2026-10-09T00:00:00Z",
+  "collected_at": "2026-10-09T00:00:00Z",
+  "batches": [
+    {
+      "id": "b1",
+      "pr": 101,
+      "pr_url": "https://github.com/triton-lang/triton-ascend/pull/101",
+      "title": "feat: add NPU kernel fusion pass",
+      "author": "dev",
+      "branch": "dev/fusion",
+      "base_branch": "main",
+      "sha": "abcd1234abcd1234abcd1234abcd1234abcd1234",
+      "kind": "push",
+      "status": "success",
+      "start_at": "2026-10-07T01:00:00Z",
+      "end_at": "2026-10-07T01:10:00Z",
+      "duration_seconds": 600,
+      "approximate": false,
+      "missing": [],
+      "workflows": [
+        {
+          "name": "CI",
+          "url": "https://github.com/triton-lang/triton-ascend/actions/runs/1",
+          "attempt": 1,
+          "conclusion": "success",
+          "created_at": "2026-10-07T01:00:00Z",
+          "updated_at": "2026-10-07T01:10:00Z",
+          "jobs": [
+            {
+              "name": "integration-tests-ascend (linux-aarch64-a3-800i-4, py3.10)",
+              "conclusion": "success",
+              "wait_seconds": 120,
+              "run_seconds": 420,
+              "failed_steps": []
+            }
+          ]
+        }
+      ],
+      "focus_jobs": [],
+      "npu_jobs": [
+        {
+          "name": "integration-tests-ascend (linux-aarch64-a3-800i-4, py3.10)",
+          "url": "https://github.com/triton-lang/triton-ascend/actions/runs/1/job/1",
+          "status": "completed",
+          "conclusion": "success",
+          "wait_seconds": 120,
+          "run_seconds": 420
+        }
+      ],
+      "npu_queue_seconds": 120,
+      "npu_data_missing": false,
+      "action_url": "https://github.com/triton-lang/triton-ascend/actions/runs/1",
+      "e2e_index": 1,
+      "e2e_total": 2,
+      "critical_workflow": "CI"
+    },
+    {
+      "id": "b2",
+      "pr": 101,
+      "pr_url": "https://github.com/triton-lang/triton-ascend/pull/101",
+      "title": "feat: add NPU kernel fusion pass",
+      "author": "dev",
+      "branch": "dev/fusion",
+      "base_branch": "main",
+      "sha": "abcd1234abcd1234abcd1234abcd1234abcd1234",
+      "kind": "push",
+      "status": "failure",
+      "start_at": "2026-10-07T02:00:00Z",
+      "end_at": "2026-10-07T02:10:00Z",
+      "duration_seconds": 600,
+      "approximate": false,
+      "missing": [],
+      "workflows": [
+        {
+          "name": "CI",
+          "url": "https://github.com/triton-lang/triton-ascend/actions/runs/2",
+          "attempt": 1,
+          "conclusion": "failure",
+          "created_at": "2026-10-07T02:00:00Z",
+          "updated_at": "2026-10-07T02:10:00Z",
+          "jobs": [
+            {
+              "name": "integration-tests-ascend (linux-aarch64-a3-800i-4, py3.10)",
+              "conclusion": "failure",
+              "wait_seconds": 60,
+              "run_seconds": 500,
+              "failed_steps": ["Run integration tests"]
+            }
+          ]
+        }
+      ],
+      "focus_jobs": [],
+      "npu_jobs": [
+        {
+          "name": "integration-tests-ascend (linux-aarch64-a3-800i-4, py3.10)",
+          "url": "https://github.com/triton-lang/triton-ascend/actions/runs/2/job/2",
+          "status": "completed",
+          "conclusion": "failure",
+          "wait_seconds": 60,
+          "run_seconds": 500
+        }
+      ],
+      "npu_queue_seconds": 60,
+      "npu_data_missing": false,
+      "action_url": "https://github.com/triton-lang/triton-ascend/actions/runs/2",
+      "e2e_index": 2,
+      "e2e_total": 2,
+      "critical_workflow": "CI"
+    },
+    {
+      "id": "b3",
+      "pr": 102,
+      "pr_url": "https://github.com/triton-lang/triton-ascend/pull/102",
+      "title": "fix: stabilize aarch64 wheel build",
+      "author": "dev2",
+      "branch": "fix/wheel",
+      "base_branch": "main",
+      "sha": "ffff0000ffff0000ffff0000ffff0000ffff0000",
+      "kind": "push",
+      "status": "success",
+      "start_at": "2026-10-08T01:00:00Z",
+      "end_at": "2026-10-08T01:15:00Z",
+      "duration_seconds": 900,
+      "approximate": false,
+      "missing": [],
+      "workflows": [
+        {
+          "name": "CI",
+          "url": "https://github.com/triton-lang/triton-ascend/actions/runs/3",
+          "attempt": 1,
+          "conclusion": "success",
+          "created_at": "2026-10-08T01:00:00Z",
+          "updated_at": "2026-10-08T01:15:00Z",
+          "jobs": [
+            {
+              "name": "integration-tests-ascend (linux-aarch64-a3-800i-4, py3.10)",
+              "conclusion": "success",
+              "wait_seconds": 90,
+              "run_seconds": 780,
+              "failed_steps": []
+            }
+          ]
+        }
+      ],
+      "focus_jobs": [],
+      "npu_jobs": [
+        {
+          "name": "integration-tests-ascend (linux-aarch64-a3-800i-4, py3.10)",
+          "url": "https://github.com/triton-lang/triton-ascend/actions/runs/3/job/3",
+          "status": "completed",
+          "conclusion": "success",
+          "wait_seconds": 90,
+          "run_seconds": 780
+        }
+      ],
+      "npu_queue_seconds": 90,
+      "npu_data_missing": false,
+      "action_url": "https://github.com/triton-lang/triton-ascend/actions/runs/3",
+      "e2e_index": 1,
+      "e2e_total": 1,
+      "critical_workflow": "CI"
+    },
+    {
+      "id": "b4",
+      "pr": 102,
+      "pr_url": "https://github.com/triton-lang/triton-ascend/pull/102",
+      "title": "fix: stabilize aarch64 wheel build",
+      "author": "dev2",
+      "branch": "fix/wheel",
+      "base_branch": "main",
+      "sha": "ffff0000ffff0000ffff0000ffff0000ffff0000",
+      "kind": "push",
+      "status": "running",
+      "start_at": "2026-10-08T03:00:00Z",
+      "end_at": null,
+      "duration_seconds": 120,
+      "approximate": false,
+      "missing": [],
+      "workflows": [
+        {
+          "name": "CI",
+          "url": "https://github.com/triton-lang/triton-ascend/actions/runs/4",
+          "attempt": 1,
+          "conclusion": null,
+          "created_at": "2026-10-08T03:00:00Z",
+          "updated_at": "2026-10-08T03:02:00Z",
+          "jobs": [
+            {
+              "name": "integration-tests-ascend (linux-aarch64-a3-800i-4, py3.10)",
+              "conclusion": null,
+              "wait_seconds": 30,
+              "run_seconds": 90,
+              "failed_steps": []
+            }
+          ]
+        }
+      ],
+      "focus_jobs": [],
+      "npu_jobs": [
+        {
+          "name": "integration-tests-ascend (linux-aarch64-a3-800i-4, py3.10)",
+          "url": "https://github.com/triton-lang/triton-ascend/actions/runs/4/job/4",
+          "status": "in_progress",
+          "conclusion": null,
+          "wait_seconds": 30,
+          "run_seconds": 90
+        }
+      ],
+      "npu_queue_seconds": 30,
+      "npu_data_missing": false,
+      "action_url": "https://github.com/triton-lang/triton-ascend/actions/runs/4",
+      "e2e_index": 1,
+      "e2e_total": 1,
+      "critical_workflow": "CI"
+    }
+  ],
+  "summary": {
+    "prs": 2,
+    "batches": 4,
+    "valid": 3,
+    "median": 600,
+    "p90": 900,
+    "approximate": 0,
+    "incomplete": 0,
+    "api_calls": 0
+  }
+}
