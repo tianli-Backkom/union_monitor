@@ -63,7 +63,7 @@
   <article class="kpi"><div class="kpi-label">涉及 PR</div><div class="kpi-value" data-role="kPr">—</div><small data-role="kPrNote">—</small></article>
   <article class="kpi"><div class="kpi-label">门禁批次</div><div class="kpi-value" data-role="kBatch">—</div><small data-role="kGap">—</small></article>
   <article class="kpi"><div class="kpi-label">中位 E2E</div><div class="kpi-value" data-role="kMedian">—</div><small data-role="kValid">—</small></article>
-  <article class="kpi"><div class="kpi-label">P90 E2E</div><div class="kpi-value" data-role="kP90">—</div><small>相对异常线，不代表 SLA</small></article>
+  <article class="kpi"><div class="kpi-label">P90 E2E</div><div class="kpi-value" data-role="kP90">—</div><small>页级范围 P90 · 兼作“耗时偏长”阈值；不代表 SLA</small></article>
 </div>
 <section class="global-filter">
   <strong>全局筛选</strong>
@@ -80,7 +80,7 @@
     <div><h2>PR E2E 执行时长</h2><p>每个点代表一次提交或一次手动重跑触发的 E2E；时间范围由下方导航器统一控制。</p></div>
     <div class="controls" data-role="e2eFilters">
       <button type="button" class="chip active" data-filter="all">全部</button>
-      <button type="button" class="chip" data-filter="slow">耗时偏长</button>
+      <button type="button" class="chip" data-filter="slow" title="以页级范围（分支×时间窗）的 P90 为阈值">耗时偏长</button>
       <button type="button" class="chip" data-filter="failure">失败</button>
       <button type="button" class="chip" data-filter="running">执行中</button>
     </div>
@@ -170,9 +170,8 @@
     const pageSet = () => core.selectWindow(branchPool(), viewStart, viewEnd);
     const currentSummary = () => core.dashboardStats(pageSet());
 
-    function e2eRows() {
-      const p90 = currentSummary().p90;
-      return pageSet().filter(b => filter === 'all' || (filter === 'slow' && core.isSlow(b, p90)) || b.status === filter);
+    function e2eRows(threshold) {
+      return pageSet().filter(b => filter === 'all' || (filter === 'slow' && core.isSlow(b, threshold)) || b.status === filter);
     }
 
     function npuRows() {
@@ -189,7 +188,8 @@
     }
 
     function draw() {
-      const rows = e2eRows();
+      const threshold = currentSummary().p90;
+      const rows = e2eRows(threshold);
       const W = chartSvg.clientWidth || 900, H = 370, m = { l: 50, r: 22, t: 18, b: 42 };
       chartSvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       const range = Math.max(viewEnd - viewStart, 1);
@@ -223,9 +223,10 @@
       ordered.forEach((b, i) => { out += core.circleMark(b, visual[i].x, visual[i].y, D.batches.indexOf(b), fillFor(b.status), 'e2e'); });
       chartSvg.innerHTML = out;
       paintMarks(chartSvg);
+      const thresholdStat = `<div class="selection-stat metric"><span>耗时偏长阈值（页级 P90）</span><strong>${dur(threshold)}</strong></div>`;
       e2eStats.innerHTML = stats.count
-        ? `<div class="selection-stat"><span>选区范围</span><strong>${spanText(viewEnd - viewStart)}</strong></div><div class="selection-stat"><span>有效样本</span><strong>${stats.count} 次</strong></div><div class="selection-stat metric"><span>平均</span><strong>${dur(stats.average)}</strong></div><div class="selection-stat metric"><span>P50</span><strong>${dur(stats.p50)}</strong></div><div class="selection-stat metric"><span>P90</span><strong>${dur(stats.p90)}</strong></div>`
-        : '<div class="selection-empty">当前选区暂无已完成的有效样本</div>';
+        ? `<div class="selection-stat"><span>选区范围</span><strong>${spanText(viewEnd - viewStart)}</strong></div><div class="selection-stat"><span>有效样本</span><strong>${stats.count} 次</strong></div><div class="selection-stat metric"><span>平均（图内）</span><strong>${dur(stats.average)}</strong></div><div class="selection-stat metric"><span>P50（图内）</span><strong>${dur(stats.p50)}</strong></div><div class="selection-stat metric"><span>P90（图内）</span><strong>${dur(stats.p90)}</strong></div>${thresholdStat}`
+        : `<div class="selection-empty">当前选区暂无已完成的有效样本</div>${thresholdStat}`;
       bindMarks();
     }
 
@@ -313,7 +314,7 @@
       kGap.textContent = `${s.incomplete} 个批次存在证据缺口`;
       kMedian.textContent = dur(s.median);
       kP90.textContent = dur(s.p90);
-      kValid.textContent = `基于 ${s.valid} 个已完成批次`;
+      kValid.textContent = `基于 ${s.valid} 个已完成批次${s.valid > 0 && s.valid < 10 ? ' · 样本不足' : ''}`;
       kPrNote.textContent = `${spanText(viewEnd - viewStart)}内有提交批次`;
       boundaryEl.textContent = `${s.approximate} 个批次使用近似起点，${s.incomplete} 个批次存在明细或关联缺口。`;
       const counts = { success: 0, failure: 0, running: 0, cancelled: 0 };

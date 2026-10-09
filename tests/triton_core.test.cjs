@@ -179,3 +179,25 @@ test('an empty page-level set G yields a zeroed summary without falling back to 
   assert.equal(empty.incomplete, 0);
   assert.equal(empty.approximate, 0);
 });
+
+/* ---- REQ-002: slow threshold from the page-level set G ---- */
+
+test('single valid sample yields P90 equal to the sample; zero valid keeps threshold null', () => {
+  const single = dashboardStats([{ pr: 1, status: 'failure', duration_seconds: 290 }]);
+  assert.equal(single.valid, 1);
+  assert.equal(single.p90, 290, 'single-sample P90 equals the sample value');
+  const runningOnly = dashboardStats([{ pr: 2, status: 'running', duration_seconds: 120 }]);
+  assert.equal(runningOnly.valid, 0);
+  assert.equal(runningOnly.p90, null, 'no valid completed samples means no threshold, never zero');
+  assert.equal(isSlow({ duration_seconds: 120, status: 'running' }, runningOnly.p90), false);
+});
+
+test('chart-local stats and the page-level threshold are distinct computations', () => {
+  const rows = [
+    { pr: 1, status: 'success', duration_seconds: 600 },
+    { pr: 2, status: 'failure', duration_seconds: 1200 },
+    { pr: 3, status: 'failure', duration_seconds: 300 },
+  ];
+  assert.equal(dashboardStats(rows).p90, 1080, 'page-level P90 covers all completed batches in G');
+  assert.equal(chartStats(rows.filter(r => r.status === 'failure')).p90, 1110, 'chart-local P90 covers only locally filtered batches');
+});
