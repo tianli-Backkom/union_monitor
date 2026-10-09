@@ -1,0 +1,202 @@
+{
+  "requirement": "REQ-041",
+  "generated_at": "2026-10-09T21:56:00.744991+00:00",
+  "input": {
+    "repositories": [
+      {
+        "name": "ubs-engine",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      },
+      {
+        "name": "ubs-comm",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      },
+      {
+        "name": "ubs-virt",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      },
+      {
+        "name": "ubs-io",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      },
+      {
+        "name": "ubs-mem",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      },
+      {
+        "name": "OmniStateStore",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      },
+      {
+        "name": "ham",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      },
+      {
+        "name": "ubturbo",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      },
+      {
+        "name": "ubs-atomic",
+        "status": "success",
+        "current": true,
+        "participates": true,
+        "reason": "participates"
+      }
+    ],
+    "participating_repos": 9,
+    "excluded_repos": [],
+    "zero_pr_participating_repos": [],
+    "bundle_fingerprint": "sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39",
+    "manifest_state": "verified",
+    "matches_audit_frozen_input": true
+  },
+  "counts": {
+    "prs": 203,
+    "batches": 826,
+    "participating_metrics_checked": 203
+  },
+  "representative_recheck": {
+    "metrics_differences": 0,
+    "batch_field_differences": 0,
+    "event_time_differences": 0,
+    "job_arithmetic_differences": 0,
+    "tie_census": {
+      "prs_with_tied_max_e2e": 0,
+      "tie_break_violations": [],
+      "note": "真实冻结数据无 E2E 并列时，并列取编号较大规则由合成测试锁定"
+    }
+  },
+  "cross_repo": {
+    "aggregate": {
+      "e2e": {
+        "n": 203,
+        "mean": 1515076.8669950739,
+        "p90": 2723354.8000000003
+      },
+      "x86": {
+        "queue": {
+          "n": 191,
+          "mean": 8441.052356020942,
+          "p90": 12202.0
+        },
+        "duration": {
+          "n": 191,
+          "mean": 100547.95287958115,
+          "p90": 360077.0
+        },
+        "total": {
+          "n": 191,
+          "mean": 108989.00523560209,
+          "p90": 384813.0
+        }
+      },
+      "arm": {
+        "queue": {
+          "n": 203,
+          "mean": 7780.793103448276,
+          "p90": 11315.400000000001
+        },
+        "duration": {
+          "n": 203,
+          "mean": 191731.62068965516,
+          "p90": 397752.2
+        },
+        "total": {
+          "n": 203,
+          "mean": 199512.41379310345,
+          "p90": 425165.4000000003
+        }
+      },
+      "dt": {
+        "queue": {
+          "n": 195,
+          "mean": 77476.95384615385,
+          "p90": 13270.0
+        },
+        "duration": {
+          "n": 195,
+          "mean": 540799.0358974359,
+          "p90": 1246966.8
+        },
+        "total": {
+          "n": 195,
+          "mean": 618275.9897435898,
+          "p90": 1275009.8
+        }
+      }
+    },
+    "valid_samples": {
+      "x86": 191,
+      "arm": 203,
+      "dt": 195
+    }
+  },
+  "identity": {
+    "composite_pr_keys": 203,
+    "composite_pr_keys_unique": true,
+    "batch_urls": 826,
+    "batch_urls_unique": true,
+    "pr_numbers_in_multiple_repos": []
+  },
+  "frontend_cross_check": {
+    "status": "ran",
+    "prs": 203,
+    "metrics_matched": true,
+    "aggregate_matched": true
+  },
+  "audit_baseline_comparison": {
+    "status": "matched",
+    "prs": {
+      "computed": 203,
+      "baseline": 203
+    },
+    "batches": {
+      "computed": 826,
+      "baseline": 826
+    },
+    "valid_samples": {
+      "x86": {
+        "computed": 191,
+        "baseline": 191
+      },
+      "arm": {
+        "computed": 203,
+        "baseline": 203
+      },
+      "dt": {
+        "computed": 195,
+        "baseline": 195
+      }
+    },
+    "per_repository": "matched",
+    "aggregate": "matched"
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}

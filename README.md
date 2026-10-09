@@ -121,6 +121,7 @@ python scripts/devdata.py
 | `validate_bundle.py`、`web/data/ubs-manifest.json` | 发布与缓存共享前的 UBS 快照束校验：索引↔快照归属、纳入跨仓的 success/partial 快照时间范围、仓根镜像一致性与工件指纹 |
 | `scripts/verify_artifacts.py`、`audit/2026-10-09/evidence/artifact-verification.json` | REQ-038 审计期原始工件补齐与历史影响核验：逐工件清单（D10 原始工件本地缺失如实标未验证，不伪造来源）、冻结快照↔审计导出 CSV 四类交叉核对（REQ-023 计数等式）、7 个真实重跑批次新旧规则影响量化与 S01 合成声明（当前代码重算）、本地快照束指纹核验与旧站探测记录（`--probe`） |
 | `scripts/verify_runtime.py`、`audit/2026-10-09/evidence/runtime-evidence.json` | REQ-040 CI 目标运行时兼容性验证：Python 3.12/Node 22 上执行测试、门禁与原始审计的适用部分，记录精确版本、命令、退出码、失败数与完整日志；CI 声明↔README↔交付结果三方一致；工件缺失时审计如实失败，不以 wrapper 退出 0 冒充通过 |
+| `scripts/verify_ubs_semantics.py`、`audit/2026-10-09/evidence/ubs-semantics-evidence.json` | REQ-041 UBS 代表值与跨仓算法保持验证：独立重算每 PR 代表批次（最长可测量终态 E2E、并列取 trigger 编号较大）、事件时间、任务值（仅取代表批次、同类缺失或关联不唯一留空、不从其他批次补取）与批次派生字段、任务算术；跨仓参与规则（success/partial 且快照范围与索引一致）镜像前端并逐仓记录排除原因，合法零 PR 仓库保留；复合 PR 主键与批次完整 URL 唯一、跨仓同号 PR 互不污染；Node 前端算法交叉核对；输入指纹与审计冻结基线一致时额外比对计数、有效样本（x86/ARM/DT 191/203/195）与聚合，输入更新后基线比对记 not_applicable、契约检查照常，不硬编码数量 |
 
 SQLite 的 PR 与事件主键包含仓库标识，批次按完整 Jenkins URL 唯一；任务记录复用完整 URL。首次迁移会在 `data/` 自动保留 `*-before-multi-*.sqlite` 备份，将旧数据归入 ubs-engine。
 
@@ -219,6 +220,7 @@ node --test tests/*.test.cjs
 python validate.py
 python validate_bundle.py
 python -X utf8 scripts/verify_artifacts.py
+python -X utf8 scripts/verify_ubs_semantics.py
 python -X utf8 -m triton.verify_deployment <site-url> --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
 ```
 
