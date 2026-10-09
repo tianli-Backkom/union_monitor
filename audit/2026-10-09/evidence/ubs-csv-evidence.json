@@ -1,0 +1,243 @@
+{
+  "requirement": "REQ-044",
+  "tool": "scripts/verify_ubs_csv.py",
+  "executed_at": "2026-10-10T07:02:16+08:00",
+  "input": {
+    "bundle_fingerprint": "sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39",
+    "matches_audit_frozen_input": true,
+    "manifest_state": "verified",
+    "bundle_errors": 0
+  },
+  "csv_encoding": {
+    "nasty_matrix_bytes_equal": true,
+    "real_row_sets_bytes_equal": {
+      "pr_default_ubs-engine": true,
+      "quality_ubs-engine": true,
+      "batches_ubs-engine": true,
+      "pr_default_ubs-comm": true,
+      "quality_ubs-comm": true,
+      "pr_default_ubs-virt": true,
+      "quality_ubs-virt": true,
+      "pr_default_ubs-io": true,
+      "quality_ubs-io": true,
+      "pr_default_ubs-mem": true,
+      "quality_ubs-mem": true,
+      "pr_default_OmniStateStore": true,
+      "quality_OmniStateStore": true,
+      "pr_default_ham": true,
+      "quality_ham": true,
+      "pr_default_ubturbo": true,
+      "quality_ubturbo": true,
+      "pr_default_ubs-atomic": true,
+      "quality_ubs-atomic": true,
+      "pr_merged_ubs-engine": true,
+      "repositories": true
+    },
+    "bom_and_crlf": true,
+    "roundtrip_formula_prefix_kept": true
+  },
+  "date_format": {
+    "samples_checked": 13,
+    "mismatches": {},
+    "examples": {
+      "1759971042000": "2025-10-09 08:50:42",
+      "1789479077000": "2026-09-15 21:31:17",
+      "1789626658000": "2026-09-17 14:30:58"
+    }
+  },
+  "pr_csv": {
+    "per_repo_default_rows": {
+      "ubs-engine": 68,
+      "ubs-comm": 28,
+      "ubs-virt": 29,
+      "ubs-io": 6,
+      "ubs-mem": 12,
+      "OmniStateStore": 20,
+      "ham": 1,
+      "ubturbo": 27,
+      "ubs-atomic": 12
+    },
+    "per_repo_repository_column_ok": {
+      "ubs-engine": true,
+      "ubs-comm": true,
+      "ubs-virt": true,
+      "ubs-io": true,
+      "ubs-mem": true,
+      "OmniStateStore": true,
+      "ham": true,
+      "ubturbo": true,
+      "ubs-atomic": true
+    },
+    "engine_merged_rows": 50,
+    "engine_merged_first_row": [
+      "openeuler/ubs-engine",
+      1599,
+      4288049
+    ],
+    "engine_sequences_equal": true
+  },
+  "repo_csv": {
+    "rows": 9,
+    "default_order_names": [
+      "OmniStateStore",
+      "ubturbo",
+      "ubs-engine",
+      "ubs-comm",
+      "ubs-mem",
+      "ubs-virt",
+      "ubs-io",
+      "ubs-atomic",
+      "ham"
+    ],
+    "values_equal_to_repository_rows": true,
+    "diffs": {}
+  },
+  "batch_csv": {
+    "per_repo_rows": {
+      "ubs-engine": 1275,
+      "ubs-comm": 551,
+      "ubs-virt": 1078,
+      "ubs-io": 60,
+      "ubs-mem": 190,
+      "OmniStateStore": 253,
+      "ham": 35,
+      "ubturbo": 450,
+      "ubs-atomic": 112
+    },
+    "per_repo_representative_rows": {
+      "ubs-engine": 336,
+      "ubs-comm": 140,
+      "ubs-virt": 143,
+      "ubs-io": 30,
+      "ubs-mem": 60,
+      "OmniStateStore": 79,
+      "ham": 5,
+      "ubturbo": 126,
+      "ubs-atomic": 48
+    },
+    "representative_rows_expected": {
+      "ubs-engine": 336,
+      "ubs-comm": 140,
+      "ubs-virt": 143,
+      "ubs-io": 30,
+      "ubs-mem": 60,
+      "OmniStateStore": 79,
+      "ham": 5,
+      "ubturbo": 126,
+      "ubs-atomic": 48
+    },
+    "eligible_field_mismatches": {
+      "ubs-engine": 0,
+      "ubs-comm": 0,
+      "ubs-virt": 0,
+      "ubs-io": 0,
+      "ubs-mem": 0,
+      "OmniStateStore": 0,
+      "ham": 0,
+      "ubturbo": 0,
+      "ubs-atomic": 0
+    }
+  },
+  "quality_csv": {
+    "per_repo_default_counts": {
+      "ubs-engine": 17,
+      "ubs-comm": 5,
+      "ubs-virt": 5,
+      "ubs-io": 0,
+      "ubs-mem": 1,
+      "OmniStateStore": 10,
+      "ham": 0,
+      "ubturbo": 6,
+      "ubs-atomic": 1
+    }
+  },
+  "source_contracts": {
+    "checked": 33,
+    "missing": []
+  },
+  "baseline": {
+    "status": "matched",
+    "checks": {
+      "U21_pr_export_full_merged_set": {
+        "rows": 50,
+        "expected": 50,
+        "passed": true
+      },
+      "U23_first_row_representative_fields": {
+        "repository": "openeuler/ubs-engine",
+        "pr": 1599,
+        "e2e_ms": 4288049,
+        "expected": [
+          "openeuler/ubs-engine",
+          1599,
+          4288049
+        ],
+        "passed": true
+      },
+      "U26_detail_batch_task_rows": {
+        "pr": 1600,
+        "batches": 5,
+        "rows": 23,
+        "representative_rows": 3,
+        "expected": {
+          "batches": 5,
+          "rows": 23,
+          "representative_rows": 3
+        },
+        "passed": true
+      },
+      "U29_quality_export_records": {
+        "rows": 17,
+        "expected": 17,
+        "passed": true
+      },
+      "U31_repository_csv_repos": {
+        "rows": 9,
+        "expected": 9,
+        "passed": true
+      },
+      "U38_text_roundtrip": {
+        "value": "'=中文,\"带换行\n标题",
+        "expected": "'=中文,\"带换行\n标题",
+        "passed": true
+      },
+      "A11_pages_blob_filename": {
+        "filename": "ubs-engine-pr-summary.csv",
+        "expected": "ubs-engine-pr-summary.csv",
+        "locked_by": "app.js:pr_filename 源码契约",
+        "passed": true
+      }
+    }
+  },
+  "node_cross_check": {
+    "status": "error",
+    "row_sets_compared": [
+      "batches_ubs-engine",
+      "pr_default_OmniStateStore",
+      "pr_default_ham",
+      "pr_default_ubs-atomic",
+      "pr_default_ubs-comm",
+      "pr_default_ubs-engine",
+      "pr_default_ubs-io",
+      "pr_default_ubs-mem",
+      "pr_default_ubs-virt",
+      "pr_default_ubturbo",
+      "pr_merged_ubs-engine",
+      "quality_OmniStateStore",
+      "quality_ham",
+      "quality_ubs-atomic",
+      "quality_ubs-comm",
+      "quality_ubs-engine",
+      "quality_ubs-io",
+      "quality_ubs-mem",
+      "quality_ubs-virt",
+      "quality_ubturbo",
+      "repositories",
+      "nasty"
+    ]
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}
