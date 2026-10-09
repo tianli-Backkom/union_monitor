@@ -1,0 +1,74 @@
+{
+  "probed_at": "2026-10-09T21:19:12.867804+00:00",
+  "purpose": "REQ-038 AC04：记录两个旧站点在探测时刻的公开数据状态；当前平台状态不可冒充审计截止点历史事实，旧站公开源码抓取不作为替代证据",
+  "urls": [
+    {
+      "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/repositories.json",
+      "local_counterpart": "web/data/repositories.json",
+      "local_exists": true,
+      "local_sha256": "f53f90dfff82a205ea40980faa76c7fb1deb2e682609f124bfe8fc2ceab0af11",
+      "http_status": 200,
+      "bytes": 35123,
+      "sha256": "ed9ad58f5b6aeeacbd531affb794092c39fa0f56db0e6cbe0ce785715bed64c9",
+      "relation": "differs_from_local_audit_snapshot"
+    },
+    {
+      "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/repos/ubs-engine.json",
+      "local_counterpart": "web/data/repos/ubs-engine.json",
+      "local_exists": true,
+      "local_sha256": "6be797a184056018d746680e70c2ac26ac6bb7174c8a493cbe80604a552f7725",
+      "http_status": 200,
+      "bytes": 1186277,
+      "sha256": "8a5ea0c19e078723e2e611ffd952bb3b8f8356c246f5b1df4807e1dc18368b4b",
+      "relation": "differs_from_local_audit_snapshot"
+    },
+    {
+      "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/snapshot.json",
+      "local_counterpart": "web/data/snapshot.json",
+      "local_exists": false,
+      "http_status": 200,
+      "bytes": 1186277,
+      "sha256": "8a5ea0c19e078723e2e611ffd952bb3b8f8356c246f5b1df4807e1dc18368b4b",
+      "relation": "no_local_counterpart"
+    },
+    {
+      "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/ubs-manifest.json",
+      "local_counterpart": "web/data/ubs-manifest.json",
+      "local_exists": true,
+      "local_sha256": "617c97bd436507f59d25fde93c96f54d68022a40e6b1bd7b2f9b600f939c459d",
+      "http_status": 404,
+      "relation": "absent_on_site"
+    },
+    {
+      "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/triton.json",
+      "local_counterpart": "web/data/triton.json",
+      "local_exists": true,
+      "local_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+      "http_status": 404,
+      "relation": "absent_on_site"
+    },
+    {
+      "url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/data/triton.json",
+      "local_counterpart": "web/data/triton.json",
+      "local_exists": true,
+      "local_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+      "http_status": 404,
+      "relation": "absent_on_site"
+    },
+    {
+      "url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/data/triton-manifest.json",
+      "local_counterpart": "web/data/triton-manifest.json",
+      "local_exists": false,
+      "http_status": 404,
+      "relation": "absent_on_site"
+    },
+    {
+      "url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/data/triton-batches.csv",
+      "local_counterpart": "web/data/triton-batches.csv",
+      "local_exists": false,
+      "http_status": 404,
+      "relation": "absent_on_site"
+    }
+  ],
+  "conclusion": "探测结果逐条记录与本地审计快照的关系（matches/differs/no_local_counterpart/absent_on_site/unreachable）；两站均为合并前部署，不能作为 REQ-022 部署对应关系的证据——当前平台状态不可冒充审计截止点历史事实，旧站抓取不作为替代证据"
+}

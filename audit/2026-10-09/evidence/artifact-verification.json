@@ -1,0 +1,823 @@
+{
+  "executed_at": "2026-10-09T21:25:25.913654+00:00",
+  "requirement": "REQ-038 · 原始工件补齐及历史影响核验",
+  "audit": "2026-10-09",
+  "scope": {
+    "ubs": {
+      "index_generated_at": "2026-10-08T03:01:57.071442+00:00",
+      "window": [
+        "2026-09-08T02:51:38.811000+00:00",
+        "2026-10-08T02:51:38.811000+00:00"
+      ]
+    },
+    "triton": {
+      "collected_at": "2026-10-09T00:17:38.669255Z",
+      "window": [
+        "2026-10-06T00:13:06Z",
+        "2026-10-09T00:13:06Z"
+      ]
+    },
+    "freeze_fixture": "tests/fixtures/triton-audit-freeze.json",
+    "evidence_references": {
+      "d10": "audit/2026-10-09/evidence/data-audit.json checks[D10]",
+      "s01": "audit/2026-10-09/evidence/data-audit.json checks[S01]",
+      "f08": "audit/2026-10-09/evidence/findings.json F08（重跑 E2E 起点）"
+    }
+  },
+  "ac01_inventory": {
+    "artifacts": [
+      {
+        "path": "web/data/repositories.json",
+        "source": "collect.py 多仓索引（审计冻结范围）",
+        "exists": true,
+        "status": "present",
+        "sha256": "f53f90dfff82a205ea40980faa76c7fb1deb2e682609f124bfe8fc2ceab0af11",
+        "bytes": 55002,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/ubs-engine.json",
+        "source": "collect.py 单仓快照（openeuler/ubs-engine）",
+        "exists": true,
+        "status": "present",
+        "sha256": "6be797a184056018d746680e70c2ac26ac6bb7174c8a493cbe80604a552f7725",
+        "bytes": 1966810,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/ubs-comm.json",
+        "source": "collect.py 单仓快照（openeuler/ubs-comm）",
+        "exists": true,
+        "status": "present",
+        "sha256": "20055854468bbb070ba3f19beea4ed5c6c8efb7cb7bf2879d2470cd0bd50c4da",
+        "bytes": 877349,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/ubs-virt.json",
+        "source": "collect.py 单仓快照（openeuler/ubs-virt）",
+        "exists": true,
+        "status": "present",
+        "sha256": "212b007de41f2c02430b26dab92e79d34275307674e5219b4711670ac2f2f3ad",
+        "bytes": 1611564,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/ubs-io.json",
+        "source": "collect.py 单仓快照（openeuler/ubs-io）",
+        "exists": true,
+        "status": "present",
+        "sha256": "c823704df88935a9f08de34d87e11113ac21fbd917279b7c653e40368a6642e0",
+        "bytes": 100459,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/ubs-mem.json",
+        "source": "collect.py 单仓快照（openeuler/ubs-mem）",
+        "exists": true,
+        "status": "present",
+        "sha256": "bed9ae9998f1d653be04e5e5bbd58370ae9438acc7032f117931976c54fc4459",
+        "bytes": 296885,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/OmniStateStore.json",
+        "source": "collect.py 单仓快照（openeuler/OmniStateStore）",
+        "exists": true,
+        "status": "present",
+        "sha256": "10fe6f645928273499e8f85bc8e9b5a4080792211e84ef0a684d159b83979d44",
+        "bytes": 428745,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/ham.json",
+        "source": "collect.py 单仓快照（openeuler/ham）",
+        "exists": true,
+        "status": "present",
+        "sha256": "a21cbf007e2624f3c5718671f049beea2b6a76352fb5813d2c065c6e41476ffe",
+        "bytes": 56481,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/ubturbo.json",
+        "source": "collect.py 单仓快照（openeuler/ubturbo）",
+        "exists": true,
+        "status": "present",
+        "sha256": "1646040ca9f475b9c407b047e20600acea775f6fd3a24cad78d3d9c3ed32e251",
+        "bytes": 700464,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/repos/ubs-atomic.json",
+        "source": "collect.py 单仓快照（openeuler/ubs-atomic）",
+        "exists": true,
+        "status": "present",
+        "sha256": "2621213e9f6408066031019f3afe231d82d912b007bec2a93c24cea9ce4a1f0a",
+        "bytes": 195223,
+        "window": {
+          "start": "2026-09-08T02:51:38.811000+00:00",
+          "end": "2026-10-08T02:51:38.811000+00:00",
+          "generated_at": "2026-10-08T03:01:57.071442+00:00"
+        },
+        "freeze_relation": "matches ubs-manifest.json fingerprint"
+      },
+      {
+        "path": "web/data/ubs-manifest.json",
+        "source": "validate_bundle --write-manifest 生成的构建工件指纹（REQ-022 方法）",
+        "exists": true,
+        "status": "present",
+        "sha256": "617c97bd436507f59d25fde93c96f54d68022a40e6b1bd7b2f9b600f939c459d",
+        "bytes": 1130
+      },
+      {
+        "path": "tests/fixtures/triton-audit-freeze.json",
+        "source": "REQ-028 冻结快照 fixture（提交于 git，统计契约基准）",
+        "exists": true,
+        "status": "present",
+        "sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+        "bytes": 1209308,
+        "window": {
+          "window_start": "2026-10-06T00:13:06Z",
+          "window_end": "2026-10-09T00:13:06Z",
+          "collected_at": "2026-10-09T00:17:38.669255Z"
+        }
+      },
+      {
+        "path": "web/data/triton.json",
+        "source": "triton.dashboard 采集输出（审计冻结窗口）",
+        "exists": true,
+        "status": "present",
+        "sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+        "bytes": 1209308,
+        "window": {
+          "window_start": "2026-10-06T00:13:06Z",
+          "window_end": "2026-10-09T00:13:06Z",
+          "collected_at": "2026-10-09T00:17:38.669255Z"
+        },
+        "freeze_relation": "byte-identical to tests/fixtures/triton-audit-freeze.json"
+      },
+      {
+        "path": "data/snapshot.json",
+        "source": "ubs-engine 兼容快照（仓根镜像）",
+        "exists": true,
+        "status": "present",
+        "sha256": "6be797a184056018d746680e70c2ac26ac6bb7174c8a493cbe80604a552f7725",
+        "bytes": 1966810,
+        "freeze_relation": "matches web/data/repos/ubs-engine.json（compat 镜像）"
+      },
+      {
+        "path": "audit/2026-10-09/evidence/triton-export.csv",
+        "source": "audit 2026-10-09 Triton 批次导出（采集侧）",
+        "exists": true,
+        "status": "present",
+        "sha256": "5eb23469064804ded59bdb4e26fde67b2ae4ef6d14145ecd032a0798af0c4e32",
+        "bytes": 24019
+      },
+      {
+        "path": "audit/2026-10-09/evidence/triton-pages-export.csv",
+        "source": "audit 2026-10-09 Triton 批次导出（旧站页面侧）",
+        "exists": true,
+        "status": "present",
+        "sha256": "5eb23469064804ded59bdb4e26fde67b2ae4ef6d14145ecd032a0798af0c4e32",
+        "bytes": 24019
+      },
+      {
+        "path": "audit/2026-10-09/evidence/ubs-batch-export.csv",
+        "source": "audit 2026-10-09 UBS 批次导出（ubs-engine 定向样本）",
+        "exists": true,
+        "status": "present",
+        "sha256": "70bd4dba69042b4585b545c229193ea54f67df49becaf0bccd237fb63de28720",
+        "bytes": 9426
+      },
+      {
+        "path": "audit/2026-10-09/evidence/data-audit.json",
+        "source": "audit 2026-10-09 派生数据审计报告（D10/S01 记录来源）",
+        "exists": true,
+        "status": "present",
+        "sha256": "970509d2f8e1cc040da304ce41b19c38e9329e5ef026d3bb7aa93b1513984ee2",
+        "bytes": 542156
+      },
+      {
+        "path": "audit/2026-10-09/evidence/site-probe.json",
+        "source": "verify_artifacts --probe 旧站探测记录（REQ-038 AC04）",
+        "exists": true,
+        "status": "present",
+        "sha256": "c73a08eca7bf333d2c846ce5d4b5df2dd38d1c993a4d53fb160485ed1c03d84e",
+        "bytes": 3392
+      },
+      {
+        "path": "data/raw",
+        "source": "审计 D10 声明的原始工件类别",
+        "exists": false,
+        "status": "unverified",
+        "reason": "审计 D10 声明的原始工件；本地缺失且不可恢复（无 git remote / gh CLI，Actions 工件与缓存不可取，旧站已推进过审计截止点）"
+      },
+      {
+        "path": "data/efficiency.sqlite",
+        "source": "审计 D10 声明的原始工件类别",
+        "exists": false,
+        "status": "unverified",
+        "reason": "审计 D10 声明的原始工件；本地缺失且不可恢复（无 git remote / gh CLI，Actions 工件与缓存不可取，旧站已推进过审计截止点）"
+      },
+      {
+        "path": "data/repositories.json",
+        "source": "审计 D10 声明的原始工件类别",
+        "exists": false,
+        "status": "unverified",
+        "reason": "审计 D10 声明的原始工件；本地缺失且不可恢复（无 git remote / gh CLI，Actions 工件与缓存不可取，旧站已推进过审计截止点）"
+      },
+      {
+        "path": "data/repos",
+        "source": "审计 D10 声明的原始工件类别",
+        "exists": false,
+        "status": "unverified",
+        "reason": "审计 D10 声明的原始工件；本地缺失且不可恢复（无 git remote / gh CLI，Actions 工件与缓存不可取，旧站已推进过审计截止点）"
+      },
+      {
+        "path": "web/data/snapshot.json",
+        "source": "审计 D10 声明的原始工件类别",
+        "exists": false,
+        "status": "unverified",
+        "reason": "审计 D10 声明的原始工件；本地缺失且不可恢复（无 git remote / gh CLI，Actions 工件与缓存不可取，旧站已推进过审计截止点）"
+      },
+      {
+        "path": "evidence/triton",
+        "source": "审计 D10 声明的原始工件类别",
+        "exists": false,
+        "status": "unverified",
+        "reason": "审计 D10 声明的原始工件；本地缺失且不可恢复（无 git remote / gh CLI，Actions 工件与缓存不可取，旧站已推进过审计截止点）"
+      },
+      {
+        "path": "web/data/triton-manifest.json",
+        "source": "审计 D10 声明的原始工件类别",
+        "exists": false,
+        "status": "unverified",
+        "reason": "审计 D10 声明的原始工件；本地缺失且不可恢复（无 git remote / gh CLI，Actions 工件与缓存不可取，旧站已推进过审计截止点）"
+      },
+      {
+        "path": "web/data/triton-batches.csv",
+        "source": "审计 D10 声明的原始工件类别",
+        "exists": false,
+        "status": "unverified",
+        "reason": "审计 D10 声明的原始工件；本地缺失且不可恢复（无 git remote / gh CLI，Actions 工件与缓存不可取，旧站已推进过审计截止点）"
+      }
+    ],
+    "d10_declared_missing": [
+      "data/raw",
+      "data/efficiency.sqlite",
+      "data/repositories.json",
+      "data/repos",
+      "web/data/snapshot.json",
+      "evidence/triton",
+      "web/data/triton-manifest.json",
+      "web/data/triton-batches.csv"
+    ],
+    "recovery": {
+      "git_remotes": [],
+      "gh_cli_available": false,
+      "note": "无 git remote 时本仓库从未推送：Actions 构建/部署运行与其 artifact/cache 不可获取；两个旧站点为合并前部署且数据已前进，不能提供审计截止点的原始工件"
+    }
+  },
+  "ac02_comparisons": {
+    "raw_timestamps": {
+      "applicable": 892,
+      "verified_consistent": 0,
+      "derived_consistent": 71,
+      "differ": 0,
+      "missing_evidence": 821,
+      "status": "partial",
+      "units": {
+        "triton_batches": 66,
+        "ubs_batches": 826
+      },
+      "raw": {
+        "available": false,
+        "would_verify": 892,
+        "note": "原始平台时间证据（UBS data/raw 的 Jenkins/GitCode 响应、Triton evidence/triton 的 run/job 页面）缺失；raw 已存在时来源覆盖由 validate_multi.py 核验，本工具不重复"
+      },
+      "checks": {
+        "triton_freeze_vs_audit_exports": {
+          "files": {
+            "triton-export.csv": {
+              "rows": 66,
+              "differences": 0
+            },
+            "triton-pages-export.csv": {
+              "rows": 66,
+              "differences": 0
+            }
+          },
+          "compared_rows": 132,
+          "consistent_rows": 132,
+          "covered_batches": 66,
+          "differing_batches": 0,
+          "sample_differences": []
+        },
+        "ubs_audit_export_vs_snapshots": {
+          "rows": 23,
+          "consistent_rows": 23,
+          "covered_batches": 5,
+          "differing_batches": 0,
+          "sample_differences": []
+        }
+      },
+      "missing_sample": [
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7703/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7704/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7705/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7701/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7702/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7700/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7686/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7664/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7661/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7665/"
+      ],
+      "note": "一致 = 冻结快照与审计期两份 Triton 导出、UBS 审计期批次导出与当前快照逐批/逐行一致（派生自洽）；缺证据 = 无任何独立导出覆盖且 raw 缺失的批次"
+    },
+    "queue_components": {
+      "applicable": 4830,
+      "verified_consistent": 0,
+      "derived_consistent": 23,
+      "differ": 0,
+      "missing_evidence": 4807,
+      "status": "partial",
+      "components": {
+        "waiting_blocked_buildable_verified": 0,
+        "raw_available": false,
+        "note": "queue = waiting + blocked + buildable 三分项仅存在于 raw Jenkins 响应（data/raw 缺失）；分项缺失时 queue 与 total 保持未知、不补 0（REQ-024 语义，validate_multi.py 执行）"
+      },
+      "units": {
+        "triggers_with_queue": 826,
+        "children_with_queue": 4004
+      },
+      "checks": {
+        "ubs_audit_export_vs_snapshots": {
+          "covered_children": 23,
+          "differing_children": 0,
+          "sample_differences": []
+        }
+      },
+      "missing_sample": [
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7703/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/DT/job/ubs-engine/6988/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/check_issue_associate/job/issue-associate-check/11676/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/pre-commit/job/ubs-engine/7041/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/aarch64/job/ubs-engine/7701/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/x86-64/job/ubs-engine/7693/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7704/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/DT/job/ubs-engine/6989/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/check_issue_associate/job/issue-associate-check/11677/",
+        "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/pre-commit/job/ubs-engine/7042/"
+      ]
+    },
+    "pr_identity": {
+      "applicable": 269,
+      "verified_consistent": 0,
+      "derived_consistent": 67,
+      "differ": 0,
+      "missing_evidence": 202,
+      "status": "partial",
+      "units": {
+        "triton_batches": 66,
+        "ubs_prs": 203
+      },
+      "raw": {
+        "available": false,
+        "note": "GitCode pulls 原始响应与 evidence/triton/pr-associations 关联依据缺失；派生核对仅证明冻结工件与审计导出内部一致，不是来源准确性证明（D10 语义）"
+      },
+      "checks": {
+        "triton_batch_workflow_propagation": {
+          "batches": 66,
+          "workflows": 434,
+          "mismatches": []
+        },
+        "triton_freeze_vs_audit_exports": {
+          "covered_batches": 66,
+          "differing_batches": 0
+        },
+        "ubs_audit_export_vs_snapshots": {
+          "covered_prs": 1,
+          "differing_prs": 0
+        }
+      },
+      "missing_sample": [
+        [
+          "openeuler/ubs-engine",
+          1655
+        ],
+        [
+          "openeuler/ubs-engine",
+          1654
+        ],
+        [
+          "openeuler/ubs-engine",
+          1653
+        ],
+        [
+          "openeuler/ubs-engine",
+          1651
+        ],
+        [
+          "openeuler/ubs-engine",
+          1648
+        ],
+        [
+          "openeuler/ubs-engine",
+          1647
+        ],
+        [
+          "openeuler/ubs-engine",
+          1646
+        ],
+        [
+          "openeuler/ubs-engine",
+          1645
+        ],
+        [
+          "openeuler/ubs-engine",
+          1642
+        ],
+        [
+          "openeuler/ubs-engine",
+          1641
+        ]
+      ]
+    },
+    "attempt_history": {
+      "applicable": 130,
+      "verified_consistent": 0,
+      "derived_consistent": 130,
+      "differ": 0,
+      "missing_evidence": 0,
+      "status": "partial",
+      "units": {
+        "triton_rerun_batches": 7,
+        "ubs_retest_batches": 123
+      },
+      "same_run_multi_attempt": {
+        "preserved_in_freeze": false,
+        "note": "冻结工件未保留同一 run 的多次 attempt 记录（rerun run 的更早 attempt 不在 payload）；同一 run 多 attempt 原始证据（run/job 页面）缺失，精确新规则 E2E 不可重算（见 ac03）"
+      },
+      "checks": {
+        "triton_attempt_checks": {
+          "rerun_batches": 7,
+          "initial_batches": 59,
+          "initial_unique": true,
+          "duplicate_run_attempt": 0,
+          "bad_sequences": [],
+          "same_run_multi_attempt_preserved": false,
+          "rerun_identity_ids": 7,
+          "rerun_paired_with_initial": 7
+        },
+        "ubs_retest_linkage": {
+          "retest_batches": 123,
+          "linked": 123
+        }
+      },
+      "missing_sample": []
+    }
+  },
+  "ac03_rerun_impact": {
+    "rule_old": "原规则（REQ-015 之前代码）：重跑批次 E2E = end_at − 原 run created_at（run 创建时间，非本次 attempt 起点）——冻结快照实证 rerun start_at == workflows[0].created_at，审计 S01/F08 记录该缺陷",
+    "rule_new": "REQ-014/015 规则：E2E = end_at − 本次 attempt 可证明起点（trigger_event 或 run_started_at；无法恢复时 E2E 留空并明示缺口）",
+    "rerun_batches": [
+      {
+        "batch_id": "2143-2be16a4a46e67bfac159529a69ec3c5ba689fd53-rerun-37716433033-2",
+        "pr": 2143,
+        "run_id": 37716433033,
+        "attempt": 2,
+        "initial_sibling_batch": "2143-2be16a4a46e67bfac159529a69ec3c5ba689fd53-initial",
+        "created_at": "2026-10-08T02:08:51Z",
+        "start_at": "2026-10-08T02:08:51Z",
+        "end_at": "2026-10-08T02:51:03Z",
+        "start_at_equals_created": true,
+        "old_rule_e2e_seconds": 2532.0,
+        "recorded_duration_seconds": 2532.0,
+        "recorded_matches_old_rule": true,
+        "old_rule_overestimate_bound_seconds": 36.0,
+        "new_rule_e2e_range_seconds": [
+          2496.0,
+          2532.0
+        ],
+        "provably_identical_to_new_rule": false
+      },
+      {
+        "batch_id": "2460-53a3d701136cd2687787fd5f1a244182b4c77b08-rerun-37723445447-2",
+        "pr": 2460,
+        "run_id": 37723445447,
+        "attempt": 2,
+        "initial_sibling_batch": "2460-53a3d701136cd2687787fd5f1a244182b4c77b08-initial",
+        "created_at": "2026-10-08T03:35:25Z",
+        "start_at": "2026-10-08T03:35:25Z",
+        "end_at": "2026-10-08T08:40:14Z",
+        "start_at_equals_created": true,
+        "old_rule_e2e_seconds": 18289.0,
+        "recorded_duration_seconds": 18289.0,
+        "recorded_matches_old_rule": true,
+        "old_rule_overestimate_bound_seconds": 5.0,
+        "new_rule_e2e_range_seconds": [
+          18284.0,
+          18289.0
+        ],
+        "provably_identical_to_new_rule": false
+      },
+      {
+        "batch_id": "2280-c02a06de3ae84d974247a82248970925bfbb17ce-rerun-37763352046-2",
+        "pr": 2280,
+        "run_id": 37763352046,
+        "attempt": 2,
+        "initial_sibling_batch": "2280-c02a06de3ae84d974247a82248970925bfbb17ce-initial",
+        "created_at": "2026-10-08T10:25:19Z",
+        "start_at": "2026-10-08T10:25:19Z",
+        "end_at": "2026-10-08T11:24:56Z",
+        "start_at_equals_created": true,
+        "old_rule_e2e_seconds": 3577.0,
+        "recorded_duration_seconds": 3577.0,
+        "recorded_matches_old_rule": true,
+        "old_rule_overestimate_bound_seconds": 4.0,
+        "new_rule_e2e_range_seconds": [
+          3573.0,
+          3577.0
+        ],
+        "provably_identical_to_new_rule": false
+      },
+      {
+        "batch_id": "2338-55be5c2e80ee58f2fcaad1bbdc690478dead419a-rerun-37763354241-2",
+        "pr": 2338,
+        "run_id": 37763354241,
+        "attempt": 2,
+        "initial_sibling_batch": "2338-55be5c2e80ee58f2fcaad1bbdc690478dead419a-initial",
+        "created_at": "2026-10-08T10:25:20Z",
+        "start_at": "2026-10-08T10:25:20Z",
+        "end_at": "2026-10-08T11:01:49Z",
+        "start_at_equals_created": true,
+        "old_rule_e2e_seconds": 2189.0,
+        "recorded_duration_seconds": 2189.0,
+        "recorded_matches_old_rule": true,
+        "old_rule_overestimate_bound_seconds": 13.0,
+        "new_rule_e2e_range_seconds": [
+          2176.0,
+          2189.0
+        ],
+        "provably_identical_to_new_rule": false
+      },
+      {
+        "batch_id": "2172-1dc121ff68de4c83d9c9da10e79da866fe743419-rerun-37763354034-2",
+        "pr": 2172,
+        "run_id": 37763354034,
+        "attempt": 2,
+        "initial_sibling_batch": "2172-1dc121ff68de4c83d9c9da10e79da866fe743419-initial",
+        "created_at": "2026-10-08T10:25:20Z",
+        "start_at": "2026-10-08T10:25:20Z",
+        "end_at": "2026-10-08T11:26:01Z",
+        "start_at_equals_created": true,
+        "old_rule_e2e_seconds": 3641.0,
+        "recorded_duration_seconds": 3641.0,
+        "recorded_matches_old_rule": true,
+        "old_rule_overestimate_bound_seconds": 8.0,
+        "new_rule_e2e_range_seconds": [
+          3633.0,
+          3641.0
+        ],
+        "provably_identical_to_new_rule": false
+      },
+      {
+        "batch_id": "2331-6660627371475594e5ab6cd405d4b3791746cbe0-rerun-37763353883-2",
+        "pr": 2331,
+        "run_id": 37763353883,
+        "attempt": 2,
+        "initial_sibling_batch": "2331-6660627371475594e5ab6cd405d4b3791746cbe0-initial",
+        "created_at": "2026-10-08T10:25:20Z",
+        "start_at": "2026-10-08T10:25:20Z",
+        "end_at": "2026-10-08T20:42:22Z",
+        "start_at_equals_created": true,
+        "old_rule_e2e_seconds": 37022.0,
+        "recorded_duration_seconds": 37022.0,
+        "recorded_matches_old_rule": true,
+        "old_rule_overestimate_bound_seconds": 10.0,
+        "new_rule_e2e_range_seconds": [
+          37012.0,
+          37022.0
+        ],
+        "provably_identical_to_new_rule": false
+      },
+      {
+        "batch_id": "2469-9e1955e41d67cb6d6bb8815490d97005cf1a5d2b-rerun-37766698233-3",
+        "pr": 2469,
+        "run_id": 37766698233,
+        "attempt": 3,
+        "initial_sibling_batch": "2469-9e1955e41d67cb6d6bb8815490d97005cf1a5d2b-initial",
+        "created_at": "2026-10-08T10:55:43Z",
+        "start_at": "2026-10-08T10:55:43Z",
+        "end_at": "2026-10-08T12:43:36Z",
+        "start_at_equals_created": true,
+        "old_rule_e2e_seconds": 6473.0,
+        "recorded_duration_seconds": 6473.0,
+        "recorded_matches_old_rule": true,
+        "old_rule_overestimate_bound_seconds": 60.0,
+        "new_rule_e2e_range_seconds": [
+          6413.0,
+          6473.0
+        ],
+        "provably_identical_to_new_rule": false
+      }
+    ],
+    "s01": {
+      "source": "audit/2026-10-09/evidence/data-audit.json checks[S01]",
+      "is_synthetic": true,
+      "input": {
+        "id": 1,
+        "name": "Example",
+        "head_sha": "abc",
+        "created_at": "2026-09-22T00:00:00Z",
+        "run_started_at": "2026-09-22T02:00:00Z",
+        "updated_at": "2026-09-22T02:05:00Z",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "html_url": "https://github.com/example/actions/runs/1",
+        "jobs": [],
+        "jobs_complete": true,
+        "pr": 42,
+        "pr_title": "synthetic",
+        "pr_url": "https://github.com/example/pull/42",
+        "base_branch": "main",
+        "trigger_exact": false
+      },
+      "old_rule_seconds": 7500.0,
+      "new_rule_seconds": 300.0,
+      "current_code_recomputed_seconds": 300.0,
+      "recompute_error": null,
+      "audit_recorded": {
+        "state": "failed",
+        "actual": 7500.0,
+        "expected": 300
+      },
+      "note": "合成输入（run 创建 00:00、本次 attempt 02:00 开始、02:05 结束）：原规则计 7500 秒，REQ-014/015 规则计 300 秒；该 300 秒例子不能证明历史真实 E2E（审计 F08），与真实批次单列隔离"
+    },
+    "summary": {
+      "rerun_batches": 7,
+      "recorded_matches_old": 7,
+      "start_at_equals_created": 7,
+      "provably_identical_to_new_rule": 0,
+      "provably_affected_batches": 0,
+      "bounded_possibly_divergent": 7,
+      "max_overestimate_bound_seconds": 60.0,
+      "median_overestimate_bound_seconds": 10.0,
+      "same_run_multi_attempt_records": "冻结工件未保留任何同一 run 的多次 attempt 记录；同一 run 多 attempt 原始证据（run/job 页面）缺失",
+      "attempt_start_evidence": "run_started_at 未持久化于冻结 payload（workflow 字段不含该键）→ 新规则 E2E 无法从冻结工件精确重算，仅给出区间",
+      "conclusion": "冻结窗口 7 个真实重跑批次的旧规则值与冻结记录一致（start_at == 原 run created_at，7/7）；本次 attempt 起点未持久化，新旧规则差异不可精确判定，旧规则高估上限 60.0 秒（中位 10.0 秒），无 S01 式小时级跨度；可证明受影响批次数 = 0。"
+    }
+  },
+  "ac04_deployment": {
+    "local_bundle": {
+      "status": "verified",
+      "fingerprint": "sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39",
+      "files_verified": 10,
+      "errors": 0,
+      "manifest_generated_at": "2026-10-09T11:56:53.742573+00:00",
+      "method": "validate_bundle.verify（REQ-022 构建工件指纹：索引↔快照↔manifest SHA-256 绑定）"
+    },
+    "merged_dashboard_deployment": {
+      "status": "unverified",
+      "git_remotes": [],
+      "gh_cli_available": false,
+      "reasons": [
+        "本仓库无 git remote → 从未推送，不存在 Actions 构建/部署运行",
+        "合并看板 Pages 地址未部署（README 在线地址段仍为待部署后填写）",
+        "REQ-022 已将 verify_deployment 接入两个发布流程，但该流程从未真实运行，无运行 ID/URL/校验时刻与指纹可记录"
+      ],
+      "old_site_scraping_substitute": "拒绝：本地 Pages 模拟下载或旧站公开源码抓取不能替代真实构建/部署工件（REQ-038 AC04）"
+    },
+    "site_probe": {
+      "probed_at": "2026-10-09T21:19:12.867804+00:00",
+      "results": [
+        {
+          "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/repositories.json",
+          "local_counterpart": "web/data/repositories.json",
+          "local_exists": true,
+          "local_sha256": "f53f90dfff82a205ea40980faa76c7fb1deb2e682609f124bfe8fc2ceab0af11",
+          "http_status": 200,
+          "bytes": 35123,
+          "sha256": "ed9ad58f5b6aeeacbd531affb794092c39fa0f56db0e6cbe0ce785715bed64c9",
+          "relation": "differs_from_local_audit_snapshot"
+        },
+        {
+          "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/repos/ubs-engine.json",
+          "local_counterpart": "web/data/repos/ubs-engine.json",
+          "local_exists": true,
+          "local_sha256": "6be797a184056018d746680e70c2ac26ac6bb7174c8a493cbe80604a552f7725",
+          "http_status": 200,
+          "bytes": 1186277,
+          "sha256": "8a5ea0c19e078723e2e611ffd952bb3b8f8356c246f5b1df4807e1dc18368b4b",
+          "relation": "differs_from_local_audit_snapshot"
+        },
+        {
+          "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/snapshot.json",
+          "local_counterpart": "web/data/snapshot.json",
+          "local_exists": false,
+          "http_status": 200,
+          "bytes": 1186277,
+          "sha256": "8a5ea0c19e078723e2e611ffd952bb3b8f8356c246f5b1df4807e1dc18368b4b",
+          "relation": "no_local_counterpart"
+        },
+        {
+          "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/ubs-manifest.json",
+          "local_counterpart": "web/data/ubs-manifest.json",
+          "local_exists": true,
+          "local_sha256": "617c97bd436507f59d25fde93c96f54d68022a40e6b1bd7b2f9b600f939c459d",
+          "http_status": 404,
+          "relation": "absent_on_site"
+        },
+        {
+          "url": "https://tianli-backkom.github.io/ubs_core_monitor/data/triton.json",
+          "local_counterpart": "web/data/triton.json",
+          "local_exists": true,
+          "local_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+          "http_status": 404,
+          "relation": "absent_on_site"
+        },
+        {
+          "url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/data/triton.json",
+          "local_counterpart": "web/data/triton.json",
+          "local_exists": true,
+          "local_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+          "http_status": 404,
+          "relation": "absent_on_site"
+        },
+        {
+          "url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/data/triton-manifest.json",
+          "local_counterpart": "web/data/triton-manifest.json",
+          "local_exists": false,
+          "http_status": 404,
+          "relation": "absent_on_site"
+        },
+        {
+          "url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/data/triton-batches.csv",
+          "local_counterpart": "web/data/triton-batches.csv",
+          "local_exists": false,
+          "http_status": 404,
+          "relation": "absent_on_site"
+        }
+      ],
+      "conclusion": "探测结果逐条记录与本地审计快照的关系（matches/differs/no_local_counterpart/absent_on_site/unreachable）；两站均为合并前部署，不能作为 REQ-022 部署对应关系的证据——当前平台状态不可冒充审计截止点历史事实，旧站抓取不作为替代证据",
+      "source": "audit/2026-10-09/evidence/site-probe.json（--probe 刷新）"
+    },
+    "status": "unverified"
+  },
+  "sections": {
+    "ac01": "pass",
+    "ac02": "partial",
+    "ac03": "partial",
+    "ac04": "unverified"
+  },
+  "overall_status": "unverified",
+  "overall_reason": "D10 原始工件（data/raw、SQLite、evidence/triton、triton-manifest/batches.csv 等）本地缺失且不可恢复（无 git remote、无 gh CLI、旧站已推进过审计截止点）；合并看板无真实部署运行。可执行交叉核对（冻结↔审计导出↔本地快照↔构建清单）全部一致，缺失项全部如实标注未验证",
+  "arithmetic": "每类比对满足 已验证一致 + 派生自洽 + 差异 + 缺证据 = 适用总数（REQ-023）；overall_status 从分项推导（REQ-025）；退出码 0 = 可执行交叉核对无差异，原始工件缺失以未验证记录、不因此失败"
+}
