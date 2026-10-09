@@ -7,7 +7,14 @@ import subprocess
 from collections import Counter
 from pathlib import Path
 
-from source_coverage import SourceCategory, queue_from_raw, source_report
+from source_coverage import (
+    PUBLISH_CONSISTENCY_REASON,
+    SourceCategory,
+    failure_report,
+    queue_from_raw,
+    section_of,
+    source_report,
+)
 
 ROOT = Path(__file__).resolve().parent
 
@@ -28,7 +35,7 @@ def close(actual, expected):
         assert actual == expected, (actual, expected)
 
 
-def audit():
+def _audit():
     index = json.loads((ROOT / 'data/repositories.json').read_text('utf-8'))
     assert (ROOT / 'data/repositories.json').read_bytes() == (ROOT / 'web/data/repositories.json').read_bytes()
     expected_names = {r['name'] for r in json.loads((ROOT / 'repositories.json').read_text('utf-8'))}
@@ -126,7 +133,14 @@ def audit():
     close(json.loads(result.stdout), expected)
     source = source_report({'job_timing': job_timing, 'queue_components': queue_timing})
     checks_passed = source['status'] in ('verified', 'not_applicable')
-    report = {'checks_passed': checks_passed, 'source_audit': source, 'repositories': reports, 'included_prs': len(included), 'metrics': expected, 'batches': len(seen_batches)}
+    sections = {
+        'derived_consistency': {'status': 'passed'},  # this report exists: every derived assert held (REQ-025 AC01)
+        'source_time': section_of(source['categories']['job_timing']),
+        'queue_components': section_of(source['categories']['queue_components']),
+        'publish_consistency': {'status': 'not_applicable', 'reason': PUBLISH_CONSISTENCY_REASON},
+    }
+    report = {'overall_status': source['status'], 'checks_passed': checks_passed, 'sections': sections,
+              'source_audit': source, 'repositories': reports, 'included_prs': len(included), 'metrics': expected, 'batches': len(seen_batches)}
     (ROOT / 'data/validation-multi.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), 'utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))
     if not checks_passed:
@@ -136,6 +150,15 @@ def audit():
                            for name, category in failing.items())
         raise SystemExit(f"source audit {source['status']}: {detail} — see data/validation-multi.json")
     return report
+
+
+def audit():
+    """Run the audit; an unexpected crash overwrites any stale report with an explicit failure (REQ-025 AC03)."""
+    try:
+        return _audit()
+    except Exception as error:
+        (ROOT / 'data/validation-multi.json').write_text(json.dumps(failure_report(error), ensure_ascii=False, indent=2), 'utf-8')
+        raise
 
 
 if __name__ == '__main__': audit()

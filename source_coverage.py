@@ -23,6 +23,25 @@ def queue_from_raw(raw):
     return None, None
 
 
+PUBLISH_CONSISTENCY_REASON = ('owned by validate_bundle.py before upload and triton.verify_deployment after deploy; '
+                              'this audit does not re-verify it')
+
+
+def section_of(category):
+    """Project a source category result into a report section: status plus N/A reason (REQ-025)."""
+    result = {'status': category['status']}
+    if 'reason' in category:
+        result['reason'] = category['reason']
+    return result
+
+
+def failure_report(error):
+    """Report written when an audit aborts on an unexpected exception (REQ-025 AC03)."""
+    return {'overall_status': 'failed', 'checks_passed': False,
+            'error': f'{type(error).__name__}: {error}',
+            'affected_scope': 'audit aborted before completion; no section of this run can be claimed passed'}
+
+
 class SourceCategory:
     """Accumulates raw-source verification outcomes for one category of objects."""
 

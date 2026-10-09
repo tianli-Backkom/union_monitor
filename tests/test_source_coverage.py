@@ -397,6 +397,89 @@ class QueueComponentAuditTests(unittest.TestCase):
         self.assertEqual(queue['missing'], [child_missing['url']])
 
 
+class AuditStatusSemanticsTests(unittest.TestCase):
+    """REQ-025 — per-section statuses, explicit overall, and crash containment."""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix='req025-multi-'))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def audit(self):
+        with patch.object(validate_multi, 'ROOT', self.tmp):
+            return validate_multi.audit()
+
+    def test_derived_passed_and_source_unverified_reported_explicitly(self):  # REQ-025 AC01
+        prs = [pr_with_gate(7)]
+        write_multi_tree(self.tmp, prs, raw_files([]))
+        with self.assertRaises(SystemExit):
+            self.audit()
+        report = json.loads((self.tmp / 'data/validation-multi.json').read_text('utf-8'))
+        self.assertEqual(report['sections']['derived_consistency']['status'], 'passed')
+        self.assertEqual(report['sections']['source_time']['status'], 'unverified')
+        self.assertEqual(report['sections']['queue_components']['status'], 'unverified')
+        self.assertEqual(report['overall_status'], 'unverified')
+        self.assertFalse(report['checks_passed'])
+
+    def test_partial_coverage_overall_partial(self):  # REQ-025 AC01
+        prs = [pr_with_gate(7)]
+        write_multi_tree(self.tmp, prs, raw_files(prs, drop=[child_job(7)['url']]))
+        with self.assertRaises(SystemExit):
+            self.audit()
+        report = json.loads((self.tmp / 'data/validation-multi.json').read_text('utf-8'))
+        self.assertEqual(report['overall_status'], 'partial')
+        self.assertEqual(report['sections']['source_time']['status'], 'partial')
+        self.assertFalse(report['checks_passed'])
+
+    def test_difference_is_failed_not_unverified(self):  # REQ-025 AC02
+        prs = [pr_with_gate(7)]
+        write_multi_tree(self.tmp, prs, raw_files(prs, tamper=(child_job(7)['url'], {'duration': 999})))
+        with self.assertRaises(SystemExit):
+            self.audit()
+        report = json.loads((self.tmp / 'data/validation-multi.json').read_text('utf-8'))
+        self.assertEqual(report['sections']['source_time']['status'], 'differences_found')
+        self.assertEqual(report['overall_status'], 'differences_found')
+        self.assertNotEqual(report['overall_status'], 'unverified')
+
+    def test_not_applicable_sections_explain_reasons(self):  # REQ-025 AC02
+        prs = [pr_without_gate()]
+        write_multi_tree(self.tmp, prs, raw_files(prs))
+        report = self.audit()
+        self.assertTrue(report['checks_passed'])
+        self.assertEqual(report['overall_status'], 'not_applicable')
+        source_time = report['sections']['source_time']
+        self.assertEqual(source_time['status'], 'not_applicable')
+        self.assertTrue(source_time['reason'])
+        publish = report['sections']['publish_consistency']
+        self.assertEqual(publish['status'], 'not_applicable')
+        self.assertIn('validate_bundle', publish['reason'])
+
+    def test_full_coverage_overall_verified_and_exit_consistent(self):  # REQ-025 AC04
+        prs = [pr_with_gate(7)]
+        write_multi_tree(self.tmp, prs, raw_files(prs))
+        report = self.audit()
+        self.assertTrue(report['checks_passed'])
+        self.assertEqual(report['overall_status'], 'verified')
+        self.assertEqual(report['sections']['derived_consistency']['status'], 'passed')
+        self.assertEqual(report['sections']['source_time']['status'], 'verified')
+        self.assertEqual(report['sections']['queue_components']['status'], 'verified')
+
+    def test_audit_crash_writes_failure_report_and_preserves_error(self):  # REQ-025 AC03
+        prs = [pr_with_gate(7)]
+        write_multi_tree(self.tmp, prs, raw_files(prs))
+        snapshot_path = self.tmp / 'data/repos/ubs-test.json'
+        snapshot = json.loads(snapshot_path.read_text('utf-8'))
+        snapshot['prs'][0]['repository'] = 'openeuler/wrong-repo'  # violates the derived identity assert
+        snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False), 'utf-8')
+        (self.tmp / 'web/data/repos/ubs-test.json').write_text(snapshot_path.read_text('utf-8'))  # keep the mirror identical
+        with self.assertRaises(AssertionError):
+            self.audit()
+        report = json.loads((self.tmp / 'data/validation-multi.json').read_text('utf-8'))
+        self.assertEqual(report['overall_status'], 'failed')
+        self.assertFalse(report['checks_passed'])
+        self.assertIn('AssertionError', report['error'])
+        self.assertTrue(report['affected_scope'])
+
+
 class SingleRepoValidateTests(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix='req023-single-'))
@@ -429,6 +512,9 @@ class SingleRepoValidateTests(unittest.TestCase):
         self.assertEqual(report['source_audit']['status'], 'verified')
         job = report['source_audit']['categories']['job_timing']
         self.assertEqual((job['applicable'], job['verified_consistent']), (4, 4))
+        self.assertEqual(report['overall_status'], 'verified')
+        self.assertEqual(report['sections']['derived_consistency']['status'], 'passed')
+        self.assertEqual(report['sections']['queue_components']['status'], 'verified')
 
     def test_zero_coverage_fails_unverified(self):  # REQ-023 AC01
         prs = [pr_with_gate(7), pr_with_gate(9)]
@@ -453,6 +539,22 @@ class SingleRepoValidateTests(unittest.TestCase):
         self.assertEqual(queue['status'], 'differences_found')
         self.assertIn(trigger_url, queue['difference_details'][0])
         self.assertIn('waiting=999', queue['difference_details'][0])
+
+    def test_crash_writes_failure_report_and_preserves_error(self):  # REQ-025 AC03
+        prs = [pr_with_gate(7), pr_with_gate(9)]
+        self.write_tree(prs, raw_files(prs))
+        snapshot_path = self.tmp / 'data/snapshot.json'
+        snapshot = json.loads(snapshot_path.read_text('utf-8'))
+        snapshot['prs'][0]['batches'][0]['e2e_ms'] = 12345  # violates the derived e2e assert
+        snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False), 'utf-8')
+        (self.tmp / 'web/data/snapshot.json').write_text(snapshot_path.read_text('utf-8'))
+        proc = self.run_validate()
+        self.assertNotEqual(proc.returncode, 0)
+        report = json.loads((self.tmp / 'data/validation.json').read_text('utf-8'))
+        self.assertEqual(report['overall_status'], 'failed')
+        self.assertFalse(report['checks_passed'])
+        self.assertIn('AssertionError', report['error'])
+        self.assertTrue(report['affected_scope'])
 
 
 if __name__ == '__main__':
