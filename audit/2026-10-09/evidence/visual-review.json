@@ -1,0 +1,10 @@
+{
+  "review_method": "真实Chrome截图；截图禁用有限CSS动画后人工检查。不同数据仓库复用已验证模板，长表重复行抽查，不把截图生成本身当作视觉通过。",
+  "reviewed_images": ["screenshots/contact-sheet.png", "screenshots/visual-mobile-triton-viewport.png", "screenshots/mobile-triton-charts-crop.png", "screenshots/ubs-detail-crop.png", "screenshots/visual-desktop-ubs-repo-ubs-engine-viewport.png", "screenshots/visual-tablet-ubs-viewport.png", "screenshots/triton-six-hour-mismatch.png"],
+  "checks": [
+    {"id":"M01","label":"手机Triton横轴时间标签可读","state":"failed","expected":"相邻时间刻度不重叠且端点标签可见","actual":"390px宽度仍生成7个完整日期时间刻度，邻近文本重叠，左右端点被裁切","evidence":["screenshots/mobile-triton-charts-crop.png"],"location":"web/triton-view.js:202-205,245-248"},
+    {"id":"M02","label":"桌面主要视图视觉与单样本图","state":"passed","expected":"指标、图例、图表、质量列表可读，单样本位置正常","actual":"九仓总览、UBS单仓/质量、口径、Triton及ham单样本图在已阅截图可读；长表重复行抽查","evidence":["screenshots/contact-sheet.png"]},
+    {"id":"M03","label":"UBS批次详情与时间线","state":"passed","expected":"代表批次突出，耗时列与时间线对应且有滚动能力","actual":"PR1600的代表取消批次7469默认展开，184.40分钟E2E与任务明细一致","evidence":["screenshots/ubs-detail-crop.png"]},
+    {"id":"M04","label":"Triton新鲜度延迟提醒","state":"passed","expected":"超过北京时间13:00加90分钟且快照仍08:17时显示延迟","actual":"继续审查时已经14:39，提醒按实际检查时刻显示；这不是采集失败已证实的结论","evidence":["screenshots/visual-mobile-triton-viewport.png"]}
+  ]
+}

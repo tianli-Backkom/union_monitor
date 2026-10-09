@@ -1,0 +1,3121 @@
+{
+  "version": 1,
+  "artifact": {
+    "identity": "ubs-triton-merged-dashboard",
+    "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+    "view": "21 major views; named shared controls and metric groups"
+  },
+  "categories": [
+    {
+      "id": "usefulness",
+      "label": "看板用途与完整性",
+      "applicable": true,
+      "assessment": "21个主要视图均有入口与数据验证；Triton全页时间联动未达标。"
+    },
+    {
+      "id": "clarity",
+      "label": "分析表达清晰度",
+      "applicable": true,
+      "assessment": "口径主要定义保留；选区、搜索提示、共享外壳与手机显示存在已复现偏差。"
+    },
+    {
+      "id": "visual",
+      "label": "视觉与交互一致性",
+      "applicable": true,
+      "assessment": "Chrome三种宽度截图和Edge关键路径已检查；键盘、手机和跨域状态存在问题。长表重复行采用抽查。"
+    },
+    {
+      "id": "authority",
+      "label": "来源权威与置信度",
+      "applicable": true,
+      "assessment": "当前提供的是派生快照；原始平台和历史attempt证据缺失。发布配置不能替代真实部署历史验证。"
+    },
+    {
+      "id": "accuracy",
+      "label": "数值与计算准确性",
+      "applicable": true,
+      "assessment": "203 PR、826批次及Triton66批派生值全量重算一致；该结论不证明原始来源准确。"
+    },
+    {
+      "id": "within",
+      "label": "图内数值与说明一致",
+      "applicable": true,
+      "assessment": "正常选区的两图统计与独立重算一致；搜索分组说明有偏差。"
+    },
+    {
+      "id": "details",
+      "label": "完整来源详情",
+      "applicable": true,
+      "assessment": "正常详情可追溯至原始链接；失配事件合成边界漏批，原始证据未提供。"
+    },
+    {
+      "id": "cross",
+      "label": "跨组件与导出一致",
+      "applicable": true,
+      "assessment": "UBS正常导出通过；Triton过滤/导出、跨域状态和切仓详情存在不一致。"
+    },
+    {
+      "id": "quality",
+      "label": "数据质量保护",
+      "applicable": true,
+      "assessment": "缺值/故障/合成时间边界暴露门禁和发布保护不足。"
+    },
+    {
+      "id": "conclusion",
+      "label": "结论支持",
+      "applicable": false,
+      "assessment": "详见审查报告及覆盖矩阵。",
+      "reason": "看板没有提出因果或决策性结论；记录的是实际耗时、状态与样本。"
+    }
+  ],
+  "units": [
+    {
+      "id": "ubs-overview",
+      "label": "UBS九仓总览",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U01",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U01"
+              ]
+            },
+            {
+              "id": "U02-all",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U02-all"
+              ]
+            },
+            {
+              "id": "U04-name",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U04-name"
+              ]
+            },
+            {
+              "id": "D07",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D07"
+              ]
+            },
+            {
+              "id": "M02",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M02"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U01",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U01"
+              ]
+            },
+            {
+              "id": "U02-all",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U02-all"
+              ]
+            },
+            {
+              "id": "U04-name",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U04-name"
+              ]
+            },
+            {
+              "id": "D07",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D07"
+              ]
+            },
+            {
+              "id": "M02",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M02"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "visual": {
+          "checks": [
+            {
+              "id": "U01",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U01"
+              ]
+            },
+            {
+              "id": "U02-all",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U02-all"
+              ]
+            },
+            {
+              "id": "U04-name",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U04-name"
+              ]
+            },
+            {
+              "id": "D07",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D07"
+              ]
+            },
+            {
+              "id": "M02",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M02"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-ubs-engine",
+      "label": "单仓 ubs-engine",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-engine"
+              ]
+            },
+            {
+              "id": "U07-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-engine"
+              ]
+            },
+            {
+              "id": "D01-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-engine"
+              ]
+            },
+            {
+              "id": "D02-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-engine"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-engine"
+              ]
+            },
+            {
+              "id": "U07-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-engine"
+              ]
+            },
+            {
+              "id": "D01-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-engine"
+              ]
+            },
+            {
+              "id": "D02-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-engine"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-ubs-engine",
+      "label": "数据质量 ubs-engine",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-engine"
+              ]
+            },
+            {
+              "id": "U09-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-engine"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-engine"
+              ]
+            },
+            {
+              "id": "U09-ubs-engine",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-engine"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-ubs-comm",
+      "label": "单仓 ubs-comm",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-comm"
+              ]
+            },
+            {
+              "id": "U07-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-comm"
+              ]
+            },
+            {
+              "id": "D01-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-comm"
+              ]
+            },
+            {
+              "id": "D02-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-comm"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-comm"
+              ]
+            },
+            {
+              "id": "U07-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-comm"
+              ]
+            },
+            {
+              "id": "D01-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-comm"
+              ]
+            },
+            {
+              "id": "D02-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-comm"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-ubs-comm",
+      "label": "数据质量 ubs-comm",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-comm"
+              ]
+            },
+            {
+              "id": "U09-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-comm"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-comm"
+              ]
+            },
+            {
+              "id": "U09-ubs-comm",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-comm"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-ubs-virt",
+      "label": "单仓 ubs-virt",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-virt"
+              ]
+            },
+            {
+              "id": "U07-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-virt"
+              ]
+            },
+            {
+              "id": "D01-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-virt"
+              ]
+            },
+            {
+              "id": "D02-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-virt"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-virt"
+              ]
+            },
+            {
+              "id": "U07-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-virt"
+              ]
+            },
+            {
+              "id": "D01-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-virt"
+              ]
+            },
+            {
+              "id": "D02-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-virt"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-ubs-virt",
+      "label": "数据质量 ubs-virt",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-virt"
+              ]
+            },
+            {
+              "id": "U09-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-virt"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-virt"
+              ]
+            },
+            {
+              "id": "U09-ubs-virt",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-virt"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-ubs-io",
+      "label": "单仓 ubs-io",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-io"
+              ]
+            },
+            {
+              "id": "U07-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-io"
+              ]
+            },
+            {
+              "id": "D01-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-io"
+              ]
+            },
+            {
+              "id": "D02-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-io"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-io"
+              ]
+            },
+            {
+              "id": "U07-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-io"
+              ]
+            },
+            {
+              "id": "D01-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-io"
+              ]
+            },
+            {
+              "id": "D02-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-io"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-ubs-io",
+      "label": "数据质量 ubs-io",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-io"
+              ]
+            },
+            {
+              "id": "U09-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-io"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-io"
+              ]
+            },
+            {
+              "id": "U09-ubs-io",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-io"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-ubs-mem",
+      "label": "单仓 ubs-mem",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-mem"
+              ]
+            },
+            {
+              "id": "U07-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-mem"
+              ]
+            },
+            {
+              "id": "D01-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-mem"
+              ]
+            },
+            {
+              "id": "D02-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-mem"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-mem"
+              ]
+            },
+            {
+              "id": "U07-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-mem"
+              ]
+            },
+            {
+              "id": "D01-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-mem"
+              ]
+            },
+            {
+              "id": "D02-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-mem"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-ubs-mem",
+      "label": "数据质量 ubs-mem",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-mem"
+              ]
+            },
+            {
+              "id": "U09-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-mem"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-mem"
+              ]
+            },
+            {
+              "id": "U09-ubs-mem",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-mem"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-OmniStateStore",
+      "label": "单仓 OmniStateStore",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-OmniStateStore"
+              ]
+            },
+            {
+              "id": "U07-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-OmniStateStore"
+              ]
+            },
+            {
+              "id": "D01-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-OmniStateStore"
+              ]
+            },
+            {
+              "id": "D02-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-OmniStateStore"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-OmniStateStore"
+              ]
+            },
+            {
+              "id": "U07-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-OmniStateStore"
+              ]
+            },
+            {
+              "id": "D01-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-OmniStateStore"
+              ]
+            },
+            {
+              "id": "D02-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-OmniStateStore"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-OmniStateStore",
+      "label": "数据质量 OmniStateStore",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-OmniStateStore"
+              ]
+            },
+            {
+              "id": "U09-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-OmniStateStore"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-OmniStateStore"
+              ]
+            },
+            {
+              "id": "U09-OmniStateStore",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-OmniStateStore"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-ham",
+      "label": "单仓 ham",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ham"
+              ]
+            },
+            {
+              "id": "U07-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ham"
+              ]
+            },
+            {
+              "id": "D01-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ham"
+              ]
+            },
+            {
+              "id": "D02-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ham"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ham"
+              ]
+            },
+            {
+              "id": "U07-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ham"
+              ]
+            },
+            {
+              "id": "D01-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ham"
+              ]
+            },
+            {
+              "id": "D02-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ham"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-ham",
+      "label": "数据质量 ham",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ham"
+              ]
+            },
+            {
+              "id": "U09-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ham"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ham"
+              ]
+            },
+            {
+              "id": "U09-ham",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ham"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-ubturbo",
+      "label": "单仓 ubturbo",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubturbo"
+              ]
+            },
+            {
+              "id": "U07-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubturbo"
+              ]
+            },
+            {
+              "id": "D01-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubturbo"
+              ]
+            },
+            {
+              "id": "D02-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubturbo"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubturbo"
+              ]
+            },
+            {
+              "id": "U07-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubturbo"
+              ]
+            },
+            {
+              "id": "D01-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubturbo"
+              ]
+            },
+            {
+              "id": "D02-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubturbo"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-ubturbo",
+      "label": "数据质量 ubturbo",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubturbo"
+              ]
+            },
+            {
+              "id": "U09-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubturbo"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubturbo"
+              ]
+            },
+            {
+              "id": "U09-ubturbo",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubturbo"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-ubs-atomic",
+      "label": "单仓 ubs-atomic",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U05-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-atomic"
+              ]
+            },
+            {
+              "id": "U07-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-atomic"
+              ]
+            },
+            {
+              "id": "D01-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-atomic"
+              ]
+            },
+            {
+              "id": "D02-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-atomic"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "accuracy": {
+          "checks": [
+            {
+              "id": "U05-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U05-ubs-atomic"
+              ]
+            },
+            {
+              "id": "U07-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U07-ubs-atomic"
+              ]
+            },
+            {
+              "id": "D01-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D01-ubs-atomic"
+              ]
+            },
+            {
+              "id": "D02-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D02-ubs-atomic"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "quality-ubs-atomic",
+      "label": "数据质量 ubs-atomic",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U08-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-atomic"
+              ]
+            },
+            {
+              "id": "U09-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-atomic"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "U08-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U08-ubs-atomic"
+              ]
+            },
+            {
+              "id": "U09-ubs-atomic",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U09-ubs-atomic"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "method",
+      "label": "统计口径",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "U10-method",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U10-method"
+              ]
+            },
+            {
+              "id": "M02",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M02"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "clarity": {
+          "checks": [
+            {
+              "id": "U10-method",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U10-method"
+              ]
+            },
+            {
+              "id": "M02",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M02"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "triton",
+      "label": "Triton趋势与全局上下文",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "usefulness": {
+          "checks": [
+            {
+              "id": "T01",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T01"
+              ]
+            },
+            {
+              "id": "T08-6",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T08-6"
+              ]
+            },
+            {
+              "id": "T09",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T09"
+              ]
+            },
+            {
+              "id": "T17",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T17"
+              ]
+            },
+            {
+              "id": "A02",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A02"
+              ]
+            },
+            {
+              "id": "A01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A01"
+              ]
+            },
+            {
+              "id": "A03",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A03"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F01",
+              "status": "open",
+              "checkIds": [
+                "T08-6",
+                "T09"
+              ]
+            },
+            {
+              "id": "F03",
+              "status": "open",
+              "checkIds": [
+                "T17",
+                "A02"
+              ]
+            },
+            {
+              "id": "F14",
+              "status": "open",
+              "checkIds": [
+                "A01"
+              ]
+            },
+            {
+              "id": "F17",
+              "status": "open",
+              "checkIds": [
+                "A03"
+              ]
+            }
+          ]
+        },
+        "clarity": {
+          "checks": [
+            {
+              "id": "T01",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T01"
+              ]
+            },
+            {
+              "id": "T08-6",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T08-6"
+              ]
+            },
+            {
+              "id": "T09",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T09"
+              ]
+            },
+            {
+              "id": "T17",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T17"
+              ]
+            },
+            {
+              "id": "A02",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A02"
+              ]
+            },
+            {
+              "id": "A01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A01"
+              ]
+            },
+            {
+              "id": "A03",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A03"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F01",
+              "status": "open",
+              "checkIds": [
+                "T08-6",
+                "T09"
+              ]
+            },
+            {
+              "id": "F03",
+              "status": "open",
+              "checkIds": [
+                "T17",
+                "A02"
+              ]
+            },
+            {
+              "id": "F14",
+              "status": "open",
+              "checkIds": [
+                "A01"
+              ]
+            },
+            {
+              "id": "F17",
+              "status": "open",
+              "checkIds": [
+                "A03"
+              ]
+            }
+          ]
+        },
+        "visual": {
+          "checks": [
+            {
+              "id": "T01",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T01"
+              ]
+            },
+            {
+              "id": "T08-6",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T08-6"
+              ]
+            },
+            {
+              "id": "T09",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T09"
+              ]
+            },
+            {
+              "id": "T17",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T17"
+              ]
+            },
+            {
+              "id": "A02",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A02"
+              ]
+            },
+            {
+              "id": "A01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A01"
+              ]
+            },
+            {
+              "id": "A03",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A03"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F01",
+              "status": "open",
+              "checkIds": [
+                "T08-6",
+                "T09"
+              ]
+            },
+            {
+              "id": "F03",
+              "status": "open",
+              "checkIds": [
+                "T17",
+                "A02"
+              ]
+            },
+            {
+              "id": "F14",
+              "status": "open",
+              "checkIds": [
+                "A01"
+              ]
+            },
+            {
+              "id": "F17",
+              "status": "open",
+              "checkIds": [
+                "A03"
+              ]
+            }
+          ]
+        },
+        "cross": {
+          "checks": [
+            {
+              "id": "T01",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T01"
+              ]
+            },
+            {
+              "id": "T08-6",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T08-6"
+              ]
+            },
+            {
+              "id": "T09",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T09"
+              ]
+            },
+            {
+              "id": "T17",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T17"
+              ]
+            },
+            {
+              "id": "A02",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A02"
+              ]
+            },
+            {
+              "id": "A01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A01"
+              ]
+            },
+            {
+              "id": "A03",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A03"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F01",
+              "status": "open",
+              "checkIds": [
+                "T08-6",
+                "T09"
+              ]
+            },
+            {
+              "id": "F03",
+              "status": "open",
+              "checkIds": [
+                "T17",
+                "A02"
+              ]
+            },
+            {
+              "id": "F14",
+              "status": "open",
+              "checkIds": [
+                "A01"
+              ]
+            },
+            {
+              "id": "F17",
+              "status": "open",
+              "checkIds": [
+                "A03"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ubs-calcs",
+      "label": "UBS代表值与批次任务值",
+      "kind": "claim",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "accuracy": {
+          "checks": [
+            {
+              "id": "D03",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D03"
+              ]
+            },
+            {
+              "id": "D04",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D04"
+              ]
+            },
+            {
+              "id": "D05",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D05"
+              ]
+            },
+            {
+              "id": "D06",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D06"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "D03",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D03"
+              ]
+            },
+            {
+              "id": "D04",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D04"
+              ]
+            },
+            {
+              "id": "D05",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D05"
+              ]
+            },
+            {
+              "id": "D06",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D06"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "triton-e2e",
+      "label": "Triton E2E散点与统计",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "accuracy": {
+          "checks": [
+            {
+              "id": "T02",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T02"
+              ]
+            },
+            {
+              "id": "A12-e2e-all",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A12-e2e-all"
+              ]
+            },
+            {
+              "id": "A13-e2e",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A13-e2e"
+              ]
+            },
+            {
+              "id": "D08",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D08"
+              ]
+            },
+            {
+              "id": "D09",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D09"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "within": {
+          "checks": [
+            {
+              "id": "T02",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T02"
+              ]
+            },
+            {
+              "id": "A12-e2e-all",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A12-e2e-all"
+              ]
+            },
+            {
+              "id": "A13-e2e",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A13-e2e"
+              ]
+            },
+            {
+              "id": "D08",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D08"
+              ]
+            },
+            {
+              "id": "D09",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D09"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "triton-npu",
+      "label": "NPU散点与排队统计",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "accuracy": {
+          "checks": [
+            {
+              "id": "T03",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T03"
+              ]
+            },
+            {
+              "id": "A12-npu-all",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A12-npu-all"
+              ]
+            },
+            {
+              "id": "A13-npu",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A13-npu"
+              ]
+            },
+            {
+              "id": "D09",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D09"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "within": {
+          "checks": [
+            {
+              "id": "T03",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T03"
+              ]
+            },
+            {
+              "id": "A12-npu-all",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A12-npu-all"
+              ]
+            },
+            {
+              "id": "A13-npu",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A13-npu"
+              ]
+            },
+            {
+              "id": "D09",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D09"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "T03",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T03"
+              ]
+            },
+            {
+              "id": "A12-npu-all",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A12-npu-all"
+              ]
+            },
+            {
+              "id": "A13-npu",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A13-npu"
+              ]
+            },
+            {
+              "id": "D09",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#D09"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-detail",
+      "label": "UBS详情完整性与归属",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "visual": {
+          "checks": [
+            {
+              "id": "U24",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U24"
+              ]
+            },
+            {
+              "id": "U25",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U25"
+              ]
+            },
+            {
+              "id": "U34",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U34"
+              ]
+            },
+            {
+              "id": "U35",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U35"
+              ]
+            },
+            {
+              "id": "U37",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U37"
+              ]
+            },
+            {
+              "id": "M03",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M03"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F04",
+              "status": "open",
+              "checkIds": [
+                "U34",
+                "U35"
+              ]
+            },
+            {
+              "id": "F09",
+              "status": "open",
+              "checkIds": [
+                "U37"
+              ]
+            }
+          ]
+        },
+        "details": {
+          "checks": [
+            {
+              "id": "U24",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U24"
+              ]
+            },
+            {
+              "id": "U25",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U25"
+              ]
+            },
+            {
+              "id": "U34",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U34"
+              ]
+            },
+            {
+              "id": "U35",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U35"
+              ]
+            },
+            {
+              "id": "U37",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U37"
+              ]
+            },
+            {
+              "id": "M03",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M03"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F04",
+              "status": "open",
+              "checkIds": [
+                "U34",
+                "U35"
+              ]
+            },
+            {
+              "id": "F09",
+              "status": "open",
+              "checkIds": [
+                "U37"
+              ]
+            }
+          ]
+        },
+        "cross": {
+          "checks": [
+            {
+              "id": "U24",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U24"
+              ]
+            },
+            {
+              "id": "U25",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U25"
+              ]
+            },
+            {
+              "id": "U34",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U34"
+              ]
+            },
+            {
+              "id": "U35",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U35"
+              ]
+            },
+            {
+              "id": "U37",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U37"
+              ]
+            },
+            {
+              "id": "M03",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M03"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F04",
+              "status": "open",
+              "checkIds": [
+                "U34",
+                "U35"
+              ]
+            },
+            {
+              "id": "F09",
+              "status": "open",
+              "checkIds": [
+                "U37"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "triton-detail",
+      "label": "Triton悬浮与批次明细",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "visual": {
+          "checks": [
+            {
+              "id": "T18",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T18"
+              ]
+            },
+            {
+              "id": "T19",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T19"
+              ]
+            },
+            {
+              "id": "T20",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T20"
+              ]
+            },
+            {
+              "id": "T21",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T21"
+              ]
+            },
+            {
+              "id": "T28",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T28"
+              ]
+            }
+          ],
+          "findings": []
+        },
+        "details": {
+          "checks": [
+            {
+              "id": "T18",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T18"
+              ]
+            },
+            {
+              "id": "T19",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T19"
+              ]
+            },
+            {
+              "id": "T20",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T20"
+              ]
+            },
+            {
+              "id": "T21",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T21"
+              ]
+            },
+            {
+              "id": "T28",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T28"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "ubs-export",
+      "label": "UBS四种CSV与安全转义",
+      "kind": "comparison",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "cross": {
+          "checks": [
+            {
+              "id": "U21",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U21"
+              ]
+            },
+            {
+              "id": "U22",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U22"
+              ]
+            },
+            {
+              "id": "U23",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U23"
+              ]
+            },
+            {
+              "id": "U26",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U26"
+              ]
+            },
+            {
+              "id": "U29",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U29"
+              ]
+            },
+            {
+              "id": "U31",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U31"
+              ]
+            },
+            {
+              "id": "U38",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/ubs-browser.json#U38"
+              ]
+            },
+            {
+              "id": "A11",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A11"
+              ]
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "triton-export",
+      "label": "Triton CSV筛选对应",
+      "kind": "comparison",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "cross": {
+          "checks": [
+            {
+              "id": "T16",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#T16"
+              ]
+            },
+            {
+              "id": "T29",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T29"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F02",
+              "status": "open",
+              "checkIds": [
+                "T16"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "reload",
+      "label": "共享重新加载/故障隔离",
+      "kind": "control",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "visual": {
+          "checks": [
+            {
+              "id": "F04",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#F04"
+              ]
+            },
+            {
+              "id": "F01-ubs-index-404",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#F01-ubs-index-404"
+              ]
+            },
+            {
+              "id": "F01-triton-404",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#F01-triton-404"
+              ]
+            },
+            {
+              "id": "F03-triton-404",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#F03-triton-404"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F05",
+              "status": "open",
+              "checkIds": [
+                "F04"
+              ]
+            },
+            {
+              "id": "F06",
+              "status": "open",
+              "checkIds": [
+                "F01-ubs-index-404"
+              ]
+            }
+          ]
+        },
+        "quality": {
+          "checks": [
+            {
+              "id": "F04",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#F04"
+              ]
+            },
+            {
+              "id": "F01-ubs-index-404",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#F01-ubs-index-404"
+              ]
+            },
+            {
+              "id": "F01-triton-404",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#F01-triton-404"
+              ]
+            },
+            {
+              "id": "F03-triton-404",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#F03-triton-404"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F05",
+              "status": "open",
+              "checkIds": [
+                "F04"
+              ]
+            },
+            {
+              "id": "F06",
+              "status": "open",
+              "checkIds": [
+                "F01-ubs-index-404"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "source",
+      "label": "原始来源和历史attempt证据",
+      "kind": "question",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "authority": {
+          "checks": [
+            {
+              "id": "D10",
+              "state": "unverified",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": []
+            }
+          ],
+          "findings": []
+        },
+        "details": {
+          "checks": [
+            {
+              "id": "D10",
+              "state": "unverified",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": []
+            }
+          ],
+          "findings": []
+        }
+      }
+    },
+    {
+      "id": "collector-gate",
+      "label": "采集质量门禁边界",
+      "kind": "control",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "quality": {
+          "checks": [
+            {
+              "id": "S01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#S01"
+              ]
+            },
+            {
+              "id": "S02",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#S02"
+              ]
+            },
+            {
+              "id": "S03",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#S03"
+              ]
+            },
+            {
+              "id": "S04",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/data-audit.json#S04"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F08",
+              "status": "open",
+              "checkIds": [
+                "S01"
+              ]
+            },
+            {
+              "id": "F10",
+              "status": "open",
+              "checkIds": [
+                "S04"
+              ]
+            },
+            {
+              "id": "F11",
+              "status": "open",
+              "checkIds": [
+                "S02",
+                "S03"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "publish-gate",
+      "label": "缓存与发布工件一致性",
+      "kind": "control",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "quality": {
+          "checks": [
+            {
+              "id": "P01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/deployment-audit.json#P01"
+              ]
+            },
+            {
+              "id": "P02",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/deployment-audit.json#P02"
+              ]
+            },
+            {
+              "id": "P03",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/deployment-audit.json#P03"
+              ]
+            },
+            {
+              "id": "P05",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/deployment-audit.json#P05"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F07",
+              "status": "open",
+              "checkIds": [
+                "P01"
+              ]
+            },
+            {
+              "id": "F12",
+              "status": "open",
+              "checkIds": [
+                "P02",
+                "P03"
+              ]
+            },
+            {
+              "id": "F13",
+              "status": "open",
+              "checkIds": [
+                "P05"
+              ]
+            }
+          ]
+        },
+        "authority": {
+          "checks": [
+            {
+              "id": "P01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/deployment-audit.json#P01"
+              ]
+            },
+            {
+              "id": "P02",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/deployment-audit.json#P02"
+              ]
+            },
+            {
+              "id": "P03",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/deployment-audit.json#P03"
+              ]
+            },
+            {
+              "id": "P05",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/deployment-audit.json#P05"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F07",
+              "status": "open",
+              "checkIds": [
+                "P01"
+              ]
+            },
+            {
+              "id": "F12",
+              "status": "open",
+              "checkIds": [
+                "P02",
+                "P03"
+              ]
+            },
+            {
+              "id": "F13",
+              "status": "open",
+              "checkIds": [
+                "P05"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "mobile",
+      "label": "手机布局与刻度",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "visual": {
+          "checks": [
+            {
+              "id": "V-mobile-triton",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#V-mobile-triton"
+              ]
+            },
+            {
+              "id": "V-mobile-nav-label",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#V-mobile-nav-label"
+              ]
+            },
+            {
+              "id": "A10",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A10"
+              ]
+            },
+            {
+              "id": "M01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M01"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F16",
+              "status": "open",
+              "checkIds": [
+                "A10",
+                "M01",
+                "V-mobile-nav-label"
+              ]
+            }
+          ]
+        },
+        "clarity": {
+          "checks": [
+            {
+              "id": "V-mobile-triton",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#V-mobile-triton"
+              ]
+            },
+            {
+              "id": "V-mobile-nav-label",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser-supplement.json#V-mobile-nav-label"
+              ]
+            },
+            {
+              "id": "A10",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A10"
+              ]
+            },
+            {
+              "id": "M01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/visual-review.json#M01"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F16",
+              "status": "open",
+              "checkIds": [
+                "A10",
+                "M01",
+                "V-mobile-nav-label"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "keyboard",
+      "label": "键盘关键控件",
+      "kind": "control",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "visual": {
+          "checks": [
+            {
+              "id": "T26",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T26"
+              ]
+            },
+            {
+              "id": "T27",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/triton-browser.json#T27"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F15",
+              "status": "open",
+              "checkIds": [
+                "T26",
+                "T27"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "history",
+      "label": "仓库历史导航",
+      "kind": "control",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "visual": {
+          "checks": [
+            {
+              "id": "A05",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A05"
+              ]
+            },
+            {
+              "id": "A06",
+              "state": "passed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A06"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F18",
+              "status": "open",
+              "checkIds": [
+                "A05"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "search-note",
+      "label": "关注列表样本说明",
+      "kind": "component",
+      "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+      "categories": {
+        "clarity": {
+          "checks": [
+            {
+              "id": "A01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A01"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F14",
+              "status": "open",
+              "checkIds": [
+                "A01"
+              ]
+            }
+          ]
+        },
+        "within": {
+          "checks": [
+            {
+              "id": "A01",
+              "state": "failed",
+              "revision": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f",
+              "evidence": [
+                "evidence/additional-browser.json#A01"
+              ]
+            }
+          ],
+          "findings": [
+            {
+              "id": "F14",
+              "status": "open",
+              "checkIds": [
+                "A01"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

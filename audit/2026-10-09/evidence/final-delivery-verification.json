@@ -1,0 +1,9 @@
+{
+  "report_exists": true,
+  "report_bytes": 21602,
+  "findings": 19,
+  "json_evidence_files_valid": 13,
+  "broken_local_links": [],
+  "production_changed": [],
+  "status": "passed"
+}

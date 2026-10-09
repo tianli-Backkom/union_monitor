@@ -1,0 +1,356 @@
+{
+  "schema_version": 1,
+  "scope": "Read-only public legacy sites; no collector or deployment invoked; large JSON summarized rather than saved",
+  "runtime": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "captured_at": "2026-10-09T03:49:09.271826+00:00",
+  "sources": [
+    {
+      "id": "ubs-index",
+      "requested_url": "https://tianli-backkom.github.io/ubs_core_monitor/",
+      "retrieved_at": "2026-10-09T03:48:57.773060+00:00",
+      "status": 200,
+      "final_url": "https://tianli-backkom.github.io/ubs_core_monitor/",
+      "bytes": 15207,
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "Last-Modified": "Fri, 09 Oct 2026 03:12:53 GMT",
+        "ETag": "\"6ac85bb5-3b67\""
+      },
+      "sha256": "7c5f9c739c0c054a18a5753eadff9230f590130ea6d19b9300dca5c0e416720f",
+      "saved_source": "audit/2026-10-09/evidence/deployment-oldsite-ubs-index.html"
+    },
+    {
+      "id": "ubs-app",
+      "requested_url": "https://tianli-backkom.github.io/ubs_core_monitor/app.js",
+      "retrieved_at": "2026-10-09T03:48:57.773577+00:00",
+      "status": 200,
+      "final_url": "https://tianli-backkom.github.io/ubs_core_monitor/app.js",
+      "bytes": 31581,
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8",
+        "Last-Modified": "Fri, 09 Oct 2026 03:12:53 GMT",
+        "ETag": "\"6ac85bb5-7b5d\""
+      },
+      "sha256": "9dcf01eda971e2d429bc2d2bcfdde70e56bd10b24df8ba962210f18e58d084b5",
+      "saved_source": "audit/2026-10-09/evidence/deployment-oldsite-ubs-app.js"
+    },
+    {
+      "id": "ubs-core",
+      "requested_url": "https://tianli-backkom.github.io/ubs_core_monitor/core.js",
+      "retrieved_at": "2026-10-09T03:48:57.773745+00:00",
+      "status": 200,
+      "final_url": "https://tianli-backkom.github.io/ubs_core_monitor/core.js",
+      "bytes": 4407,
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8",
+        "Last-Modified": "Fri, 09 Oct 2026 03:12:53 GMT",
+        "ETag": "\"6ac85bb5-1137\""
+      },
+      "sha256": "77822223f831309e753d481119424435b21070cb2a620a14996eda5b020a6be9",
+      "saved_source": "audit/2026-10-09/evidence/deployment-oldsite-ubs-core.js"
+    },
+    {
+      "id": "ubs-repositories",
+      "requested_url": "https://tianli-backkom.github.io/ubs_core_monitor/data/repositories.json",
+      "retrieved_at": "2026-10-09T03:48:57.774185+00:00",
+      "status": 200,
+      "final_url": "https://tianli-backkom.github.io/ubs_core_monitor/data/repositories.json",
+      "bytes": 35123,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Last-Modified": "Fri, 09 Oct 2026 03:12:53 GMT",
+        "ETag": "\"6ac85bb5-8933\""
+      },
+      "sha256": "ed9ad58f5b6aeeacbd531affb794092c39fa0f56db0e6cbe0ce785715bed64c9",
+      "payload_summary": {
+        "keys": [
+          "schema_version",
+          "start_ms",
+          "end_ms",
+          "generated_at",
+          "repositories"
+        ],
+        "meta": null,
+        "collected_at": null,
+        "window_start": null,
+        "window_end": null,
+        "summary": null,
+        "prs": 0,
+        "batches": 0,
+        "repositories": 9,
+        "repositories_summary": [
+          {
+            "name": "ubs-engine",
+            "status": "success",
+            "snapshot": "repos/ubs-engine.json"
+          },
+          {
+            "name": "ubs-comm",
+            "status": "success",
+            "snapshot": "repos/ubs-comm.json"
+          },
+          {
+            "name": "ubs-virt",
+            "status": "success",
+            "snapshot": "repos/ubs-virt.json"
+          },
+          {
+            "name": "ubs-io",
+            "status": "success",
+            "snapshot": "repos/ubs-io.json"
+          },
+          {
+            "name": "ubs-mem",
+            "status": "success",
+            "snapshot": "repos/ubs-mem.json"
+          },
+          {
+            "name": "OmniStateStore",
+            "status": "success",
+            "snapshot": "repos/OmniStateStore.json"
+          },
+          {
+            "name": "ham",
+            "status": "success",
+            "snapshot": "repos/ham.json"
+          },
+          {
+            "name": "ubturbo",
+            "status": "success",
+            "snapshot": "repos/ubturbo.json"
+          },
+          {
+            "name": "ubs-atomic",
+            "status": "success",
+            "snapshot": "repos/ubs-atomic.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ubs-snapshot",
+      "requested_url": "https://tianli-backkom.github.io/ubs_core_monitor/data/snapshot.json",
+      "retrieved_at": "2026-10-09T03:49:03.344571+00:00",
+      "status": 200,
+      "final_url": "https://tianli-backkom.github.io/ubs_core_monitor/data/snapshot.json",
+      "bytes": 1186277,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Last-Modified": "Fri, 09 Oct 2026 03:12:53 GMT",
+        "ETag": "\"6ac85bb5-1219e5\""
+      },
+      "sha256": "8a5ea0c19e078723e2e611ffd952bb3b8f8356c246f5b1df4807e1dc18368b4b",
+      "payload_summary": {
+        "keys": [
+          "meta",
+          "prs"
+        ],
+        "meta": {
+          "repository": "openeuler/ubs-engine",
+          "branch": "master",
+          "start_ms": 1788922962965,
+          "end_ms": 1791514962965,
+          "collected_at": "2026-10-09T03:05:50.278098+00:00",
+          "generated_at": "2026-10-09T03:05:50.292551+00:00",
+          "days": 30,
+          "expected_prs": 65,
+          "collected_prs": 65,
+          "errors": [],
+          "limited": false,
+          "timezone": "Asia/Shanghai",
+          "schema_version": 3,
+          "job_mapping": [
+            {
+              "path": "multiarch/openeuler/trigger/ubs-engine",
+              "kind": "trigger",
+              "evidence": [
+                {
+                  "pr": 1648,
+                  "comment_id": 191936493,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7664/"
+                },
+                {
+                  "pr": 1648,
+                  "comment_id": 191943014,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7664/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191923101,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7661/"
+                }
+              ],
+              "verified": true
+            },
+            {
+              "path": "multiarch/openeuler/x86-64/ubs-engine",
+              "kind": "x86",
+              "evidence": [
+                {
+                  "pr": 1648,
+                  "comment_id": 191943014,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/x86-64/job/ubs-engine/7654/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191926643,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/x86-64/job/ubs-engine/7651/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191943290,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/x86-64/job/ubs-engine/7655/"
+                }
+              ],
+              "verified": true
+            },
+            {
+              "path": "multiarch/openeuler/aarch64/ubs-engine",
+              "kind": "arm",
+              "evidence": [
+                {
+                  "pr": 1648,
+                  "comment_id": 191943014,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/aarch64/job/ubs-engine/7662/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191926643,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/aarch64/job/ubs-engine/7659/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191943290,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/aarch64/job/ubs-engine/7663/"
+                }
+              ],
+              "verified": true
+            },
+            {
+              "path": "multiarch/manual-jobs/openeuler/UBSCore/pre-commit/ubs-engine",
+              "kind": "pre-commit",
+              "evidence": [
+                {
+                  "pr": 1648,
+                  "comment_id": 191943014,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/pre-commit/job/ubs-engine/7002/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191926643,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/pre-commit/job/ubs-engine/6999/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191943290,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/pre-commit/job/ubs-engine/7003/"
+                }
+              ],
+              "verified": true
+            },
+            {
+              "path": "multiarch/manual-jobs/openeuler/UBSCore/check_issue_associate/issue-associate-check",
+              "kind": "issue-check",
+              "evidence": [
+                {
+                  "pr": 1648,
+                  "comment_id": 191943014,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/check_issue_associate/job/issue-associate-check/11601/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191926643,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/check_issue_associate/job/issue-associate-check/11595/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191943290,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/check_issue_associate/job/issue-associate-check/11603/"
+                }
+              ],
+              "verified": true
+            },
+            {
+              "path": "multiarch/manual-jobs/openeuler/UBSCore/DT/ubs-engine",
+              "kind": "dt",
+              "evidence": [
+                {
+                  "pr": 1648,
+                  "comment_id": 191943014,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/DT/job/ubs-engine/6949/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191926643,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/DT/job/ubs-engine/6946/"
+                },
+                {
+                  "pr": 1647,
+                  "comment_id": 191943290,
+                  "build_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/DT/job/ubs-engine/6950/"
+                }
+              ],
+              "verified": true
+            }
+          ],
+          "source": "GitCode API v5 + Jenkins REST / trigger console / allowlisted webhook metadata"
+        },
+        "collected_at": null,
+        "window_start": null,
+        "window_end": null,
+        "summary": null,
+        "prs": 65,
+        "batches": 0,
+        "repositories": 0
+      }
+    },
+    {
+      "id": "triton-index",
+      "requested_url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/index.html",
+      "retrieved_at": "2026-10-09T03:49:03.351878+00:00",
+      "status": 200,
+      "final_url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/index.html",
+      "bytes": 921266,
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "Last-Modified": "Fri, 09 Oct 2026 00:17:54 GMT",
+        "ETag": "\"6ac832b2-e0eb2\""
+      },
+      "sha256": "b481248a41dfcd1144fa1568c66010420cc1268f3f0209abdd96cb060b6a4b27",
+      "payload_summary": {
+        "keys": [
+          "repo",
+          "window_start",
+          "window_end",
+          "collected_at",
+          "batches",
+          "summary"
+        ],
+        "meta": null,
+        "collected_at": "2026-10-09T00:17:38.669255Z",
+        "window_start": "2026-10-06T00:13:06Z",
+        "window_end": "2026-10-09T00:13:06Z",
+        "summary": {
+          "prs": 38,
+          "batches": 66,
+          "valid": 65,
+          "median": 1580.0,
+          "p90": 3620.2000000000003,
+          "approximate": 66,
+          "incomplete": 0,
+          "api_calls": 533
+        },
+        "prs": 0,
+        "batches": 66,
+        "repositories": 0
+      },
+      "saved_source": "audit/2026-10-09/evidence/deployment-oldsite-triton-index.html"
+    },
+    {
+      "id": "triton-core",
+      "requested_url": "https://tianli-backkom.github.io/Triton-Ascend_monitor/web/triton-core.js",
+      "retrieved_at": "2026-10-09T03:49:03.363338+00:00",
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    }
+  ]
+}

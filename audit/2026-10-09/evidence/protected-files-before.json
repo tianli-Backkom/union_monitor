@@ -1,0 +1,292 @@
+[
+  {
+    "path": "web\\app.js",
+    "sha256": "0D68BF69B7F08C08E1E79E45CC90BEFA32755ABA27FCD58843295257E546BE37",
+    "bytes": 33978
+  },
+  {
+    "path": "web\\core.js",
+    "sha256": "77822223F831309E753D481119424435B21070CB2A620A14996EDA5B020A6BE9",
+    "bytes": 4407
+  },
+  {
+    "path": "web\\favicon.svg",
+    "sha256": "129D036AB969267E95F647D53E1C4D910D3D1F4BAC97BF0D8B2FAFDCE37B0F96",
+    "bytes": 317
+  },
+  {
+    "path": "web\\index.html",
+    "sha256": "EE0B1EDCD32FDFCC1044D6D78476E545B506D24C3CA3D7D2CF761F876D7FDA1B",
+    "bytes": 17082
+  },
+  {
+    "path": "web\\router.js",
+    "sha256": "DF3CD0071BD0D89C3053069E3B80141D78EC579676293D396C5A74EE9C472E67",
+    "bytes": 1771
+  },
+  {
+    "path": "web\\style.css",
+    "sha256": "EEEA2576AB117751F513BC14C855B510848036F0742337A1E8682C1947422872",
+    "bytes": 40275
+  },
+  {
+    "path": "web\\triton-core.js",
+    "sha256": "A35D4F6C7E02CAF1EA3E4EE708AAF8571BFDB3CC3200B03BD98B5FC2A63451FB",
+    "bytes": 6260
+  },
+  {
+    "path": "web\\triton-view.js",
+    "sha256": "124E96EB1CE39851C12A61D7E3B513D07ECEDB0F1EFD549F55C499153B6908CC",
+    "bytes": 34459
+  },
+  {
+    "path": "web\\data\\repositories.json",
+    "sha256": "F53F90DFFF82A205EA40980FAA76C7FB1DEB2E682609F124BFE8FC2CEAB0AF11",
+    "bytes": 55002
+  },
+  {
+    "path": "web\\data\\triton.json",
+    "sha256": "BC3D2D67D3B479EEA71F5EC286E27F8E2AC2F2D3D4D002C7C5B40D71D2642CEB",
+    "bytes": 1209308
+  },
+  {
+    "path": "web\\data\\repos\\ham.json",
+    "sha256": "A21CBF007E2624F3C5718671F049BEEA2B6A76352FB5813D2C065C6E41476FFE",
+    "bytes": 56481
+  },
+  {
+    "path": "web\\data\\repos\\OmniStateStore.json",
+    "sha256": "10FE6F645928273499E8F85BC8E9B5A4080792211E84EF0A684D159B83979D44",
+    "bytes": 428745
+  },
+  {
+    "path": "web\\data\\repos\\ubs-atomic.json",
+    "sha256": "2621213E9F6408066031019F3AFE231D82D912B007BEC2A93C24CEA9CE4A1F0A",
+    "bytes": 195223
+  },
+  {
+    "path": "web\\data\\repos\\ubs-comm.json",
+    "sha256": "20055854468BBB070BA3F19BEEA4ED5C6C8EFB7CB7BF2879D2470CD0BD50C4DA",
+    "bytes": 877349
+  },
+  {
+    "path": "web\\data\\repos\\ubs-engine.json",
+    "sha256": "6BE797A184056018D746680E70C2AC26AC6BB7174C8A493CBE80604A552F7725",
+    "bytes": 1966810
+  },
+  {
+    "path": "web\\data\\repos\\ubs-io.json",
+    "sha256": "C823704DF88935A9F08DE34D87E11113AC21FBD917279B7C653E40368A6642E0",
+    "bytes": 100459
+  },
+  {
+    "path": "web\\data\\repos\\ubs-mem.json",
+    "sha256": "BED9AE9998F1D653BE04E5E5BBD58370AE9438ACC7032F117931976C54FC4459",
+    "bytes": 296885
+  },
+  {
+    "path": "web\\data\\repos\\ubs-virt.json",
+    "sha256": "212B007DE41F2C02430B26DAB92E79D34275307674E5219B4711670AC2F2F3AD",
+    "bytes": 1611564
+  },
+  {
+    "path": "web\\data\\repos\\ubturbo.json",
+    "sha256": "1646040CA9F475B9C407B047E20600ACEA775F6FD3A24CAD78D3D9C3ED32E251",
+    "bytes": 700464
+  },
+  {
+    "path": "data\\snapshot.json",
+    "sha256": "6BE797A184056018D746680E70C2AC26AC6BB7174C8A493CBE80604A552F7725",
+    "bytes": 1966810
+  },
+  {
+    "path": "triton\\__init__.py",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "triton\\dashboard.py",
+    "sha256": "3519BC05041A7A4326CBAAD65FF34C176A1898F06ACAEFFE7F7E5F57D479EE82",
+    "bytes": 25996
+  },
+  {
+    "path": "triton\\pr_identity.py",
+    "sha256": "16F2D8F1767BFBB5E57D600ACB515F1F623168E5D78CDAB3C34E124E81A8D215",
+    "bytes": 4488
+  },
+  {
+    "path": "triton\\quality.py",
+    "sha256": "E99B5646CC9F76353BEE8AE2EF76E57532EC5EA395B7288DE14EA7B55AF899E2",
+    "bytes": 4615
+  },
+  {
+    "path": "triton\\verify_deployment.py",
+    "sha256": "9443CB7AD742AF38E489C53003D59C1386FDFE47BA46C14AD5B9D1D308D86E08",
+    "bytes": 1019
+  },
+  {
+    "path": "tests\\experience.test.cjs",
+    "sha256": "22A2ADDB06390809A30792B737722CB6AB9E1E1A2A2CA6948881C09F4646A563",
+    "bytes": 1238
+  },
+  {
+    "path": "tests\\frontend.test.cjs",
+    "sha256": "EBF2C2B8698781D44AD5A7A5BB38CECAFA25687B2956D7ED254A3F3D9384D0AD",
+    "bytes": 3827
+  },
+  {
+    "path": "tests\\multi_repo_frontend.test.cjs",
+    "sha256": "40DBB48A480042C40217421C3CB142AEF0B518DF9F9ABFEE51E84B1030CDCD34",
+    "bytes": 1679
+  },
+  {
+    "path": "tests\\router.test.cjs",
+    "sha256": "31371F9B1F68608F2DA9590AB422C014D3660EABC2DF7ED9BE8D058415B3AA52",
+    "bytes": 3636
+  },
+  {
+    "path": "tests\\test_collection_multi.py",
+    "sha256": "A4DDC44816918A62BACD002B40C9EF6768FE4B89D4ECA7F30ABDE7DB696E775C",
+    "bytes": 2517
+  },
+  {
+    "path": "tests\\test_exports.py",
+    "sha256": "76450E575BD48C0C3536FEE4E5E246D9078EAFF53F62226DCB151450741C3669",
+    "bytes": 1882
+  },
+  {
+    "path": "tests\\test_metrics.py",
+    "sha256": "56BB27CE41D7859E6901670B2A673749AF4E185DED282F3E042EA998283EE0A8",
+    "bytes": 3608
+  },
+  {
+    "path": "tests\\test_multi_storage.py",
+    "sha256": "42AD9A9A582B6CBB62D89620DD37525DBA9A25CDE60F45B940F9F9CB15157B21",
+    "bytes": 4200
+  },
+  {
+    "path": "tests\\test_pages_workflow.py",
+    "sha256": "4233E1344A790B451F77241EBA048E45AD4301A14DA1735182A25299A1CBCAFA",
+    "bytes": 2304
+  },
+  {
+    "path": "tests\\test_representative.py",
+    "sha256": "C2C517990F9766C452E031C0A9D8B7953583E75530B2F15577CA790DABCDF365",
+    "bytes": 1181
+  },
+  {
+    "path": "tests\\test_triton_dashboard.py",
+    "sha256": "7D8875F754F7E8212A0E0D2CDCD3641AB313347016CA250E4ECDD5C523C4D57F",
+    "bytes": 9355
+  },
+  {
+    "path": "tests\\test_triton_npu_api.py",
+    "sha256": "8065A58285992D2CB9CC53C1321A2917C33F000BC2B6A505E155268CE109C304",
+    "bytes": 1346
+  },
+  {
+    "path": "tests\\test_triton_pr_identity.py",
+    "sha256": "A3660C6520A99648D9EA0A1764AC994C2D6F7A30D509CB58A4E85915D9B65E11",
+    "bytes": 7208
+  },
+  {
+    "path": "tests\\test_triton_pr_quality.py",
+    "sha256": "4E311335B00859DCF4997BCAA375E056E8744F901DE649263FCB1373D57208DA",
+    "bytes": 1742
+  },
+  {
+    "path": "tests\\test_triton_quality.py",
+    "sha256": "5CF19DF4D40B477A83E08D327AD0D0C10428430CBCB916DFA841B7D6F4C9B8CF",
+    "bytes": 2945
+  },
+  {
+    "path": "tests\\test_triton_workflow.py",
+    "sha256": "A3A20C1565CE5F8AA530F1CD185BC5C55C8FA5081390610BD6B5DDD380D88268",
+    "bytes": 4061
+  },
+  {
+    "path": "tests\\triton_core.test.cjs",
+    "sha256": "9A93C3A004352E9EA35056AAC9E4CD3C6858E7C169F98FF07AF5E813C7BBE609",
+    "bytes": 9544
+  },
+  {
+    "path": "tests\\fixtures\\minimal\\repositories.json",
+    "sha256": "2212D4D8651CCC01EC7F3B8E6D7396F9BF23356E738CD5BF24A460F080E28D25",
+    "bytes": 541
+  },
+  {
+    "path": "tests\\fixtures\\minimal\\snapshot.json",
+    "sha256": "32F32FFE5B8ED5BA6ABAE44144C2E3CF6B81036217AF620ED5BFCA2087A0B661",
+    "bytes": 5009
+  },
+  {
+    "path": "tests\\fixtures\\minimal\\triton.json",
+    "sha256": "C8166CBAC415F48B31B7F983877223134910214D19E813A6C93B53C5CBEE7BC6",
+    "bytes": 7163
+  },
+  {
+    "path": "tests\\fixtures\\minimal\\repos\\ubs-engine.json",
+    "sha256": "32F32FFE5B8ED5BA6ABAE44144C2E3CF6B81036217AF620ED5BFCA2087A0B661",
+    "bytes": 5009
+  },
+  {
+    "path": ".github\\workflows\\pages.yml",
+    "sha256": "548BE235AA504EF48ED1AE058EBF49327876BDB7947CCF0FCC55A843D88578FE",
+    "bytes": 2001
+  },
+  {
+    "path": ".github\\workflows\\triton-refresh.yml",
+    "sha256": "9EAB9D67B65E6FFC20CA5CC6E638FFD76B3881CED81A2A83E361BC0D78339A50",
+    "bytes": 4987
+  },
+  {
+    "path": "scripts\\devdata.py",
+    "sha256": "E076F191B56DDF7C12EE019036A69F1F497CCD4C439679F02EFD8C1BAC027C4D",
+    "bytes": 9112
+  },
+  {
+    "path": ".gitignore",
+    "sha256": "2FC57E994CC6AB986901038D50C138ACF45A3EC5056727FC8F15A51E826BF2FE",
+    "bytes": 87
+  },
+  {
+    "path": "collect.py",
+    "sha256": "37F11F589D691C418DBC401EA390FCA45645AFD4EA8EA3B3D061DBB5C18AA4AA",
+    "bytes": 18216
+  },
+  {
+    "path": "metrics.py",
+    "sha256": "D0EC8508B57199431A5933B1BC29D68C76ECCAF4EE25AEA08BF6DA7329B827FD",
+    "bytes": 6378
+  },
+  {
+    "path": "README.md",
+    "sha256": "674C7049DCFC39349CD8AB1D09E39CE558B95122CE9C3697C19E0E9AE7018CAB",
+    "bytes": 18063
+  },
+  {
+    "path": "repositories.json",
+    "sha256": "EE86AFFC5BC1B5BAB3C99A33A5A428D8F5ECA868C0C4389F2DF2F797C4A194CF",
+    "bytes": 868
+  },
+  {
+    "path": "repository_store.py",
+    "sha256": "581D9A2487C6C738D17BABC5B80651C630A97480D9571E786F969F4C6649560C",
+    "bytes": 4238
+  },
+  {
+    "path": "serve.py",
+    "sha256": "8728D3D9D9610DB208E2FEB97D92EBF8EDA54E44742B2C7AFA8C7A15F9F06968",
+    "bytes": 2611
+  },
+  {
+    "path": "validate_multi.py",
+    "sha256": "19B1501E0E0B544493D90EAD5348D81588552F53B6E41517997BF0617D94C317",
+    "bytes": 8250
+  },
+  {
+    "path": "validate.py",
+    "sha256": "292422BD9EB9C36C5F05B5FD333FA40D0119B4408582013B1B0AD600E7AAD8E0",
+    "bytes": 4441
+  }
+]

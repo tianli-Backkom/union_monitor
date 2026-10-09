@@ -1,0 +1,1 @@
+{"checks": 5, "failed": 5, "cache_paths": {"daily": ["data/raw", "data/repos", "data/repositories.json", "data/efficiency.sqlite", "web/data", "evidence/triton", "data/snapshot.json"], "incremental": ["web/data", "data/repositories.json", "data/repos", "data/snapshot.json"]}}
