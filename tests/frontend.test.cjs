@@ -65,5 +65,19 @@ test('navigation or reload closes a stale PR detail and clears its reference',()
  assert.match(source,/detailRepo=currentRepository;/,'openDetail must record the repository the detail was opened from');
  assert.ok(source.includes("(detailPR||$('detail').open)&&(domain!=='ubs'||!repo||currentRepository!==detailRepo)"),'context-changing navigation (domain, repository or leaving the repo view) must close the detail dialog');
  assert.ok(source.includes("reloadGate.begin();$('detail').close();"),'a reload attempt must close the open detail at start, before fetching');
- assert.ok(source.includes("addEventListener('close',()=>{if(!$('detail').open)detailPR=null;})"),'any dialog close (button, overlay, Esc) must clear the stale detail reference');
+ assert.ok(source.includes("addEventListener('close',()=>{if(!$('detail').open){detailPR=null;detailSnapshot=null;}})"),'any dialog close (button, overlay, Esc) must clear the stale detail reference and snapshot binding');
+});
+
+test('detail CSV export is bound to the detail entity, not the global current repository',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+ assert.match(source,/detailSnapshot=snapshot;/,'openDetail must bind the snapshot the detail was opened from');
+ assert.ok(source.includes('detailSnapshot.meta.repository,detailPR.number'),'the batch CSV repository column must come from the detail-bound snapshot');
+ assert.ok(source.includes('${detailRepo}-pr-${detailPR.number}-batches.csv'),'the batch CSV filename must use the detail-bound repository');
+ assert.ok(source.includes("if(!detailPR||!detailSnapshot){ensureNotice().textContent='无法导出批次：当前没有打开有效的 PR 详情。';return;}"),'a missing detail context must block export with an explanatory notice');
+ const start=source.indexOf('function exportBatches');
+ const end=source.indexOf('async function load');
+ assert.ok(start>-1&&end>start,'exportBatches source found');
+ const exportSrc=source.slice(start,end);
+ assert.ok(!exportSrc.includes('currentRepository'),'exportBatches must not read the global current repository');
+ assert.ok(!exportSrc.includes('snapshot.meta.repository'),'exportBatches must not read the global snapshot');
 });
