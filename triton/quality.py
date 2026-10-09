@@ -11,6 +11,10 @@ def stamp(value):
 
 def validate(runs, payload):
     errors=[]; warnings=[]
+    try:
+        as_of=stamp(payload.get("window_end"))
+    except (ValueError,TypeError,AttributeError):
+        as_of=None
     represented={j.get("id") for b in payload["batches"] for j in b.get("npu_jobs",[])}
     for run in runs:
         prefix=f"run {run.get('id')}"
@@ -20,6 +24,17 @@ def validate(runs, payload):
                 errors.append(prefix+": missing PR identity or metadata")
             if proof.get("run_id")!=run.get("id") or not proof.get("method") or proof.get("pr")!=run.get("pr") or proof.get("resolved_head_sha")!=run.get("head_sha"):
                 errors.append(prefix+": missing or inconsistent PR association evidence")
+        if run.get("status")=="completed":
+            try:
+                created=stamp(run.get("created_at")); updated=stamp(run.get("updated_at"))
+                if not created or not updated:
+                    errors.append(prefix+": completed workflow missing created_at/updated_at")
+                elif updated<created:
+                    errors.append(prefix+": completed workflow ends before its start")
+                elif as_of is not None and updated>as_of:
+                    errors.append(prefix+": completion time beyond the as-of reference")
+            except (ValueError,TypeError,AttributeError):
+                errors.append(prefix+": invalid workflow timestamp")
         if not run.get("jobs_complete"):
             errors.append(prefix+": incomplete job list")
         for job in run.get("jobs", []):
@@ -58,6 +73,19 @@ def validate(runs, payload):
             except (KeyError,TypeError,ValueError): errors.append(f"batch {batch['id']}: invalid measurement")
         expected=max(values) if values and not batch.get("npu_data_missing") else None
         if batch.get("npu_queue_seconds")!=expected: errors.append(f"batch {batch['id']}: maximum mismatch")
+        try:
+            b_start=stamp(batch.get("start_at")); b_end=stamp(batch.get("end_at"))
+        except (ValueError,TypeError,AttributeError):
+            errors.append(f"batch {batch['id']}: invalid timestamp"); b_start=b_end=None
+        if b_start and b_end and b_end<b_start:
+            errors.append(f"batch {batch['id']}: end before start")
+        if batch.get("status") in ("success","failure") and b_start and not b_end:
+            warnings.append(f"batch {batch['id']}: no valid completion time; excluded from completed statistics")
+        if batch.get("status")=="running" and b_start and as_of is not None:
+            observed=(as_of-b_start).total_seconds()
+            value=batch.get("duration_seconds")
+            if not isinstance(value,(int,float)) or isinstance(value,bool) or abs(value-observed)>1:
+                errors.append(f"batch {batch['id']}: running batch must report only the observed span to as_of")
     report={"passed":not errors,"errors":errors,"warnings":warnings,"runs":len(runs),"batches":len(payload['batches']),
             "npu_points":sum(b.get('npu_queue_seconds') is not None for b in payload['batches'])}
     return report

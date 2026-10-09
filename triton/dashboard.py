@@ -255,8 +255,13 @@ def build_batches(runs, as_of, window_start=None):
             status = "success"
         else:
             status = "unknown"
-        measured_end = end or now
-        duration = max(0, (measured_end-start).total_seconds()) if start and measured_end else None
+        # REQ-019: a completed batch without end evidence must not have its E2E
+        # fabricated by measuring to as_of; only running batches observe to now.
+        measured_end = end or (now if running else None)
+        span = (measured_end - start).total_seconds() if start and measured_end else None
+        # REQ-019: an inverted span is invalid evidence, never a clamped 0-second E2E.
+        inverted = span is not None and span < 0
+        duration = None if inverted else span
         critical = max(rows, key=lambda r: dt(r.get("updated_at")) or datetime.min.replace(tzinfo=UTC))
         action = next((r for r in rows if (r.get("name") or "").lower()=="integration tests"), critical)
         workflows = []
@@ -278,6 +283,8 @@ def build_batches(runs, as_of, window_start=None):
         npu_waits=[job["wait_seconds"] for job in npu_jobs if job.get("wait_seconds") is not None]
         npu_missing=any(r.get("jobs_complete") is False for r in rows) or any(j.get("wait_seconds") is None and j.get("conclusion")!="skipped" for j in npu_jobs)
         missing = []
+        if inverted: missing.append("workflow 时间倒置，E2E 无效")
+        if not running and start and end is None: missing.append("无完成时间证据，E2E 留空")
         if any(not r.get("jobs_complete") for r in rows): missing.append("部分 workflow 的 job 明细未采集")
         if not first.get("pr"): missing.append("未可靠关联 PR")
         batches.append({

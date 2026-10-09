@@ -1,6 +1,6 @@
 import copy,json,unittest
 from unittest.mock import patch
-from triton.dashboard import GitHub,build_payload
+from triton.dashboard import GitHub,build_batches,build_payload
 from triton.quality import validate,fingerprint,verify_page
 
 class QualityTests(unittest.TestCase):
@@ -45,3 +45,47 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(verify_page(html,manifest),p)
         p['collected_at']='old'
         with self.assertRaises(ValueError):verify_page('<script id="data">'+json.dumps(p)+'</script>',manifest)
+
+
+class WorkflowTimeGateTests(unittest.TestCase):
+    def run_row(self, **overrides):
+        row={"id":1,"event":"pull_request","head_sha":"abc","created_at":"2026-09-22T02:00:00Z","updated_at":"2026-09-22T02:05:00Z",
+             "status":"completed","conclusion":"success","jobs":[],"jobs_complete":True,"pr":7,"pr_title":"T",
+             "pr_url":"https://github.com/triton-lang/triton-ascend/pull/7","base_branch":"main",
+             "pr_evidence":{"method":"m","run_id":1,"pr":7,"resolved_head_sha":"abc"}}
+        row.update(overrides); return row
+    def test_inverted_workflow_time_fails_the_gate_and_never_clamps_to_zero(self):
+        row=self.run_row(updated_at="2026-09-22T01:00:00Z")
+        batch=build_batches([row],"2026-09-22T03:00:00Z")[0]
+        self.assertIsNone(batch["duration_seconds"])
+        self.assertTrue(any("倒置" in m for m in batch["missing"]))
+        self.assertFalse(validate([row],{"batches":[batch]})["passed"])
+    def test_completed_workflow_with_missing_or_unparseable_timestamps_fails(self):
+        self.assertFalse(validate([self.run_row(updated_at=None)],{"batches":[]})["passed"])
+        self.assertFalse(validate([self.run_row(updated_at="not-a-timestamp")],{"batches":[]})["passed"])
+    def test_completion_beyond_as_of_is_flagged(self):
+        row=self.run_row(updated_at="2026-09-30T00:00:00Z")
+        report=validate([row],{"batches":[],"window_end":"2026-09-29T00:00:00Z"})
+        self.assertFalse(report["passed"])
+        self.assertTrue(any("as-of" in e for e in report["errors"]))
+    def test_running_batch_reports_only_the_observed_span_to_as_of(self):
+        row=self.run_row(status="in_progress",conclusion=None,created_at="2026-09-28T10:00:00Z",updated_at="2026-09-28T10:30:00Z")
+        p=build_payload([row],"2026-09-27T00:00:00Z","2026-09-28T12:00:00Z","2026-09-28T12:00:00Z")
+        self.assertTrue(validate([row],p)["passed"])
+        p["batches"][0]["duration_seconds"]+=100
+        self.assertFalse(validate([row],p)["passed"])
+    def test_completed_batch_without_end_time_warns_and_is_excluded(self):
+        row=self.run_row(updated_at=None)
+        p=build_payload([row],"2026-09-21T00:00:00Z","2026-09-23T00:00:00Z","2026-09-23T00:00:00Z")
+        report=validate([row],p)
+        self.assertTrue(report["warnings"])
+        self.assertEqual(p["summary"]["valid"],0)
+        self.assertEqual(len(p["batches"]),1)
+    def test_skipped_and_unstarted_cancelled_jobs_are_not_missing_time(self):
+        job={"id":7,"name":"integration-tests-ascend (linux-amd64-a5-2, py3.12)","status":"completed","conclusion":"success",
+             "created_at":"2026-09-28T01:00:00Z","started_at":"2026-09-28T01:00:14Z","completed_at":"2026-09-28T02:00:00Z"}
+        skipped={**job,"id":8,"conclusion":"skipped","started_at":None,"completed_at":None}
+        cancelled={**job,"id":9,"conclusion":"cancelled","started_at":None,"completed_at":None}
+        row=self.run_row(created_at="2026-09-28T01:00:00Z",updated_at="2026-09-28T02:00:00Z",jobs=[job,skipped,cancelled])
+        p=build_payload([row],"2026-09-27T00:00:00Z","2026-09-29T00:00:00Z","2026-09-29T00:00:00Z")
+        self.assertTrue(validate([row],p)["passed"])
