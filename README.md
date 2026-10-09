@@ -123,6 +123,7 @@ python scripts/devdata.py
 | `scripts/verify_runtime.py`、`audit/2026-10-09/evidence/runtime-evidence.json` | REQ-040 CI 目标运行时兼容性验证：Python 3.12/Node 22 上执行测试、门禁与原始审计的适用部分，记录精确版本、命令、退出码、失败数与完整日志；CI 声明↔README↔交付结果三方一致；工件缺失时审计如实失败，不以 wrapper 退出 0 冒充通过 |
 | `scripts/verify_ubs_semantics.py`、`audit/2026-10-09/evidence/ubs-semantics-evidence.json` | REQ-041 UBS 代表值与跨仓算法保持验证：独立重算每 PR 代表批次（最长可测量终态 E2E、并列取 trigger 编号较大）、事件时间、任务值（仅取代表批次、同类缺失或关联不唯一留空、不从其他批次补取）与批次派生字段、任务算术；跨仓参与规则（success/partial 且快照范围与索引一致）镜像前端并逐仓记录排除原因，合法零 PR 仓库保留；复合 PR 主键与批次完整 URL 唯一、跨仓同号 PR 互不污染；Node 前端算法交叉核对；输入指纹与审计冻结基线一致时额外比对计数、有效样本（x86/ARM/DT 191/203/195）与聚合，输入更新后基线比对记 not_applicable、契约检查照常，不硬编码数量 |
 | `scripts/verify_ubs_filtering.py`、`audit/2026-10-09/evidence/ubs-filtering-evidence.json` | REQ-042 UBS 筛选保持验证：独立谓词与 `web/core.js` filterPRs 逐仓逐组合核对 PR 身份集合（状态 × 编号/标题/作者/SHA 搜索 × 完整性 × push/retest 触发；搜索大小写不敏感、首尾空格剥离）；触发请求按事件 id 去重并独立重算 create/push/retest/other 计数、无关联事件与未知来源批次（此类 PR 保留在默认集合、任何筛选不截批次）；同一 PR 在全部组合中的代表批次 URL 与 E2E/x86 排队及总耗时（含空值）不变、空值不补 0；无结果返回空集、默认参数（重置语义）返回完整 PR 集合；跨仓按状态汇聚计数与 repositoryRows 一致；指纹匹配审计冻结输入时回放 U12 组合计数与 U19 首行代表批次（含 4.125s+127ms=4.252s 算术），输入更新后基线比对记 not_applicable、契约检查照常 |
+| `scripts/verify_ubs_sorting.py`、`audit/2026-10-09/evidence/ubs-sorting-evidence.json` | REQ-043 UBS 排序与分页保持验证：PR 三种排序（代表 E2E 降序 / 批次数降序 / 创建时间降序，前两者并列按创建时间从新到旧、创建并列保持原序）完整序列与 `web/core.js` sortPRs 逐仓核对；仓库排序 P90 降序（空→-1）用独立重算 P90 值逐仓核对，PR 数降序与名称升序一致；分页数学（15 条/页，0/1/15/16/30/31 边界、0 条时 1/1 无记录、页码越界约束到合法页、全部页切片恰好划分序列无重复遗漏）独立模型核对，并锁定 app.js 源码契约（PAGE_SIZE=15、ceil/min/slice 公式、上一/下一页禁用条件、空态提示、筛选/排序/耗时类型切换回第一页、三种排序说明文案）；指纹匹配审计冻结输入时回放 U14–U18 分页与排序、A08 六个边界与 A14 仓库 P90 顺序，输入更新后基线比对记 not_applicable、契约检查照常 |
 
 SQLite 的 PR 与事件主键包含仓库标识，批次按完整 Jenkins URL 唯一；任务记录复用完整 URL。首次迁移会在 `data/` 自动保留 `*-before-multi-*.sqlite` 备份，将旧数据归入 ubs-engine。
 
@@ -223,6 +224,7 @@ python validate_bundle.py
 python -X utf8 scripts/verify_artifacts.py
 python -X utf8 scripts/verify_ubs_semantics.py
 python -X utf8 scripts/verify_ubs_filtering.py
+python -X utf8 scripts/verify_ubs_sorting.py
 python -X utf8 -m triton.verify_deployment <site-url> --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
 ```
 
