@@ -1,0 +1,316 @@
+{
+  "requirement": "REQ-047",
+  "tool": "scripts/verify_ubs_routes.py",
+  "executed_at": "2026-10-10T07:42:13+08:00",
+  "input": {
+    "bundle_fingerprint": "sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39",
+    "matches_audit_frozen_input": true,
+    "manifest_state": "verified",
+    "bundle_errors": 0
+  },
+  "views": {
+    "total": 21,
+    "expected_total": 21,
+    "repos": 9,
+    "per_repo": {
+      "ubs-engine": {
+        "repo": {
+          "hash": "#ubs/repo/ubs-engine",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 68
+        },
+        "quality": {
+          "hash": "#ubs/repo/ubs-engine/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 68
+        }
+      },
+      "ubs-comm": {
+        "repo": {
+          "hash": "#ubs/repo/ubs-comm",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 28
+        },
+        "quality": {
+          "hash": "#ubs/repo/ubs-comm/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 28
+        }
+      },
+      "ubs-virt": {
+        "repo": {
+          "hash": "#ubs/repo/ubs-virt",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 29
+        },
+        "quality": {
+          "hash": "#ubs/repo/ubs-virt/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 29
+        }
+      },
+      "ubs-io": {
+        "repo": {
+          "hash": "#ubs/repo/ubs-io",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 6
+        },
+        "quality": {
+          "hash": "#ubs/repo/ubs-io/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 6
+        }
+      },
+      "ubs-mem": {
+        "repo": {
+          "hash": "#ubs/repo/ubs-mem",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 12
+        },
+        "quality": {
+          "hash": "#ubs/repo/ubs-mem/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 12
+        }
+      },
+      "OmniStateStore": {
+        "repo": {
+          "hash": "#ubs/repo/OmniStateStore",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 20
+        },
+        "quality": {
+          "hash": "#ubs/repo/OmniStateStore/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 20
+        }
+      },
+      "ham": {
+        "repo": {
+          "hash": "#ubs/repo/ham",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 1
+        },
+        "quality": {
+          "hash": "#ubs/repo/ham/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 1
+        }
+      },
+      "ubturbo": {
+        "repo": {
+          "hash": "#ubs/repo/ubturbo",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 27
+        },
+        "quality": {
+          "hash": "#ubs/repo/ubturbo/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 27
+        }
+      },
+      "ubs-atomic": {
+        "repo": {
+          "hash": "#ubs/repo/ubs-atomic",
+          "view_name": "ubs-repo",
+          "nav_target": "ubs-repo",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 12
+        },
+        "quality": {
+          "hash": "#ubs/repo/ubs-atomic/quality",
+          "view_name": "ubs-quality",
+          "nav_target": "ubs-quality",
+          "roundtrip_ok": true,
+          "canonical_ok": true,
+          "snapshot_attribution_ok": true,
+          "prs": 12
+        }
+      }
+    },
+    "global": [
+      {
+        "hash": "#ubs",
+        "kind": "global-ubs",
+        "view_name": "ubs",
+        "nav_target": "ubs-overview",
+        "canonical_ok": true
+      },
+      {
+        "hash": "#triton",
+        "kind": "global-triton",
+        "view_name": "triton",
+        "nav_target": "triton",
+        "canonical_ok": true
+      },
+      {
+        "hash": "#method",
+        "kind": "global-method",
+        "view_name": "method",
+        "nav_target": "method",
+        "canonical_ok": true
+      }
+    ]
+  },
+  "router_matrix": {
+    "hash_cases": 55,
+    "to_hash_cases": 13,
+    "keep_pr_page_cases": 8,
+    "resolve_mismatches": {},
+    "parse_mismatches": {},
+    "to_hash_mismatches": {},
+    "keep_pr_page_mismatches": {}
+  },
+  "legacy_aliases": {
+    "#repositories": "#ubs",
+    "#overview": "#ubs/repo/ubs-engine",
+    "#prs": "#ubs/repo/ubs-engine",
+    "#quality": "#ubs/repo/ubs-engine/quality",
+    "#method": "#method",
+    "#repo/ubs-engine": "#ubs/repo/ubs-engine",
+    "#repo/ubs-comm/quality": "#ubs/repo/ubs-comm/quality",
+    "#repo/ubs-engine/method": "#method"
+  },
+  "unknown_routes": {
+    "(empty)": "#ubs",
+    "#xyz": "#ubs",
+    "#UBS": "#ubs",
+    "#ubs/repo": "#ubs",
+    "#ubs/unknown": "#ubs",
+    "#ubs/repo/unknown-repo": "#ubs/repo/unknown-repo"
+  },
+  "source_contracts": {
+    "checked": 34,
+    "missing": []
+  },
+  "baseline": {
+    "status": "matched",
+    "checks": {
+      "U01_nine_repos_all_views": {
+        "repos": 9,
+        "snapshots": 9,
+        "views": 21,
+        "expected": {
+          "repos": 9,
+          "snapshots": 9,
+          "views": 21
+        },
+        "passed": true
+      },
+      "U10-repositories_legacy": {
+        "resolved": "#ubs",
+        "expected": "#ubs",
+        "passed": true
+      },
+      "U10-overview_legacy": {
+        "resolved": "#ubs/repo/ubs-engine",
+        "expected": "#ubs/repo/ubs-engine",
+        "passed": true
+      },
+      "U10-prs_legacy": {
+        "resolved": "#ubs/repo/ubs-engine",
+        "expected": "#ubs/repo/ubs-engine",
+        "passed": true
+      },
+      "AC02_quality_legacy": {
+        "resolved": "#ubs/repo/ubs-engine/quality",
+        "expected": "#ubs/repo/ubs-engine/quality",
+        "passed": true
+      },
+      "AC02_repo_alias": {
+        "resolved": "#ubs/repo/ubs-engine",
+        "expected": "#ubs/repo/ubs-engine",
+        "passed": true
+      },
+      "AC02_method_alias": {
+        "resolved": "#method",
+        "expected": "#method",
+        "passed": true
+      },
+      "U11_unknown_repo_notice": {
+        "expected": "未知仓库显示未找到仓库提示且不借用其他仓数据",
+        "locked_by": "app.js:unknown_repo_notice+unknown_repo_loading+unknown_repo_hide_main+unknown_repo_footer+apply_route_snapshot_isolated 源码契约",
+        "passed": true
+      }
+    }
+  },
+  "node_cross_check": {
+    "status": "ok",
+    "compared": [
+      "resolve",
+      "parseHash",
+      "toHash",
+      "keepPRPage"
+    ]
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}
