@@ -44,3 +44,17 @@ test('app load() guards every await boundary with the reload gate',()=>{
  assert.ok(guards>=3,'index, snapshot commit and error paths must all be guarded, found '+guards);
  assert.match(source,/if\(reloadGate\.isCurrent\(gen\)\)window\.tritonPayload=d/,'the Triton payload commit must be generation-checked');
 });
+test('reload failure keeps the previous snapshot visible with its collection time',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+ assert.match(source,/function freshnessText\(\)/,'collection-time text is factored out for reuse');
+ assert.match(source,/重新加载快照失败：'\+e\.message\+'。当前仍显示 '\+freshnessText\(\)\+' 采集的快照/,'the failure notice must name the still-displayed snapshot time');
+ const failPath=source.slice(source.indexOf("}catch(e){"));
+ const hasDataBranch=failPath.indexOf('if(repositoryIndex){');
+ const hideViews=failPath.indexOf("for(const id of ['ubs-view'");
+ assert.ok(hasDataBranch>-1&&hideViews>-1&&hasDataBranch<hideViews,'the has-snapshot branch must run before the hide-views fallback');
+ const branchEnd=failPath.indexOf('return;',hasDataBranch);
+ assert.ok(branchEnd>-1,'the has-snapshot branch must return before the hide-views fallback runs');
+ const branch=failPath.slice(hasDataBranch,branchEnd);
+ assert.ok(branch.includes('navigate(location.hash);'),'the has-snapshot branch re-renders the current view');
+ assert.ok(branch.indexOf('navigate(location.hash);')<branch.indexOf("$('loading').hidden=false"),'the failure banner must be revealed after the re-render so the render path cannot hide it again');
+});
