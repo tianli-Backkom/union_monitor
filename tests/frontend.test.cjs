@@ -42,21 +42,23 @@ test('app load() guards every await boundary with the reload gate',()=>{
  assert.match(source,/const gen=reloadGate\.begin\(\)/,'load() must open a generation');
  const guards=(source.match(/if\(!reloadGate\.isCurrent\(gen\)\)return;/g)||[]).length;
  assert.ok(guards>=3,'index, snapshot commit and error paths must all be guarded, found '+guards);
- assert.match(source,/if\(reloadGate\.isCurrent\(gen\)\)window\.tritonPayload=d/,'the Triton payload commit must be generation-checked');
+  assert.match(source,/if\(reloadGate\.isCurrent\(gen\)\)\{window\.tritonPayload=d;tritonStatus='ok'\}/,'the Triton payload commit must be generation-checked');
 });
 test('reload failure keeps the previous snapshot visible with its collection time',()=>{
  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
  assert.match(source,/function freshnessText\(\)/,'collection-time text is factored out for reuse');
  assert.match(source,/重新加载快照失败：'\+e\.message\+'。当前仍显示 '\+freshnessText\(\)\+' 采集的快照/,'the failure notice must name the still-displayed snapshot time');
- const failPath=source.slice(source.indexOf("}catch(e){"));
- const hasDataBranch=failPath.indexOf('if(repositoryIndex){');
- const hideViews=failPath.indexOf("for(const id of ['ubs-view'");
- assert.ok(hasDataBranch>-1&&hideViews>-1&&hasDataBranch<hideViews,'the has-snapshot branch must run before the hide-views fallback');
- const branchEnd=failPath.indexOf('return;',hasDataBranch);
- assert.ok(branchEnd>-1,'the has-snapshot branch must return before the hide-views fallback runs');
- const branch=failPath.slice(hasDataBranch,branchEnd);
- assert.ok(branch.includes('navigate(location.hash);'),'the has-snapshot branch re-renders the current view');
- assert.ok(branch.indexOf('navigate(location.hash);')<branch.indexOf("$('loading').hidden=false"),'the failure banner must be revealed after the re-render so the render path cannot hide it again');
+  const failPath=source.slice(source.indexOf("}catch(e){"));
+  const hasDataBranch=failPath.indexOf('if(repositoryIndex){');
+  assert.ok(hasDataBranch>-1,'the has-snapshot branch must come first in the catch');
+  const branchEnd=failPath.indexOf('return;',hasDataBranch);
+  assert.ok(branchEnd>-1,'the has-snapshot branch must return before the first-load fallback runs');
+  const branch=failPath.slice(hasDataBranch,branchEnd);
+  assert.ok(branch.includes('navigate(location.hash);'),'the has-snapshot branch re-renders the current view');
+  assert.ok(branch.indexOf('navigate(location.hash);')<branch.indexOf("$('loading').hidden=false"),'the failure banner must be revealed after the re-render so the render path cannot hide it again');
+  const fallback=failPath.slice(branchEnd);
+  assert.ok(fallback.includes('navigate(location.hash);'),'REQ-010: the first-load fallback must still route the current view instead of hiding it');
+  assert.ok(!failPath.includes("for(const id of ['ubs-view'"),'REQ-010: a UBS index failure must not hide the triton and method views');
 });
 
 test('navigation or reload closes a stale PR detail and clears its reference',()=>{
@@ -78,6 +80,37 @@ test('detail CSV export is bound to the detail entity, not the global current re
  const end=source.indexOf('async function load');
  assert.ok(start>-1&&end>start,'exportBatches source found');
  const exportSrc=source.slice(start,end);
- assert.ok(!exportSrc.includes('currentRepository'),'exportBatches must not read the global current repository');
- assert.ok(!exportSrc.includes('snapshot.meta.repository'),'exportBatches must not read the global snapshot');
+  assert.ok(!exportSrc.includes('currentRepository'),'exportBatches must not read the global current repository');
+  assert.ok(!exportSrc.includes('snapshot.meta.repository'),'exportBatches must not read the global snapshot');
+});
+
+test('REQ-010: the two domains read independently — a UBS index failure cannot block Triton',()=>{
+  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+  const tritonStart=source.indexOf('const tritonTask=(async()=>{');
+  const ubsStart=source.indexOf("const response=await fetch('data/repositories.json'");
+  assert.ok(tritonStart>-1&&ubsStart>-1,'load() must define both domain read tasks');
+  assert.ok(tritonStart<ubsStart,'the Triton fetch must start before the UBS index fetch so an index failure can never prevent it');
+  assert.ok(source.includes('}),tritonTask]);'),'the success path awaits both domains together');
+  assert.ok(!source.includes('window.tritonPayload=null'),'a failed Triton re-read must keep the previous payload visible instead of nulling it');
+  assert.ok(source.includes("if(view==='ubs')$('loading').hidden=false;"),'the first-load UBS failure banner only takes over UBS views, leaving #triton usable');
+});
+
+test('REQ-010: Triton view states distinguish in-flight, failure and previous data',()=>{
+  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+  assert.ok(source.includes('正在读取 Triton 数据…'),'an in-flight state must have its own message (加载中)');
+  assert.ok(source.includes("Triton 数据读取失败：'+esc(tritonError||'未知错误')"),'failures must surface the error type instead of an empty/zero state');
+  assert.ok(source.includes('Triton 数据重新读取失败：'),'a re-read failure must explain that previous data is still shown');
+  assert.ok(source.includes("setAttribute('data-role','tritonError')"),'the re-read failure notice is deduplicated across re-renders');
+  assert.ok(source.includes("if(!d||typeof d!=='object'||!Array.isArray(d.batches))throw Error('Triton 数据格式无效')"),'bad Triton JSON shapes are rejected while empty batches stay legal zero data');
+});
+
+test('REQ-010: per-repo read failures degrade locally with distinct notices',()=>{
+  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+  assert.ok(source.includes("data.meta.repository!==entry.repository"),'a snapshot whose repository does not match its index entry must be rejected (no cross-repo borrowing)');
+  assert.ok(source.includes("entry.status='failed';entry.error='快照读取失败：'+error.message"),'a failing repository is marked failed without aborting the other reads');
+  assert.ok(source.includes("entry?.status==='failed'?'该仓库'+(entry.error||'数据不可用')+'。其他仓库与 Triton 数据不受影响。'"),'a read-failed repository must be told apart from a never-collected one');
+  assert.ok(source.includes('该仓库尚未获取数据，请查看采集状态后运行采集命令。'),'the pending (未获取) notice stays distinct from the failure notice');
+  assert.ok(source.includes("?' · 快照读取失败':' · 未获取数据'"),'the footer labels failure and never-collected differently');
+  assert.ok(source.includes("$('loading').hidden=!ubs||(cross?!!repositoryIndex:!!snapshot)"),'the overview keeps its status line visible while the index is unread and hides it once data exists');
+  assert.ok(source.includes("'仓库索引未读取，UBS 视图暂不可用'"),'a missing index must not be misreported as 未找到仓库');
 });
