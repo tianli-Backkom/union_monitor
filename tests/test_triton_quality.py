@@ -1,6 +1,7 @@
-import copy,json,unittest
+import copy,json,shutil,tempfile,unittest
+from pathlib import Path
 from unittest.mock import patch
-from triton.dashboard import GitHub,build_batches,build_payload
+from triton.dashboard import GitHub,build_batches,build_payload,collect
 from triton.quality import validate,fingerprint,verify_page
 
 class QualityTests(unittest.TestCase):
@@ -89,3 +90,49 @@ class WorkflowTimeGateTests(unittest.TestCase):
         row=self.run_row(created_at="2026-09-28T01:00:00Z",updated_at="2026-09-28T02:00:00Z",jobs=[job,skipped,cancelled])
         p=build_payload([row],"2026-09-27T00:00:00Z","2026-09-29T00:00:00Z","2026-09-29T00:00:00Z")
         self.assertTrue(validate([row],p)["passed"])
+
+
+class GitHubContractTests(unittest.TestCase):
+    def test_missing_null_or_non_array_workflow_runs_fails_closed(self):
+        for bad in ({}, {"workflow_runs": None}, {"workflow_runs": {"a": 1}}, {"workflow_runs": "oops"}, [], {"total_count": 3}):
+            with patch.object(GitHub, "get", return_value=(bad, {})):
+                with self.assertRaises(RuntimeError):
+                    GitHub().pages("/actions/runs", "workflow_runs")
+
+    def test_legal_empty_workflow_runs_is_zero_data_not_a_failure(self):
+        with patch.object(GitHub, "get", return_value=({"workflow_runs": [], "total_count": 0}, {})):
+            self.assertEqual(GitHub().pages("/actions/runs", "workflow_runs"), [])
+
+    def test_duplicate_records_across_pages_fail_instead_of_double_counting(self):
+        first={"workflow_runs":[{"id":i} for i in range(100)],"total_count":101}
+        second={"workflow_runs":[{"id":1}],"total_count":101}
+        with patch.object(GitHub, "get", side_effect=[(first,{}),(second,{})]):
+            with self.assertRaises(RuntimeError) as ctx:
+                GitHub().pages("/actions/runs", "workflow_runs")
+            self.assertIn("duplicate", str(ctx.exception))
+
+    def test_declared_count_mismatch_fails_instead_of_silent_truncation(self):
+        response={"workflow_runs":[{"id":1},{"id":2}],"total_count":5}
+        with patch.object(GitHub, "get", return_value=(response,{})):
+            with self.assertRaises(RuntimeError) as ctx:
+                GitHub().pages("/actions/runs", "workflow_runs")
+            self.assertIn("total_count", str(ctx.exception))
+
+    def test_bare_array_endpoints_reject_object_responses(self):
+        with patch.object(GitHub, "get", return_value=({"message": "Bad credentials"}, {})):
+            with self.assertRaises(RuntimeError):
+                GitHub().pages("/pulls")
+
+    def test_collect_contract_failure_names_source_without_credentials(self):
+        def fake_get(self, url):
+            if url.endswith("per_page=1"): return {"message": "Server Error"}, {}
+            return {"workflow_runs": []}, {}
+        tmp = Path(tempfile.mkdtemp(prefix="triton-contract-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        with patch.object(GitHub, "get", fake_get), patch("triton.dashboard.EVIDENCE", tmp):
+            with self.assertRaises(RuntimeError) as ctx:
+                collect(hours=72, as_of="2026-09-28T12:00:00Z")
+        message=str(ctx.exception)
+        self.assertIn("/actions/runs", message)
+        self.assertNotIn("Bearer", message)
+        self.assertFalse((tmp / "enriched-runs.json").exists())

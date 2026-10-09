@@ -347,16 +347,26 @@ class GitHub:
         while True:
             sep="&" if "?" in path else "?"
             data,_=self.get(f"{path}{sep}per_page=100&page={page}")
-            rows=data.get(field, []) if field else data
-            if field=="jobs":
-                if "jobs" not in data: raise RuntimeError("Jobs response missing jobs field")
-                expected=data.get("total_count",expected)
-                for row in rows:
-                    identity=row.get("id")
-                    if identity is not None and identity in seen: raise RuntimeError("Duplicate job across pages")
-                    if identity is not None: seen.add(identity)
-                if len(rows)<100 and expected is not None and len(out)+len(rows)!=expected:
-                    raise RuntimeError("Incomplete Jobs pagination")
+            if field is not None:
+                # REQ-018: a missing, null or non-array list field is a contract
+                # failure that fails the refresh; it is never a legal empty page.
+                if not isinstance(data, dict) or not isinstance(data.get(field), list):
+                    raise RuntimeError(f"{path}: page {page} response has no usable '{field}' array")
+                rows=data[field]
+            else:
+                rows=data
+                if not isinstance(rows, list):
+                    raise RuntimeError(f"{path}: page {page} response is not a JSON array")
+            declared=data.get("total_count") if isinstance(data, dict) else None
+            if isinstance(declared,int): expected=declared
+            for row in rows:
+                if not isinstance(row, dict): raise RuntimeError(f"{path}: page {page} contains a non-object record")
+                identity=row.get("id")
+                if identity is not None:
+                    if identity in seen: raise RuntimeError(f"{path}: duplicate record id={identity} across pages")
+                    seen.add(identity)
+            if len(rows)<100 and expected is not None and len(out)+len(rows)!=expected:
+                raise RuntimeError(f"{path}: pagination incomplete: total_count={expected}, received {len(out)+len(rows)}")
             out.extend(rows)
             if len(rows)<100 or (limit and len(out)>=limit): return out[:limit] if limit else out
             page += 1
@@ -448,7 +458,9 @@ def collect(hours=72, as_of=None):
         created=urllib.parse.quote(f"{iso(a)}..{iso(b)}", safe="")
         path=f"/actions/runs?event={event}&created={created}"
         first,_=api.get(path+"&per_page=1")
-        if first.get("total_count",0)>1000:
+        if not isinstance(first, dict) or not isinstance(first.get("total_count"), int):
+            raise RuntimeError(f"{path}: response has no usable total_count")
+        if first["total_count"]>1000:
             mid=a+(b-a)/2; interval(a,mid,event); interval(mid+timedelta(seconds=1),b,event); return
         runs.extend(api.pages(path,"workflow_runs"))
     for event in ("pull_request","pull_request_target"):
