@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark } = require('../web/triton-core.js');
+const { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration } = require('../web/triton-core.js');
 
 test('selectWindow keeps the lower boundary of the requested range', () => {
   const rows = [
@@ -80,6 +80,71 @@ test('isSlow flags completed batches at or beyond P90 and excludes running ones'
   assert.equal(isSlow({ duration_seconds: null, status: 'success' }, 3620), false);
   assert.equal(isSlow({ status: 'success' }, 3620), false, 'missing duration is never slow');
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, null), false, 'without a P90 nothing is slow');
+});
+
+/* ---- REQ-017: unified duration validity (finite, non-negative raw numbers) ---- */
+
+test('validDuration accepts only finite non-negative raw numbers', () => {
+  assert.equal(validDuration(0), true, 'a real zero is a valid duration');
+  assert.equal(validDuration(600), true);
+  for (const invalid of [null, undefined, '', '300', '-1', '0', NaN, Infinity, -Infinity, -1, false, true]) {
+    assert.equal(validDuration(invalid), false, `${String(invalid)} must never become an implicit 0`);
+  }
+});
+
+test('REQ-017 AC01: null, empty-string and negative durations yield zero valid completions', () => {
+  const stats = chartStats([
+    { status: 'success', duration_seconds: null },
+    { status: 'failure', duration_seconds: '' },
+    { status: 'success', duration_seconds: -1 },
+  ]);
+  assert.equal(stats.count, 0);
+  assert.equal(stats.average, null);
+  assert.equal(stats.p50, null);
+  assert.equal(stats.p90, null);
+  assert.equal(stats.max, 300, 'no valid observed values keeps the readable default scale');
+});
+
+test('REQ-017 AC02/AC03: real zero stays valid; mixed samples use only valid values', () => {
+  const stats = chartStats([
+    { status: 'success', duration_seconds: 0 },
+    { status: 'success', duration_seconds: 600 },
+    { status: 'failure', duration_seconds: '900' },
+    { status: 'success', duration_seconds: -5 },
+    { status: 'running', duration_seconds: 1200 },
+    { status: 'cancelled', duration_seconds: null },
+  ]);
+  assert.equal(stats.count, 2);
+  assert.equal(stats.average, 300);
+  assert.equal(stats.p50, 300);
+  assert.equal(stats.p90, 540);
+  assert.equal(stats.max, 1200, 'valid observed values across statuses set the y-axis scale');
+});
+
+test('REQ-017: dashboardStats applies the same validity to the page-level summary', () => {
+  const summary = dashboardStats([
+    { pr: 1, status: 'success', duration_seconds: 600, missing: [] },
+    { pr: 2, status: 'failure', duration_seconds: null, missing: [] },
+    { pr: 3, status: 'success', duration_seconds: -1, missing: [] },
+    { pr: 4, status: 'running', duration_seconds: 900, missing: [] },
+  ]);
+  assert.equal(summary.prs, 4);
+  assert.equal(summary.batches, 4);
+  assert.equal(summary.valid, 1);
+  assert.equal(summary.median, 600);
+});
+
+test('REQ-017: isSlow and the small-sample fallback use only valid durations', () => {
+  assert.equal(isSlow({ duration_seconds: -1, status: 'success' }, 100), false);
+  assert.equal(isSlow({ duration_seconds: '4000', status: 'success' }, 100), false);
+  const rows = [];
+  for (let i = 1; i <= 9; i++) rows.push({ pr: i, status: 'success', duration_seconds: i * 100, start_at: '2026-10-08T01:00:00Z' });
+  rows.push({ pr: 10, status: 'success', duration_seconds: null, start_at: '2026-10-08T02:00:00Z' });
+  rows.push({ pr: 11, status: 'failure', duration_seconds: -9, start_at: '2026-10-08T03:00:00Z' });
+  const groups = attentionGroups(rows, 850);
+  assert.equal(groups[0].label, '耗时最长', 'invalid rows must not push the valid count to 10');
+  assert.equal(groups[0].rows.length, 5);
+  assert.ok(groups[0].rows.every(row => typeof row.duration_seconds === 'number' && row.duration_seconds >= 0));
 });
 
 test('attentionGroups falls back to longest completed runs when valid samples are scarce', () => {

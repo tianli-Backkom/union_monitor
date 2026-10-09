@@ -1,3 +1,9 @@
+/* REQ-017: a valid duration is a finite, non-negative raw number. Missing,
+   null, empty strings, numeric strings, NaN, infinities and negatives are
+   never coerced into an implicit 0. Top-level so both module blocks below
+   share this one definition. */
+const validDuration = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
+
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -50,10 +56,11 @@
     return lower === upper ? sorted[lower] : sorted[lower] + (sorted[upper] - sorted[lower]) * (position - lower);
   }
 
+  /* REQ-017: chart/summary statistics count only valid durations. */
   function chartStats(rows) {
-    const observed = rows.map(row => Number(row.duration_seconds)).filter(Number.isFinite);
-    const completed = rows.filter(row => row.status === 'success' || row.status === 'failure')
-      .map(row => Number(row.duration_seconds)).filter(Number.isFinite);
+    const observed = rows.map(row => row.duration_seconds).filter(validDuration);
+    const completed = rows.filter(row => (row.status === 'success' || row.status === 'failure') && validDuration(row.duration_seconds))
+      .map(row => row.duration_seconds);
     return {
       max: observed.length ? Math.max(...observed) : 300,
       p90: percentile(completed, 0.9),
@@ -68,8 +75,8 @@
   }
 
   function dashboardStats(rows) {
-    const completed = rows.filter(row => (row.status === 'success' || row.status === 'failure') && Number.isFinite(Number(row.duration_seconds)));
-    const values = completed.map(row => Number(row.duration_seconds));
+    const completed = rows.filter(row => (row.status === 'success' || row.status === 'failure') && validDuration(row.duration_seconds));
+    const values = completed.map(row => row.duration_seconds);
     return {
       prs: new Set(rows.map(row => row.pr).filter(Boolean)).size,
       batches: rows.length,
@@ -86,11 +93,12 @@
     return `<g class="mark-hit" data-i="${index}" data-kind="${kind || 'e2e'}" transform="translate(${cx} ${cy})"><circle class="hit-area" r="8"/><circle class="dot" r="${radius}" fill="${color}"/></g>`;
   }
 
-  return { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark };
+  return { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration };
 });
 
-/* ---- T8 additions (appended; the 3846-byte prefix above stays byte-identical
-   to the original module). Merges the pure helpers of the standalone Triton
+/* ---- T8 additions (appended; the prefix above is the original module plus
+   REQ-017's validity filter, whose shared predicate is defined once at the
+   top of this file). Merges the pure helpers of the standalone Triton
    dashboard into the shared core so the merged view and Node tests share one
    implementation. ---- */
 (function (root, factory) {
@@ -99,18 +107,18 @@
   else Object.assign(root, api);
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   function isSlow(batch, p90) {
-    return batch != null && batch.duration_seconds != null && p90 != null && batch.status !== 'running' && batch.duration_seconds >= p90;
+    return validDuration(batch && batch.duration_seconds) && p90 != null && batch.status !== 'running' && batch.duration_seconds >= p90;
   }
 
   function attentionGroups(rows, p90) {
     const list = Array.isArray(rows) ? rows : [];
     const completed = list.filter(row => row.status === 'success' || row.status === 'failure');
-    const valid = completed.filter(row => Number.isFinite(Number(row.duration_seconds))).length;
+    const valid = completed.filter(row => validDuration(row.duration_seconds)).length;
     let slow = list.filter(row => isSlow(row, p90))
       .sort((a, b) => (b.duration_seconds || 0) - (a.duration_seconds || 0));
     if (valid < 10) {
-      slow = completed.slice()
-        .sort((a, b) => (b.duration_seconds || 0) - (a.duration_seconds || 0))
+      slow = completed.filter(row => validDuration(row.duration_seconds)).slice()
+        .sort((a, b) => b.duration_seconds - a.duration_seconds)
         .slice(0, 5);
     }
     const running = list.filter(row => row.status === 'running')

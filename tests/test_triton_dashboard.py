@@ -1,3 +1,4 @@
+import csv
 import shutil
 import tempfile
 import unittest
@@ -12,6 +13,7 @@ from triton.dashboard import (
     build_payload,
     collect,
     dt,
+    export_csv,
     extract_focus_job_links,
     extract_pr_base_ref,
     merge_run_evidence,
@@ -20,6 +22,7 @@ from triton.dashboard import (
     parse_run_html,
     percentile,
     run_in_window,
+    summary_of,
 )
 
 
@@ -334,6 +337,62 @@ class CollectWindowTests(unittest.TestCase):
         self.assertEqual(range_raw.split("..")[0], "2026-09-11T12:00:00Z")
         self.assertEqual([batch["kind"] for batch in payload["batches"]], ["rerun"])
         self.assertEqual(payload["batches"][0]["start_at"], "2026-09-26T10:00:00Z")
+
+
+class SummaryValidityTests(unittest.TestCase):
+    """REQ-017: missing and invalid durations never pollute counts or percentiles."""
+
+    def batch(self, status, duration):
+        return {"status": status, "duration_seconds": duration, "pr": 42, "approximate": False, "missing": []}
+
+    def test_summary_counts_only_valid_completed_durations(self):
+        batches = [
+            self.batch("success", 600),
+            self.batch("success", None),
+            self.batch("failure", -1),
+            self.batch("success", "300"),
+            self.batch("cancelled", 1200),
+            self.batch("running", 900),
+        ]
+        summary = summary_of(batches)
+        self.assertEqual(summary["batches"], 6)
+        self.assertEqual(summary["valid"], 1)
+        self.assertEqual(summary["median"], 600)
+        self.assertEqual(summary["p90"], 600)
+
+    def test_real_zero_is_a_valid_duration(self):
+        summary = summary_of([self.batch("success", 0), self.batch("failure", 0)])
+        self.assertEqual(summary["valid"], 2)
+        self.assertEqual(summary["median"], 0)
+        self.assertEqual(summary["p90"], 0)
+
+    def test_summary_without_valid_samples_has_empty_statistics(self):
+        summary = summary_of([self.batch("success", None), self.batch("failure", "")])
+        self.assertEqual(summary["valid"], 0)
+        self.assertIsNone(summary["median"])
+        self.assertIsNone(summary["p90"])
+
+    def test_build_payload_excludes_rerun_without_start_from_valid_count(self):
+        row = run(1, "Integration Tests", "abc", "2026-09-22T00:00:00Z", "2026-09-22T02:05:00Z", attempt=2)
+        row["run_started_at"] = None
+        row["trigger_at"] = None
+        row["trigger_exact"] = False
+        payload = build_payload([row], "2026-09-22T00:00:00Z", "2026-09-22T03:00:00Z", "2026-09-22T03:00:00Z")
+        self.assertEqual(payload["batches"][0]["status"], "success")
+        self.assertIsNone(payload["batches"][0]["duration_seconds"])
+        self.assertEqual(payload["summary"]["valid"], 0)
+        self.assertIsNone(payload["summary"]["p90"])
+
+    def test_export_csv_distinguishes_zero_from_missing(self):
+        payload = {"batches": [self.batch("success", 0), self.batch("success", None)]}
+        tmp = Path(tempfile.mkdtemp(prefix="triton-csv-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        (tmp / "web" / "data").mkdir(parents=True)
+        with patch("triton.dashboard.REPO_ROOT", tmp):
+            export_csv(payload)
+        with (tmp / "web" / "data" / "triton-batches.csv").open(encoding="utf-8-sig") as handle:
+            rows = list(csv.DictReader(handle))
+        self.assertEqual([row["duration_seconds"] for row in rows], ["0", ""])
 
 
 if __name__ == "__main__":

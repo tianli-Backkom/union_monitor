@@ -200,7 +200,7 @@
     }
 
     function npuRows() {
-      return pageSet().filter(b => b.npu_queue_seconds != null && (npuFilter === 'all' || b.status === npuFilter));
+      return pageSet().filter(b => core.validDuration(b.npu_queue_seconds) && (npuFilter === 'all' || b.status === npuFilter));
     }
 
     /* SVG presentation attributes do not accept var(), so status colors are
@@ -234,7 +234,7 @@
       if (stats.p90 != null) out += `<line class="p90-line" x1="${m.l}" x2="${W - m.r}" y1="${y(stats.p90)}" y2="${y(stats.p90)}"/>`;
       const bins = [];
       for (let a = viewStart; a < viewEnd; a += 6 * HOUR) {
-        const vals = rows.filter(b => +new Date(b.start_at) >= a && +new Date(b.start_at) < a + 6 * HOUR && ['success', 'failure'].includes(b.status))
+        const vals = rows.filter(b => +new Date(b.start_at) >= a && +new Date(b.start_at) < a + 6 * HOUR && ['success', 'failure'].includes(b.status) && core.validDuration(b.duration_seconds))
           .map(b => b.duration_seconds).sort((p, q) => p - q);
         if (vals.length) {
           const mid = vals.length % 2 ? vals[(vals.length - 1) / 2] : (vals[vals.length / 2 - 1] + vals[vals.length / 2]) / 2;
@@ -242,7 +242,8 @@
         }
       }
       if (bins.length > 1) out += `<path class="median-line" d="${bins.map((p, i) => (i ? 'L' : 'M') + p.join(',')).join(' ')}"/>`;
-      const ordered = rows.slice().sort((a, b) => (a.status === 'success' ? 0 : 1) - (b.status === 'success' ? 0 : 1));
+      /* REQ-017: batches without a valid observed duration are not plotted at a fake 0. */
+      const ordered = rows.filter(b => core.validDuration(b.duration_seconds)).slice().sort((a, b) => (a.status === 'success' ? 0 : 1) - (b.status === 'success' ? 0 : 1));
       const raw = ordered.map(b => ({ x: x(b.start_at), y: y(b.duration_seconds || 0) }));
       const visual = core.spreadPoints(raw, 12, { minX: m.l, maxX: W - m.r, minY: m.t, maxY: H - m.b });
       ordered.forEach((b, i) => { out += core.circleMark(b, visual[i].x, visual[i].y, D.batches.indexOf(b), fillFor(b.status), 'e2e'); });
@@ -309,9 +310,11 @@
       const plotH = H - p.t - p.b;
       navSvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       let out = `<rect class="nav-bg" x="${p.l}" y="${p.t}" width="${W - p.l - p.r}" height="${plotH}" rx="2"/>`;
-      const max = Math.max(1, ...rows.map(b => b.duration_seconds || 0));
-      rows.forEach(b => {
-        const cy = p.t + plotH - (b.duration_seconds || 0) / max * (plotH - 5) - 2;
+      /* REQ-017: the navigator maps only valid durations onto its height axis. */
+      const navRows = rows.filter(b => core.validDuration(b.duration_seconds));
+      const max = Math.max(1, ...navRows.map(b => b.duration_seconds));
+      navRows.forEach(b => {
+        const cy = p.t + plotH - b.duration_seconds / max * (plotH - 5) - 2;
         out += `<circle class="nav-point" cx="${x(+new Date(b.start_at))}" cy="${cy}" r="1.6" style="fill:${fillFor(b.status)}"/>`;
       });
       const sx = x(viewStart), ex = x(viewEnd);

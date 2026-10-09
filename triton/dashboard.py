@@ -484,16 +484,30 @@ def collect(hours=72, as_of=None):
     return build_payload(enriched, iso(start), iso(end), iso(datetime.now(UTC)), api.calls)
 
 
+def valid_seconds(value):
+    """A valid duration is a finite, non-negative raw number; missing, null,
+    numeric strings, NaN, infinities and negatives never become an implicit 0."""
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and value >= 0
+
+
+def summary_of(batches, calls=0):
+    """Summary statistics count only success/failure batches with valid durations
+    (REQ-017); running and cancelled batches keep observed values but never
+    join the completed-sample statistics."""
+    complete = [b for b in batches if b["status"] in ("success", "failure") and valid_seconds(b["duration_seconds"])]
+    values = [b["duration_seconds"] for b in complete]
+    return {"prs": len({b["pr"] for b in batches if b["pr"]}), "batches": len(batches),
+            "valid": len(complete), "median": percentile(values, .5), "p90": percentile(values, .9),
+            "approximate": sum(bool(b["approximate"]) for b in batches), "incomplete": sum(bool(b["missing"]) for b in batches),
+            "api_calls": calls}
+
+
 def build_payload(runs, window_start, window_end, collected_at, calls=0):
     for row in runs:
         if row.get("conclusion") in ("skipped","neutral"): row["jobs_complete"]=True
     batches=build_batches(runs, window_end, window_start)
-    complete=[b for b in batches if b["status"] in ("success","failure") and b["duration_seconds"] is not None]
-    values=[b["duration_seconds"] for b in complete]
     return {"repo":REPO,"window_start":window_start,"window_end":window_end,"collected_at":collected_at,
-            "batches":batches,"summary":{"prs":len({b["pr"] for b in batches if b["pr"]}),"batches":len(batches),
-            "valid":len(complete),"median":percentile(values,.5),"p90":percentile(values,.9),
-            "approximate":sum(b["approximate"] for b in batches),"incomplete":sum(bool(b["missing"]) for b in batches),"api_calls":calls}}
+            "batches":batches,"summary":summary_of(batches,calls)}
 
 
 def export_csv(payload):
