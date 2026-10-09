@@ -120,6 +120,7 @@ python scripts/devdata.py
 | `validate.py`、`validate_multi.py`、`source_coverage.py` | 原始时间、跨仓隔离、代表值、SQLite 和前端算法独立审计；source_audit 按类别声明原始来源覆盖（适用/已验证一致/派生自洽/差异/缺证据计数与缺失身份清单），queue/total 由原始 waiting/blocked/buildable 分项之和独立核验（分项缺失时 queue 与 total 保持未知不补 0）；sections 分项状态（派生一致性/源时间/排队分项/发布一致性 N/A 及理由）推导 overall_status 并与退出码一致，审计异常先写失败报告（错误与受影响范围）再重抛 |
 | `validate_bundle.py`、`web/data/ubs-manifest.json` | 发布与缓存共享前的 UBS 快照束校验：索引↔快照归属、纳入跨仓的 success/partial 快照时间范围、仓根镜像一致性与工件指纹 |
 | `scripts/verify_artifacts.py`、`audit/2026-10-09/evidence/artifact-verification.json` | REQ-038 审计期原始工件补齐与历史影响核验：逐工件清单（D10 原始工件本地缺失如实标未验证，不伪造来源）、冻结快照↔审计导出 CSV 四类交叉核对（REQ-023 计数等式）、7 个真实重跑批次新旧规则影响量化与 S01 合成声明（当前代码重算）、本地快照束指纹核验与旧站探测记录（`--probe`） |
+| `scripts/verify_runtime.py`、`audit/2026-10-09/evidence/runtime-evidence.json` | REQ-040 CI 目标运行时兼容性验证：Python 3.12/Node 22 上执行测试、门禁与原始审计的适用部分，记录精确版本、命令、退出码、失败数与完整日志；CI 声明↔README↔交付结果三方一致；工件缺失时审计如实失败，不以 wrapper 退出 0 冒充通过 |
 
 SQLite 的 PR 与事件主键包含仓库标识，批次按完整 Jenkins URL 唯一；任务记录复用完整 URL。首次迁移会在 `data/` 自动保留 `*-before-multi-*.sqlite` 备份，将旧数据归入 ubs-engine。
 
@@ -209,6 +210,8 @@ Fork PR 的 workflow `pull_requests` 和 commit 关联接口可能同时返回�
 若 GitHub-hosted runner 无法访问 GitCode、Jenkins 或 GitHub API，先在 Actions 日志确认是 401/403、网络超时还是任务路径变化。UBS 单仓失败会显示采集失败或过期快照；采集进程、测试、审计或 Triton 质量校验整体失败时不会部署并覆盖上一版 Pages。可在网络恢复后通过 `workflow_dispatch` 重跑。
 
 ## 验证
+
+测试与验证使用 CI 声明并受支持的运行时：Python 3.12 与 Node 22（`scripts/verify_runtime.py` 在目标运行时执行测试套件、数据门禁与原始审计的适用部分，记录精确版本、命令、退出码、失败数与完整日志；审计期基线 Python 79/79、Node 34/34 仅为原环境记录，不替代目标运行时结果，新增测试数量不受原数量限制；工件缺失时原始审计如实失败，不因 wrapper 退出 0 报审计通过）。
 
 ```
 python -m unittest discover -s tests -v

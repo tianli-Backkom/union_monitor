@@ -1,0 +1,124 @@
+{
+  "requirement": "REQ-040",
+  "generated_at": "2026-10-09T21:47:15.307572+00:00",
+  "runtimes": {
+    "python": {
+      "version": "3.12.3 (cpython)",
+      "major_minor": "3.12",
+      "executable": "/usr/bin/python3"
+    },
+    "node": {
+      "version": "v22.23.3",
+      "major": "22",
+      "binary": "/tmp/opencode/node22/bin/node"
+    }
+  },
+  "ci_declarations": {
+    "python": [
+      "3.12"
+    ],
+    "node": [
+      "22"
+    ],
+    "sources": [
+      "pages.yml",
+      "triton-refresh.yml"
+    ]
+  },
+  "baseline_note": "审计期基线 Python 79/79 与 Node 34/34 仅为原环境记录，不替代 3.12/22 目标运行时结果；新增测试数量不受原数量限制（REQ-040-AC02）",
+  "runs": [
+    {
+      "label": "python_tests",
+      "command": "/usr/bin/python3 -X utf8 -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": ".omo/evidence/req-040/logs/python_tests.txt",
+      "log_tail": "...........................................................................................................................................................s.......................................\n----------------------------------------------------------------------\nRan 255 tests in 94.593s\n\nOK (skipped=1)",
+      "kind": "unittest",
+      "summary": {
+        "tests": 255,
+        "skipped": 1,
+        "failures": 0,
+        "errors": 0,
+        "result": "OK"
+      }
+    },
+    {
+      "label": "node_tests",
+      "command": "/tmp/opencode/node22/bin/node --test tests/branchbadge.test.cjs tests/experience.test.cjs tests/footermeta.test.cjs tests/frontend.test.cjs tests/multi_repo_frontend.test.cjs tests/navhistory.test.cjs tests/navicon.test.cjs tests/repolink.test.cjs tests/router.test.cjs tests/topbar.test.cjs tests/triton_core.test.cjs tests/triton_fixtures.test.cjs",
+      "exit_code": 0,
+      "log": ".omo/evidence/req-040/logs/node_tests.txt",
+      "log_tail": "# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 158.267341",
+      "kind": "node",
+      "summary": {
+        "tests": 122,
+        "pass": 122,
+        "fail": 0,
+        "skipped": 0,
+        "result": "OK"
+      }
+    },
+    {
+      "label": "validate_bundle",
+      "command": "/usr/bin/python3 -X utf8 validate_bundle.py",
+      "exit_code": 0,
+      "log": ".omo/evidence/req-040/logs/validate_bundle.txt",
+      "log_tail": "::warning::[ubs-bundle] mirror /mnt/d/ubs_core_monitor/data/repos/ham.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror /mnt/d/ubs_core_monitor/data/repos/ubturbo.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror /mnt/d/ubs_core_monitor/data/repos/ubs-atomic.json missing (local subset; the shared cache restores it in CI)\n[ubs-bundle] manifest verified: bundle matches the recorded artifact fingerprint sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39\n[ubs-bundle] ok files=10 fingerprint=sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39 manifest=verified",
+      "kind": "gate"
+    },
+    {
+      "label": "verify_artifacts",
+      "command": "/usr/bin/python3 -X utf8 scripts/verify_artifacts.py",
+      "exit_code": 0,
+      "log": ".omo/evidence/req-040/logs/verify_artifacts.txt",
+      "log_tail": "::warning::[ubs-bundle] mirror /mnt/d/ubs_core_monitor/data/repos/ham.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror /mnt/d/ubs_core_monitor/data/repos/ubturbo.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror /mnt/d/ubs_core_monitor/data/repos/ubs-atomic.json missing (local subset; the shared cache restores it in CI)\n[ubs-bundle] manifest verified: bundle matches the recorded artifact fingerprint sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39\n{\"overall_status\": \"unverified\", \"sections\": {\"ac01\": \"pass\", \"ac02\": \"partial\", \"ac03\": \"partial\", \"ac04\": \"unverified\"}, \"categories\": {\"raw_timestamps\": {\"applicable\": 892, \"verified_consistent\": 0, \"derived_consistent\": 71, \"differ\": 0, \"missing_evidence\": 821}, \"queue_components\": {\"applicable\": 4830, \"verified_consistent\": 0, \"derived_consistent\": 23, \"differ\": 0, \"missing_evidence\": 4807}, \"pr_identity\": {\"applicable\": 269, \"verified_consistent\": 0, \"derived_consistent\": 67, \"differ\": 0, \"missing_evidence\": 202}, \"attempt_history\": {\"applicable\": 130, \"verified_consistent\": 0, \"derived_consistent\": 130, \"differ\": 0, \"missing_evidence\": 0}}, \"rerun_impact\": {\"rerun_batches\": 7, \"recorded_matches_old\": 7, \"provably_affected_batches\": 0, \"max_overestimate_bound_seconds\": 60.0}, \"local_bundle\": \"verified\", \"report\": \"/mnt/d/ubs_core_monitor/audit/2026-10-09/evidence/artifact-verification.json\"}",
+      "kind": "gate"
+    },
+    {
+      "label": "verify_concurrency",
+      "command": "/usr/bin/python3 -X utf8 scripts/verify_concurrency.py",
+      "exit_code": 0,
+      "log": ".omo/evidence/req-040/logs/verify_concurrency.txt",
+      "log_tail": "{\"overall_status\": \"aligned\", \"config\": {\"pages.yml\": \"pages\", \"triton-refresh.yml\": \"pages\"}, \"ac01\": \"unverified\", \"ac03\": \"unverified\", \"ac04\": \"deferred\", \"alignment\": true, \"problems\": [], \"report\": \"/mnt/d/ubs_core_monitor/audit/2026-10-09/evidence/concurrency-evidence.json\"}",
+      "kind": "gate"
+    },
+    {
+      "label": "raw_audit_multi",
+      "command": "/usr/bin/python3 -X utf8 validate_multi.py",
+      "exit_code": 1,
+      "log": ".omo/evidence/req-040/logs/raw_audit_multi.txt",
+      "log_tail": "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/mnt/d/ubs_core_monitor/data/repositories.json'",
+      "kind": "audit",
+      "audit_classification": "failed_missing_artifacts",
+      "audit_report_status": null
+    },
+    {
+      "label": "raw_audit_ubs",
+      "command": "/usr/bin/python3 -X utf8 validate.py",
+      "exit_code": 1,
+      "log": ".omo/evidence/req-040/logs/raw_audit_ubs.txt",
+      "log_tail": "         ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/mnt/d/ubs_core_monitor/web/data/snapshot.json'",
+      "kind": "audit",
+      "audit_classification": "failed_missing_artifacts",
+      "audit_report_status": null
+    }
+  ],
+  "raw_audit_summary": {
+    "status": "not_passed",
+    "classifications": {
+      "raw_audit_multi": "failed_missing_artifacts",
+      "raw_audit_ubs": "failed_missing_artifacts"
+    },
+    "note": "原始审计在目标运行时运行并如实分类；工件缺失（D10）时审计失败，wrapper 不因自身退出 0 报审计通过（REQ-040-AC03）；审计状态不影响本工具退出码，退出码只由测试/门禁与版本一致性决定"
+  },
+  "version_consistency": {
+    "python_runtime_matches_ci": true,
+    "node_runtime_matches_ci": true,
+    "readme_states_python": true,
+    "readme_states_node": true,
+    "problems": []
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}
