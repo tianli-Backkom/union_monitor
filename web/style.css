@@ -537,13 +537,15 @@ footer{display:flex;color:var(--text-3);font-family:var(--font-num);font-size:12
   .exception-e2e{grid-column:2;grid-row:1;text-align:right}
 }
 @media(max-width:800px){
-  .side-nav,.sidebar{width:66px;padding:var(--sp-5) 10px}
-  .brand>span:nth-child(2),.space-label,.nav-group,.side-bottom{display:none}
-  .nav-item{font-size:0;padding:13px 10px;justify-content:center}
+  /* REQ-032 AC01: 图标轨保留可见微标签与分组标题，不再用 font-size:0 隐藏入口名称。 */
+  .side-nav,.sidebar{width:76px;padding:var(--sp-5) 6px}
+  .brand>span:nth-child(2),.space-label,.side-bottom{display:none}
+  .nav-group{font-size:9px;font-weight:600;letter-spacing:.04em;margin:var(--sp-8) 0 var(--sp-2);text-align:center;text-transform:none}
+  .nav-item{flex-direction:column;gap:5px;padding:11px 4px;justify-content:center;font-size:10px;line-height:1.35;text-align:center}
   .nav-item .icon{width:20px;height:20px}
   .nav-item i{display:none}
   .side-nav nav,.sidebar nav{margin-top:var(--sp-8)}
-  .workspace{margin-left:66px}
+  .workspace{margin-left:76px}
   main,.app-shell main{padding:var(--sp-5) var(--sp-4)}
   .topbar{padding:8px var(--sp-4)}
   .page-head,.page-heading{align-items:start;flex-direction:column;gap:var(--sp-5)}
