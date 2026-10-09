@@ -58,3 +58,12 @@ test('reload failure keeps the previous snapshot visible with its collection tim
  assert.ok(branch.includes('navigate(location.hash);'),'the has-snapshot branch re-renders the current view');
  assert.ok(branch.indexOf('navigate(location.hash);')<branch.indexOf("$('loading').hidden=false"),'the failure banner must be revealed after the re-render so the render path cannot hide it again');
 });
+
+test('navigation or reload closes a stale PR detail and clears its reference',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+ assert.match(source,/detailRepo=null,/,'module state must track the repository a detail belongs to');
+ assert.match(source,/detailRepo=currentRepository;/,'openDetail must record the repository the detail was opened from');
+ assert.ok(source.includes("(detailPR||$('detail').open)&&(domain!=='ubs'||!repo||currentRepository!==detailRepo)"),'context-changing navigation (domain, repository or leaving the repo view) must close the detail dialog');
+ assert.ok(source.includes("reloadGate.begin();$('detail').close();"),'a reload attempt must close the open detail at start, before fetching');
+ assert.ok(source.includes("addEventListener('close',()=>{if(!$('detail').open)detailPR=null;})"),'any dialog close (button, overlay, Esc) must clear the stale detail reference');
+});
