@@ -53,8 +53,13 @@
   }
 
   function render(payload, container) {
-    /* REQ-033 AC03: 数据未变时跳过重挂载，但 applyRoute 已把徽标重置为默认，需按当前选择重新同步。 */
-    if (core.sameSessionMount(mounted, payload, container)) { syncBranchBadge(active ? active.state().branches : []); return; }
+    /* REQ-033 AC03 / REQ-035 AC03: 数据未变时跳过重挂载，但 applyRoute 已把徽标与页脚重置为默认，需按当前状态重新同步。 */
+    if (core.sameSessionMount(mounted, payload, container)) {
+      syncBranchBadge(active ? active.state().branches : []);
+      const fm = document.getElementById('footerMeta');
+      if (fm && active) fm.textContent = active.footerText();
+      return;
+    }
     const prevState = active ? active.state() : null;
     if (active) { active.destroy(); active = null; }
     mounted = null;
@@ -198,6 +203,11 @@
     const pageSet = () => core.selectWindow(branchPool(), viewStart, viewEnd);
     const currentSummary = () => core.dashboardStats(pageSet());
     const searchPool = () => pageSet().filter(b => core.matchesQuery(b, searchInput.value));
+    /* REQ-035 AC02: 页脚统计与摘要条共用同一 pageSet（G=分支×时间窗），标注当前筛选范围；采集时间来自 Triton 快照。 */
+    const footerText = () => {
+      const s = currentSummary();
+      return `${s.batches} BATCHES · ${s.prs} PR · 当前筛选范围 · 采集于 ${fmtDate(D.collected_at)}`;
+    };
 
     if (prevState) {
       if (prevState.search) searchInput.value = prevState.search;
@@ -389,6 +399,8 @@
       pool.forEach(b => { if (counts[b.status] != null) counts[b.status] += 1; });
       statusPillsEl.innerHTML = ['success', 'failure', 'running', 'cancelled']
         .map(key => `<span class="pill ${key}">${statusLabels[key]} ${counts[key]}</span>`).join('');
+      const fm = document.getElementById('footerMeta');
+      if (fm) fm.textContent = footerText();
     }
 
     function renderBranchOptions() {
@@ -686,6 +698,7 @@
       state() {
         return { branches: [...selectedBranches], search: searchInput.value, filter, npuFilter, showAll, start: viewStart, end: viewEnd };
       },
+      footerText,
     };
     mounted = { payload: D, container };
   }

@@ -32,5 +32,5 @@ test('REQ-033 AC01: renderBranchOptions syncs the topbar badge on every selectio
 });
 
 test('REQ-033 AC03: the sameSessionMount early-return path re-syncs the badge after a reload reset it',()=>{
-  assert.match(view,/if \(core\.sameSessionMount\(mounted, payload, container\)\) \{ syncBranchBadge\(active \? active\.state\(\)\.branches : \[\]\); return; \}/,'same-data reloads skip the remount but must not leave the reset default in place');
+  assert.match(view,/if \(core\.sameSessionMount\(mounted, payload, container\)\) \{\s*syncBranchBadge\(active \? active\.state\(\)\.branches : \[\]\);/,'same-data reloads skip the remount but must not leave the reset default in place');
 });

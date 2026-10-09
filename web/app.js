@@ -68,6 +68,16 @@ function applyRoute(route){
     const uniq=[...new Set(bs)];
     $('branchName').textContent=bs.length?(uniq.length===1?uniq[0]:'多分支'):'—';
   }else if(domain==='triton'){$('branchName').textContent='全部目标分支';$('branchBadge').title='';}
+  /* REQ-035: 页脚统计跟随域——口径页与未读取状态清空；Triton 先按快照置默认并标明快照范围，视图挂载后按当前筛选范围（G）覆写；UBS 各视图由渲染函数自写。 */
+  if(domain==='method')$('footerMeta').textContent='';
+  else if(domain==='triton'){
+    const p=window.tritonPayload;
+    if(p&&Array.isArray(p.batches)){
+      const prs=new Set(p.batches.map(b=>b.pr).filter(pr=>pr!=null)).size;
+      $('footerMeta').textContent=`${p.batches.length} BATCHES · ${prs} PR · 快照范围 · 采集于 ${date(Date.parse(p.collected_at))}`;
+    }else if(tritonStatus==='failed')$('footerMeta').textContent='TRITON 数据读取失败';
+    else $('footerMeta').textContent='';
+  }else if(cross&&!repositoryIndex)$('footerMeta').textContent='';
  $('repositoryStatus').textContent=repo?(entry?repositoryState(entry,snapshot):''):'';
  if(ubs&&!cross&&!repositoryIndex){$('notice').textContent=ubsStatus==='failed'?'仓库索引未读取，UBS 视图暂不可用':'';$('notice').hidden=ubsStatus!=='failed';}
   else{$('notice').hidden=!ubs||cross||(!entry?.error&&entry?.status==='success'&&snapshot?.meta.start_ms===repositoryIndex?.start_ms&&snapshot?.meta.end_ms===repositoryIndex?.end_ms);$('notice').textContent=ubs?(entry?[repositoryState(entry,snapshot),entry.error].filter(Boolean).join(' · '):'未找到仓库'):'';}
