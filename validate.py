@@ -7,6 +7,8 @@ import statistics
 from collections import Counter
 from pathlib import Path
 
+from source_coverage import SourceCategory, source_report
+
 root=Path(__file__).resolve().parent
 if (root/'data/repositories.json').exists():
     from validate_multi import audit
@@ -26,7 +28,7 @@ raw_jobs={}
 for v in raw_by_url.values():
     if isinstance(v,dict):
         for j in v.get('allBuilds',[]):raw_jobs[j['url']]=j
-checked=0
+job_timing=SourceCategory('job_timing')
 for b in batches:
     js=[b['trigger']]+b['children']
     if b['status']=='success':assert b['complete'] and b['children'] and all(j.get('result')=='SUCCESS' and not j.get('building') for j in js)
@@ -37,11 +39,14 @@ for b in batches:
     if b['request_ms'] is None:assert b['e2e_ms'] is None
     for j in js:
         if j.get('total_ms') is not None:assert j['total_ms']==j['queue_ms']+j['duration_ms']
+        if j.get('building'):continue  # still running: no final platform timing exists yet
+        job_timing.record_applicable(j['url'])
         raw=raw_jobs.get(j['url'])
-        if raw and not j.get('building'):
-            assert raw['duration']==j['duration_ms']
-            assert raw['timestamp']==j['start_ms']
-            checked+=1
+        if raw is None:continue  # missing evidence, accounted per identity (REQ-023)
+        if (raw['timestamp'],raw['duration'])==(j['start_ms'],j['duration_ms']):
+            job_timing.record_verified(j['url'])
+        else:
+            job_timing.record_difference(j['url'],f"raw({raw['timestamp']}, {raw['duration']}) != snapshot({j['start_ms']}, {j['duration_ms']})")
 representatives=[]
 for p in prs:
     candidates=[b for b in p['batches'] if b['eligible']]
@@ -62,10 +67,16 @@ with sqlite3.connect(root/'data/efficiency.sqlite') as db:
     assert db.execute('pragma integrity_check').fetchone()[0]=='ok'
     for number,payload in db.execute('select number,payload from prs'):
         assert json.loads(payload)['metrics']==next(p['metrics'] for p in prs if p['number']==number)
-report={'checks_passed':True,'representative_prs':len(representatives),'representative_mean_ms':statistics.mean(representatives),'representative_p90_ms':statistics.quantiles(representatives,n=10,method='inclusive')[8],'prs':len(prs),'pr_states':dict(Counter(p['state'] for p in prs)),'batches':len(batches),
+source=source_report({'job_timing':job_timing})
+report={'checks_passed':source['status'] in ('verified','not_applicable'),'source_audit':source,'representative_prs':len(representatives),'representative_mean_ms':statistics.mean(representatives),'representative_p90_ms':statistics.quantiles(representatives,n=10,method='inclusive')[8],'prs':len(prs),'pr_states':dict(Counter(p['state'] for p in prs)),'batches':len(batches),
     'batch_states':dict(Counter(b['status'] for b in batches)),'eligible_e2e':sum(b['eligible'] for b in batches),
     'cancelled':sum(b['cancelled'] for b in batches),'missing_request':sum(b['request_ms'] is None for b in batches),
     'trigger_success_but_batch_failure':sum(b['trigger'].get('result')=='SUCCESS' and b['status']=='failure' for b in batches),
-    'raw_timing_records_checked':checked,'no_gate_prs':[p['number'] for p in prs if not p['batches']]}
+    'no_gate_prs':[p['number'] for p in prs if not p['batches']]}
 (root/'data/validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),'utf-8')
 print(json.dumps(report,ensure_ascii=False,indent=2))
+if not report['checks_passed']:
+    category=source['categories']['job_timing']
+    raise SystemExit(f"source audit {source['status']}: raw job-timing coverage "
+                     f"{category['verified_consistent']}/{category['applicable']} "
+                     f"({category['missing_evidence']} missing, {category['differences']} differences) — see data/validation.json")
