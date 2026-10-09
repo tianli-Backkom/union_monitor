@@ -40,6 +40,7 @@
 
   function render(payload, container) {
     if (core.sameSessionMount(mounted, payload, container)) return;
+    const prevState = active ? active.state() : null;
     if (active) { active.destroy(); active = null; }
     mounted = null;
     if (!container) return;
@@ -50,7 +51,7 @@
       container.innerHTML = '<div class="empty">暂无 Triton 门禁数据</div>';
       return;
     }
-    mount(payload, container, domainStart, domainEnd);
+    mount(payload, container, domainStart, domainEnd, prevState);
   }
 
   function skeleton() {
@@ -62,6 +63,7 @@
     </div>`;
     return `
 <div class="notice" data-role="freshness" role="status" hidden></div>
+<div class="notice" data-role="windowNotice" role="status" hidden></div>
 <div class="kpi-grid">
   <article class="kpi"><div class="kpi-label">涉及 PR</div><div class="kpi-value" data-role="kPr">—</div><small data-role="kPrNote">—</small></article>
   <article class="kpi"><div class="kpi-label">门禁批次</div><div class="kpi-value" data-role="kBatch">—</div><small data-role="kGap">—</small></article>
@@ -136,7 +138,7 @@
 <div class="tooltip" data-role="tip"></div>`;
   }
 
-  function mount(D, container, domainStart, domainEnd) {
+  function mount(D, container, domainStart, domainEnd, prevState) {
     container.innerHTML = skeleton();
     const el = selector => container.querySelector(selector);
     const all = selector => Array.from(container.querySelectorAll(selector));
@@ -164,15 +166,34 @@
     const kMedian = el('[data-role="kMedian"]'), kP90 = el('[data-role="kP90"]'), kValid = el('[data-role="kValid"]');
     const kPrNote = el('[data-role="kPrNote"]');
 
-    const selectedBranches = new Set();
-    let filter = 'all', npuFilter = 'all', showAll = false, tipPinned = false, tipTimer = 0, navDrag = null;
+    const selectedBranches = new Set(prevState ? prevState.branches : []);
+    let filter = prevState && prevState.filter ? prevState.filter : 'all';
+    let npuFilter = prevState && prevState.npuFilter ? prevState.npuFilter : 'all';
+    let showAll = prevState ? !!prevState.showAll : false, tipPinned = false, tipTimer = 0, navDrag = null;
     let viewStart, viewEnd;
-    [viewStart, viewEnd] = core.windowForHours(domainStart, domainEnd, 72);
+    const recovered = prevState ? core.recoverWindow(prevState.start, prevState.end, domainStart, domainEnd) : null;
+    if (recovered) {
+      viewStart = recovered.start;
+      viewEnd = recovered.end;
+    } else {
+      [viewStart, viewEnd] = core.windowForHours(domainStart, domainEnd, 72);
+    }
 
     const branchPool = () => core.filterBranches(D.batches, selectedBranches);
     const pageSet = () => core.selectWindow(branchPool(), viewStart, viewEnd);
     const currentSummary = () => core.dashboardStats(pageSet());
     const searchPool = () => pageSet().filter(b => core.matchesQuery(b, searchInput.value));
+
+    if (prevState) {
+      if (prevState.search) searchInput.value = prevState.search;
+      all('[data-filter]').forEach(x => x.classList.toggle('active', x.dataset.filter === filter));
+      all('[data-npu-filter]').forEach(x => x.classList.toggle('active', x.dataset.npuFilter === npuFilter));
+      if (recovered && recovered.adjusted) {
+        const windowNoticeEl = el('[data-role="windowNotice"]');
+        windowNoticeEl.hidden = false;
+        windowNoticeEl.textContent = `快照更新：${recovered.reason}（当前选区 ${fmtDate(viewStart)} — ${fmtDate(viewEnd)}）`;
+      }
+    }
 
     function e2eRows(threshold) {
       return pageSet().filter(b => filter === 'all' || (filter === 'slow' && core.isSlow(b, threshold)) || b.status === filter);
@@ -330,8 +351,10 @@
     function renderBranchOptions() {
       const counts = {};
       D.batches.forEach(b => { counts[b.base_branch] = (counts[b.base_branch] || 0) + 1; });
-      branchOptionsEl.innerHTML = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]))
-        .map(([branch, count]) => `<label class="branch-option"><input type="checkbox" value="${esc(branch)}" ${selectedBranches.has(branch) ? 'checked' : ''}><b>${esc(branch)}</b><span>${count}</span></label>`).join('');
+      const rows = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+      for (const branch of selectedBranches) if (!(branch in counts)) rows.push([branch, null]);
+      branchOptionsEl.innerHTML = rows
+        .map(([branch, count]) => `<label class="branch-option"><input type="checkbox" value="${esc(branch)}" ${selectedBranches.has(branch) ? 'checked' : ''}><b>${esc(branch)}</b><span>${count == null ? '本快照无批次' : count}</span></label>`).join('');
       branchSummaryEl.textContent = selectedBranches.size ? `合入分支：已选 ${selectedBranches.size} 项` : '合入分支：全部';
     }
 
@@ -531,6 +554,9 @@
         clearTimeout(tipTimer);
         window.removeEventListener('resize', onResize);
         document.removeEventListener('click', onDocClick);
+      },
+      state() {
+        return { branches: [...selectedBranches], search: searchInput.value, filter, npuFilter, showAll, start: viewStart, end: viewEnd };
       },
     };
     mounted = { payload: D, container };

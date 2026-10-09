@@ -148,5 +148,27 @@
     return !!(container && container.isConnected && container.children && container.children.length);
   }
 
-  return { isSlow, attentionGroups, freshnessSlots, matchesQuery, sameSessionMount };
+  /* REQ-006：新采集窗口下的选区恢复。m = min(30 分钟, 新窗长 W)：原选区与新窗交集
+     达到 m 时取交集（完全覆盖则原样保留），否则恢复新窗末尾长度
+     L = min(W, max(原选区长, m)) 的窗口；返回 null 表示新窗口本身非法。 */
+  function recoverWindow(oldStart, oldEnd, newStart, newEnd) {
+    const MIN_MS = 30 * 60 * 1000;
+    if (![newStart, newEnd].every(Number.isFinite) || newEnd <= newStart) return null;
+    const W = newEnd - newStart;
+    const m = Math.min(MIN_MS, W);
+    if (![oldStart, oldEnd].every(Number.isFinite) || oldEnd <= oldStart) {
+      return { start: newStart, end: newEnd, adjusted: false, reason: null };
+    }
+    const span = oldEnd - oldStart;
+    const is = Math.max(oldStart, newStart);
+    const ie = Math.min(oldEnd, newEnd);
+    if (ie - is >= m) {
+      const unchanged = is === oldStart && ie === oldEnd;
+      return { start: is, end: ie, adjusted: !unchanged, reason: unchanged ? null : '原选区已按新采集窗口裁剪为交集' };
+    }
+    const L = Math.min(W, Math.max(span, m));
+    return { start: newEnd - L, end: newEnd, adjusted: true, reason: '原选区与新采集窗口无有效交集，已恢复为新窗口末尾选区' };
+  }
+
+  return { isSlow, attentionGroups, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow };
 });

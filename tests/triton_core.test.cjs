@@ -69,7 +69,7 @@ test('circleMark renders solid circles with a larger hit area', () => {
 });
 
 /* ---- T8 additions: pure helpers for the merged Triton view ---- */
-const { isSlow, attentionGroups, freshnessSlots, matchesQuery, sameSessionMount } = require('../web/triton-core.js');
+const { isSlow, attentionGroups, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow } = require('../web/triton-core.js');
 
 test('isSlow flags completed batches at or beyond P90 and excludes running ones', () => {
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, 3620), true);
@@ -248,4 +248,55 @@ test('sameSessionMount: skip remount only for the same live payload/container pa
   assert.equal(sameSessionMount({ payload, container }, payload, { isConnected: false, children: [{}] }), false, 'detached container → remount');
   assert.equal(sameSessionMount({ payload, container }, payload, { isConnected: true, children: [] }), false, 'emptied container → remount');
   assert.equal(sameSessionMount(null, payload, container), false, 'nothing mounted yet → mount');
+});
+
+/* ---- REQ-006: selection recovery against a new collection window ---- */
+
+test('recoverWindow: intersection, full-coverage and end-anchored recovery rules', () => {
+  const H = 3600000, MIN = 60000;
+  const ns = 0, ne = 72 * H;
+  const kept = recoverWindow(60 * H, 72 * H, ns, ne);
+  assert.equal(kept.adjusted, false, 'an old selection fully inside the new window keeps its exact bounds');
+  assert.equal(kept.reason, null);
+  assert.equal(kept.start, 60 * H);
+  assert.equal(kept.end, 72 * H);
+
+  const clipped = recoverWindow(70 * H, 80 * H, ns, ne);
+  assert.equal(clipped.adjusted, true, 'overlap above m is clipped to the intersection');
+  assert.equal(clipped.start, 70 * H);
+  assert.equal(clipped.end, 72 * H);
+
+  const swallowed = recoverWindow(-10 * H, 100 * H, ns, ne);
+  assert.equal(swallowed.start, ns, 'an old selection covering the whole new window clips to the new window');
+  assert.equal(swallowed.end, ne);
+  assert.equal(swallowed.adjusted, true);
+
+  const noOverlap = recoverWindow(-10 * H, -2 * H, ns, ne);
+  assert.equal(noOverlap.adjusted, true, 'no overlap recovers an end-anchored window of length L');
+  assert.equal(noOverlap.start, 72 * H - 8 * H);
+  assert.equal(noOverlap.end, 72 * H);
+
+  const tinyOverlap = recoverWindow(-20 * MIN, 20 * MIN, ns, ne);
+  assert.equal(tinyOverlap.start, 72 * H - 40 * MIN, 'overlap below m falls back to L = max(old span, m)');
+  assert.equal(tinyOverlap.end, 72 * H);
+
+  const shortOld = recoverWindow(10 * H, 10 * H + 10 * MIN, ns, ne);
+  assert.equal(shortOld.end - shortOld.start, 30 * MIN, 'an old selection shorter than m is extended to m');
+  assert.equal(shortOld.end, 72 * H);
+});
+
+test('recoverWindow: invalid old selections and degenerate new windows', () => {
+  const H = 3600000;
+  assert.equal(recoverWindow(0, H, H, H - 1), null, 'an invalid new window means a read failure');
+  assert.equal(recoverWindow(0, H, NaN, H), null);
+  const noOld = recoverWindow(NaN, NaN, 0, 20 * H);
+  assert.equal(noOld.adjusted, false, 'no valid old selection falls back to the full new window');
+  assert.equal(noOld.start, 0);
+  assert.equal(noOld.end, 20 * H);
+  const reversed = recoverWindow(H, 0, 0, 20 * H);
+  assert.equal(reversed.start, 0, 'a reversed old selection is treated as absent');
+  assert.equal(reversed.end, 20 * H);
+  const tinyDomain = recoverWindow(5 * H, 15 * H, 0, 20 * 60000);
+  assert.equal(tinyDomain.start, 0, 'a new window under 30 minutes always recovers its full span');
+  assert.equal(tinyDomain.end, 20 * 60000);
 });
