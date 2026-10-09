@@ -71,7 +71,7 @@ test('circleMark renders solid circles with a larger hit area', () => {
 });
 
 /* ---- T8 additions: pure helpers for the merged Triton view ---- */
-const { isSlow, attentionGroups, attentionNote, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow } = require('../web/triton-core.js');
+const { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow } = require('../web/triton-core.js');
 
 test('isSlow flags completed batches at or beyond P90 and excludes running ones', () => {
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, 3620), true);
@@ -322,6 +322,30 @@ test('REQ-027 AC02: navSliderSemantics tracks the live window in every control',
   assert.deepEqual(moved.window, { min: 0, max: 72 * H, now: 3 * H });
   assert.deepEqual(moved.start, { min: 0, max: 6 * H - 30 * M, now: 0 });
   assert.deepEqual(moved.end, { min: 30 * M, max: 72 * H, now: 6 * H });
+});
+
+/* ---- REQ-028: keyboard-operable batch row expansion ---- */
+
+test('REQ-028 AC01: rowDomIds qualifies row and detail ids by attention group', () => {
+  ['slow', 'running', 'failure', 'all'].forEach(key => {
+    const ids = rowDomIds('run-42', key);
+    assert.equal(ids.rowId, `triton-batch-${key}-run-42`);
+    assert.equal(ids.detailId, `triton-detail-${key}-run-42`);
+  });
+});
+
+test('REQ-028 AC01: the same batch in overlapping groups keeps distinct row targets', () => {
+  const rows = [];
+  for (let i = 0; i < 12; i += 1) {
+    rows.push({ id: `ok-${i}`, pr: 900 + i, title: `ok ${i}`, status: 'success', duration_seconds: 600 + i, start_at: '2026-10-07T10:00:00Z' });
+  }
+  rows.push({ id: 'run-42', pr: 942, title: 'overlap', status: 'failure', duration_seconds: 5000, start_at: '2026-10-07T11:00:00Z' });
+  const groups = attentionGroups(rows, 700, '');
+  const keys = groups.filter(g => g.rows.some(b => b.id === 'run-42')).map(g => g.key);
+  assert.deepEqual(keys, ['slow', 'failure'], 'the batch is listed in both the slow and failure groups');
+  const ids = keys.map(key => rowDomIds('run-42', key));
+  assert.equal(new Set(ids.map(x => x.rowId)).size, ids.length, 'row ids stay unique across groups');
+  assert.equal(new Set(ids.map(x => x.detailId)).size, ids.length, 'detail ids stay unique across groups');
 });
 
 test('freshnessSlots finds the latest grace-elapsed Beijing slot', () => {

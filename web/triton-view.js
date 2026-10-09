@@ -437,16 +437,26 @@
       return `<div class="workflow"><div class="wf-name"><a class="link" href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.name)}</a> · #${w.attempt}</div><div class="track"><i class="bar ${w.conclusion || w.status}" style="left:${left}%;width:${Math.min(100 - left, width)}%"></i></div><div class="wf-time">${dur((we - ws) / 1000)}</div></div><div class="jobs">${jobs}</div>`;
     }
 
-    function rowHtml(b) {
-      return `<article class="row" id="triton-batch-${esc(b.id)}"><div class="row-main"><div><a class="pr link" href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">PR #${b.pr || '?'}</a><div class="sub">${esc((b.sha || '未知').slice(0, 7))}${b.kind === 'rerun' ? ' · 重跑' : ''}</div></div><div class="title">${esc(b.title)}<div class="sub">${esc(b.author || '未知作者')} · ${esc(b.branch || '未知来源')} → ${esc(b.base_branch)}</div></div><div class="status ${esc(b.status)}">${statusLabels[b.status] || esc(b.status)}</div><div class="sub">${b.start_at ? fmtDate(b.start_at) : '起点未知'}</div><div class="duration">${dur(b.duration_seconds)}${b.approximate ? '*' : ''}</div><div class="critical">${b.status === 'running' ? '仍在等待 / 执行：' : '最后结束：'}${esc(b.critical_workflow || '未知')}</div></div><div class="detail"><div class="detail-meta">起点：${b.start_at ? fmtDate(b.start_at) + '（' + core.startSourceLabel(b) + '）' : '无本次起点证据，E2E 留空'} · 合入分支：${esc(b.base_branch)} · ${b.end_at ? '结束：' + fmtDate(b.end_at) : '截至采集时间仍未结束'}</div>${(b.missing || []).map(x => `<div class="notice">${esc(x)}</div>`).join('')}${(b.workflows || []).map(w => wfHtml(w, b)).join('')}</div></article>`;
+    function rowHtml(b, groupKey) {
+      /* REQ-028 AC01: the expansion entry is a named button that declares its
+         expanded state and controlled region; the row surface keeps working
+         as a mouse shortcut through the row-main click handler. */
+      const ids = core.rowDomIds(esc(b.id), groupKey);
+      return `<article class="row" id="${ids.rowId}"><div class="row-main"><button type="button" class="row-toggle" aria-expanded="false" aria-controls="${ids.detailId}" aria-label="PR #${esc(b.pr || '?')} 批次明细"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button><div><a class="pr link" href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">PR #${b.pr || '?'}</a><div class="sub">${esc((b.sha || '未知').slice(0, 7))}${b.kind === 'rerun' ? ' · 重跑' : ''}</div></div><div class="title">${esc(b.title)}<div class="sub">${esc(b.author || '未知作者')} · ${esc(b.branch || '未知来源')} → ${esc(b.base_branch)}</div></div><div class="status ${esc(b.status)}">${statusLabels[b.status] || esc(b.status)}</div><div class="sub">${b.start_at ? fmtDate(b.start_at) : '起点未知'}</div><div class="duration">${dur(b.duration_seconds)}${b.approximate ? '*' : ''}</div><div class="critical">${b.status === 'running' ? '仍在等待 / 执行：' : '最后结束：'}${esc(b.critical_workflow || '未知')}</div></div><div class="detail" id="${ids.detailId}"><div class="detail-meta">起点：${b.start_at ? fmtDate(b.start_at) + '（' + core.startSourceLabel(b) + '）' : '无本次起点证据，E2E 留空'} · 合入分支：${esc(b.base_branch)} · ${b.end_at ? '结束：' + fmtDate(b.end_at) : '截至采集时间仍未结束'}</div>${(b.missing || []).map(x => `<div class="notice">${esc(x)}</div>`).join('')}${(b.workflows || []).map(w => wfHtml(w, b)).join('')}</div></article>`;
     }
 
     function renderRows() {
       const summary = currentSummary();
       showAllBtn.textContent = showAll ? '返回关注列表' : '查看全部批次';
+      /* REQ-028 AC03: the innerHTML swaps below destroy the focused row;
+         remember it so focus can return to the same row's toggle when it
+         survives, or move to the search box when the row is gone. */
+      const activeRow = attentionEl.contains(document.activeElement) ? document.activeElement.closest('.row') : null;
+      const activeRowId = activeRow ? activeRow.id : null;
       if (!summary.batches) {
         priorityNoteEl.textContent = '当前分支与时间范围内没有批次。';
         attentionEl.innerHTML = '<div class="empty">当前合入分支与时间范围内没有批次，请调整分支筛选或扩大时间范围。</div>';
+        restoreListFocus(activeRowId);
         return;
       }
       const pool = searchPool();
@@ -457,8 +467,32 @@
         ? [{ key: 'all', label: '全部批次', rows: pool.slice().sort((a, b) => +new Date(b.start_at) - +new Date(a.start_at)) }]
         : core.attentionGroups(pageSet(), summary.p90, searchInput.value);
       priorityNoteEl.textContent = core.attentionNote(summary.valid);
-      attentionEl.innerHTML = groups.map(group => `<div class="group-title">${group.label}<span class="count">${group.rows.length}</span></div><div class="rows">${group.rows.length ? group.rows.map(rowHtml).join('') : '<div class="empty">当前没有此类批次</div>'}</div>`).join('');
-      all('.row-main').forEach(x => { x.onclick = () => x.parentElement.classList.toggle('open'); });
+      attentionEl.innerHTML = groups.map(group => `<div class="group-title">${group.label}<span class="count">${group.rows.length}</span></div><div class="rows">${group.rows.length ? group.rows.map(b => rowHtml(b, group.key)).join('') : '<div class="empty">当前没有此类批次</div>'}</div>`).join('');
+      all('.row').forEach(row => {
+        const main = row.querySelector('.row-main');
+        main.onclick = e => {
+          if (e.target.closest('a')) return; /* REQ-028 AC02: activating a link navigates, it must not also toggle the row */
+          setRowOpen(row, !row.classList.contains('open'));
+        };
+      });
+      restoreListFocus(activeRowId);
+    }
+
+    /* REQ-028 AC01: aria-expanded always mirrors the visible open state. */
+    function setRowOpen(row, open) {
+      row.classList.toggle('open', open);
+      const btn = row.querySelector('.row-toggle');
+      if (btn) btn.setAttribute('aria-expanded', String(open));
+    }
+
+    /* REQ-028 AC03: focus returns to the same row's toggle when the row
+       survives the re-render, otherwise to the still-visible search box. */
+    function restoreListFocus(activeRowId) {
+      if (!activeRowId) return;
+      const row = document.getElementById(activeRowId);
+      const btn = row ? row.querySelector('.row-toggle') : null;
+      if (btn) btn.focus();
+      else searchInput.focus();
     }
 
     /* ---- 新鲜度：北京时间 8/13/18/20 槽位 + 90 分钟宽限，每分钟检查 ---- */

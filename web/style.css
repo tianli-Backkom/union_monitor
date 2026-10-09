@@ -389,10 +389,15 @@ td.num,th.num{text-align:right}
 .group-title{display:flex;align-items:center;gap:10px;margin:20px 0 9px;font-size:13px;font-weight:700}
 .rows{border-top:1px solid var(--line)}
 .row{border-bottom:1px solid var(--line)}
-.row-main{display:grid;grid-template-columns:92px minmax(220px,1.8fr) 95px 105px 105px minmax(120px,1fr);gap:14px;align-items:center;padding:13px 8px;cursor:pointer}
+.row-main{display:grid;grid-template-columns:26px 92px minmax(220px,1.8fr) 95px 105px 105px minmax(120px,1fr);gap:14px;align-items:center;padding:13px 8px;cursor:pointer}
 .row-main:hover{background:var(--surface-hover)}
 .row.open .detail{display:block}
 .detail{display:none;background:var(--surface-sunken);border-top:1px dashed var(--line);padding:16px}
+.row-toggle{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:1px solid transparent;border-radius:var(--r-control);background:none;color:var(--text-3);cursor:pointer}
+.row-toggle:hover{background:var(--surface-hover);color:var(--ink)}
+.row-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.row-toggle .icon{width:14px;height:14px;pointer-events:none;transition:transform .15s ease}
+.row.open .row-toggle .icon{transform:rotate(90deg)}
 .detail-meta{font-size:12px;color:var(--text-3);margin:12px 0 16px;line-height:1.8}
 .pr{font-family:var(--font-num);font-weight:700;font-size:13px;color:var(--accent)}
 .link{color:var(--accent)}

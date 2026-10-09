@@ -154,6 +154,15 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
       : '优先显示超过 P90（按页级范围 ' + n + ' 个有效完成样本计算）、执行中和失败的批次；三组之间可能有批次重叠，组计数之和不是唯一批次数。';
   }
 
+  /* REQ-028: stable DOM ids for one batch row. The attention groups may
+     list the same batch in more than one group (failure ∩ slow), so ids
+     carry the group key to keep aria-controls and focus restoration
+     unambiguous when a batch appears twice. */
+  function rowDomIds(batchId, groupKey) {
+    const suffix = String(groupKey) + '-' + String(batchId);
+    return { rowId: 'triton-batch-' + suffix, detailId: 'triton-detail-' + suffix };
+  }
+
   /* REQ-027: the time-window constraints shared by pointer, touch and
      keyboard adjustments: stay inside the collection window and keep at
      least a 30-minute selection — or the whole window when the domain
@@ -261,5 +270,5 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return { start: newEnd - L, end: newEnd, adjusted: true, reason: '原选区与新采集窗口无有效交集，已恢复为新窗口末尾选区' };
   }
 
-  return { isSlow, attentionGroups, attentionNote, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow };
+  return { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow };
 });
