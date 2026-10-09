@@ -104,6 +104,17 @@ class SharedSnapshotCacheConfigTests(unittest.TestCase):
             self.assertIn('uses: actions/cache/save@v4', text)
             self.assertNotIn('uses: actions/cache@v4', text)
 
+    def test_failed_restore_never_saves_cache_or_deploys(self):
+        # REQ-020 AC04: a failed restore must never poison the shared cache a
+        # retry would restore, and the deploy job must wait for the verifying
+        # build job — the last published page survives incomplete restores.
+        for text in (PAGES, REFRESH):
+            chunks = re.split(r'(?m)^(?:      - name: |  [a-z-]+:$)', text)
+            for chunk in chunks:
+                if 'uses: actions/cache/save@v4' in chunk:
+                    self.assertNotIn('if:', chunk)
+            self.assertRegex(text, r'(?m)^  deploy:\n    needs: build')
+
 
 if __name__ == '__main__':
     unittest.main()

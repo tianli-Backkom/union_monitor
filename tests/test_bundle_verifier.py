@@ -210,6 +210,51 @@ class BundleVerifierTests(unittest.TestCase):
         code, out = run_verifier(self.tmp)
         self.assertEqual(code, 0, out)
 
+    def test_empty_index_and_empty_snapshot_files_fail(self):
+        # REQ-020 AC01: an empty file is a restore failure, not "index
+        # non-empty" — 0-byte index and 0-byte referenced snapshot both fail.
+        empty_index = self.tmp / 'empty-index'
+        write_bundle(empty_index)
+        (empty_index / 'web/data/repositories.json').write_bytes(b'')
+        code, out = run_verifier(empty_index)
+        self.assertNotEqual(code, 0)
+        self.assertIn('not valid JSON', out)
+        empty_snapshot = self.tmp / 'empty-snapshot'
+        write_bundle(empty_snapshot)
+        (empty_snapshot / 'web/data/repos/ubs-comm.json').write_bytes(b'')
+        code, out = run_verifier(empty_snapshot)
+        self.assertNotEqual(code, 0)
+        self.assertIn('ubs-comm', out)
+        self.assertIn('not valid JSON', out)
+
+    def test_index_without_repositories_object_structure_fails(self):
+        # REQ-020 AC01: valid JSON that is not an object with a repositories
+        # list is a structural failure, never a restore success.
+        write_bundle(self.tmp)
+        index_path = self.tmp / 'web/data/repositories.json'
+        index_path.write_text('[]', 'utf-8')
+        self.assertNotEqual(run_verifier(self.tmp)[0], 0)
+        index_path.write_text('{"schema_version": 3}', 'utf-8')
+        code, out = run_verifier(self.tmp)
+        self.assertNotEqual(code, 0)
+        self.assertIn('non-empty repositories list', out)
+
+    def test_failed_entry_without_snapshot_is_legal_like_pending(self):
+        # REQ-020 AC02: a first-failed repository has no snapshot file; the
+        # gate treats it like pending — 未获取, never fabricated success data.
+        write_bundle(self.tmp)
+        index_path = self.tmp / 'web/data/repositories.json'
+        index = json.loads(index_path.read_text('utf-8'))
+        index['repositories'].append({'name': 'ubs-new', 'repository': 'openeuler/ubs-new',
+                                      'status': 'failed', 'snapshot': None, 'meta': None,
+                                      'error': 'collect failed'})
+        updated = json.dumps(index, ensure_ascii=False)
+        index_path.write_text(updated, 'utf-8')
+        # publish_index writes both copies at once; keep the mirror consistent.
+        (self.tmp / 'data/repositories.json').write_text(updated, 'utf-8')
+        code, out = run_verifier(self.tmp)
+        self.assertEqual(code, 0, out)
+
 
 if __name__ == '__main__':
     unittest.main()

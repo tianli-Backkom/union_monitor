@@ -160,3 +160,10 @@ test('REQ-016 AC03/AC04: unmatched group keeps batch links and the representativ
   assert.ok(source.includes('for(const b of detailPR.batches)'),'the batch CSV iterates the full detail batch set, independent of grouping');
   assert.ok(source.includes('batchHTML(b,b.url===s.representative_batch_url)'),'representative marking is positional and applies to every group');
 });
+
+test('REQ-020 AC02: first-failed and pending repositories show 未获取, never fabricated success',()=>{
+  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+  assert.ok(source.includes("'未获取数据 · 采集失败'"),'a first-failed repo without a snapshot reads 未获取数据 · 采集失败, not success with empty data');
+  assert.ok(source.includes("'采集失败 · 保留快照'"),'a failed repo keeping its last snapshot is labelled distinctly from first failure');
+  assert.ok(source.includes("'未获取数据 · 待采集'"),'a pending repo reads 未获取数据 · 待采集');
+});

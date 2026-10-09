@@ -11,6 +11,7 @@ executed by bash, and every bundle gate runs validate_bundle.py itself.
 Every step logs its restore source (cache hit / fallback / mirror) and the
 bundle fingerprint, so a verbose run doubles as the AC04 chain evidence.
 """
+import json
 import os
 import shutil
 import subprocess
@@ -158,6 +159,10 @@ class CacheChainTests(unittest.TestCase):
         self.assertEqual(code, 0, log)        # ensure logs the gap; only the index is fatal there
         self.assertIn('missing=1', log)
         self.assertIn('NOT complete', log)
+        # REQ-020 AC03: the error report names the specific missing reference
+        # and its restore source (fallback site URL + remote path).
+        self.assertIn('download failed', log)
+        self.assertIn('/data/repos/ubs-comm.json', log)
         code, out = run_verifier(workspace, '--ensure-manifest')
         self.assertNotEqual(code, 0)          # ...but the bundle gate blocks the deploy
         self.assertIn('ubs-comm', out)
@@ -200,6 +205,91 @@ class CacheChainTests(unittest.TestCase):
         self.assertIn('manifest fingerprint mismatch', out)
         self.assertIn('repos/ubs-comm.json', out)
         print(f'[chain] AC03 invalid-cache: expected {fp_b} → blocked (mixed ubs-comm vintage)')
+
+    def test_cold_start_empty_snapshot_file_blocks_deploy(self):
+        # REQ-020 AC01: a fallback site serving a 0-byte snapshot "restores"
+        # fine (HTTP 200, empty body) — the ensure step even reports the
+        # bundle complete; only the bundle gate catches the empty file.
+        bundle = self.tmp / 'B'
+        write_bundle(bundle, generated_at=B_GENERATED_AT, pr_count=2)
+        run_verifier(bundle, '--write-manifest')
+        site = self.tmp / 'site'
+        publish_site(bundle, site)
+        (site / 'data/repos/ubs-comm.json').write_bytes(b'')
+        workspace = self.tmp / 'incremental'
+        workspace.mkdir()
+        code, log = run_ensure(workspace, self.site_url(site), self.shim)
+        self.assertEqual(code, 0, log)
+        self.assertIn('summary: cache=0 fallback=4 mirrored=3 missing=0', log)
+        code, out = run_verifier(workspace, '--ensure-manifest')
+        self.assertNotEqual(code, 0)
+        self.assertIn('ubs-comm', out)
+        self.assertIn('not valid JSON', out)
+        print('[chain] REQ-020 AC01: empty restored snapshot → deploy blocked')
+
+    def test_pending_and_first_failed_entries_restore_without_fake_success(self):
+        # REQ-020 AC02: pending / first-failed repositories have no snapshot
+        # on the site; the restore logs the download failures and the bundle
+        # gate still passes — they stay uncollected, never fabricated success.
+        bundle = self.tmp / 'B'
+        write_bundle(bundle, generated_at=B_GENERATED_AT, pr_count=2)
+        index_path = bundle / 'web/data/repositories.json'
+        index = json.loads(index_path.read_text('utf-8'))
+        index['repositories'] += [
+            {'name': 'ubs-virt', 'repository': 'openeuler/ubs-virt',
+             'status': 'pending', 'snapshot': None, 'meta': None},
+            {'name': 'ubs-io', 'repository': 'openeuler/ubs-io',
+             'status': 'failed', 'snapshot': None, 'meta': None,
+             'error': 'collect failed'},
+        ]
+        updated = json.dumps(index, ensure_ascii=False)
+        index_path.write_text(updated, 'utf-8')
+        (bundle / 'data/repositories.json').write_text(updated, 'utf-8')
+        code, out = run_verifier(bundle, '--write-manifest')
+        self.assertEqual(code, 0, out)
+        site = self.tmp / 'site'
+        publish_site(bundle, site)
+        workspace = self.tmp / 'incremental'
+        workspace.mkdir()
+        code, log = run_ensure(workspace, self.site_url(site), self.shim)
+        self.assertEqual(code, 0, log)
+        self.assertIn('web/data/repos/ubs-virt.json is missing; downloading', log)
+        self.assertIn('download failed', log)
+        self.assertIn('summary: cache=0 fallback=4 mirrored=4 missing=2', log)
+        self.assertIn('NOT complete', log)
+        code, out = run_verifier(workspace, '--ensure-manifest')
+        self.assertEqual(code, 0, out)
+        self.assertIn('manifest=verified', out)
+        self.assertFalse((workspace / 'web/data/repos/ubs-virt.json').exists())
+        self.assertFalse((workspace / 'web/data/repos/ubs-io.json').exists())
+        print('[chain] REQ-020 AC02: pending/first-failed restore without fabricated snapshots')
+
+    def test_warm_incomplete_cache_with_unavailable_file_blocks_deploy(self):
+        # REQ-020 AC03: the cache path runs the same integrity check as the
+        # fallback path — a cache hit missing one referenced snapshot, with
+        # the site also lacking it, blocks the deploy identically.
+        bundle = self.tmp / 'B'
+        write_bundle(bundle, generated_at=B_GENERATED_AT, pr_count=2)
+        run_verifier(bundle, '--write-manifest')
+        cache = self.tmp / 'cache'
+        copy_shared(bundle, cache)
+        for rel in ('web/data/repos/ubs-comm.json', 'data/repos/ubs-comm.json'):
+            (cache / rel).unlink()
+        site = self.tmp / 'site'
+        publish_site(bundle, site)
+        (site / 'data/repos/ubs-comm.json').unlink()
+        workspace = self.tmp / 'incremental'
+        copy_shared(cache, workspace)
+        code, log = run_ensure(workspace, self.site_url(site), self.shim)
+        self.assertEqual(code, 0, log)
+        self.assertIn('summary: cache=3 fallback=0 mirrored=0 missing=1', log)
+        self.assertIn('download failed', log)
+        self.assertIn('NOT complete', log)
+        code, out = run_verifier(workspace, '--ensure-manifest')
+        self.assertNotEqual(code, 0)
+        self.assertIn('ubs-comm', out)
+        self.assertIn('missing', out)
+        print('[chain] REQ-020 AC03: warm incomplete cache → same bundle gate blocks')
 
 
 if __name__ == '__main__':
