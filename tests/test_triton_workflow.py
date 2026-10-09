@@ -29,7 +29,12 @@ class TritonWorkflowTests(unittest.TestCase):
             self.assertEqual(self.workflow.count(permission), 1)
             self.assertIn(permission, self.pages)
 
-    def test_queued_runs_never_cancel_the_daily_build(self):
+    def test_concurrency_protects_running_pending_replaced_by_platform_default(self):
+        # REQ-039/P04: cancel-in-progress:false only protects the RUNNING
+        # build. Pending runs follow the platform default (queue: single):
+        # only the newest queued run per group is kept, earlier queued runs
+        # are cancelled and replaced. The literal below declares the
+        # protection; it must never be read as "queued runs never cancel".
         self.assertRegex(self.workflow, r"(?ms)^concurrency:\s*\n\s+group: pages\s*\n\s+cancel-in-progress: false")
         self.assertRegex(self.workflow, r"(?ms)^\s{2}deploy:\s*\n\s{4}needs: build\b")
         self.assertIn("name: github-pages", self.workflow)

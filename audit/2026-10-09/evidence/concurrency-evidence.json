@@ -1,0 +1,112 @@
+{
+  "requirement": "REQ-039",
+  "check_id": "P04",
+  "generated_at": "2026-10-09T21:34:12.703717+00:00",
+  "config_facts": {
+    "pages.yml": {
+      "group": "pages",
+      "cancel_in_progress": "false",
+      "queue": "single (platform default)"
+    },
+    "triton-refresh.yml": {
+      "group": "pages",
+      "cancel_in_progress": "false",
+      "queue": "single (platform default)"
+    }
+  },
+  "documented_platform_semantics": {
+    "running": "同一并发组任一时刻最多一个运行中的任务；cancel-in-progress 为 false 时新触发不取消正在运行的任务，只能进入 pending",
+    "pending_default_single": "默认 queue: single——同一并发组最多保留一个 pending；新的排队运行会取消并替换已有的 pending 运行",
+    "queue_max": "queue: max 时同一并发组最多 100 个 pending，队列满后新运行被取消；queue: max 与 cancel-in-progress: true 组合为非法配置",
+    "fifo": "同组运行按开始等待并发组的时间 FIFO 处理，实际开始时间不定，顺序不保证",
+    "quotes": [
+      "there can be at most one running job or workflow in a concurrency group at any time",
+      "By default, any existing `pending` job or workflow in the same concurrency group will be canceled and the new queued job or workflow will take its place.",
+      "single (default): At most one job or workflow run can be `pending` in the concurrency group. When a new job or workflow run is queued, any existing `pending` job or workflow run in the same group is canceled and replaced.",
+      "The combination of `queue: max` and `cancel-in-progress: true` is not allowed and will result in a workflow validation error."
+    ],
+    "reference": "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
+    "source_note": "官方文档引文，随 REQ-039 于 2026-10-10 人工核对抓取"
+  },
+  "business_impact": {
+    "schedule_facts": {
+      "daily": "pages.yml 每日北京时间 07:30（UTC 23:30）触发，build timeout 180 分钟",
+      "incremental": "triton-refresh.yml 北京时间 08:00/13:00/18:00/20:00 触发，build timeout 60 分钟"
+    },
+    "scenarios": [
+      {
+        "id": "S-a",
+        "sequence": "每日全量运行中，增量触发",
+        "platform": "增量进入 pending，全量完成后执行",
+        "business": "无丢失：运行中构建受 cancel-in-progress:false 保护"
+      },
+      {
+        "id": "S-b",
+        "sequence": "增量运行中，每日全量排队，随后新增量触发",
+        "platform": "排队的每日全量被新增量取消替换（queue: single 默认）",
+        "business": "当日全量更新（含九仓 UBS 采集）丢失，等待次日 07:30 计划恢复，UBS 数据陈旧最长约 24 小时"
+      },
+      {
+        "id": "S-c",
+        "sequence": "计划重叠可能性",
+        "platform": "07:30 全量启动后 30 分钟即 08:00 增量触发",
+        "business": "计划内的重叠均落在 S-a 安全场景；S-b 需要增量跨越次日 07:30 仍在运行（增量 timeout 60 分钟、末班 20:00 远早于 07:30），仅手动 workflow_dispatch 或平台异常延迟才可能构成"
+      }
+    ],
+    "conclusion": "按计划表重叠走安全场景 S-a；S-b 存在但需手动/异常触发，平台运行历史未读取（见 ac03_run_history），不推断已线上发生"
+  },
+  "ac01_controlled_sequence": {
+    "status": "unverified",
+    "reasons": [
+      "无 git remote",
+      "无 gh CLI"
+    ],
+    "requirement": "运行中任务 A、随后 pending B 及 C 的受控序列，记录 A 是否被取消及 B/C 实际排队/替换结果，并提供隔离工作流运行 ID/事件记录",
+    "protocol": {
+      "isolation": "使用独立并发组（如 concurrency-probe-${{ github.run_id }} 派生组）或隔离仓库，不影响生产 pages 组",
+      "steps": [
+        "A：workflow_dispatch 触发长任务（如 sleep 600），进入 running",
+        "B：再次触发短任务（sleep 60），进入 pending",
+        "C：第三次触发短任务（sleep 60），观察 B 被取消替换、C 保持 pending",
+        "A 自然结束后 C 启动执行",
+        "记录三个 run ID、每次运行的状态事件时间线（queued/in_progress/cancelled）与 conclusion"
+      ],
+      "expected": "A 不被取消（cancel-in-progress:false）；B 被 C 取代（平台默认 pending 替换）；C 在 A 结束后运行",
+      "evidence_to_record": [
+        "隔离工作流运行 ID",
+        "每次运行的状态事件与时间戳",
+        "B 的取消/替换事件记录"
+      ]
+    }
+  },
+  "ac03_run_history": {
+    "status": "unverified",
+    "reasons": [
+      "无 git remote",
+      "无 gh CLI"
+    ],
+    "requirement": "读取可取得的真实运行历史并记录是否影响每日全量更新",
+    "procedure": [
+      "gh run list --workflow pages.yml --limit 100 --json databaseId,status,conclusion,event,createdAt,updatedAt",
+      "REST: GET /repos/{owner}/{repo}/actions/runs?per_page=100（公开仓库无凭证亦可读取）",
+      "筛选 conclusion 含 cancelled 的运行与同日 07:30 全量/08:00 增量触发对，核对排队替换是否实际发生并影响每日全量更新"
+    ],
+    "recorded": "本仓库无 git remote 且无 gh CLI，无可取得的运行历史；保持未验证，不推断已线上发生"
+  },
+  "ac04_queue_max": {
+    "decision": "deferred",
+    "rationale": "沿用当前策略：cancel-in-progress:false 保护运行中构建，接受平台默认排队替换；缺少 queue:max 本身不是新增必改功能",
+    "p04_resolution": "审计期 P04 期望两工作流声明 queue:max；REQ-039 采纳\"缺 queue:max 非新增必改功能\"，决策缓期并记录于此",
+    "future_policy": "如未来要求保留全部排队任务：需制定明确新运行策略（如 queue: max——与 cancel-in-progress:true 互斥、按工作流拆分并发组、或错峰计划），并附受控序列记录与真实历史核对的对应验收，另行立项"
+  },
+  "test_and_doc_alignment": {
+    "old_test_name_removed": true,
+    "new_test_name_present": true,
+    "readme_states_pending_replacement": true
+  },
+  "overall": {
+    "status": "aligned",
+    "problems": [],
+    "note": "unverified 的受控序列与运行历史如实记录，不影响退出码；退出码只由策略一致性与文档/测试对齐决定"
+  }
+}
