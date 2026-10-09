@@ -216,7 +216,7 @@ python validate_bundle.py
 python -m triton.verify_deployment <site-url> web/data/triton-manifest.json
 ```
 
-浏览器已人工验证：PR 状态筛选、搜索、多次提交和重跑下钻、任务时间线。多仓审计结果见 `data/validation-multi.json`，包含每仓采集状态、PR 数及跨仓有效样本。
+浏览器已人工验证：PR 状态筛选、搜索、多次提交和重跑下钻、任务时间线。多仓审计结果见 `data/validation-multi.json`，包含每仓采集状态、PR 数及跨仓有效样本。Triton 审计冻结快照（`tests/fixtures/triton-audit-freeze.json`：38 PR/66 批/65 完成样本/48 NPU 排队点/9 条 NPU 时间倒置）由测试独立重算 summary、逐批 NPU 派生与两图选区统计并锁定，统计契约不随新数据漂移。
 
 ## 接口依据与致谢
 

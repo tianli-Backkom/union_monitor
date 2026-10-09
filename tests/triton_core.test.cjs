@@ -1,6 +1,8 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration, startSourceLabel } = require('../web/triton-core.js');
+const fs = require('node:fs');
+const path = require('node:path');
 
 test('selectWindow keeps the lower boundary of the requested range', () => {
   const rows = [
@@ -374,4 +376,38 @@ test('REQ-014 AC02/AC04: startSourceLabel reports the start source and approxima
   assert.equal(startSourceLabel({}), '无起点证据');
   assert.equal(startSourceLabel(null), '无起点证据');
   assert.equal(startSourceLabel({ start_source: 'unknown_source', approximate: false }), 'unknown_source');
+});
+
+test('REQ-046 AC01: both charts recompute selection stats over the frozen audit snapshot', () => {
+  const freeze = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/triton-audit-freeze.json'), 'utf8'));
+  const e2e = chartStats(freeze.batches);
+  assert.equal(e2e.count, 65, '65 completion samples of 66 batches');
+  assert.ok(Math.abs(e2e.p50 - 1580) < 1e-9);
+  assert.ok(Math.abs(e2e.p90 - 3620.2000000000003) < 1e-9);
+  assert.ok(Math.abs(e2e.average - 2129.5846153846155) < 1e-9);
+  const page = dashboardStats(freeze.batches);
+  assert.equal(page.prs, 38);
+  assert.equal(page.batches, 66);
+  assert.equal(page.valid, 65);
+  assert.ok(Math.abs(page.median - 1580) < 1e-9);
+  assert.ok(Math.abs(page.p90 - 3620.2000000000003) < 1e-9);
+  assert.equal(page.approximate, 66);
+  assert.equal(page.incomplete, 0);
+  // The NPU chart maps npu_queue_seconds through the same chartStats contract
+  // (web/triton-view.js drawNpu) over its applicable set of 48 points.
+  const npuRows = freeze.batches.filter(b => validDuration(b.npu_queue_seconds));
+  assert.equal(npuRows.length, 48);
+  const npu = chartStats(npuRows.map(b => ({ ...b, duration_seconds: b.npu_queue_seconds })));
+  assert.equal(npu.count, 48);
+  assert.ok(Math.abs(npu.p50 - 56) < 1e-9);
+  assert.ok(Math.abs(npu.p90 - 248.10000000000045) < 1e-9);
+  assert.ok(Math.abs(npu.average - 109.52083333333333) < 1e-9);
+});
+
+test('REQ-046 AC04: a single sample expresses itself in every statistic', () => {
+  const stats = chartStats([{ status: 'success', duration_seconds: 2122 }]);
+  assert.equal(stats.count, 1);
+  assert.equal(stats.average, 2122);
+  assert.equal(stats.p50, 2122);
+  assert.equal(stats.p90, 2122);
 });
