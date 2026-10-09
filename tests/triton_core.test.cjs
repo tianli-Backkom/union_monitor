@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration, startSourceLabel } = require('../web/triton-core.js');
+const { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, markLabel, validDuration, startSourceLabel } = require('../web/triton-core.js');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -71,7 +71,7 @@ test('circleMark renders solid circles with a larger hit area', () => {
 });
 
 /* ---- T8 additions: pure helpers for the merged Triton view ---- */
-const { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow } = require('../web/triton-core.js');
+const { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow, placeTipBox } = require('../web/triton-core.js');
 
 test('isSlow flags completed batches at or beyond P90 and excludes running ones', () => {
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, 3620), true);
@@ -346,6 +346,69 @@ test('REQ-028 AC01: the same batch in overlapping groups keeps distinct row targ
   const ids = keys.map(key => rowDomIds('run-42', key));
   assert.equal(new Set(ids.map(x => x.rowId)).size, ids.length, 'row ids stay unique across groups');
   assert.equal(new Set(ids.map(x => x.detailId)).size, ids.length, 'detail ids stay unique across groups');
+});
+
+/* ---- REQ-029: keyboard access to the pinned scatter cards ---- */
+
+test('REQ-029 AC01: circleMark emits a focusable named button for keyboard users', () => {
+  const b = { pr: 2331, e2e_index: 2, e2e_total: 3, sha: '6660627371475594e5ab6cd405d4b3791746cbe0', status: 'failure' };
+  const html = circleMark(b, 10, 20, 5, '#f00', 'e2e');
+  assert.ok(html.includes('role="button"'), 'the mark is a button');
+  assert.ok(html.includes('tabindex="0"'), 'the mark is tabbable');
+  assert.ok(html.includes('aria-label="E2E 详情：PR #2331 第 2/3 次 E2E 6660627"'), 'the identity label names the batch');
+  const npu = circleMark(b, 10, 20, 5, '#f00', 'npu');
+  assert.ok(npu.includes('aria-label="NPU 排队详情：PR #2331 第 2/3 次 E2E 6660627"'), 'NPU marks say what they show');
+  assert.ok(npu.includes('data-kind="npu"'));
+});
+
+test('REQ-029 AC01: markLabel falls back for incomplete batch identity', () => {
+  assert.ok(markLabel(null, 'e2e').includes('PR #?'));
+  assert.ok(markLabel({}, 'e2e').includes('第 1/1 次'));
+  assert.ok(markLabel({ pr: 1 }, 'npu').includes('未知'));
+});
+
+/* ---- REQ-029 AC02: placement keeps the pinned card off its anchor mark ---- */
+
+test('REQ-029 AC02: placeTipBox places the card beside the mark with a gap by default', () => {
+  const p = placeTipBox(100, 100, 430, 219, 1200, 800, 16, 16);
+  assert.deepEqual(p, { x: 114, y: 114 });
+  assert.ok(p.x >= 100 + 8, 'the card starts right of the 16×16 mark box');
+});
+
+test('REQ-029 AC02: placeTipBox flips above when bottom clamping would cover the mark', () => {
+  // 764×485 viewport with the CSS-capped card height: the e2e dead-zone geometry from browser probing.
+  const p = placeTipBox(438, 262, 430, 219, 764, 485, 16, 16);
+  assert.deepEqual(p, { x: 322, y: 21 });
+  assert.ok(p.y + 219 < 262 - 8, 'the card bottom stays above the mark box');
+});
+
+test('REQ-029 AC02: placeTipBox flips left when the card cannot fit above either', () => {
+  // 300px-tall viewport: neither below nor above fits, so the cascade moves left of the mark.
+  const p = placeTipBox(500, 80, 430, 219, 764, 300, 16, 16);
+  assert.deepEqual(p, { x: 48, y: 12 });
+  assert.ok(p.x + 430 < 500 - 8, 'the card right edge stays left of the mark box');
+});
+
+test('REQ-029 AC02: the capped card never covers the mark anywhere in a short viewport (grid)', () => {
+  const vw = 764, vh = 485, w = 430;
+  const h = Math.ceil(vh / 2 - 24); // the .tooltip CSS max-height cap at this viewport height
+  for (let ax = 16; ax <= vw - 16; ax += 4) {
+    for (let ay = 16; ay <= vh - 16; ay += 4) {
+      const p = placeTipBox(ax, ay, w, h, vw, vh, 16, 16);
+      const inViewport = p.x >= 12 && p.x + w <= vw - 12 && p.y >= 12 && p.y + h <= vh - 12;
+      assert.ok(inViewport, `(${ax},${ay}) keeps the card inside the viewport`);
+      const covers = p.x < ax + 8 && p.x + w > ax - 8 && p.y < ay + 8 && p.y + h > ay - 8;
+      assert.ok(!covers, `(${ax},${ay}) must not cover the mark box`);
+    }
+  }
+});
+
+test('REQ-029 AC02: placeTipBox degrades to a clamped position when no escape exists', () => {
+  // 369px card in a 485px viewport: 2h + 40 > vh leaves a dead zone where every
+  // in-viewport placement covers the mark — the reason .tooltip caps max-height.
+  const p = placeTipBox(438, 262, 430, 369, 764, 485, 16, 16);
+  assert.deepEqual(p, { x: 12, y: 12 });
+  assert.ok(Number.isFinite(p.x) && Number.isFinite(p.y), 'no NaN even in the dead zone');
 });
 
 test('freshnessSlots finds the latest grace-elapsed Beijing slot', () => {

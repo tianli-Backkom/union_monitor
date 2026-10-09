@@ -220,6 +220,7 @@ input[type=search]:focus{border-color:var(--accent)}
 .mark-hit{cursor:pointer}
 .hit-area{fill:transparent;pointer-events:all}
 .mark-hit:hover .dot{r:6;opacity:1}
+.mark-hit:focus-visible .hit-area{stroke:var(--accent);stroke-width:2}
 .chart-tip{position:absolute;top:8px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:var(--r-control);box-shadow:0 8px 24px rgba(29,37,48,.14);padding:8px 10px;font-size:12px;line-height:1.7;pointer-events:none;white-space:nowrap;z-index:5;font-variant-numeric:tabular-nums}
 .chart-tip b{color:var(--accent);font-family:var(--font-num);font-weight:600}
 
@@ -254,7 +255,9 @@ input[type=search]:focus{border-color:var(--accent)}
 .selection-empty{width:100%;padding:4px;color:var(--text-3);font-size:12px;text-align:center}
 
 /* ---------- 17. Tooltip card (Triton scatter) ---------- */
-.tooltip{position:fixed;display:none;pointer-events:auto;background:var(--surface);color:var(--ink);padding:14px 15px;font-size:13px;line-height:1.6;z-index:50;width:min(430px,calc(100vw - 24px));max-height:min(76vh,680px);overflow:auto;box-shadow:0 18px 45px rgba(29,37,48,.18),0 2px 8px rgba(29,37,48,.08);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--r-control)}
+/* REQ-029 AC02：显式禁用过渡——减少动态的 * 通配规则强制 0.01ms 时长，而 transition-property
+   初始值为 all，位置改值后到下一动画帧之间 DOM 读数会停留在旧值；固定卡片的位置必须即时确定。 */
+.tooltip{position:fixed;display:none;pointer-events:auto;background:var(--surface);color:var(--ink);padding:14px 15px;font-size:13px;line-height:1.6;z-index:50;transition:none;width:min(430px,calc(100vw - 24px));max-height:min(76vh,680px,calc(50vh - 24px));overflow:auto;box-shadow:0 18px 45px rgba(29,37,48,.18),0 2px 8px rgba(29,37,48,.08);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--r-control)}
 .tip-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px}
 .tip-head a{color:var(--accent);font-family:var(--font-num);font-weight:700;font-size:12px}
 .tip-title{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
@@ -267,6 +270,10 @@ input[type=search]:focus{border-color:var(--accent)}
 .tip-job{display:flex;flex-wrap:wrap;gap:4px 10px;padding:5px 0;font-size:12px}
 .tip-job a{color:var(--accent)}
 .tip-job .missing{color:var(--text-3)}
+.tip-close{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;padding:0;border:1px solid transparent;border-radius:var(--r-control);background:none;color:var(--text-3);cursor:pointer}
+.tip-close .icon{width:12px;height:12px}
+.tip-close:hover{background:var(--surface-hover);color:var(--ink)}
+.tip-close:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .tip-hint{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);color:var(--text-3);font-size:11px}
 
 /* ---------- 18. Task bars & coverage ---------- */

@@ -96,12 +96,21 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return batch.approximate ? base + '，近似' : base;
   }
 
-  function circleMark(batch, cx, cy, index, color, kind) {
-    const radius = batch.status === 'success' ? 3.2 : 4.2;
-    return `<g class="mark-hit" data-i="${index}" data-kind="${kind || 'e2e'}" transform="translate(${cx} ${cy})"><circle class="hit-area" r="8"/><circle class="dot" r="${radius}" fill="${color}"/></g>`;
+  /* REQ-029: stable identity label for a chart mark so keyboard users can
+     locate a batch before opening its pinned detail card. */
+  function markLabel(batch, kind) {
+    const pr = batch && batch.pr != null ? batch.pr : '?';
+    const attempt = `第 ${(batch && batch.e2e_index) || 1}/${(batch && batch.e2e_total) || 1} 次 E2E`;
+    const sha = String((batch && batch.sha) || '未知').slice(0, 7);
+    return (kind === 'npu' ? 'NPU 排队详情：PR #' : 'E2E 详情：PR #') + pr + ' ' + attempt + ' ' + sha;
   }
 
-  return { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, validDuration, startSourceLabel };
+  function circleMark(batch, cx, cy, index, color, kind) {
+    const radius = batch.status === 'success' ? 3.2 : 4.2;
+    return `<g class="mark-hit" data-i="${index}" data-kind="${kind || 'e2e'}" role="button" tabindex="0" aria-label="${markLabel(batch, kind)}" transform="translate(${cx} ${cy})"><circle class="hit-area" r="8"/><circle class="dot" r="${radius}" fill="${color}"/></g>`;
+  }
+
+  return { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, markLabel, validDuration, startSourceLabel };
 });
 
 /* ---- T8 additions (appended; the prefix above is the original module plus
@@ -270,5 +279,23 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return { start: newEnd - L, end: newEnd, adjusted: true, reason: '原选区与新采集窗口无有效交集，已恢复为新窗口末尾选区' };
   }
 
-  return { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow };
+  /* REQ-029 AC02: pure placement for the pinned detail card. The cascade
+     clamps into the viewport, then flips above, then left of the anchor
+     box (a focusable 16×16 mark) whenever clamping alone would pull the
+     card back over it; the .tooltip CSS cap calc(50vh - 24px) keeps a
+     vertical escape band open in every viewport (2h + 40 <= vh), so the
+     above-flip always terminates the cascade in production. */
+  function placeTipBox(ax, ay, width, height, vw, vh, markW, markH) {
+    const pad = 12, gap = 14;
+    const bx = ax - markW / 2, by = ay - markH / 2;
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(v, hi));
+    const covers = (px, py) => px < bx + markW && px + width > bx && py < by + markH && py + height > by;
+    let px = clamp(ax + gap, pad, Math.max(pad, vw - width - pad));
+    let py = clamp(ay + gap, pad, Math.max(pad, vh - height - pad));
+    if (covers(px, py)) py = clamp(by - height - gap, pad, Math.max(pad, vh - height - pad));
+    if (covers(px, py)) px = clamp(bx - width - gap, pad, Math.max(pad, vw - width - pad));
+    return { x: px, y: py };
+  }
+
+  return { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow, placeTipBox };
 });

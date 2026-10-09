@@ -28,7 +28,7 @@
 - **所选时间范围的平均值、P50、P90 和有效样本数**，随筛选实时更新。
 - **合入分支、状态和时间范围联动筛选**：全局筛选同步更新全部指标、图表和列表。
 - **时间范围联动**：两张趋势图共用一个时间导航器，可拖拽整体窗口或左右边界，也可键盘操作：Tab 依次聚焦整体窗口/起点/终点滑块，方向键移动窗口或调整对应边界，Home/End 到达允许边界；三个滑块带名称与 aria 最小/最大/当前值及可读时间描述并随操作同步，指针、触屏与键盘采用同一时间约束（不越过采集窗、至少保留 30 分钟选区，采集窗更短时以可用窗为限），重绘不丢失可见焦点；并提供 6/12/24/48/72 小时快捷档。
-- **PR、GitHub Actions、重点 NPU Job 的直达链接**。
+- **PR、GitHub Actions、重点 NPU Job 的直达链接**，由散点悬浮/固定卡片承载；散点可键盘访问：Tab 聚焦散点并以 aria 标签报出批次身份，Enter/Space 固定详情卡片，卡内链接可继续 Tab 访问，Esc 或关闭按钮退出并把焦点返回原散点；固定卡片不遮住发起散点（空间不足时上翻/左移并限制卡片高度，卡内滚动），悬停与点击固定交互保留。
 - **关注列表**：需要关注的 PR 按耗时偏长、执行中、失败归类，支持按 PR 编号或标题搜索及查看全部批次。每个批次行可键盘展开与收起：Tab 到达展开按钮，Enter/Space 切换，aria-expanded 与明细可见性同步，重叠分组中同一批次的行互不影响；展开后 PR/Actions/job 链接可继续键盘访问，收起的明细不进入 Tab 序；筛选或重绘移除当前行时焦点回到同行的展开按钮或搜索框。分组策略由当前页级范围 G 的有效完成样本数决定：少于 10 个展示「耗时最长」前 5，否则使用 G 的 P90 偏长组；搜索只在各组内过滤记录，不改变策略、阈值与组名，提示标明同一分母；三组之间可能有批次重叠，组计数之和不是唯一批次数。数据边界（使用近似起点的批次数、存在明细或关联缺口的批次数）在页面明示。
 
 ### 统一交互
@@ -217,7 +217,7 @@ python validate_bundle.py
 python -X utf8 -m triton.verify_deployment <site-url> --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
 ```
 
-浏览器已人工验证：PR 状态筛选、搜索、多次提交和重跑下钻、任务时间线；Triton 时间导航器键盘路径（Tab 依次聚焦三个滑块、方向键与 Home/End、aria 值随操作同步、重绘后焦点保持、指针与键盘同一约束）与批次行键盘展开（Tab 到达展开按钮、Enter/Space 切换、aria-expanded 与可见性同步、展开后明细链接可键盘访问且收起时不入 Tab 序、筛选移除当前行时焦点回落）经真实浏览器核验。多仓审计结果见 `data/validation-multi.json`，包含每仓采集状态、PR 数及跨仓有效样本；`source_audit` 段按类别声明原始来源覆盖率（已验证一致 + 派生自洽 + 已发现差异 + 缺证据 = 适用总数，附缺失与差异身份清单及任务 URL 与字段），raw 为空即未验证、部分补齐保持缺失清单、无适用对象记 N/A 及原因；queue/total 由原始 waiting/blocked/buildable 分项独立重算核验，分项缺失或非法时 queue 与 total 保持未知且不补 0（已知 duration 保留），篡改分项即使派生总和自洽也会被点名；来源覆盖不足或发现差异时审计以非零退出，不以派生一致性冒充来源准确性。报告 `sections` 按分项给出状态与理由：派生一致性（报告存在即全部派生断言通过）、源时间、排队分项（已验证/未验证/部分/差异/N/A）与发布一致性（N/A，注明归属 validate_bundle 与 verify_deployment，本审计不重复校验）；`overall_status` 从分项推导，verified/not_applicable 才退出 0，与 checks_passed 和 CI 结果一致；审计中途异常先写入失败报告（overall_status=failed、错误与受影响范围）再原样重抛，不残留上一轮的通过声明。Triton 审计冻结快照（`tests/fixtures/triton-audit-freeze.json`：38 PR/66 批/65 完成样本/48 NPU 排队点/9 条 NPU 时间倒置）由测试独立重算 summary、逐批 NPU 派生与两图选区统计并锁定，统计契约不随新数据漂移。
+浏览器已人工验证：PR 状态筛选、搜索、多次提交和重跑下钻、任务时间线；Triton 时间导航器键盘路径（Tab 依次聚焦三个滑块、方向键与 Home/End、aria 值随操作同步、重绘后焦点保持、指针与键盘同一约束）、批次行键盘展开（Tab 到达展开按钮、Enter/Space 切换、aria-expanded 与可见性同步、展开后明细链接可键盘访问且收起时不入 Tab 序、筛选移除当前行时焦点回落）与趋势散点键盘固定（Tab 聚焦散点并报出批次身份、Enter/Space 固定详情卡片、卡内链接可 Tab 访问、Esc 或关闭按钮退出且焦点返回原散点、固定卡片不遮住发起散点、悬停与点击固定保留）经真实浏览器核验。多仓审计结果见 `data/validation-multi.json`，包含每仓采集状态、PR 数及跨仓有效样本；`source_audit` 段按类别声明原始来源覆盖率（已验证一致 + 派生自洽 + 已发现差异 + 缺证据 = 适用总数，附缺失与差异身份清单及任务 URL 与字段），raw 为空即未验证、部分补齐保持缺失清单、无适用对象记 N/A 及原因；queue/total 由原始 waiting/blocked/buildable 分项独立重算核验，分项缺失或非法时 queue 与 total 保持未知且不补 0（已知 duration 保留），篡改分项即使派生总和自洽也会被点名；来源覆盖不足或发现差异时审计以非零退出，不以派生一致性冒充来源准确性。报告 `sections` 按分项给出状态与理由：派生一致性（报告存在即全部派生断言通过）、源时间、排队分项（已验证/未验证/部分/差异/N/A）与发布一致性（N/A，注明归属 validate_bundle 与 verify_deployment，本审计不重复校验）；`overall_status` 从分项推导，verified/not_applicable 才退出 0，与 checks_passed 和 CI 结果一致；审计中途异常先写入失败报告（overall_status=failed、错误与受影响范围）再原样重抛，不残留上一轮的通过声明。Triton 审计冻结快照（`tests/fixtures/triton-audit-freeze.json`：38 PR/66 批/65 完成样本/48 NPU 排队点/9 条 NPU 时间倒置）由测试独立重算 summary、逐批 NPU 派生与两图选区统计并锁定，统计契约不随新数据漂移。
 
 ## 接口依据与致谢
 

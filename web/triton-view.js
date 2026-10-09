@@ -135,7 +135,7 @@
   <div class="attention" data-role="attention"></div>
 </section>
 <div class="foot"><strong>口径：</strong>E2E 从提交事件到该批次最后一项自动检查结束，包含排队与依赖等待；并行任务不相加。无法恢复精确提交事件时使用最早 workflow 创建时间，并在悬浮卡片中注明。成功和失败批次参与趋势；取消与运行中仅展示已观测耗时。<br><strong>数据边界：</strong><span data-role="boundary"></span></div>
-<div class="tooltip" data-role="tip"></div>`;
+<div class="tooltip" data-role="tip" tabindex="-1" role="dialog" aria-label="批次详情"></div>`;
   }
 
   function mount(D, container, domainStart, domainEnd, prevState) {
@@ -169,7 +169,7 @@
     const selectedBranches = new Set(prevState ? prevState.branches : []);
     let filter = prevState && prevState.filter ? prevState.filter : 'all';
     let npuFilter = prevState && prevState.npuFilter ? prevState.npuFilter : 'all';
-    let showAll = prevState ? !!prevState.showAll : false, tipPinned = false, tipTimer = 0, navDrag = null;
+    let showAll = prevState ? !!prevState.showAll : false, tipPinned = false, tipTimer = 0, navDrag = null, lastPinnedMark = null;
     let viewStart, viewEnd;
     const recovered = prevState ? core.recoverWindow(prevState.start, prevState.end, domainStart, domainEnd) : null;
     if (recovered) {
@@ -388,23 +388,42 @@
           ? `<div class="tip-job"><a href="${esc(j.url)}" target="_blank" rel="noopener">${label} ↗</a><span>${j.status === 'completed' ? (j.conclusion === 'success' ? '完成' : '异常') : esc(j.status)}</span><span>排队 ${dur(j.wait_seconds)} · 执行 ${dur(j.run_seconds)}</span></div>`
           : `<div class="tip-job"><b>${label}</b><span class="missing">未触发或未发现该任务</span></div>`;
       }).join('');
-      return `<div class="tip-head"><a href="${esc(b.action_url || (b.workflows && b.workflows[0] && b.workflows[0].url) || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>${statusLabels[b.status] || esc(b.status)} · ${dur(b.duration_seconds)}</span></div><div class="tip-title">PR #${b.pr || '?'} · 第 ${b.e2e_index || 1}/${b.e2e_total || 1} 次 E2E · ${esc((b.sha || '未知').slice(0, 7))}</div><div class="tip-summary"><a href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">查看 PR</a> · ${b.start_at ? fmtDate(b.start_at) + ' · ' + core.startSourceLabel(b) : core.startSourceLabel(b)}</div><div class="tip-actions"><div class="tip-label">本次 E2E 的 GitHub Actions</div>${actions}</div><div class="tip-jobs"><div class="tip-label">重点任务</div>${jobs}</div><div class="tip-hint">点击任一链接进入对应 GitHub Actions；点击散点可固定卡片。</div>`;
+      return `<div class="tip-head"><a href="${esc(b.action_url || (b.workflows && b.workflows[0] && b.workflows[0].url) || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>${statusLabels[b.status] || esc(b.status)} · ${dur(b.duration_seconds)}</span><button type="button" class="tip-close" aria-label="关闭详情"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><div class="tip-title">PR #${b.pr || '?'} · 第 ${b.e2e_index || 1}/${b.e2e_total || 1} 次 E2E · ${esc((b.sha || '未知').slice(0, 7))}</div><div class="tip-summary"><a href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">查看 PR</a> · ${b.start_at ? fmtDate(b.start_at) + ' · ' + core.startSourceLabel(b) : core.startSourceLabel(b)}</div><div class="tip-actions"><div class="tip-label">本次 E2E 的 GitHub Actions</div>${actions}</div><div class="tip-jobs"><div class="tip-label">重点任务</div>${jobs}</div><div class="tip-hint">点击任一链接进入对应 GitHub Actions；点击散点可固定卡片。</div>`;
     }
 
     function npuTipHtml(b) {
       const jobs = (b.npu_jobs || []).slice().sort((a, c) => (c.wait_seconds || -1) - (a.wait_seconds || -1)).map(j =>
         `<div class="tip-job"><a href="${esc(j.url || b.action_url)}" target="_blank" rel="noopener">${esc(j.name)} ↗</a><span>${statusLabels[j.conclusion] || statusLabels[j.status] || esc(j.status)}</span><span>排队 ${dur(j.wait_seconds)}${j.measurement_error ? ' · ' + esc(j.measurement_error) : ''}</span></div>`).join('');
-      return `<div class="tip-head"><a href="${esc(b.action_url || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>最长排队 ${dur(b.npu_queue_seconds)}</span></div><div class="tip-title">PR #${b.pr || '?'} · 第 ${b.e2e_index || 1}/${b.e2e_total || 1} 次 E2E · ${esc((b.sha || '未知').slice(0, 7))}</div><div class="tip-summary"><a href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">查看 PR</a> · ${fmtDate(b.start_at)}</div><div class="tip-jobs"><div class="tip-label">本次 E2E 的 NPU Jobs</div>${jobs}</div><div class="tip-hint">圆点取上述子任务中的最长排队时长。</div>`;
+      return `<div class="tip-head"><a href="${esc(b.action_url || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>最长排队 ${dur(b.npu_queue_seconds)}</span><button type="button" class="tip-close" aria-label="关闭详情"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><div class="tip-title">PR #${b.pr || '?'} · 第 ${b.e2e_index || 1}/${b.e2e_total || 1} 次 E2E · ${esc((b.sha || '未知').slice(0, 7))}</div><div class="tip-summary"><a href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">查看 PR</a> · ${fmtDate(b.start_at)}</div><div class="tip-jobs"><div class="tip-label">本次 E2E 的 NPU Jobs</div>${jobs}</div><div class="tip-hint">圆点取上述子任务中的最长排队时长。</div>`;
     }
 
     function placeTip(e, b, renderer) {
+      showTip(e.clientX, e.clientY, b, renderer);
+    }
+
+    /* REQ-029: pointer and keyboard pinning share one show path; the
+       keyboard path anchors the card to the mark's on-screen position.
+       core.placeTipBox clamps into the viewport and flips above, then
+       left of the 16×16 mark box so the card never covers the mark it
+       was opened from; the .tooltip CSS max-height cap keeps an escape
+       band open even in short viewports. */
+    function showTip(x, y, b, renderer) {
       tip.innerHTML = renderer(b);
       tip.style.display = 'block';
-      const width = 430, height = tip.offsetHeight;
-      const x = Math.min(e.clientX + 14, window.innerWidth - width - 12);
-      const y = Math.min(e.clientY + 14, window.innerHeight - height - 12);
-      tip.style.left = Math.max(12, x) + 'px';
-      tip.style.top = Math.max(12, y) + 'px';
+      const p = core.placeTipBox(x, y, tip.offsetWidth, tip.offsetHeight, window.innerWidth, window.innerHeight, 16, 16);
+      tip.style.left = p.x + 'px';
+      tip.style.top = p.y + 'px';
+    }
+
+    /* REQ-029 AC02/AC03: one close path for Esc, the ✕ button and outside
+       clicks — when focus was inside the card it returns to the originating
+       mark, so hiding the card never leaves focus on a dead element. */
+    function hideTip(fallback) {
+      const wasInside = tip.contains(document.activeElement);
+      tipPinned = false;
+      tip.style.display = 'none';
+      const target = fallback || lastPinnedMark;
+      if (wasInside && target && target.isConnected) target.focus();
     }
 
     function bindMarks() {
@@ -414,15 +433,30 @@
         const html = mark.dataset.kind === 'npu' ? npuTipHtml : tipHtml;
         mark.onmouseenter = e => { clearTimeout(tipTimer); placeTip(e, b, html); };
         mark.onmousemove = e => { if (!tipPinned) placeTip(e, b, html); };
-        mark.onmouseleave = () => { if (!tipPinned) tipTimer = setTimeout(() => { tip.style.display = 'none'; }, 180); };
-        mark.onclick = e => { e.stopPropagation(); tipPinned = true; placeTip(e, b, html); };
+        mark.onmouseleave = () => { if (!tipPinned) tipTimer = setTimeout(() => hideTip(mark), 180); };
+        mark.onclick = e => { e.stopPropagation(); tipPinned = true; lastPinnedMark = mark; placeTip(e, b, html); };
+        /* REQ-029 AC01: SVG marks carry no native button activation, so
+           Enter/Space pin the same card from the keyboard. */
+        mark.onkeydown = e => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          tipPinned = true;
+          lastPinnedMark = mark;
+          const r = mark.getBoundingClientRect();
+          showTip(r.x + r.width / 2, r.y + r.height / 2, b, html);
+          tip.focus();
+        };
       });
     }
 
     tip.onmouseenter = () => clearTimeout(tipTimer);
-    tip.onmouseleave = () => { if (!tipPinned) tip.style.display = 'none'; };
+    tip.onmouseleave = () => { if (!tipPinned) hideTip(); };
+    /* REQ-029 AC02: Esc and the ✕ button close the pinned card; focus that
+       was inside returns to the originating mark. */
+    tip.onkeydown = e => { if (e.key === 'Escape') { e.preventDefault(); hideTip(); } };
+    tip.onclick = e => { if (e.target.closest('.tip-close')) { e.stopPropagation(); hideTip(); } };
     const onDocClick = e => {
-      if (!e.target.closest('.tooltip') && !e.target.closest('.mark-hit')) { tipPinned = false; tip.style.display = 'none'; }
+      if (!e.target.closest('.tooltip') && !e.target.closest('.mark-hit')) hideTip();
     };
     document.addEventListener('click', onDocClick);
 
