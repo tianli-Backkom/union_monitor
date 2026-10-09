@@ -41,8 +41,20 @@
   let active = null;
   let mounted = null;
 
+  /* REQ-033 AC01/AC02: 顶栏分支徽标跟随 Triton 分支选择（全部/单选/多选），不遗留 UBS 的 master 表达。 */
+  function syncBranchBadge(branches) {
+    const badge = document.getElementById('branchBadge');
+    const badgeName = document.getElementById('branchName');
+    if (!badge || !badgeName) return;
+    const info = core.branchBadgeText(branches);
+    badge.hidden = false;
+    badgeName.textContent = info.text;
+    badge.title = info.title || '';
+  }
+
   function render(payload, container) {
-    if (core.sameSessionMount(mounted, payload, container)) return;
+    /* REQ-033 AC03: 数据未变时跳过重挂载，但 applyRoute 已把徽标重置为默认，需按当前选择重新同步。 */
+    if (core.sameSessionMount(mounted, payload, container)) { syncBranchBadge(active ? active.state().branches : []); return; }
     const prevState = active ? active.state() : null;
     if (active) { active.destroy(); active = null; }
     mounted = null;
@@ -387,6 +399,7 @@
       branchOptionsEl.innerHTML = rows
         .map(([branch, count]) => `<label class="branch-option"><input type="checkbox" value="${esc(branch)}" ${selectedBranches.has(branch) ? 'checked' : ''}><b>${esc(branch)}</b><span>${count == null ? '本快照无批次' : count}</span></label>`).join('');
       branchSummaryEl.textContent = selectedBranches.size ? `合入分支：已选 ${selectedBranches.size} 项` : '合入分支：全部';
+      syncBranchBadge([...selectedBranches]);
     }
 
     function updateGlobal() { updateSummary(); redrawAll(); renderRows(); }

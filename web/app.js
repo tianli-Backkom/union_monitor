@@ -54,7 +54,14 @@ function applyRoute(route){
  $('range').textContent=m?date(m.start_ms,true)+' → '+date(m.end_ms,true):'未获取数据';$('range').title=m?date(m.start_ms)+' → '+date(m.end_ms):'';
  $('snapshotTime').textContent=cross?'各仓采集时间见下表':snapshot?'采集于 '+date(Date.parse(snapshot.meta.collected_at)):'';
  if(domain==='triton'){const p=window.tritonPayload;$('range').textContent=p?date(Date.parse(p.window_start),true)+' → '+date(Date.parse(p.window_end),true):'数据未读取';$('range').title='';$('snapshotTime').textContent=p?'采集于 '+date(Date.parse(p.collected_at)):'';}
- $('dateBox').hidden=domain==='method';
+  $('dateBox').hidden=domain==='method';
+  /* REQ-033: 顶栏分支徽标跟随域——口径页隐藏；UBS 表达快照 meta.branch；Triton 先置默认，视图挂载后按分支选择覆写。 */
+  $('branchBadge').hidden=domain==='method';
+  if(ubs){
+    const bs=cross?Object.values(repositorySnapshots).map(s=>s.meta&&s.meta.branch).filter(Boolean):(snapshot&&snapshot.meta&&snapshot.meta.branch?[snapshot.meta.branch]:[]);
+    const uniq=[...new Set(bs)];
+    $('branchName').textContent=bs.length?(uniq.length===1?uniq[0]:'多分支'):'—';
+  }else if(domain==='triton'){$('branchName').textContent='全部目标分支';$('branchBadge').title='';}
  $('repositoryStatus').textContent=repo?(entry?repositoryState(entry,snapshot):''):'';
  if(ubs&&!cross&&!repositoryIndex){$('notice').textContent=ubsStatus==='failed'?'仓库索引未读取，UBS 视图暂不可用':'';$('notice').hidden=ubsStatus!=='failed';}
   else{$('notice').hidden=!ubs||cross||(!entry?.error&&entry?.status==='success'&&snapshot?.meta.start_ms===repositoryIndex?.start_ms&&snapshot?.meta.end_ms===repositoryIndex?.end_ms);$('notice').textContent=ubs?(entry?[repositoryState(entry,snapshot),entry.error].filter(Boolean).join(' · '):'未找到仓库'):'';}

@@ -312,5 +312,13 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return ticks;
   }
 
-  return { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow, placeTipBox, axisTicks };
+  /* REQ-033 AC01: 顶栏分支徽标文本——空选择=全部目标分支；单选=分支名；多选=数量并在 title 列出所选分支。 */
+  function branchBadgeText(branches) {
+    if (!branches.length) return { text: '全部目标分支' };
+    if (branches.length === 1) return { text: branches[0] };
+    const sorted = [...branches].sort();
+    return { text: `已选 ${branches.length} 个分支`, title: sorted.join('、') };
+  }
+
+  return { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow, placeTipBox, axisTicks, branchBadgeText };
 });
