@@ -1,11 +1,26 @@
-"""Raw-source coverage accounting for the independent audits (REQ-023).
+"""Raw-source coverage accounting for the independent audits (REQ-023, REQ-024).
 
 Derived consistency never masquerades as source accuracy: every verifiable
 category declares its denominator, and the report states how many objects were
-verified against raw evidence, how many differ and how many lack evidence,
-with traceable identities and an explicit status per category.
+verified against raw evidence, how many are only derived-self-consistent, how
+many differ and how many lack evidence, with traceable identities and an
+explicit status per category.
 """
 MISSING_LIMIT = 50
+QUEUE_KEYS = ('waitingTimeMillis', 'blockedTimeMillis', 'buildableTimeMillis')
+
+
+def queue_from_raw(raw):
+    """Recompute queue_ms from a raw Jenkins record exactly as metrics.normalize_job does (REQ-024).
+
+    Returns (queue_ms, components): components is a dict of the three raw
+    queue fields when all are numeric, else None.
+    """
+    actions = raw.get('actions', [])
+    q = next((a for a in actions if 'waitingTimeMillis' in a), {})
+    if all(isinstance(q.get(k), (int, float)) for k in QUEUE_KEYS):
+        return sum(q[k] for k in QUEUE_KEYS), {k: q[k] for k in QUEUE_KEYS}
+    return None, None
 
 
 class SourceCategory:
@@ -16,6 +31,8 @@ class SourceCategory:
         self.not_applicable_reason = not_applicable_reason
         self._applicable = []
         self._verified = set()
+        self._verified_absent = set()
+        self._derived = set()
         self._differences = []
 
     def record_applicable(self, identity):
@@ -24,27 +41,38 @@ class SourceCategory:
     def record_verified(self, identity):
         self._verified.add(identity)
 
+    def record_verified_absence(self, identity):
+        """Raw evidence confirms no value exists (e.g. queue components absent, snapshot keeps None)."""
+        self._verified.add(identity)
+        self._verified_absent.add(identity)
+
+    def record_derived(self, identity):
+        """Value present but unverifiable from raw; only derived consistency could be checked."""
+        self._derived.add(identity)
+
     def record_difference(self, identity, detail):
         self._differences.append((identity, detail))
 
     def result(self):
         applicable = len(self._applicable)
         verified = len(self._verified)
+        derived = len(self._derived)
         differences = len(self._differences)
         difference_ids = {identity for identity, _ in self._differences}
         missing = [identity for identity in self._applicable
-                   if identity not in self._verified and identity not in difference_ids]
+                   if identity not in self._verified and identity not in difference_ids and identity not in self._derived]
         if applicable == 0:
             status = 'not_applicable'
         elif differences:
             status = 'differences_found'
-        elif not missing:
+        elif not missing and not derived:
             status = 'verified'
         elif verified == 0:
             status = 'unverified'
         else:
             status = 'partial'
         result = {'category': self.name, 'applicable': applicable, 'verified_consistent': verified,
+                  'verified_absent': len(self._verified_absent), 'derived_consistent': derived,
                   'differences': differences, 'missing_evidence': len(missing),
                   'missing': missing[:MISSING_LIMIT], 'missing_truncated': len(missing) > MISSING_LIMIT,
                   'difference_details': [f'{identity}: {detail}' for identity, detail in self._differences[:MISSING_LIMIT]],

@@ -7,7 +7,7 @@ import subprocess
 from collections import Counter
 from pathlib import Path
 
-from source_coverage import SourceCategory, source_report
+from source_coverage import SourceCategory, queue_from_raw, source_report
 
 ROOT = Path(__file__).resolve().parent
 
@@ -46,6 +46,7 @@ def audit():
     snapshots, included, reports = {}, [], []
     seen_batches = set()
     job_timing = SourceCategory('job_timing')
+    queue_timing = SourceCategory('queue_components')
     with sqlite3.connect(ROOT / 'data/efficiency.sqlite') as db:
         assert db.execute('pragma integrity_check').fetchone()[0] == 'ok'
         for entry in index['repositories']:
@@ -99,12 +100,23 @@ def audit():
                         if job.get('total_ms') is not None: assert job['total_ms'] == job['queue_ms'] + job['duration_ms']
                         if job.get('building'): continue  # still running: no final platform timing exists yet
                         job_timing.record_applicable(job['url'])
+                        queue_timing.record_applicable(job['url'])
                         raw = raw_jobs.get(job['url'])
                         if raw is None: continue  # missing evidence, accounted per identity (REQ-023)
                         if (raw['timestamp'], raw['duration']) == (job['start_ms'], job['duration_ms']):
                             job_timing.record_verified(job['url'])
                         else:
                             job_timing.record_difference(job['url'], f"raw({raw['timestamp']}, {raw['duration']}) != snapshot({job['start_ms']}, {job['duration_ms']})")
+                        raw_queue, parts = queue_from_raw(raw)
+                        if raw_queue is None:
+                            if job['queue_ms'] is None: queue_timing.record_verified_absence(job['url'])  # raw confirms unknown (REQ-024 AC02)
+                            else: queue_timing.record_derived(job['url'])  # value present but unverifiable from raw
+                        elif job['queue_ms'] is None:
+                            queue_timing.record_difference(job['url'], f"raw queue components waiting={parts['waitingTimeMillis']}, blocked={parts['blockedTimeMillis']}, buildable={parts['buildableTimeMillis']} sum to {raw_queue} but snapshot queue_ms is None")
+                        elif raw_queue == job['queue_ms']:
+                            queue_timing.record_verified(job['url'])
+                        else:
+                            queue_timing.record_difference(job['url'], f"raw queue components waiting={parts['waitingTimeMillis']}, blocked={parts['blockedTimeMillis']}, buildable={parts['buildableTimeMillis']} sum to {raw_queue} != snapshot queue_ms {job['queue_ms']}")
             reports.append({'repository': repo, 'status': entry['status'], 'current': current, 'prs': len(prs), 'states': dict(Counter(p['state'] for p in prs)), 'representatives': sum(p['metrics']['e2e_ms'] is not None for p in prs)})
     expected = {'e2e': summary([p['metrics']['e2e_ms'] for p in included])}
     for kind in ['x86', 'arm', 'dt']:
@@ -112,16 +124,17 @@ def audit():
     script = "const fs=require('fs'),m=require('./web/core.js'),i=JSON.parse(fs.readFileSync('data/repositories.json','utf8')),s={};for(const e of i.repositories){const p='data/repos/'+e.name+'.json';if(fs.existsSync(p))s[e.name]=JSON.parse(fs.readFileSync(p,'utf8'));}for(const v of Object.values(s))for(const p of v.prs){if(JSON.stringify(m.metrics(p.batches))!==JSON.stringify(p.metrics)){const assert=require('assert');assert.deepStrictEqual(m.metrics(p.batches),p.metrics);}}const rows=m.repositoryRows(i,s);process.stdout.write(JSON.stringify(m.aggregate(rows.flatMap(r=>r.prs))));"
     result = subprocess.run(['node', '-e', script], cwd=ROOT, check=True, capture_output=True, text=True, encoding='utf-8')
     close(json.loads(result.stdout), expected)
-    source = source_report({'job_timing': job_timing})
+    source = source_report({'job_timing': job_timing, 'queue_components': queue_timing})
     checks_passed = source['status'] in ('verified', 'not_applicable')
     report = {'checks_passed': checks_passed, 'source_audit': source, 'repositories': reports, 'included_prs': len(included), 'metrics': expected, 'batches': len(seen_batches)}
     (ROOT / 'data/validation-multi.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), 'utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))
     if not checks_passed:
-        category = source['categories']['job_timing']
-        raise SystemExit(f"source audit {source['status']}: raw job-timing coverage "
-                         f"{category['verified_consistent']}/{category['applicable']} "
-                         f"({category['missing_evidence']} missing, {category['differences']} differences) — see data/validation-multi.json")
+        failing = {name: category for name, category in source['categories'].items() if category['status'] not in ('verified', 'not_applicable')}
+        detail = '; '.join(f"{name} {category['verified_consistent']}/{category['applicable']} verified "
+                           f"({category['derived_consistent']} derived, {category['missing_evidence']} missing, {category['differences']} differences)"
+                           for name, category in failing.items())
+        raise SystemExit(f"source audit {source['status']}: {detail} — see data/validation-multi.json")
     return report
 
 

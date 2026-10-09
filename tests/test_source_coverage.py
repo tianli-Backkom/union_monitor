@@ -15,34 +15,41 @@ from pathlib import Path
 from unittest.mock import patch
 
 import validate_multi
-from source_coverage import MISSING_LIMIT, SourceCategory, source_report
+from source_coverage import MISSING_LIMIT, SourceCategory, queue_from_raw, source_report
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = 'openeuler/ubs-test'
 
 
-def trigger_job(number):
+def trigger_job(number, queue_ms=50):
     return {'url': f'https://ci.example/job/ubs-test/job/trigger/{number}/', 'number': number, 'result': 'SUCCESS',
-            'building': False, 'start_ms': 1000, 'end_ms': 1200, 'duration_ms': 200, 'queue_ms': 50,
-            'total_ms': 250, 'scheduled_ms': 990, 'causes': []}
+            'building': False, 'start_ms': 1000, 'end_ms': 1200, 'duration_ms': 200, 'queue_ms': queue_ms,
+            'total_ms': queue_ms + 200 if queue_ms is not None else None,
+            'scheduled_ms': 1000 - queue_ms if queue_ms is not None else None, 'causes': []}
 
 
-def child_job(number):
-    return {'url': f'https://ci.example/job/ubs-test/job/x86/{number}/', 'number': number, 'result': 'SUCCESS',
-            'building': False, 'start_ms': 1100, 'end_ms': 1400, 'duration_ms': 300, 'queue_ms': 100,
-            'total_ms': 400, 'scheduled_ms': 1050, 'kind': 'x86', 'association_valid': False, 'causes': []}
+def child_job(number, queue_ms=100, kind='x86', association_valid=False, causes=None):
+    return {'url': f'https://ci.example/job/ubs-test/job/{kind}/{number}/', 'number': number, 'result': 'SUCCESS',
+            'building': False, 'start_ms': 1100, 'end_ms': 1400, 'duration_ms': 300, 'queue_ms': queue_ms,
+            'total_ms': queue_ms + 300 if queue_ms is not None else None,
+            'scheduled_ms': 1100 - queue_ms if queue_ms is not None else None, 'kind': kind,
+            'association_valid': association_valid, 'causes': causes if causes is not None else []}
 
 
 def empty_kind():
     return {'url': None, 'queue_ms': None, 'duration_ms': None, 'total_ms': None}
 
 
-def pr_with_gate(number):
-    trigger, child = trigger_job(number), child_job(number)
+def pr_with_gate(number, trigger_queue=50, child_queue=100, child_associated=False):
+    child = child_job(number, queue_ms=child_queue, association_valid=child_associated,
+                      causes=[{'upstreamBuild': number, 'upstreamProject': 'ubs-test/trigger'}] if child_associated else [])
+    trigger = trigger_job(number, queue_ms=trigger_queue)
     batch = {'url': trigger['url'], 'number': number, 'status': 'success', 'complete': True, 'eligible': True,
              'request_ms': 1000, 'e2e_ms': 400, 'cancelled': False, 'trigger': trigger, 'children': [child]}
     metrics = {'representative_batch_url': trigger['url'], 'representative_batch_number': number, 'e2e_ms': 400,
-               'x86': empty_kind(), 'arm': empty_kind(), 'dt': empty_kind()}
+               'x86': ({'url': child['url'], 'queue_ms': child['queue_ms'], 'duration_ms': child['duration_ms'],
+                        'total_ms': child['total_ms']} if child_associated else empty_kind()),
+               'arm': empty_kind(), 'dt': empty_kind()}
     return {'number': number, 'state': 'merged', 'created_ms': 1500, 'repository': REPO,
             'batches': [batch], 'metrics': metrics}
 
@@ -53,19 +60,38 @@ def pr_without_gate():
                         'x86': empty_kind(), 'arm': empty_kind(), 'dt': empty_kind()}}
 
 
-def raw_files(prs, drop=(), tamper=None):
-    """One cached Jenkins allBuilds response per job; empty input means zero raw evidence."""
+def raw_files(prs, drop=(), tamper=None, strip_components=(), components_override=None):
+    """One cached Jenkins allBuilds response per job; empty input means zero raw evidence.
+
+    Queue components default to a split summing to the job's queue_ms (None →
+    no components action); strip_components drops the action for selected URLs,
+    tamper is (url, {field: value}), components_override is {url: (w, b, g)}.
+    """
     files = {}
     for pr in prs:
         for batch in pr['batches']:
             for job in [batch['trigger']] + batch['children']:
-                files[job['url']] = {'url': job['url'], 'body': {'allBuilds': [
-                    {'url': job['url'], 'timestamp': job['start_ms'], 'duration': job['duration_ms']}]}}
+                entry = {'url': job['url'], 'timestamp': job['start_ms'], 'duration': job['duration_ms']}
+                if job['url'] not in strip_components:
+                    if components_override and job['url'] in components_override:
+                        w, b, g = components_override[job['url']]
+                    elif job['queue_ms'] is not None:
+                        w, b, g = job['queue_ms'] - 10, 6, 4
+                    else:
+                        w, b, g = None, None, None
+                    if w is not None:
+                        entry['actions'] = [{'waitingTimeMillis': w, 'blockedTimeMillis': b, 'buildableTimeMillis': g}]
+                files[job['url']] = {'url': job['url'], 'body': {'allBuilds': [entry]}}
     for url in drop:
         files.pop(url, None)
     if tamper is not None:
-        url, duration = tamper
-        files[url]['body']['allBuilds'][0]['duration'] = duration
+        url, fields = tamper
+        entry = files[url]['body']['allBuilds'][0]
+        for field, value in fields.items():
+            if field in ('waitingTimeMillis', 'blockedTimeMillis', 'buildableTimeMillis'):
+                entry.setdefault('actions', [{}])[0][field] = value  # components live inside the queue action
+            else:
+                entry[field] = value
     return list(files.values())
 
 
@@ -184,6 +210,45 @@ class SourceCoverageTests(unittest.TestCase):
         self.assertEqual(len(result['missing']), MISSING_LIMIT)
         self.assertTrue(result['missing_truncated'])
 
+    def test_derived_bucket_keeps_equation_and_partial_status(self):  # REQ-024 AC04
+        category = SourceCategory('queue_components')
+        for url in ['job/1/', 'job/2/', 'job/3/', 'job/4/']:
+            category.record_applicable(url)
+        category.record_verified('job/1/')
+        category.record_derived('job/2/')
+        result = category.result()
+        self.assertEqual(result['status'], 'partial')
+        self.assertEqual(result['derived_consistent'], 1)
+        self.assertEqual(result['applicable'],
+                         result['verified_consistent'] + result['derived_consistent'] + result['differences'] + result['missing_evidence'])
+        self.assertEqual(result['missing'], ['job/3/', 'job/4/'])
+
+    def test_all_derived_without_raw_verification_is_unverified(self):  # REQ-024 AC04
+        category = SourceCategory('queue_components')
+        for url in ['job/1/', 'job/2/']:
+            category.record_applicable(url)
+            category.record_derived(url)
+        report = source_report({'queue_components': category})
+        self.assertEqual(report['status'], 'unverified')
+        self.assertEqual(report['categories']['queue_components']['derived_consistent'], 2)
+
+    def test_verified_absence_counts_as_verified_with_subcount(self):  # REQ-024 AC02
+        category = SourceCategory('queue_components')
+        category.record_applicable('job/1/')
+        category.record_verified_absence('job/1/')
+        result = category.result()
+        self.assertEqual(result['status'], 'verified')
+        self.assertEqual((result['verified_consistent'], result['verified_absent']), (1, 1))
+        self.assertEqual(result['derived_consistent'], 0)
+
+    def test_queue_from_raw_mirrors_normalize_job(self):  # REQ-024 AC01/AC02
+        queue, parts = queue_from_raw({'actions': [{'waitingTimeMillis': 12, 'blockedTimeMillis': 5, 'buildableTimeMillis': 3}]})
+        self.assertEqual(queue, 20)
+        self.assertEqual(parts, {'waitingTimeMillis': 12, 'blockedTimeMillis': 5, 'buildableTimeMillis': 3})
+        self.assertEqual(queue_from_raw({'actions': [{'waitingTimeMillis': 12}]}), (None, None))
+        self.assertEqual(queue_from_raw({'actions': [{'waitingTimeMillis': 'x', 'blockedTimeMillis': 5, 'buildableTimeMillis': 3}]}), (None, None))
+        self.assertEqual(queue_from_raw({}), (None, None))
+
 
 class MultiAuditSourceCoverageTests(unittest.TestCase):
     def setUp(self):
@@ -232,7 +297,7 @@ class MultiAuditSourceCoverageTests(unittest.TestCase):
 
     def test_raw_difference_is_reported_and_fails(self):  # REQ-023 AC02
         prs = [pr_with_gate(7)]
-        write_multi_tree(self.tmp, prs, raw_files(prs, tamper=(child_job(7)['url'], 999)))
+        write_multi_tree(self.tmp, prs, raw_files(prs, tamper=(child_job(7)['url'], {'duration': 999})))
         with self.assertRaises(SystemExit) as ctx:
             self.audit()
         self.assertIn('differences', str(ctx.exception))
@@ -253,6 +318,83 @@ class MultiAuditSourceCoverageTests(unittest.TestCase):
         self.assertEqual(job['status'], 'not_applicable')
         self.assertEqual(job['applicable'], 0)
         self.assertTrue(job['reason'])
+
+
+class QueueComponentAuditTests(unittest.TestCase):
+    """REQ-024 — queue/total must trace to raw waiting/blocked/buildable components."""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix='req024-multi-'))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def audit(self):
+        with patch.object(validate_multi, 'ROOT', self.tmp):
+            return validate_multi.audit()
+
+    def test_queue_components_verified_from_raw(self):  # REQ-024 AC01
+        prs = [pr_with_gate(7, trigger_queue=20, child_queue=20, child_associated=True)]
+        batch = prs[0]['batches'][0]
+        override = {batch['trigger']['url']: (12, 5, 3), batch['children'][0]['url']: (12, 5, 3)}
+        write_multi_tree(self.tmp, prs, raw_files(prs, components_override=override))
+        report = self.audit()
+        self.assertTrue(report['checks_passed'])
+        self.assertEqual(report['source_audit']['status'], 'verified')
+        queue = report['source_audit']['categories']['queue_components']
+        self.assertEqual((queue['applicable'], queue['verified_consistent'], queue['derived_consistent'],
+                          queue['missing_evidence'], queue['differences']), (2, 2, 0, 0, 0))
+        self.assertEqual(report['source_audit']['categories']['job_timing']['status'], 'verified')
+        self.assertEqual(report['metrics']['x86']['queue'], {'n': 1, 'mean': 20, 'p90': 20})  # verified value flows into statistics
+
+    def test_missing_component_keeps_queue_unknown(self):  # REQ-024 AC02
+        prs = [pr_with_gate(7, child_queue=None)]
+        write_multi_tree(self.tmp, prs, raw_files(prs))
+        report = self.audit()
+        self.assertTrue(report['checks_passed'])
+        queue = report['source_audit']['categories']['queue_components']
+        self.assertEqual((queue['verified_consistent'], queue['verified_absent'], queue['derived_consistent'],
+                          queue['differences'], queue['missing_evidence']), (2, 1, 0, 0, 0))
+        child = prs[0]['batches'][0]['children'][0]
+        self.assertIsNone(child['queue_ms'])  # unknown stays unknown, known duration retained
+        self.assertEqual(report['source_audit']['categories']['job_timing']['verified_consistent'], 2)
+
+    def test_tampered_raw_component_detected_with_url_and_field(self):  # REQ-024 AC03
+        prs = [pr_with_gate(7)]
+        trigger_url = prs[0]['batches'][0]['trigger']['url']
+        write_multi_tree(self.tmp, prs, raw_files(prs, tamper=(trigger_url, {'waitingTimeMillis': 999})))
+        with self.assertRaises(SystemExit):
+            self.audit()
+        report = json.loads((self.tmp / 'data/validation-multi.json').read_text('utf-8'))
+        self.assertFalse(report['checks_passed'])
+        queue = report['source_audit']['categories']['queue_components']
+        self.assertEqual(queue['status'], 'differences_found')
+        self.assertEqual(report['source_audit']['categories']['job_timing']['status'], 'verified')
+        self.assertEqual(len(queue['difference_details']), 1)
+        self.assertIn(trigger_url, queue['difference_details'][0])
+        self.assertIn('waiting=999', queue['difference_details'][0])
+
+    def test_queue_report_distinguishes_three_buckets(self):  # REQ-024 AC04
+        number = 7
+        trigger = trigger_job(number, queue_ms=50)
+        child_derived = child_job(number, queue_ms=100, kind='x86')   # raw present, components stripped
+        child_missing = child_job(number, queue_ms=100, kind='arm')  # no raw record at all
+        batch = {'url': trigger['url'], 'number': number, 'status': 'success', 'complete': True, 'eligible': True,
+                 'request_ms': 1000, 'e2e_ms': 400, 'cancelled': False, 'trigger': trigger,
+                 'children': [child_derived, child_missing]}
+        metrics = {'representative_batch_url': trigger['url'], 'representative_batch_number': number, 'e2e_ms': 400,
+                   'x86': empty_kind(), 'arm': empty_kind(), 'dt': empty_kind()}
+        prs = [{'number': number, 'state': 'merged', 'created_ms': 1500, 'repository': REPO,
+                'batches': [batch], 'metrics': metrics}]
+        raw = raw_files(prs, drop=[child_missing['url']], strip_components=[child_derived['url']])
+        write_multi_tree(self.tmp, prs, raw)
+        with self.assertRaises(SystemExit):
+            self.audit()
+        report = json.loads((self.tmp / 'data/validation-multi.json').read_text('utf-8'))
+        queue = report['source_audit']['categories']['queue_components']
+        self.assertEqual(queue['applicable'],
+                         queue['verified_consistent'] + queue['derived_consistent'] + queue['differences'] + queue['missing_evidence'])
+        self.assertEqual((queue['verified_consistent'], queue['derived_consistent'], queue['missing_evidence']), (1, 1, 1))
+        self.assertEqual(queue['status'], 'partial')
+        self.assertEqual(queue['missing'], [child_missing['url']])
 
 
 class SingleRepoValidateTests(unittest.TestCase):
@@ -298,6 +440,19 @@ class SingleRepoValidateTests(unittest.TestCase):
         self.assertFalse(report['checks_passed'])
         self.assertEqual(report['source_audit']['status'], 'unverified')
         self.assertEqual(report['source_audit']['categories']['job_timing']['missing_evidence'], 4)
+
+    def test_queue_tamper_fails_with_url_and_field(self):  # REQ-024 AC03
+        prs = [pr_with_gate(7), pr_with_gate(9)]
+        trigger_url = prs[0]['batches'][0]['trigger']['url']
+        self.write_tree(prs, raw_files(prs, tamper=(trigger_url, {'waitingTimeMillis': 999})))
+        proc = self.run_validate()
+        self.assertNotEqual(proc.returncode, 0)
+        report = json.loads((self.tmp / 'data/validation.json').read_text('utf-8'))
+        self.assertFalse(report['checks_passed'])
+        queue = report['source_audit']['categories']['queue_components']
+        self.assertEqual(queue['status'], 'differences_found')
+        self.assertIn(trigger_url, queue['difference_details'][0])
+        self.assertIn('waiting=999', queue['difference_details'][0])
 
 
 if __name__ == '__main__':

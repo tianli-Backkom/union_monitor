@@ -117,7 +117,7 @@ python scripts/devdata.py
 | `data/repositories.json`、`web/data/repositories.json` | 仓库索引、统一范围、采集状态与快照路径 |
 | `data/snapshot.json`、`web/data/snapshot.json` | ubs-engine 兼容快照 |
 | `web/core.js` | 可独立测试的前端筛选与统计 |
-| `validate.py`、`validate_multi.py`、`source_coverage.py` | 原始时间、跨仓隔离、代表值、SQLite 和前端算法独立审计；source_audit 按类别声明原始来源覆盖（适用/已验证一致/差异/缺证据计数与缺失身份清单），覆盖不足或发现差异时审计失败 |
+| `validate.py`、`validate_multi.py`、`source_coverage.py` | 原始时间、跨仓隔离、代表值、SQLite 和前端算法独立审计；source_audit 按类别声明原始来源覆盖（适用/已验证一致/派生自洽/差异/缺证据计数与缺失身份清单），queue/total 由原始 waiting/blocked/buildable 分项之和独立核验（分项缺失时 queue 与 total 保持未知不补 0），覆盖不足或发现差异时审计失败 |
 | `validate_bundle.py`、`web/data/ubs-manifest.json` | 发布与缓存共享前的 UBS 快照束校验：索引↔快照归属、纳入跨仓的 success/partial 快照时间范围、仓根镜像一致性与工件指纹 |
 
 SQLite 的 PR 与事件主键包含仓库标识，批次按完整 Jenkins URL 唯一；任务记录复用完整 URL。首次迁移会在 `data/` 自动保留 `*-before-multi-*.sqlite` 备份，将旧数据归入 ubs-engine。
@@ -216,7 +216,7 @@ python validate_bundle.py
 python -X utf8 -m triton.verify_deployment <site-url> --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
 ```
 
-浏览器已人工验证：PR 状态筛选、搜索、多次提交和重跑下钻、任务时间线。多仓审计结果见 `data/validation-multi.json`，包含每仓采集状态、PR 数及跨仓有效样本；`source_audit` 段按类别声明原始来源覆盖率（已验证一致 + 已发现差异 + 缺证据 = 适用总数，附缺失与差异身份清单），raw 为空即未验证、部分补齐保持缺失清单、无适用对象记 N/A 及原因，来源覆盖不足或发现差异时审计以非零退出，不以派生一致性冒充来源准确性。Triton 审计冻结快照（`tests/fixtures/triton-audit-freeze.json`：38 PR/66 批/65 完成样本/48 NPU 排队点/9 条 NPU 时间倒置）由测试独立重算 summary、逐批 NPU 派生与两图选区统计并锁定，统计契约不随新数据漂移。
+浏览器已人工验证：PR 状态筛选、搜索、多次提交和重跑下钻、任务时间线。多仓审计结果见 `data/validation-multi.json`，包含每仓采集状态、PR 数及跨仓有效样本；`source_audit` 段按类别声明原始来源覆盖率（已验证一致 + 派生自洽 + 已发现差异 + 缺证据 = 适用总数，附缺失与差异身份清单及任务 URL 与字段），raw 为空即未验证、部分补齐保持缺失清单、无适用对象记 N/A 及原因；queue/total 由原始 waiting/blocked/buildable 分项独立重算核验，分项缺失或非法时 queue 与 total 保持未知且不补 0（已知 duration 保留），篡改分项即使派生总和自洽也会被点名；来源覆盖不足或发现差异时审计以非零退出，不以派生一致性冒充来源准确性。Triton 审计冻结快照（`tests/fixtures/triton-audit-freeze.json`：38 PR/66 批/65 完成样本/48 NPU 排队点/9 条 NPU 时间倒置）由测试独立重算 summary、逐批 NPU 派生与两图选区统计并锁定，统计契约不随新数据漂移。
 
 ## 接口依据与致谢
 

@@ -7,7 +7,7 @@ import statistics
 from collections import Counter
 from pathlib import Path
 
-from source_coverage import SourceCategory, source_report
+from source_coverage import SourceCategory, queue_from_raw, source_report
 
 root=Path(__file__).resolve().parent
 if (root/'data/repositories.json').exists():
@@ -29,6 +29,7 @@ for v in raw_by_url.values():
     if isinstance(v,dict):
         for j in v.get('allBuilds',[]):raw_jobs[j['url']]=j
 job_timing=SourceCategory('job_timing')
+queue_timing=SourceCategory('queue_components')
 for b in batches:
     js=[b['trigger']]+b['children']
     if b['status']=='success':assert b['complete'] and b['children'] and all(j.get('result')=='SUCCESS' and not j.get('building') for j in js)
@@ -41,12 +42,23 @@ for b in batches:
         if j.get('total_ms') is not None:assert j['total_ms']==j['queue_ms']+j['duration_ms']
         if j.get('building'):continue  # still running: no final platform timing exists yet
         job_timing.record_applicable(j['url'])
+        queue_timing.record_applicable(j['url'])
         raw=raw_jobs.get(j['url'])
         if raw is None:continue  # missing evidence, accounted per identity (REQ-023)
         if (raw['timestamp'],raw['duration'])==(j['start_ms'],j['duration_ms']):
             job_timing.record_verified(j['url'])
         else:
             job_timing.record_difference(j['url'],f"raw({raw['timestamp']}, {raw['duration']}) != snapshot({j['start_ms']}, {j['duration_ms']})")
+        raw_queue,parts=queue_from_raw(raw)
+        if raw_queue is None:
+            if j['queue_ms'] is None:queue_timing.record_verified_absence(j['url'])  # raw confirms unknown (REQ-024 AC02)
+            else:queue_timing.record_derived(j['url'])  # value present but unverifiable from raw
+        elif j['queue_ms'] is None:
+            queue_timing.record_difference(j['url'],f"raw queue components waiting={parts['waitingTimeMillis']}, blocked={parts['blockedTimeMillis']}, buildable={parts['buildableTimeMillis']} sum to {raw_queue} but snapshot queue_ms is None")
+        elif raw_queue==j['queue_ms']:
+            queue_timing.record_verified(j['url'])
+        else:
+            queue_timing.record_difference(j['url'],f"raw queue components waiting={parts['waitingTimeMillis']}, blocked={parts['blockedTimeMillis']}, buildable={parts['buildableTimeMillis']} sum to {raw_queue} != snapshot queue_ms {j['queue_ms']}")
 representatives=[]
 for p in prs:
     candidates=[b for b in p['batches'] if b['eligible']]
@@ -67,7 +79,7 @@ with sqlite3.connect(root/'data/efficiency.sqlite') as db:
     assert db.execute('pragma integrity_check').fetchone()[0]=='ok'
     for number,payload in db.execute('select number,payload from prs'):
         assert json.loads(payload)['metrics']==next(p['metrics'] for p in prs if p['number']==number)
-source=source_report({'job_timing':job_timing})
+source=source_report({'job_timing':job_timing,'queue_components':queue_timing})
 report={'checks_passed':source['status'] in ('verified','not_applicable'),'source_audit':source,'representative_prs':len(representatives),'representative_mean_ms':statistics.mean(representatives),'representative_p90_ms':statistics.quantiles(representatives,n=10,method='inclusive')[8],'prs':len(prs),'pr_states':dict(Counter(p['state'] for p in prs)),'batches':len(batches),
     'batch_states':dict(Counter(b['status'] for b in batches)),'eligible_e2e':sum(b['eligible'] for b in batches),
     'cancelled':sum(b['cancelled'] for b in batches),'missing_request':sum(b['request_ms'] is None for b in batches),
@@ -76,7 +88,8 @@ report={'checks_passed':source['status'] in ('verified','not_applicable'),'sourc
 (root/'data/validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),'utf-8')
 print(json.dumps(report,ensure_ascii=False,indent=2))
 if not report['checks_passed']:
-    category=source['categories']['job_timing']
-    raise SystemExit(f"source audit {source['status']}: raw job-timing coverage "
-                     f"{category['verified_consistent']}/{category['applicable']} "
-                     f"({category['missing_evidence']} missing, {category['differences']} differences) — see data/validation.json")
+    failing={name:category for name,category in source['categories'].items() if category['status'] not in ('verified','not_applicable')}
+    detail='; '.join(f"{name} {category['verified_consistent']}/{category['applicable']} verified "
+                     f"({category['derived_consistent']} derived, {category['missing_evidence']} missing, {category['differences']} differences)"
+                     for name,category in failing.items())
+    raise SystemExit(f"source audit {source['status']}: {detail} — see data/validation.json")
