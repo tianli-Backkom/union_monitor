@@ -23,5 +23,6 @@
     anchor.href=url;anchor.download=name;anchor.click();env.URL.revokeObjectURL(url);
     return {mode:'download',name};
   }
-  const api={triggerCounts,failedWait,stats,metrics,sortPRs,aggregate,filterPRs,repositoryRows,csv,saveCsv};if(typeof module!=='undefined')module.exports=api;else root.Metrics=api;
+  function createReloadGate(){let gen=0;return{begin(){return ++gen;},isCurrent(g){return g===gen;}};}
+  const api={triggerCounts,failedWait,stats,metrics,sortPRs,aggregate,filterPRs,repositoryRows,csv,saveCsv,createReloadGate};if(typeof module!=='undefined')module.exports=api;else root.Metrics=api;
 })(typeof window!=='undefined'?window:globalThis);

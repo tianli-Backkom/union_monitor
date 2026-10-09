@@ -26,3 +26,21 @@ test('PR sorting has deterministic E2E, execution-count and creation orders',()=
  assert.deepEqual(M.sortPRs([slow,newer,many],'batches').map(x=>x.number),[2,1,3]);
  assert.deepEqual(M.sortPRs([slow,many,newer],'created').map(x=>x.number),[3,2,1]);
 });
+test('createReloadGate: only the newest generation is current',()=>{
+ const gate=M.createReloadGate();
+ const g1=gate.begin();
+ assert.equal(gate.isCurrent(g1),true);
+ const g2=gate.begin();
+ assert.equal(gate.isCurrent(g1),false,'a stale generation must be discarded');
+ assert.equal(gate.isCurrent(g2),true);
+ assert.equal(gate.isCurrent(0),false,'unknown generations never pass');
+ assert.equal(gate.isCurrent(999),false);
+ assert.ok(gate.begin()>g2,'generations strictly increase');
+});
+test('app load() guards every await boundary with the reload gate',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+ assert.match(source,/const gen=reloadGate\.begin\(\)/,'load() must open a generation');
+ const guards=(source.match(/if\(!reloadGate\.isCurrent\(gen\)\)return;/g)||[]).length;
+ assert.ok(guards>=3,'index, snapshot commit and error paths must all be guarded, found '+guards);
+ assert.match(source,/if\(reloadGate\.isCurrent\(gen\)\)window\.tritonPayload=d/,'the Triton payload commit must be generation-checked');
+});
