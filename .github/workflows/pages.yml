@@ -110,10 +110,20 @@ jobs:
         with:
           path: web
 
+      - name: Upload deployment manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-manifests
+          path: |
+            web/data/triton-manifest.json
+            web/data/ubs-manifest.json
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -121,3 +131,25 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download deployment manifests
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-manifests
+          path: web/data
+
+      - name: Verify published data (REQ-022)
+        run: python -X utf8 -m triton.verify_deployment "${{ needs.deploy.outputs.page_url }}"

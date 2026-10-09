@@ -141,7 +141,7 @@ Jenkins 构建主键为完整任务 URL（含 build number）。从 trigger 控�
 | `triton/dashboard.py` | GitHub Actions 只读采集、按 PR head SHA 聚合批次、生成看板数据 |
 | `triton/quality.py` | 发布前质量校验：Jobs 分页完整性、NPU 识别覆盖、已完成任务时间戳、批次最大排队时长、工件一致性 |
 | `triton/pr_identity.py` | Fork PR 与 workflow run 的可靠关联 |
-| `triton/verify_deployment.py` | 发布后对公开页面数据计算 SHA-256 并与构建结果比对 |
+| `triton/verify_deployment.py` | 发布后逐一校验公开数据文件（Triton /data/triton.json、UBS 索引与全部引用快照、两份 manifest）与本次构建清单的 SHA-256/JSON 指纹，最多重试 8 次 |
 | `evidence/triton/` | 采集证据：run/job/PR 页面缓存、PR 关联依据、质量报告 |
 | `evidence/triton/pr-associations/` | PR 关联依据 |
 | `evidence/triton/quality-report.json` | 质量校验结果（失败与警告） |
@@ -186,7 +186,7 @@ GitHub 响应契约同样过门禁：workflow_runs、jobs 等列表字段缺失�
 
 GitHub 源时间戳倒置的任务显式标记异常，相关批次不参与排队统计，并写入质量报告 warnings；不再将负值截成零。仍排队、跳过及取消前未启动的任务允许没有最终排队值。
 
-每次构建在写出 `triton.json`、`triton-batches.csv`、manifest 与证据副本后立即运行跨文件一致性门禁：`triton.quality.verify_artifacts` 交叉校验四者的批次身份、统计范围与采集时间，不一致则本次运行失败、不上传当前工件。发布后 `python -m triton.verify_deployment <site-url> web/data/triton-manifest.json` 对公开页面的完整内嵌数据计算 SHA-256 并与构建结果比对，最多重试 8 次。失败会使 Actions 运行失败并生成错误注释及运行摘要；此检查发生在部署后，不自动回滚。
+每次构建在写出 `triton.json`、`triton-batches.csv`、manifest 与证据副本后立即运行跨文件一致性门禁：`triton.quality.verify_artifacts` 交叉校验四者的批次身份、统计范围与采集时间，不一致则本次运行失败、不上传当前工件。部署后两个发布流程的 verify job 运行 `python -X utf8 -m triton.verify_deployment <site-url>`，以本次构建的两份 manifest 为基准逐一校验公开的 Triton /data/triton.json、UBS 索引与全部引用快照及两份 manifest 本身（SHA-256/稳定 JSON 指纹），最多重试 8 次。成功在运行摘要记录运行 ID、URL、校验时刻与指纹；公开 URL 仍返回旧数据或篡改数据时，重试耗尽后运行失败并在摘要指出不一致文件；此检查发生在部署后，不自动回滚。
 
 页面每分钟检查数据新鲜度。按北京时间 08:00、13:00、18:00、20:00 的计划及 90 分钟采集发布宽限期显示更新延迟提醒。Actions 失败的外部邮件通知由仓库订阅者的 GitHub 通知设置控制，本项目不配置邮件收件人。
 
@@ -198,8 +198,8 @@ Fork PR 的 workflow `pull_requests` 和 commit 关联接口可能同时返回�
 
 ## 自动发布
 
-- **每日全量**（[pages.yml](.github/workflows/pages.yml)，`Collect and deploy dashboard`）：北京时间 07:30（UTC 23:30）依次恢复共享 UBS 快照缓存（`ubs-snapshots-v1`，与增量流程路径、顺序和键完全一致）与每日采集缓存（`ubs-collection-v1`，含原始响应、SQLite 与 Triton 证据）、采集九仓最近 30 天的 master PR、采集 Triton 最近 72 小时门禁数据、运行 Python 和 Node 测试、执行真实数据审计，再上传 `web/` 并部署 Pages。失败保留上一版。计划任务可能因 GitHub 平台负载延迟启动。
-- **Triton 增量**（[triton-refresh.yml](.github/workflows/triton-refresh.yml)）：北京时间 08:00、13:00、18:00、20:00 仅重新采集 Triton 最近 72 小时数据并发布。UBS 数据从与每日流程完全一致的版本化共享快照缓存（`ubs-snapshots-v1`）恢复；缓存缺失时通过 `SITE_FALLBACK_URL`（默认旧 UBS 线上地址，可修改）逐文件回退拉取并补齐仓根镜像，日志逐文件标记命中、回退或镜像来源；UBS 索引仍缺失则不部署。两流程上传前都运行 `validate_bundle.py`：校验索引与被引用单仓快照归属一致、纳入跨仓的 success/partial 快照时间范围与索引窗口一致（失败仓保留的过期快照合法，改标成功即被阻断）、仓根镜像不混版本，并与 `web/data/ubs-manifest.json` 记录的工件指纹比对，旧索引配新快照（或相反）会被阻断；坏 JSON、空文件、缺失 `repositories` 结构或被引用快照缺失、下载失败同样阻断，不能只凭索引非空上传。pending 与首次失败且无快照的仓库合法，页面显示未获取而非空成功数据；缓存命中与站点回退两条恢复路径共用同一完整性检查，错误报告注明具体缺失引用与恢复来源。恢复或校验失败的工作流不保存共享缓存、不上传部署——重试恢复上一份有效缓存，线上保持上一版有效页面。两工作流共用 concurrency group `pages`，增量运行不会取消正在进行的每日全量构建。
+- **每日全量**（[pages.yml](.github/workflows/pages.yml)，`Collect and deploy dashboard`）：北京时间 07:30（UTC 23:30）依次恢复共享 UBS 快照缓存（`ubs-snapshots-v1`，与增量流程路径、顺序和键完全一致）与每日采集缓存（`ubs-collection-v1`，含原始响应、SQLite 与 Triton 证据）、采集九仓最近 30 天的 master PR、采集 Triton 最近 72 小时门禁数据、运行 Python 和 Node 测试、执行真实数据审计，再上传 `web/` 并部署 Pages，随后以本次构建的两份 manifest 校验公开数据指纹。失败保留上一版。计划任务可能因 GitHub 平台负载延迟启动。
+- **Triton 增量**（[triton-refresh.yml](.github/workflows/triton-refresh.yml)）：北京时间 08:00、13:00、18:00、20:00 仅重新采集 Triton 最近 72 小时数据并发布。UBS 数据从与每日流程完全一致的版本化共享快照缓存（`ubs-snapshots-v1`）恢复；缓存缺失时通过 `SITE_FALLBACK_URL`（默认旧 UBS 线上地址，可修改）逐文件回退拉取并补齐仓根镜像，日志逐文件标记命中、回退或镜像来源；UBS 索引仍缺失则不部署。两流程上传前都运行 `validate_bundle.py`：校验索引与被引用单仓快照归属一致、纳入跨仓的 success/partial 快照时间范围与索引窗口一致（失败仓保留的过期快照合法，改标成功即被阻断）、仓根镜像不混版本，并与 `web/data/ubs-manifest.json` 记录的工件指纹比对，旧索引配新快照（或相反）会被阻断；坏 JSON、空文件、缺失 `repositories` 结构或被引用快照缺失、下载失败同样阻断，不能只凭索引非空上传。pending 与首次失败且无快照的仓库合法，页面显示未获取而非空成功数据；缓存命中与站点回退两条恢复路径共用同一完整性检查，错误报告注明具体缺失引用与恢复来源。恢复或校验失败的工作流不保存共享缓存、不上传部署——重试恢复上一份有效缓存，线上保持上一版有效页面。部署后与每日流程同样运行公开数据指纹校验。两工作流共用 concurrency group `pages`，增量运行不会取消正在进行的每日全量构建。
 - 两个工作流均支持在 Actions 页面手动运行（`workflow_dispatch`）。
 
 原始 API 缓存、SQLite、历史 CSV 和备份不会包含在 Pages artifact 或 Git 提交中；线上只公开看板所需的派生 JSON 与数据文件。
@@ -213,7 +213,7 @@ python -m unittest discover -s tests -v
 node --test tests/*.test.cjs
 python validate.py
 python validate_bundle.py
-python -m triton.verify_deployment <site-url> web/data/triton-manifest.json
+python -X utf8 -m triton.verify_deployment <site-url> --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
 ```
 
 浏览器已人工验证：PR 状态筛选、搜索、多次提交和重跑下钻、任务时间线。多仓审计结果见 `data/validation-multi.json`，包含每仓采集状态、PR 数及跨仓有效样本。Triton 审计冻结快照（`tests/fixtures/triton-audit-freeze.json`：38 PR/66 批/65 完成样本/48 NPU 排队点/9 条 NPU 时间倒置）由测试独立重算 summary、逐批 NPU 派生与两图选区统计并锁定，统计契约不随新数据漂移。
