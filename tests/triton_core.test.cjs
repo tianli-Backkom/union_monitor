@@ -144,3 +144,38 @@ test('freshnessSlots respects the grace window and the early-morning fallback', 
   assert.equal(early.stale, true, 'missing yesterday evening run is stale in the morning');
   assert.equal(freshnessSlots(morning, Date.UTC(2026, 9, 8, 12, 0)).stale, false, 'collecting exactly at the slot counts as fresh');
 });
+
+/* ---- REQ-001: page-level set G (branch × shared time window) ---- */
+
+test('page-level set G composes branch and time-window predicates with inclusive bounds', () => {
+  const rows = [
+    { pr: 1, base_branch: 'main', start_at: '2026-10-08T18:00:00Z', status: 'success', duration_seconds: 600 },
+    { pr: 2, base_branch: 'main', start_at: '2026-10-08T22:00:00Z', status: 'failure', duration_seconds: 1200 },
+    { pr: 3, base_branch: 'main-dev', start_at: '2026-10-08T23:30:00Z', status: 'running', duration_seconds: 900 },
+    { pr: 4, base_branch: 'main', start_at: '2026-10-07T10:00:00Z', status: 'success', duration_seconds: 300 },
+  ];
+  const start = +new Date('2026-10-08T18:00:00Z');
+  const end = +new Date('2026-10-08T23:30:00Z');
+  const G = selected => selectWindow(filterBranches(rows, selected), start, end);
+  assert.deepEqual(G(new Set()).map(r => r.pr), [1, 2, 3], 'batches whose start_at hits either boundary belong to G');
+  assert.deepEqual(G(new Set(['main'])).map(r => r.pr), [1, 2], 'the branch predicate applies inside the shared window');
+  assert.deepEqual(G(new Set(['main', 'main-dev'])).map(r => r.pr), [1, 2, 3], 'multi-branch selection unions within the window');
+  assert.deepEqual(G(new Set(['release/x'])).map(r => r.pr), [], 'a branch without batches in the window yields an empty G');
+});
+
+test('an empty page-level set G yields a zeroed summary without falling back to the full snapshot', () => {
+  const rows = [
+    { pr: 1, base_branch: 'main', start_at: '2026-10-08T18:00:00Z', status: 'success', duration_seconds: 600 },
+    { pr: 2, base_branch: 'main-dev', start_at: '2026-10-08T22:00:00Z', status: 'failure', duration_seconds: 1200 },
+  ];
+  const start = +new Date('2026-10-08T18:00:00Z');
+  const end = +new Date('2026-10-08T23:30:00Z');
+  const empty = dashboardStats(selectWindow(filterBranches(rows, new Set(['release/x'])), start, end));
+  assert.equal(empty.batches, 0);
+  assert.equal(empty.prs, 0);
+  assert.equal(empty.valid, 0);
+  assert.equal(empty.median, null, 'empty G must not invent duration samples');
+  assert.equal(empty.p90, null, 'empty G must not invent a threshold');
+  assert.equal(empty.incomplete, 0);
+  assert.equal(empty.approximate, 0);
+});

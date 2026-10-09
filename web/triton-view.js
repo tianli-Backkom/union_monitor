@@ -2,7 +2,10 @@
    契约：window.TritonView.render(payload, container)，payload 为 web/data/triton.json。
    单一共享时间导航器同时驱动 E2E 与 NPU 两张散点图；每图各自保留状态 chips
    与 selection-stats；渲染逻辑移植自原独立看板 template.html（语义不变），
-   视觉遵循 web/style.css 的令牌与组件词汇表（色值一律 var(--*)）。 */
+   视觉遵循 web/style.css 的令牌与组件词汇表（色值一律 var(--*)）。
+   REQ-001 页级集合 G：所选目标分支 × 共享时间窗（按 start_at 含起止边界）内
+   的全部批次；顶部汇总、状态数量、数据边界、关注/全部列表与两图的输入均从 G
+   派生。E2E/NPU 状态 chips 只作用于对应图及图内统计；列表搜索只过滤列表。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory(require('./triton-core.js'), globalThis);
   else root.TritonView = factory(root, root);
@@ -57,7 +60,7 @@
     return `
 <div class="notice" data-role="freshness" role="status" hidden></div>
 <div class="kpi-grid">
-  <article class="kpi"><div class="kpi-label">涉及 PR</div><div class="kpi-value" data-role="kPr">—</div><small>近 72 小时有提交批次</small></article>
+  <article class="kpi"><div class="kpi-label">涉及 PR</div><div class="kpi-value" data-role="kPr">—</div><small data-role="kPrNote">—</small></article>
   <article class="kpi"><div class="kpi-label">门禁批次</div><div class="kpi-value" data-role="kBatch">—</div><small data-role="kGap">—</small></article>
   <article class="kpi"><div class="kpi-label">中位 E2E</div><div class="kpi-value" data-role="kMedian">—</div><small data-role="kValid">—</small></article>
   <article class="kpi"><div class="kpi-label">P90 E2E</div><div class="kpi-value" data-role="kP90">—</div><small>相对异常线，不代表 SLA</small></article>
@@ -156,6 +159,7 @@
     const exportBtn = el('[data-role="exportBatches"]');
     const kPr = el('[data-role="kPr"]'), kBatch = el('[data-role="kBatch"]'), kGap = el('[data-role="kGap"]');
     const kMedian = el('[data-role="kMedian"]'), kP90 = el('[data-role="kP90"]'), kValid = el('[data-role="kValid"]');
+    const kPrNote = el('[data-role="kPrNote"]');
 
     const selectedBranches = new Set();
     let filter = 'all', npuFilter = 'all', showAll = false, tipPinned = false, tipTimer = 0, navDrag = null;
@@ -163,17 +167,16 @@
     [viewStart, viewEnd] = core.windowForHours(domainStart, domainEnd, 72);
 
     const branchPool = () => core.filterBranches(D.batches, selectedBranches);
-    const currentSummary = () => core.dashboardStats(branchPool());
+    const pageSet = () => core.selectWindow(branchPool(), viewStart, viewEnd);
+    const currentSummary = () => core.dashboardStats(pageSet());
 
     function e2eRows() {
       const p90 = currentSummary().p90;
-      const statusRows = branchPool().filter(b => filter === 'all' || (filter === 'slow' && core.isSlow(b, p90)) || b.status === filter);
-      return core.selectWindow(statusRows, viewStart, viewEnd);
+      return pageSet().filter(b => filter === 'all' || (filter === 'slow' && core.isSlow(b, p90)) || b.status === filter);
     }
 
     function npuRows() {
-      const rows = branchPool().filter(b => b.npu_queue_seconds != null && (npuFilter === 'all' || b.status === npuFilter));
-      return core.selectWindow(rows, viewStart, viewEnd);
+      return pageSet().filter(b => b.npu_queue_seconds != null && (npuFilter === 'all' || b.status === npuFilter));
     }
 
     /* SVG presentation attributes do not accept var(), so status colors are
@@ -227,7 +230,7 @@
     }
 
     function drawNpu() {
-      const missing = core.selectWindow(branchPool(), viewStart, viewEnd)
+      const missing = pageSet()
         .filter(b => b.npu_data_missing && (npuFilter === 'all' || b.status === npuFilter)).length;
       npuDataNotice.textContent = missing
         ? `${missing} 个批次的 NPU 明细缺失或时间戳异常，未计入统计；缺失不代表没有排队。`
@@ -304,13 +307,14 @@
     const redrawAll = () => { draw(); drawNpu(); drawNavigator(); };
 
     function updateSummary() {
-      const s = currentSummary(), pool = branchPool();
+      const s = currentSummary(), pool = pageSet();
       kPr.textContent = s.prs;
       kBatch.textContent = s.batches;
       kGap.textContent = `${s.incomplete} 个批次存在证据缺口`;
       kMedian.textContent = dur(s.median);
       kP90.textContent = dur(s.p90);
       kValid.textContent = `基于 ${s.valid} 个已完成批次`;
+      kPrNote.textContent = `${spanText(viewEnd - viewStart)}内有提交批次`;
       boundaryEl.textContent = `${s.approximate} 个批次使用近似起点，${s.incomplete} 个批次存在明细或关联缺口。`;
       const counts = { success: 0, failure: 0, running: 0, cancelled: 0 };
       pool.forEach(b => { if (counts[b.status] != null) counts[b.status] += 1; });
@@ -395,15 +399,20 @@
 
     function renderRows() {
       const q = searchInput.value.trim().toLowerCase();
-      const pool = branchPool().filter(b => !q || String(b.pr || '').includes(q) || (b.title || '').toLowerCase().includes(q));
       const summary = currentSummary();
+      showAllBtn.textContent = showAll ? '返回关注列表' : '查看全部批次';
+      if (!summary.batches) {
+        priorityNoteEl.textContent = '当前分支与时间范围内没有批次。';
+        attentionEl.innerHTML = '<div class="empty">当前合入分支与时间范围内没有批次，请调整分支筛选或扩大时间范围。</div>';
+        return;
+      }
+      const pool = pageSet().filter(b => !q || String(b.pr || '').includes(q) || (b.title || '').toLowerCase().includes(q));
       const groups = showAll
         ? [{ key: 'all', label: '全部批次', rows: pool.slice().sort((a, b) => +new Date(b.start_at) - +new Date(a.start_at)) }]
         : core.attentionGroups(pool, summary.p90);
       priorityNoteEl.textContent = summary.valid < 10 ? '有效完成样本少于 10 个，展示耗时最长批次。' : '优先显示超过 P90、执行中和失败的批次。';
       attentionEl.innerHTML = groups.map(group => `<div class="group-title">${group.label}<span class="count">${group.rows.length}</span></div><div class="rows">${group.rows.length ? group.rows.map(rowHtml).join('') : '<div class="empty">当前没有此类批次</div>'}</div>`).join('');
       all('.row-main').forEach(x => { x.onclick = () => x.parentElement.classList.toggle('open'); });
-      showAllBtn.textContent = showAll ? '返回关注列表' : '查看全部批次';
     }
 
     /* ---- 新鲜度：北京时间 8/13/18/20 槽位 + 90 分钟宽限，每分钟检查 ---- */
@@ -461,7 +470,7 @@
       [viewStart, viewEnd] = core.windowForHours(domainStart, domainEnd, Number(btn.dataset.hours));
       tipPinned = false;
       tip.style.display = 'none';
-      redrawAll();
+      updateGlobal();
     };
 
     const navTime = e => {
@@ -480,7 +489,7 @@
         navDrag = { mode, origin: at, start: viewStart, end: viewEnd };
       }
       navSvg.setPointerCapture(e.pointerId);
-      redrawAll();
+      updateGlobal();
     };
     navSvg.onpointermove = e => {
       if (!navDrag) return;
@@ -488,7 +497,7 @@
       if (navDrag.mode === 'window') [viewStart, viewEnd] = core.moveWindow(domainStart, domainEnd, navDrag.start, navDrag.end, delta);
       else if (navDrag.mode === 'start') viewStart = Math.max(domainStart, Math.min(navDrag.start + delta, viewEnd - minSpan));
       else viewEnd = Math.min(domainEnd, Math.max(navDrag.end + delta, viewStart + minSpan));
-      redrawAll();
+      updateGlobal();
     };
     navSvg.onpointerup = navSvg.onpointercancel = () => { navDrag = null; };
 
