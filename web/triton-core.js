@@ -297,5 +297,20 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return { x: px, y: py };
   }
 
-  return { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow, placeTipBox };
+  /* REQ-031 AC01/AC02: the x-axis label count adapts to the real plot width.
+     The window endpoints are always ticks and the rest divide the span
+     evenly, so thinning labels only removes labels — it never moves marks
+     or changes any statistic. */
+  function axisTicks(start, end, plotWidth, labelWidth, gap = 10, maxTicks = 7) {
+    const from = +new Date(start), to = +new Date(end);
+    const span = Math.max(to - from, 1);
+    const width = Number.isFinite(plotWidth) ? plotWidth : 0;
+    const fit = Math.floor((width + gap) / (labelWidth + gap));
+    const count = Math.min(maxTicks, Math.max(2, fit));
+    const ticks = [];
+    for (let i = 0; i < count; i++) ticks.push(from + (i * span) / (count - 1));
+    return ticks;
+  }
+
+  return { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow, placeTipBox, axisTicks };
 });

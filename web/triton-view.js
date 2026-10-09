@@ -24,6 +24,9 @@
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
   const fmtDate = stamp => new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(stamp));
+  /* REQ-031 AC01: .axis 刻度（11px/600）逐字符宽度的保守估计（实测约 6.05px/字符），
+     用于把绘图区宽度折算成可容纳的刻度数。 */
+  const AXIS_CHAR_W = 7;
   const dur = value => {
     if (value == null) return '—';
     if (value >= 3600) return (value / 3600).toFixed(value >= 36000 ? 0 : 1) + 'h';
@@ -227,10 +230,16 @@
         const yy = m.t + i * (H - m.t - m.b) / 4, val = max * (1 - i / 4);
         out += `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}"/><text class="axis" x="${m.l - 8}" y="${yy + 3}" text-anchor="end">${dur(val)}</text>`;
       }
-      for (let i = 0; i <= 6; i++) {
-        const xx = m.l + i * (W - m.l - m.r) / 6;
-        out += `<text class="axis" x="${xx}" y="${H - 13}" text-anchor="middle">${fmtDate(viewStart + i * range / 6)}</text>`;
-      }
+      /* REQ-031 AC01/AC02: 刻度数随绘图区实际宽度自适应（core.axisTicks）；首末标签
+         锚定绘图区两端（start/end），杜绝越界裁切，中间标签保持居中锚点。
+         压缩刻度只减少标签，不改变散点的时间映射或统计。 */
+      const plotW = W - m.l - m.r;
+      const ticks = core.axisTicks(viewStart, viewEnd, plotW, fmtDate(viewStart).length * AXIS_CHAR_W);
+      ticks.forEach((t, i) => {
+        const first = i === 0, last = i === ticks.length - 1;
+        const xx = first ? m.l : last ? W - m.r : m.l + (i * plotW) / (ticks.length - 1);
+        out += `<text class="axis" x="${xx}" y="${H - 13}" text-anchor="${first ? 'start' : last ? 'end' : 'middle'}">${fmtDate(t)}</text>`;
+      });
       if (stats.p90 != null) out += `<line class="p90-line" x1="${m.l}" x2="${W - m.r}" y1="${y(stats.p90)}" y2="${y(stats.p90)}"/>`;
       const bins = [];
       for (let a = viewStart; a < viewEnd; a += 6 * HOUR) {
@@ -275,10 +284,16 @@
         const yy = m.t + i * (H - m.t - m.b) / 4, val = max * (1 - i / 4);
         out += `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}"/><text class="axis" x="${m.l - 8}" y="${yy + 3}" text-anchor="end">${dur(val)}</text>`;
       }
-      for (let i = 0; i <= 6; i++) {
-        const xx = m.l + i * (W - m.l - m.r) / 6;
-        out += `<text class="axis" x="${xx}" y="${H - 13}" text-anchor="middle">${fmtDate(viewStart + i * range / 6)}</text>`;
-      }
+      /* REQ-031 AC01/AC02: 刻度数随绘图区实际宽度自适应（core.axisTicks）；首末标签
+         锚定绘图区两端（start/end），杜绝越界裁切，中间标签保持居中锚点。
+         压缩刻度只减少标签，不改变散点的时间映射或统计。 */
+      const plotW = W - m.l - m.r;
+      const ticks = core.axisTicks(viewStart, viewEnd, plotW, fmtDate(viewStart).length * AXIS_CHAR_W);
+      ticks.forEach((t, i) => {
+        const first = i === 0, last = i === ticks.length - 1;
+        const xx = first ? m.l : last ? W - m.r : m.l + (i * plotW) / (ticks.length - 1);
+        out += `<text class="axis" x="${xx}" y="${H - 13}" text-anchor="${first ? 'start' : last ? 'end' : 'middle'}">${fmtDate(t)}</text>`;
+      });
       if (stats.p90 != null) out += `<line class="p90-line" x1="${m.l}" x2="${W - m.r}" y1="${y(stats.p90)}" y2="${y(stats.p90)}"/>`;
       const bins = [];
       for (let a = viewStart; a < viewEnd; a += 6 * HOUR) {

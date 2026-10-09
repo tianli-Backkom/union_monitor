@@ -71,7 +71,7 @@ test('circleMark renders solid circles with a larger hit area', () => {
 });
 
 /* ---- T8 additions: pure helpers for the merged Triton view ---- */
-const { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow, placeTipBox } = require('../web/triton-core.js');
+const { isSlow, attentionGroups, attentionNote, rowDomIds, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow, placeTipBox, axisTicks } = require('../web/triton-core.js');
 
 test('isSlow flags completed batches at or beyond P90 and excludes running ones', () => {
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, 3620), true);
@@ -409,6 +409,43 @@ test('REQ-029 AC02: placeTipBox degrades to a clamped position when no escape ex
   const p = placeTipBox(438, 262, 430, 369, 764, 485, 16, 16);
   assert.deepEqual(p, { x: 12, y: 12 });
   assert.ok(Number.isFinite(p.x) && Number.isFinite(p.y), 'no NaN even in the dead zone');
+});
+
+/* ---- REQ-031: x-axis label count adapts to the real plot width ---- */
+
+test('REQ-031 AC01: axisTicks thins the label count as the plot narrows, endpoints always kept', () => {
+  const s = +new Date('2026-10-06T08:13:00+08:00'), e = s + 72 * 3600000;
+  const wide = axisTicks(s, e, 669, 77); // 1024px 视口实测绘图区
+  assert.equal(wide.length, 7, 'wide plots keep the full density (capped)');
+  assert.equal(wide[0], s, 'first tick is the window start');
+  assert.equal(wide[wide.length - 1], e, 'last tick is the window end');
+  const narrow = axisTicks(s, e, 195, 77); // 390px 视口实测绘图区
+  assert.deepEqual(narrow, [s, e], 'a 195px plot only fits the two endpoint labels');
+});
+
+test('REQ-031 AC01: middle ticks divide the window evenly', () => {
+  const s = 0, e = 72 * 3600000;
+  assert.deepEqual(axisTicks(s, e, 400, 77), [0, 24 * 3600000, 48 * 3600000, 72 * 3600000], 'floor(410/87)=4 evenly spaced ticks');
+});
+
+test('REQ-031 AC01: degenerate widths and inputs still yield the two endpoints', () => {
+  assert.deepEqual(axisTicks(100, 200, 0, 77), [100, 200]);
+  assert.deepEqual(axisTicks(100, 200, -50, 77), [100, 200]);
+  assert.deepEqual(axisTicks(100, 200, NaN, 77), [100, 200]);
+  assert.deepEqual(axisTicks(new Date(100), new Date(200), 195, 77), [100, 200], 'Date inputs normalize');
+});
+
+test('REQ-031 AC02: a wider gap or label fits fewer labels', () => {
+  assert.equal(axisTicks(0, 3600000, 500, 60, 10).length, 7, 'floor(510/70)=7');
+  assert.equal(axisTicks(0, 3600000, 500, 60, 40).length, 5, 'floor(540/100)=5');
+  assert.equal(axisTicks(0, 3600000, 500, 90, 10).length, 5, 'floor(510/100)=5');
+});
+
+test('REQ-031 AC01/AC03: both charts render adaptive ticks with edge anchors; fixed seven-label loops are gone', () => {
+  const view = fs.readFileSync(path.join(__dirname, '..', 'web', 'triton-view.js'), 'utf8');
+  assert.equal((view.match(/core\.axisTicks\(/g) || []).length, 2, 'E2E 与 NPU 两图都接入 axisTicks');
+  assert.doesNotMatch(view, /i \* range \/ 6/, '固定 7 刻度循环已移除');
+  assert.match(view, /first \? 'start' : last \? 'end' : 'middle'/, '首末标签锚定绘图区两端，杜绝越界裁切');
 });
 
 test('freshnessSlots finds the latest grace-elapsed Beijing slot', () => {
