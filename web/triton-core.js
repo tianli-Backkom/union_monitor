@@ -154,6 +154,67 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
       : '优先显示超过 P90（按页级范围 ' + n + ' 个有效完成样本计算）、执行中和失败的批次；三组之间可能有批次重叠，组计数之和不是唯一批次数。';
   }
 
+  /* REQ-027: the time-window constraints shared by pointer, touch and
+     keyboard adjustments: stay inside the collection window and keep at
+     least a 30-minute selection — or the whole window when the domain
+     itself is shorter. */
+  function minWindowSpan(domainStart, domainEnd) {
+    return Math.min(30 * 60000, Math.max(0, domainEnd - domainStart));
+  }
+
+  function clampBoundary(domainStart, domainEnd, viewStart, viewEnd, side, value) {
+    const minSpan = minWindowSpan(domainStart, domainEnd);
+    if (side === 'start') return Math.max(domainStart, Math.min(value, viewEnd - minSpan));
+    return Math.min(domainEnd, Math.max(value, viewStart + minSpan));
+  }
+
+  /* REQ-027: maps a keyboard action ("<mode>-<direction>") to the next
+     selection. The step is a fraction of the current span so small windows
+     fine-tune while large ones traverse quickly; Home/End reach the allowed
+     edges. Pan and boundary actions apply the same constraints as pointer
+     dragging (verified equivalent against moveWindow/clampBoundary by the
+     Node tests). */
+  function keyWindow(action, domainStart, domainEnd, viewStart, viewEnd) {
+    const span = viewEnd - viewStart;
+    const minSpan = minWindowSpan(domainStart, domainEnd);
+    const step = Math.max(minSpan, span / 10);
+    const whole = Math.min(span, domainEnd - domainStart);
+    const clampStart = value => clampBoundary(domainStart, domainEnd, viewStart, viewEnd, 'start', value);
+    const clampEnd = value => clampBoundary(domainStart, domainEnd, viewStart, viewEnd, 'end', value);
+    const pan = delta => {
+      const target = Math.max(domainStart, Math.min(domainEnd - span, viewStart + delta));
+      return [target, target + span];
+    };
+    switch (action) {
+      case 'window-left': return pan(-step);
+      case 'window-right': return pan(step);
+      case 'window-home': return [domainStart, domainStart + whole];
+      case 'window-end': return [domainEnd - whole, domainEnd];
+      case 'start-left': return [clampStart(viewStart - step), viewEnd];
+      case 'start-right': return [clampStart(viewStart + step), viewEnd];
+      case 'start-home': return [domainStart, viewEnd];
+      case 'start-end': return [clampStart(viewEnd - minSpan), viewEnd];
+      case 'end-left': return [viewStart, clampEnd(viewEnd - step)];
+      case 'end-right': return [viewStart, clampEnd(viewEnd + step)];
+      case 'end-home': return [viewStart, clampEnd(viewStart + minSpan)];
+      case 'end-end': return [viewStart, domainEnd];
+      default: return [viewStart, viewEnd];
+    }
+  }
+
+  /* REQ-027: slider value semantics for the three navigator controls. The
+     whole-window slider reports the window center over the domain; each
+     boundary slider reports its edge position within its own allowed range
+     (the other edge minus the minimum span). */
+  function navSliderSemantics(domainStart, domainEnd, viewStart, viewEnd) {
+    const minSpan = minWindowSpan(domainStart, domainEnd);
+    return {
+      window: { min: domainStart, max: domainEnd, now: Math.round((viewStart + viewEnd) / 2) },
+      start: { min: domainStart, max: viewEnd - minSpan, now: viewStart },
+      end: { min: viewStart + minSpan, max: domainEnd, now: viewEnd },
+    };
+  }
+
   function freshnessSlots(now, collectedAt) {
     const t = +new Date(now);
     const collected = collectedAt == null ? null : +new Date(collectedAt);
@@ -200,5 +261,5 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return { start: newEnd - L, end: newEnd, adjusted: true, reason: '原选区与新采集窗口无有效交集，已恢复为新窗口末尾选区' };
   }
 
-  return { isSlow, attentionGroups, attentionNote, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow };
+  return { isSlow, attentionGroups, attentionNote, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow };
 });

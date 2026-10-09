@@ -96,8 +96,8 @@
 </section>
 <section class="section">
   <div class="navigator" style="border-top:0">
-    <div class="navigator-head"><strong>拖动选择时间范围 · 两张趋势图联动</strong><span data-role="selectedRange"></span></div>
-    <svg class="nav-svg" data-role="navigator" role="slider" aria-label="选择趋势图时间范围"></svg>
+    <div class="navigator-head"><strong>拖动或键盘选择时间范围 · 两张趋势图联动</strong><span data-role="selectedRange"></span></div>
+    <svg class="nav-svg" data-role="navigator" role="group" aria-label="选择趋势图时间范围"></svg>
     <div class="range-control">
       <span class="range-label">快速选择</span>
       <button type="button" class="chip" data-hours="6">6 小时</button>
@@ -309,6 +309,10 @@
       const x = t => p.l + (t - domainStart) / domain * (W - p.l - p.r);
       const plotH = H - p.t - p.b;
       navSvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      /* REQ-027 AC03: remember which navigator control held focus before the
+         innerHTML rebuild replaces it. */
+      const activeMode = navSvg.contains(document.activeElement) && document.activeElement.dataset
+        ? document.activeElement.dataset.drag : null;
       let out = `<rect class="nav-bg" x="${p.l}" y="${p.t}" width="${W - p.l - p.r}" height="${plotH}" rx="2"/>`;
       /* REQ-017: the navigator maps only valid durations onto its height axis. */
       const navRows = rows.filter(b => core.validDuration(b.duration_seconds));
@@ -320,13 +324,22 @@
       const sx = x(viewStart), ex = x(viewEnd);
       out += `<rect class="nav-dim" x="${p.l}" y="${p.t}" width="${Math.max(0, sx - p.l)}" height="${plotH}"/>`;
       out += `<rect class="nav-dim" x="${ex}" y="${p.t}" width="${Math.max(0, W - p.r - ex)}" height="${plotH}"/>`;
-      out += `<rect class="nav-selection" data-drag="window" x="${sx}" y="${p.t}" width="${Math.max(1, ex - sx)}" height="${plotH}"/>`;
+      /* REQ-027 AC01/AC02: three named, focusable slider entries whose value
+         semantics are rebuilt with every redraw. */
+      const sem = core.navSliderSemantics(domainStart, domainEnd, viewStart, viewEnd);
+      out += `<rect class="nav-selection" data-drag="window" role="slider" tabindex="0" aria-label="时间范围整体窗口" aria-valuemin="${sem.window.min}" aria-valuemax="${sem.window.max}" aria-valuenow="${sem.window.now}" aria-valuetext="${fmtDate(viewStart)} — ${fmtDate(viewEnd)}（${spanText(viewEnd - viewStart)}）" x="${sx}" y="${p.t}" width="${Math.max(1, ex - sx)}" height="${plotH}"/>`;
       for (const [side, xx] of [['start', sx], ['end', ex]]) {
-        out += `<rect class="nav-handle" data-drag="${side}" x="${xx - 6}" y="${p.t - 2}" width="12" height="${plotH + 4}" rx="2"/>`;
+        out += `<rect class="nav-handle" data-drag="${side}" role="slider" tabindex="0" aria-label="时间范围${side === 'start' ? '起点' : '终点'}" aria-valuemin="${sem[side].min}" aria-valuemax="${sem[side].max}" aria-valuenow="${sem[side].now}" aria-valuetext="${fmtDate(side === 'start' ? viewStart : viewEnd)}" x="${xx - 6}" y="${p.t - 2}" width="12" height="${plotH + 4}" rx="2"/>`;
         out += `<line class="nav-grip" x1="${xx - 2}" x2="${xx - 2}" y1="${p.t + 12}" y2="${p.t + plotH - 12}"/><line class="nav-grip" x1="${xx + 2}" x2="${xx + 2}" y1="${p.t + 12}" y2="${p.t + plotH - 12}"/>`;
       }
       out += `<text class="nav-axis" x="${p.l}" y="${H - 4}">${fmtDate(domainStart)}</text><text class="nav-axis" text-anchor="end" x="${W - p.r}" y="${H - 4}">${fmtDate(domainEnd)}</text>`;
       navSvg.innerHTML = out;
+      /* REQ-027 AC03: redraws replace the inner DOM, so the focused control
+         is restored on its rebuilt counterpart to keep focus visible. */
+      if (activeMode) {
+        const restored = navSvg.querySelector(`[data-drag="${activeMode}"]`);
+        if (restored) restored.focus();
+      }
       const hours = Math.round((viewEnd - viewStart) / HOUR);
       all('[data-hours]').forEach(b => b.classList.toggle('active', Math.abs(Number(b.dataset.hours) - hours) < 1 && Math.abs(viewEnd - domainEnd) < 60000));
       selectedRangeEl.textContent = `${fmtDate(viewStart)} — ${fmtDate(viewEnd)}`;
@@ -526,13 +539,26 @@
     };
     navSvg.onpointermove = e => {
       if (!navDrag) return;
-      const at = navTime(e), delta = at - navDrag.origin, minSpan = 30 * 60000;
+      const at = navTime(e), delta = at - navDrag.origin;
       if (navDrag.mode === 'window') [viewStart, viewEnd] = core.moveWindow(domainStart, domainEnd, navDrag.start, navDrag.end, delta);
-      else if (navDrag.mode === 'start') viewStart = Math.max(domainStart, Math.min(navDrag.start + delta, viewEnd - minSpan));
-      else viewEnd = Math.min(domainEnd, Math.max(navDrag.end + delta, viewStart + minSpan));
+      else if (navDrag.mode === 'start') viewStart = core.clampBoundary(domainStart, domainEnd, viewStart, viewEnd, 'start', navDrag.start + delta);
+      else viewEnd = core.clampBoundary(domainStart, domainEnd, viewStart, viewEnd, 'end', navDrag.end + delta);
       updateGlobal();
     };
     navSvg.onpointerup = navSvg.onpointercancel = () => { navDrag = null; };
+    /* REQ-027 AC01/AC04: keyboard operation of the shared time range; arrow
+       keys move the window or adjust the focused boundary, Home/End reach the
+       allowed edges, under the same constraints as pointer dragging. */
+    navSvg.onkeydown = e => {
+      const mode = e.target && e.target.dataset ? e.target.dataset.drag : null;
+      if (!['window', 'start', 'end'].includes(mode)) return;
+      const directions = { ArrowLeft: 'left', ArrowDown: 'left', ArrowRight: 'right', ArrowUp: 'right', Home: 'home', End: 'end' };
+      const direction = directions[e.key];
+      if (!direction) return;
+      e.preventDefault();
+      [viewStart, viewEnd] = core.keyWindow(`${mode}-${direction}`, domainStart, domainEnd, viewStart, viewEnd);
+      updateGlobal();
+    };
 
     branchOptionsEl.onchange = e => {
       if (!e.target.matches('input[type=checkbox]')) return;

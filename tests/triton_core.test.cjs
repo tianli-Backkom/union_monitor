@@ -71,7 +71,7 @@ test('circleMark renders solid circles with a larger hit area', () => {
 });
 
 /* ---- T8 additions: pure helpers for the merged Triton view ---- */
-const { isSlow, attentionGroups, attentionNote, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow } = require('../web/triton-core.js');
+const { isSlow, attentionGroups, attentionNote, minWindowSpan, clampBoundary, keyWindow, navSliderSemantics, freshnessSlots, matchesQuery, sameSessionMount, recoverWindow } = require('../web/triton-core.js');
 
 test('isSlow flags completed batches at or beyond P90 and excludes running ones', () => {
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, 3620), true);
@@ -256,6 +256,72 @@ test('REQ-026 AC04: the CSV scope stays G × search even under the top-5 attenti
   assert.equal(groups[0].rows.length, 5, 'the attention list caps the highlighted slow group at five');
   const exportScope = rows.filter(b => matchesQuery(b, 'export'));
   assert.equal(exportScope.length, 7, 'the CSV still exports every searched batch of G, not just the highlighted five');
+});
+
+/* ---- REQ-027: keyboard-operable shared time range ---- */
+
+test('REQ-027 AC01: keyWindow pans the window and reaches the domain edges', () => {
+  const H = 3600000;
+  const step = 24 * H / 10;
+  assert.deepEqual(keyWindow('window-right', 0, 72 * H, 24 * H, 48 * H), [24 * H + step, 48 * H + step]);
+  assert.deepEqual(keyWindow('window-left', 0, 72 * H, 24 * H, 48 * H), [24 * H - step, 48 * H - step]);
+  assert.deepEqual(keyWindow('window-home', 0, 72 * H, 24 * H, 48 * H), [0, 24 * H]);
+  assert.deepEqual(keyWindow('window-end', 0, 72 * H, 24 * H, 48 * H), [48 * H, 72 * H]);
+  // panning into an edge clamps exactly like the pointer's moveWindow (AC04)
+  assert.deepEqual(keyWindow('window-right', 0, 72 * H, 46 * H, 70 * H), [48 * H, 72 * H]);
+  assert.deepEqual(keyWindow('window-right', 0, 72 * H, 46 * H, 70 * H), moveWindow(0, 72 * H, 46 * H, 70 * H, step));
+  assert.deepEqual(keyWindow('window-left', 0, 72 * H, 2 * H, 26 * H), [0, 24 * H]);
+  assert.deepEqual(keyWindow('window-left', 0, 72 * H, 2 * H, 26 * H), moveWindow(0, 72 * H, 2 * H, 26 * H, -step));
+  assert.deepEqual(keyWindow('window-right', 0, 72 * H, 24 * H, 48 * H), moveWindow(0, 72 * H, 24 * H, 48 * H, step));
+});
+
+test('REQ-027 AC01/AC03: keyWindow adjusts boundaries with the 30-minute floor', () => {
+  const H = 3600000, M = 60000;
+  const step = 24 * H / 10;
+  assert.deepEqual(keyWindow('start-right', 0, 72 * H, 24 * H, 48 * H), [24 * H + step, 48 * H]);
+  assert.deepEqual(keyWindow('end-left', 0, 72 * H, 24 * H, 48 * H), [24 * H, 48 * H - step]);
+  assert.deepEqual(keyWindow('start-home', 0, 72 * H, 24 * H, 48 * H), [0, 48 * H]);
+  assert.deepEqual(keyWindow('start-end', 0, 72 * H, 24 * H, 48 * H), [48 * H - 30 * M, 48 * H]);
+  assert.deepEqual(keyWindow('end-home', 0, 72 * H, 24 * H, 48 * H), [24 * H, 24 * H + 30 * M]);
+  assert.deepEqual(keyWindow('end-end', 0, 72 * H, 24 * H, 48 * H), [24 * H, 72 * H]);
+  // repeated start-right never crosses the 30-minute floor
+  let window = [46 * H, 47 * H];
+  for (let i = 0; i < 10; i++) window = keyWindow('start-right', 0, 72 * H, window[0], window[1]);
+  assert.deepEqual(window, [47 * H - 30 * M, 47 * H], 'the start edge stops at end minus 30 minutes');
+  // boundaries stay inside the collection window
+  assert.deepEqual(keyWindow('start-left', 0, 72 * H, 30 * M, 60 * M), [0, 60 * M]);
+  assert.deepEqual(keyWindow('end-right', 0, 72 * H, 70 * H, 71.75 * H), [70 * H, 72 * H], 'end clamps at the domain end');
+});
+
+test('REQ-027 AC03: a domain shorter than 30 minutes allows only the whole window', () => {
+  const M = 60000;
+  assert.deepEqual(keyWindow('start-right', 0, 20 * M, 0, 20 * M), [0, 20 * M], 'the start edge cannot leave the domain');
+  assert.deepEqual(keyWindow('end-left', 0, 20 * M, 0, 20 * M), [0, 20 * M], 'the end edge cannot leave the domain');
+  assert.deepEqual(keyWindow('window-right', 0, 20 * M, 0, 20 * M), [0, 20 * M]);
+  assert.deepEqual(keyWindow('window-home', 0, 20 * M, 0, 20 * M), [0, 20 * M]);
+  assert.deepEqual(keyWindow('window-end', 0, 20 * M, 0, 20 * M), [0, 20 * M]);
+});
+
+test('REQ-027 AC04: pointer and keyboard share the boundary clamp', () => {
+  const H = 3600000, M = 60000;
+  assert.equal(clampBoundary(0, 72 * H, 24 * H, 48 * H, 'start', 50 * H), 48 * H - 30 * M, 'start clamps to end minus 30 minutes');
+  assert.equal(clampBoundary(0, 72 * H, 24 * H, 48 * H, 'start', -5 * H), 0, 'start clamps to the domain start');
+  assert.equal(clampBoundary(0, 72 * H, 24 * H, 48 * H, 'end', 80 * H), 72 * H, 'end clamps to the domain end');
+  assert.equal(clampBoundary(0, 72 * H, 24 * H, 48 * H, 'end', 24 * H + 10 * M), 24 * H + 30 * M, 'end clamps to start plus 30 minutes');
+  assert.equal(minWindowSpan(0, 20 * M), 20 * M, 'a shorter domain lowers the floor to the available window');
+  assert.equal(minWindowSpan(0, 72 * H), 30 * M);
+});
+
+test('REQ-027 AC02: navSliderSemantics tracks the live window in every control', () => {
+  const H = 3600000, M = 60000;
+  const sem = navSliderSemantics(0, 72 * H, 24 * H, 48 * H);
+  assert.deepEqual(sem.window, { min: 0, max: 72 * H, now: 36 * H });
+  assert.deepEqual(sem.start, { min: 0, max: 48 * H - 30 * M, now: 24 * H });
+  assert.deepEqual(sem.end, { min: 24 * H + 30 * M, max: 72 * H, now: 48 * H });
+  const moved = navSliderSemantics(0, 72 * H, 0, 6 * H);
+  assert.deepEqual(moved.window, { min: 0, max: 72 * H, now: 3 * H });
+  assert.deepEqual(moved.start, { min: 0, max: 6 * H - 30 * M, now: 0 });
+  assert.deepEqual(moved.end, { min: 30 * M, max: 72 * H, now: 6 * H });
 });
 
 test('freshnessSlots finds the latest grace-elapsed Beijing slot', () => {
