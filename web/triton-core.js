@@ -143,5 +143,10 @@
     return String(batch.pr || '').includes(q) || String(batch.title || '').toLowerCase().includes(q);
   }
 
-  return { isSlow, attentionGroups, freshnessSlots, matchesQuery };
+  function sameSessionMount(mounted, payload, container) {
+    if (!mounted || mounted.payload !== payload || mounted.container !== container) return false;
+    return !!(container && container.isConnected && container.children && container.children.length);
+  }
+
+  return { isSlow, attentionGroups, freshnessSlots, matchesQuery, sameSessionMount };
 });

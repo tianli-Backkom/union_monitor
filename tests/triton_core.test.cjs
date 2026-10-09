@@ -69,7 +69,7 @@ test('circleMark renders solid circles with a larger hit area', () => {
 });
 
 /* ---- T8 additions: pure helpers for the merged Triton view ---- */
-const { isSlow, attentionGroups, freshnessSlots, matchesQuery } = require('../web/triton-core.js');
+const { isSlow, attentionGroups, freshnessSlots, matchesQuery, sameSessionMount } = require('../web/triton-core.js');
 
 test('isSlow flags completed batches at or beyond P90 and excludes running ones', () => {
   assert.equal(isSlow({ duration_seconds: 4000, status: 'success' }, 3620), true);
@@ -235,4 +235,17 @@ test('REQ-003: export scope is the page-level set G filtered by the list search'
   assert.deepEqual(exportScope(new Set(['main']), '').map(b => b.title), ['alpha first push', 'alpha second push'],
     'branch predicate composes with the time window');
   assert.deepEqual(exportScope(new Set(), 'gamma'), [], 'batches outside the time window never enter the export');
+});
+
+/* ---- REQ-004: in-session remount guard for the Triton view ---- */
+
+test('sameSessionMount: skip remount only for the same live payload/container pair', () => {
+  const payload = { batches: [] };
+  const container = { isConnected: true, children: [{}] };
+  assert.equal(sameSessionMount({ payload, container }, payload, container), true, 'same payload and live container → keep session');
+  assert.equal(sameSessionMount({ payload, container }, { batches: [] }, container), false, 'reloaded payload object → remount');
+  assert.equal(sameSessionMount({ payload, container }, payload, { isConnected: true, children: [{}] }), false, 'different container → remount');
+  assert.equal(sameSessionMount({ payload, container }, payload, { isConnected: false, children: [{}] }), false, 'detached container → remount');
+  assert.equal(sameSessionMount({ payload, container }, payload, { isConnected: true, children: [] }), false, 'emptied container → remount');
+  assert.equal(sameSessionMount(null, payload, container), false, 'nothing mounted yet → mount');
 });

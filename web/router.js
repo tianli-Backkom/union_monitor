@@ -28,5 +28,6 @@
     if(head==='ubs'||head==='triton'||head==='method'){const route=parseHash(raw);return route?toHash(route):DEFAULT_HASH}
     return LEGACY[head]||DEFAULT_HASH;
   }
-  const api={parseHash,toHash,resolve};if(typeof module!=='undefined')module.exports=api;else root.Router=api;
+  function keepPRPage(prevRepo,view,repo){return !(view==='ubs-repo'||view==='ubs-quality')||repo===prevRepo}
+  const api={parseHash,toHash,resolve,keepPRPage};if(typeof module!=='undefined')module.exports=api;else root.Router=api;
 })(typeof window!=='undefined'?window:globalThis);

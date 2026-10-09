@@ -29,13 +29,15 @@ function navigate(hash){const canonical=Router.resolve(hash);if(canonical!==loca
 function renderTritonView(){const el=document.getElementById('triton-view');if(window.TritonView&&window.tritonPayload){try{window.TritonView.render(window.tritonPayload,el)}catch(err){console.warn(err);el.innerHTML='<div class="empty">Triton 视图渲染失败</div>'}}else if(window.tritonPayload){el.innerHTML='<div class="notice">Triton 视图脚本未加载</div>'}else{el.innerHTML='<div class="empty">暂无 Triton 数据</div>'}}
 function updateFreshness(){const parts=[];if(repositoryIndex?.generated_at)parts.push('UBS '+date(Date.parse(repositoryIndex.generated_at)));if(window.tritonPayload?.collected_at)parts.push('TRITON '+date(Date.parse(window.tritonPayload.collected_at)));$('freshness').textContent=parts.length?'快照采集 '+parts.join(' · '):'快照未读取';}
 function applyRoute(route){
- document.querySelectorAll('main > .export-notice').forEach(n=>n.remove());
+  const prevRepo=currentRepository;
+  document.querySelectorAll('main > .export-notice').forEach(n=>n.remove());
  const r=route&&route.domain?route:{domain:'ubs'};
  const domain=r.domain==='triton'||r.domain==='method'?r.domain:'ubs';
  const ubs=domain==='ubs',repo=ubs&&r.repo,quality=repo&&r.sub==='quality',cross=ubs&&!repo;
  view=ubs?(repo?(quality?'ubs-quality':'ubs-repo'):'ubs'):domain;
  if(repo)currentRepository=r.repo;
- snapshot=repositorySnapshots[currentRepository]||null;page=1;
+  snapshot=repositorySnapshots[currentRepository]||null;
+  if(!Router.keepPRPage(prevRepo,view,currentRepository))page=1;
  for(const id of ['ubs-view','ubs-repo-view','triton-view','method-view'])$(id).hidden=id!==(ubs?(repo?'ubs-repo-view':'ubs-view'):domain+'-view');
  document.querySelectorAll('.side-nav [data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(ubs?(repo?(quality?'ubs-quality':'ubs-repo'):'ubs-overview'):domain)));
  if(repo){$('repoMain').hidden=quality;$('quality').hidden=!quality;}

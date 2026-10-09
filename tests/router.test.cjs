@@ -63,3 +63,12 @@ test('resolve is idempotent and round-trips with parseHash and toHash',()=>{
     assert.equal(R.toHash(R.parseHash(once)),once);
   }
 });
+test('keepPRPage resets pagination only when switching repositories',()=>{
+  assert.equal(R.keepPRPage('ubs-engine','ubs-repo','ubs-engine'),true,'same-repo repo view keeps the page');
+  assert.equal(R.keepPRPage('ubs-engine','ubs-quality','ubs-engine'),true,'quality tab of the same repo keeps the page');
+  assert.equal(R.keepPRPage('ubs-engine','triton','ubs-engine'),true,'visiting Triton keeps the page for the return');
+  assert.equal(R.keepPRPage('ubs-engine','method','ubs-engine'),true,'visiting method keeps the page');
+  assert.equal(R.keepPRPage('ubs-engine','ubs','ubs-engine'),true,'visiting the overview keeps the page');
+  assert.equal(R.keepPRPage('ubs-engine','ubs-repo','ubs-comm'),false,'switching repositories resets pagination');
+  assert.equal(R.keepPRPage('ubs-engine','ubs-quality','ubs-virt'),false,'quality view of another repo resets pagination');
+});

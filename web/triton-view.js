@@ -36,9 +36,12 @@
   const fillFor = status => statusFill[status] || statusFill.unknown;
 
   let active = null;
+  let mounted = null;
 
   function render(payload, container) {
+    if (core.sameSessionMount(mounted, payload, container)) return;
     if (active) { active.destroy(); active = null; }
+    mounted = null;
     if (!container) return;
     const batches = payload && Array.isArray(payload.batches) ? payload.batches : null;
     const domainStart = payload ? +new Date(payload.window_start) : NaN;
@@ -530,6 +533,7 @@
         document.removeEventListener('click', onDocClick);
       },
     };
+    mounted = { payload: D, container };
   }
 
   return { render };
