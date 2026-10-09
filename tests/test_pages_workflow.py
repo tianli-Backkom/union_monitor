@@ -25,24 +25,32 @@ class PagesWorkflowTests(unittest.TestCase):
             "python -m unittest discover -s tests -v",
             "node --test tests/*.test.cjs",
             "python -X utf8 validate.py",
+            "python -X utf8 validate_bundle.py --write-manifest",
             "uses: actions/upload-pages-artifact@v3",
         ]
         positions = [self.workflow.index(command) for command in commands]
         self.assertEqual(positions, sorted(positions))
         self.assertRegex(self.workflow, r"(?ms)uses: actions/upload-pages-artifact@v3\s+with:\s+path: web\s*$")
 
-    def test_cache_is_rolling_and_excludes_pages_artifact(self):
+    def test_cache_is_versioned_and_excludes_pages_artifact(self):
         for path in (
-            "data/raw",
-            "data/repos",
+            "web/data/repositories.json",
+            "web/data/repos",
+            "web/data/snapshot.json",
+            "web/data/ubs-manifest.json",
             "data/repositories.json",
+            "data/repos",
+            "data/snapshot.json",
+            "data/raw",
             "data/efficiency.sqlite",
-            "web/data",
+            "evidence/triton",
         ):
             self.assertRegex(self.workflow, rf"(?m)^\s+{re.escape(path)}\s*$")
-        self.assertIn("${{ github.run_id }}", self.workflow)
+        self.assertIn("ubs-snapshots-v1-${{ runner.os }}-${{ github.run_id }}", self.workflow)
+        self.assertIn("ubs-collection-v1-${{ runner.os }}-${{ github.run_id }}", self.workflow)
         self.assertIn("restore-keys:", self.workflow)
         self.assertNotIn("web/exports", self.workflow)
+        self.assertNotIn("pages-data-", self.workflow)
 
     def test_deploy_job_uses_pages_environment_and_concurrency(self):
         self.assertRegex(self.workflow, r"(?ms)^concurrency:\s*\n\s+group: pages\s*\n\s+cancel-in-progress: false")

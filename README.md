@@ -118,6 +118,7 @@ python scripts/devdata.py
 | `data/snapshot.json`、`web/data/snapshot.json` | ubs-engine 兼容快照 |
 | `web/core.js` | 可独立测试的前端筛选与统计 |
 | `validate.py`、`validate_multi.py` | 原始时间、跨仓隔离、代表值、SQLite 和前端算法独立审计 |
+| `validate_bundle.py`、`web/data/ubs-manifest.json` | 发布与缓存共享前的 UBS 快照束校验：索引↔快照归属、仓根镜像一致性与工件指纹 |
 
 SQLite 的 PR 与事件主键包含仓库标识，批次按完整 Jenkins URL 唯一；任务记录复用完整 URL。首次迁移会在 `data/` 自动保留 `*-before-multi-*.sqlite` 备份，将旧数据归入 ubs-engine。
 
@@ -191,8 +192,8 @@ Fork PR 的 workflow `pull_requests` 和 commit 关联接口可能同时返回�
 
 ## 自动发布
 
-- **每日全量**（[pages.yml](.github/workflows/pages.yml)，`Collect and deploy dashboard`）：北京时间 07:30（UTC 23:30）依次恢复最近缓存、采集九仓最近 30 天的 master PR、采集 Triton 最近 72 小时门禁数据、运行 Python 和 Node 测试、执行真实数据审计，再上传 `web/` 并部署 Pages。失败保留上一版。计划任务可能因 GitHub 平台负载延迟启动。
-- **Triton 增量**（[triton-refresh.yml](.github/workflows/triton-refresh.yml)）：北京时间 08:00、13:00、18:00、20:00 仅重新采集 Triton 最近 72 小时数据并发布。UBS 数据从 Actions 缓存恢复；缓存缺失时通过 `SITE_FALLBACK_URL`（默认旧 UBS 线上地址，可修改）逐文件回退拉取；UBS 索引仍缺失则不部署。两工作流共用 concurrency group `pages`，增量运行不会取消正在进行的每日全量构建。
+- **每日全量**（[pages.yml](.github/workflows/pages.yml)，`Collect and deploy dashboard`）：北京时间 07:30（UTC 23:30）依次恢复共享 UBS 快照缓存（`ubs-snapshots-v1`，与增量流程路径、顺序和键完全一致）与每日采集缓存（`ubs-collection-v1`，含原始响应、SQLite 与 Triton 证据）、采集九仓最近 30 天的 master PR、采集 Triton 最近 72 小时门禁数据、运行 Python 和 Node 测试、执行真实数据审计，再上传 `web/` 并部署 Pages。失败保留上一版。计划任务可能因 GitHub 平台负载延迟启动。
+- **Triton 增量**（[triton-refresh.yml](.github/workflows/triton-refresh.yml)）：北京时间 08:00、13:00、18:00、20:00 仅重新采集 Triton 最近 72 小时数据并发布。UBS 数据从与每日流程完全一致的版本化共享快照缓存（`ubs-snapshots-v1`）恢复；缓存缺失时通过 `SITE_FALLBACK_URL`（默认旧 UBS 线上地址，可修改）逐文件回退拉取并补齐仓根镜像，日志逐文件标记命中、回退或镜像来源；UBS 索引仍缺失则不部署。两流程上传前都运行 `validate_bundle.py`：校验索引与被引用单仓快照归属一致、仓根镜像不混版本，并与 `web/data/ubs-manifest.json` 记录的工件指纹比对，旧索引配新快照（或相反）会被阻断。两工作流共用 concurrency group `pages`，增量运行不会取消正在进行的每日全量构建。
 - 两个工作流均支持在 Actions 页面手动运行（`workflow_dispatch`）。
 
 原始 API 缓存、SQLite、历史 CSV 和备份不会包含在 Pages artifact 或 Git 提交中；线上只公开看板所需的派生 JSON 与数据文件。
@@ -205,6 +206,7 @@ Fork PR 的 workflow `pull_requests` 和 commit 关联接口可能同时返回�
 python -m unittest discover -s tests -v
 node --test tests/*.test.cjs
 python validate.py
+python validate_bundle.py
 python -m triton.verify_deployment <site-url> web/data/triton-manifest.json
 ```
 

@@ -65,22 +65,37 @@ class TritonWorkflowTests(unittest.TestCase):
         self.assertIn("fetch web/data/repositories.json /data/repositories.json", self.workflow)
         self.assertIn("fetch data/snapshot.json /data/snapshot.json", self.workflow)
         self.assertIn('"/data/repos/$name.json"', self.workflow)
+        # REQ-012: the fallback also restores the published compat snapshot and
+        # the shared bundle manifest, then mirrors the repo-root copies the
+        # shared cache path set needs, logging every source.
+        self.assertIn("fetch web/data/snapshot.json /data/snapshot.json", self.workflow)
+        self.assertIn("fetch web/data/ubs-manifest.json /data/ubs-manifest.json", self.workflow)
+        self.assertIn("cp web/data/snapshot.json data/snapshot.json", self.workflow)
+        self.assertIn("cp web/data/repositories.json data/repositories.json", self.workflow)
+        self.assertIn("[ensure-UBS-data] summary: cache=", self.workflow)
 
-    def test_shares_rolling_cache_prefix_with_daily_build(self):
+    def test_shares_versioned_snapshot_cache_with_daily_build(self):
         for path in (
-            "web/data",
+            "web/data/repositories.json",
+            "web/data/repos",
+            "web/data/snapshot.json",
+            "web/data/ubs-manifest.json",
             "data/repositories.json",
             "data/repos",
             "data/snapshot.json",
         ):
             self.assertRegex(self.workflow, rf"(?m)^\s+{re.escape(path)}\s*$")
-        self.assertIn("${{ github.run_id }}", self.workflow)
-        self.assertIn("restore-keys:", self.workflow)
-        # The daily full build and this incremental workflow exchange caches
-        # through the same "pages-data-" prefix (key and restore-keys).
-        self.assertGreaterEqual(self.workflow.count("pages-data-"), 2)
-        self.assertIn("pages-data-${{ runner.os }}-", self.workflow)
-        self.assertIn("pages-data-", self.pages)
+        # REQ-012: the daily build and this incremental workflow exchange UBS
+        # snapshots through the same versioned key family with the identical
+        # path set; the unversioned legacy prefix is gone.
+        self.assertIn("ubs-snapshots-v1-${{ runner.os }}-${{ github.run_id }}", self.workflow)
+        self.assertIn("ubs-snapshots-v1-${{ runner.os }}-", self.workflow)
+        self.assertIn("ubs-snapshots-v1-${{ runner.os }}-${{ github.run_id }}", self.pages)
+        self.assertIn("ubs-snapshots-v1-${{ runner.os }}-", self.pages)
+        self.assertNotIn("pages-data-", self.workflow)
+        self.assertNotIn("pages-data-", self.pages)
+        # The daily-only collection cache must not leak into this flow.
+        self.assertNotIn("ubs-collection-", self.workflow)
 
 
 if __name__ == "__main__":

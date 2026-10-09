@@ -29,20 +29,31 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Restore collection cache
-        uses: actions/cache@v4
+      - name: Restore shared UBS snapshot cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            web/data/repositories.json
+            web/data/repos
+            web/data/snapshot.json
+            web/data/ubs-manifest.json
+            data/repositories.json
+            data/repos
+            data/snapshot.json
+          key: ubs-snapshots-v1-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            ubs-snapshots-v1-${{ runner.os }}-
+
+      - name: Restore collection cache (daily only)
+        uses: actions/cache/restore@v4
         with:
           path: |
             data/raw
-            data/repos
-            data/repositories.json
             data/efficiency.sqlite
-            web/data
             evidence/triton
-            data/snapshot.json
-          key: pages-data-${{ runner.os }}-${{ github.run_id }}
+          key: ubs-collection-v1-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
-            pages-data-${{ runner.os }}-
+            ubs-collection-v1-${{ runner.os }}-
 
       - name: Collect all repositories
         run: python -X utf8 collect.py --all --days 30
@@ -65,6 +76,31 @@ jobs:
 
       - name: Audit collected data
         run: python -X utf8 validate.py
+
+      - name: Verify UBS snapshot bundle and stamp manifest
+        run: python -X utf8 validate_bundle.py --write-manifest
+
+      - name: Save shared UBS snapshot cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            web/data/repositories.json
+            web/data/repos
+            web/data/snapshot.json
+            web/data/ubs-manifest.json
+            data/repositories.json
+            data/repos
+            data/snapshot.json
+          key: ubs-snapshots-v1-${{ runner.os }}-${{ github.run_id }}
+
+      - name: Save collection cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/raw
+            data/efficiency.sqlite
+            evidence/triton
+          key: ubs-collection-v1-${{ runner.os }}-${{ github.run_id }}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

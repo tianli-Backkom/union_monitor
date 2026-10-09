@@ -33,17 +33,20 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Restore UBS data cache
+      - name: Restore shared UBS snapshot cache
         uses: actions/cache/restore@v4
         with:
           path: |
-            web/data
+            web/data/repositories.json
+            web/data/repos
+            web/data/snapshot.json
+            web/data/ubs-manifest.json
             data/repositories.json
             data/repos
             data/snapshot.json
-          key: pages-data-${{ runner.os }}-${{ github.run_id }}
+          key: ubs-snapshots-v1-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
-            pages-data-${{ runner.os }}-
+            ubs-snapshots-v1-${{ runner.os }}-
 
       - name: Ensure UBS data (确保 UBS 数据)
         env:
@@ -67,18 +70,43 @@ jobs:
             fi
           }
 
+          cache_count=0
+          fallback_count=0
+          mirror_count=0
+          missing=""
+
           # Multi-repo index: the dashboard entry point for all UBS views.
           if [ -s web/data/repositories.json ]; then
-            echo "[ensure-UBS-data] web/data/repositories.json already present"
+            echo "[ensure-UBS-data] web/data/repositories.json already present (cache hit)"
+            cache_count=$((cache_count+1))
           else
-            fetch web/data/repositories.json /data/repositories.json || true
+            fetch web/data/repositories.json /data/repositories.json && fallback_count=$((fallback_count+1)) || missing="$missing web/data/repositories.json"
+          fi
+
+          # ubs-engine compat snapshot, published copy (keeps /data/snapshot.json on the site).
+          if [ -s web/data/snapshot.json ]; then
+            echo "[ensure-UBS-data] web/data/snapshot.json already present (cache hit)"
+            cache_count=$((cache_count+1))
+          else
+            fetch web/data/snapshot.json /data/snapshot.json && fallback_count=$((fallback_count+1)) || missing="$missing web/data/snapshot.json"
+          fi
+
+          # Shared bundle manifest: binds index and snapshots to one artifact version.
+          if [ -s web/data/ubs-manifest.json ]; then
+            echo "[ensure-UBS-data] web/data/ubs-manifest.json already present (cache hit)"
+          else
+            fetch web/data/ubs-manifest.json /data/ubs-manifest.json || echo "[ensure-UBS-data] no manifest on the fallback site yet (first run); validate_bundle.py will stamp one"
           fi
 
           # Repo-root snapshot: tests/frontend.test.cjs requires data/snapshot.json.
           if [ -s data/snapshot.json ]; then
-            echo "[ensure-UBS-data] data/snapshot.json already present"
+            echo "[ensure-UBS-data] data/snapshot.json already present (cache hit)"
+          elif [ -s web/data/snapshot.json ]; then
+            cp web/data/snapshot.json data/snapshot.json
+            mirror_count=$((mirror_count+1))
+            echo "[ensure-UBS-data] data/snapshot.json mirrored from web/data/snapshot.json"
           else
-            fetch data/snapshot.json /data/snapshot.json || true
+            fetch data/snapshot.json /data/snapshot.json && fallback_count=$((fallback_count+1)) || missing="$missing data/snapshot.json"
           fi
 
           # Per-repo snapshots, enumerated from the restored index.
@@ -101,13 +129,27 @@ jobs:
             for name in $repo_names; do
               target="web/data/repos/$name.json"
               if [ -s "$target" ]; then
-                echo "[ensure-UBS-data] $target already present"
+                echo "[ensure-UBS-data] $target already present (cache hit)"
+                cache_count=$((cache_count+1))
               else
-                fetch "$target" "/data/repos/$name.json" || true
+                fetch "$target" "/data/repos/$name.json" && fallback_count=$((fallback_count+1)) || missing="$missing $target"
+              fi
+              if [ ! -s "data/repos/$name.json" ] && [ -s "web/data/repos/$name.json" ]; then
+                mkdir -p data/repos
+                cp "web/data/repos/$name.json" "data/repos/$name.json"
+                mirror_count=$((mirror_count+1))
+                echo "[ensure-UBS-data] data/repos/$name.json mirrored from web/data/repos/$name.json"
               fi
             done
           else
             echo "[ensure-UBS-data] no index available; skipping per-repo snapshot checks"
+          fi
+
+          # Repo-root index mirror: keeps the shared cache path set complete.
+          if [ ! -s data/repositories.json ] && [ -s web/data/repositories.json ]; then
+            cp web/data/repositories.json data/repositories.json
+            mirror_count=$((mirror_count+1))
+            echo "[ensure-UBS-data] data/repositories.json mirrored from web/data/repositories.json"
           fi
 
           # No-deploy guard: without the index the UBS views cannot render at all.
@@ -115,7 +157,13 @@ jobs:
             echo "::error::[ensure-UBS-data] web/data/repositories.json is still missing after fallback; refusing to deploy"
             exit 1
           fi
-          echo "[ensure-UBS-data] UBS index verified; UBS data ensured"
+          if [ -n "$missing" ]; then
+            echo "::error::[ensure-UBS-data] still missing after fallback:$missing"
+            echo "[ensure-UBS-data] summary: cache=$cache_count fallback=$fallback_count mirrored=$mirror_count missing=$(echo $missing | wc -w); NOT complete — bundle verification will block this deploy"
+          else
+            echo "[ensure-UBS-data] summary: cache=$cache_count fallback=$fallback_count mirrored=$mirror_count missing=0"
+            echo "[ensure-UBS-data] UBS index verified; UBS data ensured (sources logged above; bundle fingerprint checked by validate_bundle.py)"
+          fi
 
       - name: Collect Triton gate data
         env:
@@ -128,15 +176,21 @@ jobs:
       - name: Run Node tests
         run: node --test tests/*.test.cjs
 
-      - name: Save UBS data cache
+      - name: Verify UBS snapshot bundle
+        run: python -X utf8 validate_bundle.py --ensure-manifest
+
+      - name: Save shared UBS snapshot cache
         uses: actions/cache/save@v4
         with:
           path: |
-            web/data
+            web/data/repositories.json
+            web/data/repos
+            web/data/snapshot.json
+            web/data/ubs-manifest.json
             data/repositories.json
             data/repos
             data/snapshot.json
-          key: pages-data-${{ runner.os }}-${{ github.run_id }}
+          key: ubs-snapshots-v1-${{ runner.os }}-${{ github.run_id }}
 
       - name: Upload dashboard
         uses: actions/upload-pages-artifact@v3
