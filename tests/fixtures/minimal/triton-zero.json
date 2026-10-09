@@ -1,0 +1,17 @@
+{
+  "repo": "triton-lang/triton-ascend",
+  "window_start": "2026-10-06T00:00:00Z",
+  "window_end": "2026-10-09T00:00:00Z",
+  "collected_at": "2026-10-09T00:00:00Z",
+  "batches": [],
+  "summary": {
+    "prs": 0,
+    "batches": 0,
+    "valid": 0,
+    "median": null,
+    "p90": null,
+    "approximate": 0,
+    "incomplete": 0,
+    "api_calls": 0
+  }
+}
