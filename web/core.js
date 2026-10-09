@@ -1,6 +1,7 @@
 (function(root){
   function triggerCounts(p){const out={create:0,push:0,retest:0,other:0,unlinked:0,unknownBatches:0},events=[...new Map((p.events||[]).map(e=>[e.id,e])).values()],ids=new Set(events.map(e=>e.id));for(const e of events){out[['create','push','retest'].includes(e.kind)?e.kind:'other']++;if(!(p.batches||[]).some(b=>b.event_id===e.id))out.unlinked++;}out.unknownBatches=(p.batches||[]).filter(b=>!ids.has(b.event_id)).length;return out;}
   function failedWait(p){return (p.batches||[]).filter(b=>b.status==='failure'&&Number.isFinite(b.e2e_ms)&&b.e2e_ms>=0).sort((a,b)=>b.e2e_ms-a.e2e_ms||Number(b.number)-Number(a.number))[0]||null;}
+  function detailGroups(pr){const groups=new Map();for(const b of (pr.batches||[])){const key=b.event_id||'';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(b)}const events=[...new Map((pr.events||[]).map(e=>[e.id,e])).values()],seen=new Set(events.map(e=>e.id));const out=events.map(e=>({event:e,batches:groups.get(e.id)||[]}));const unmatched=[...groups.entries()].filter(([key])=>!seen.has(key)).flatMap(([,bs])=>bs);if(unmatched.length){const empty=unmatched.filter(b=>!b.event_id).length;out.push({event:{kind:'unmatched'},batches:unmatched,reason:`${empty} 批 event_id 为空，${unmatched.length-empty} 批 event_id 不在事件列表`})}return out;}
   function stats(values){const a=values.filter(x=>typeof x==='number'&&Number.isFinite(x)&&x>=0).sort((a,b)=>a-b);if(!a.length)return {n:0,mean:null,p90:null};const p=(a.length-1)*.9,l=Math.floor(p),h=Math.ceil(p);return {n:a.length,mean:a.reduce((a,b)=>a+b,0)/a.length,p90:a[l]+(a[h]-a[l])*(p-l)};}
   function metrics(batches){
     const b=batches.filter(b=>b.eligible&&Number.isFinite(b.e2e_ms)&&b.e2e_ms>=0).sort((a,b)=>b.e2e_ms-a.e2e_ms||Number(b.number)-Number(a.number)||(a.url<b.url?1:a.url>b.url?-1:0))[0];
@@ -24,5 +25,5 @@
     return {mode:'download',name};
   }
   function createReloadGate(){let gen=0;return{begin(){return ++gen;},isCurrent(g){return g===gen;}};}
-  const api={triggerCounts,failedWait,stats,metrics,sortPRs,aggregate,filterPRs,repositoryRows,csv,saveCsv,createReloadGate};if(typeof module!=='undefined')module.exports=api;else root.Metrics=api;
+  const api={triggerCounts,failedWait,detailGroups,stats,metrics,sortPRs,aggregate,filterPRs,repositoryRows,csv,saveCsv,createReloadGate};if(typeof module!=='undefined')module.exports=api;else root.Metrics=api;
 })(typeof window!=='undefined'?window:globalThis);

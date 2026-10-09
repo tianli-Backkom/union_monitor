@@ -115,12 +115,48 @@ test('REQ-010: per-repo read failures degrade locally with distinct notices',()=
   assert.ok(source.includes("'仓库索引未读取，UBS 视图暂不可用'"),'a missing index must not be misreported as 未找到仓库');
 });
 
-test('REQ-011: the methodology page renders without waiting for snapshot reads',()=>{
- const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
- assert.ok(source.includes('navigate(location.hash);load();'),'the current route must render at startup, before load() fetches any snapshot (AC02: 直接打开#method不隐藏口径正文)');
- assert.ok(source.includes("ubsStatus='loading';tritonStatus='loading';"),'both domains start as loading so a pending read is never reported as failed');
- assert.ok(source.includes("ubsStatus==='failed'?'仓库索引未读取，UBS 视图暂不可用':''"),'the missing-index notice appears only after a failure, not while the read is in flight (AC01/AC03)');
- assert.ok(source.includes("ubsStatus='ok';"),'a successful index read marks the UBS domain ok');
- assert.ok(source.includes("ubsStatus='failed';"),'a failed index read marks the UBS domain failed');
- assert.ok(source.includes("'数据读取中…':'快照未读取'"),'freshness distinguishes in-flight reads from never-read data');
+ test('REQ-011: the methodology page renders without waiting for snapshot reads',()=>{
+  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+  assert.ok(source.includes('navigate(location.hash);load();'),'the current route must render at startup, before load() fetches any snapshot (AC02: 直接打开#method不隐藏口径正文)');
+  assert.ok(source.includes("ubsStatus='loading';tritonStatus='loading';"),'both domains start as loading so a pending read is never reported as failed');
+  assert.ok(source.includes("ubsStatus==='failed'?'仓库索引未读取，UBS 视图暂不可用':''"),'the missing-index notice appears only after a failure, not while the read is in flight (AC01/AC03)');
+  assert.ok(source.includes("ubsStatus='ok';"),'a successful index read marks the UBS domain ok');
+  assert.ok(source.includes("ubsStatus='failed';"),'a failed index read marks the UBS domain failed');
+  assert.ok(source.includes("'数据读取中…':'快照未读取'"),'freshness distinguishes in-flight reads from never-read data');
+});
+
+test('REQ-016 AC01: a batch whose event_id is not in events stays visible in the detail groups',()=>{
+  const b=(n,event_id)=>({number:n,url:`trigger/${n}`,e2e_ms:10,eligible:true,children:[],status:'success',event_id});
+  const pr={events:[{id:'e1',kind:'create'},{id:'e2',kind:'push'}],batches:[b(1,'e1'),b(2,'e2'),b(3,'e-unknown')]};
+  const groups=M.detailGroups(pr);
+  assert.equal(groups.length,3,'two known events plus one unmatched group');
+  assert.equal(groups.flatMap(g=>g.batches).length,3,'all three batches are displayed, not two');
+  const unmatched=groups.find(g=>g.event.kind==='unmatched');
+  assert.ok(unmatched.batches.some(x=>x.url==='trigger/3'),'the mismatched batch is not dropped');
+  assert.match(unmatched.reason,/1 批 event_id 不在事件列表/);
+});
+
+test('REQ-016 AC02: every batch identity appears exactly once across empty, unknown, missing and duplicate event shapes',()=>{
+  const b=(n,event_id)=>({number:n,url:`trigger/${n}`,e2e_ms:10,eligible:true,children:[],status:'success',event_id});
+  const identities=pr=>M.detailGroups(pr).flatMap(g=>g.batches).map(x=>x.url).sort();
+  const mixed={events:[{id:'e1',kind:'create'}],batches:[b(1,'e1'),b(2,''),b(3,'e-unknown')]};
+  assert.deepEqual(identities(mixed),['trigger/1','trigger/2','trigger/3'],'empty event_id and unknown non-empty event_id both stay');
+  assert.match(M.detailGroups(mixed)[1].reason,/1 批 event_id 为空，1 批 event_id 不在事件列表/);
+  const noEvents={batches:[b(1,'e1'),b(2,'e2')]};
+  assert.deepEqual(identities(noEvents),['trigger/1','trigger/2'],'without events all batches fall into the mismatch group');
+  const duplicate={events:[{id:'e1',kind:'create'},{id:'e1',kind:'create'}],batches:[b(1,'e1')]};
+  assert.equal(M.detailGroups(duplicate).length,1,'duplicate events render one group');
+  assert.deepEqual(identities(duplicate),['trigger/1'],'duplicate events never show the batch twice');
+});
+
+test('REQ-016 AC03/AC04: unmatched group keeps batch links and the representative; the detail CSV stays the full set',()=>{
+  const b=(n,event_id)=>({number:n,url:`trigger/${n}`,e2e_ms:10,eligible:true,children:[],status:'success',event_id});
+  const pr={events:[{id:'e1',kind:'create'}],batches:[b(1,'e1'),b(2,'e-unknown')]};
+  const unmatched=M.detailGroups(pr).find(g=>g.event.kind==='unmatched');
+  assert.ok(unmatched.batches.some(x=>x.url==='trigger/2'),'a mismatched batch stays in its group so openDetail can still mark the representative');
+  assert.equal(unmatched.event.time_ms,undefined);
+  assert.equal(unmatched.event.sha,undefined);
+  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
+  assert.ok(source.includes('for(const b of detailPR.batches)'),'the batch CSV iterates the full detail batch set, independent of grouping');
+  assert.ok(source.includes('batchHTML(b,b.url===s.representative_batch_url)'),'representative marking is positional and applies to every group');
 });
