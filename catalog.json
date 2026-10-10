@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "schedule": {"timezone": "Asia/Shanghai", "local_time": "07:30", "frequency": "daily"},
+  "source_instances": {
+    "gitcode": {"provider": "gitcode", "base_url": "https://gitcode.com"},
+    "github": {"provider": "github", "base_url": "https://github.com"}
+  },
+  "collectors": {
+    "gitcode-jenkins-v1": {"entrypoint": "monitor.adapters.gitcode_jenkins", "cache_version": 1},
+    "github-actions-v1": {"entrypoint": "monitor.adapters.github_actions", "cache_version": 1}
+  },
+  "metric_profiles": {
+    "ubs-pr-representative-v1": {"sample_unit": "pr_representative", "duration_unit": "ms"},
+    "triton-commit-attempt-v1": {"sample_unit": "commit_or_attempt_batch", "duration_unit": "ms"}
+  },
+  "view_profiles": {
+    "pr-representative-v1": {"capabilities": ["repository_comparison", "pr_lifecycle", "task_breakdown", "evidence_detail", "csv"]},
+    "commit-attempt-v1": {"capabilities": ["batch_trend", "base_branch_filter", "queue_trend", "evidence_detail", "csv"]}
+  },
+  "projects": [
+    {
+      "project_id": "ubs",
+      "display_name": "openEuler UBS",
+      "enabled": true,
+      "collector": "gitcode-jenkins-v1",
+      "metric_profile": "ubs-pr-representative-v1",
+      "view_profile": "pr-representative-v1",
+      "window": {"time_basis": "pr_created_at", "hours": 720},
+      "timeout_minutes": 180,
+      "repositories": [
+        {"repository_id": "gitcode:openeuler/ubs-engine", "target_branches": ["master"]},
+        {"repository_id": "gitcode:openeuler/ubs-comm", "target_branches": ["master"]},
+        {"repository_id": "gitcode:openeuler/ubs-virt", "target_branches": ["master"]},
+        {"repository_id": "gitcode:openeuler/ubs-io", "target_branches": ["master"]},
+        {"repository_id": "gitcode:openeuler/ubs-mem", "target_branches": ["master"]},
+        {"repository_id": "gitcode:openeuler/OmniStateStore", "target_branches": ["master"]},
+        {"repository_id": "gitcode:openeuler/ham", "target_branches": ["master"]},
+        {"repository_id": "gitcode:openeuler/ubturbo", "target_branches": ["master"]},
+        {"repository_id": "gitcode:openeuler/ubs-atomic", "target_branches": ["master"]}
+      ]
+    },
+    {
+      "project_id": "triton",
+      "display_name": "Triton-Ascend",
+      "enabled": true,
+      "collector": "github-actions-v1",
+      "metric_profile": "triton-commit-attempt-v1",
+      "view_profile": "commit-attempt-v1",
+      "window": {"time_basis": "batch_started_at", "hours": 72},
+      "timeout_minutes": 60,
+      "repositories": [
+        {"repository_id": "github:triton-lang/triton-ascend", "target_branches": ["main", "main-dev"]}
+      ]
+    }
+  ]
+}
