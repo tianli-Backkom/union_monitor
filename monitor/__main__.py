@@ -18,6 +18,7 @@ from .context import RunContext, iso_utc
 from .plan import plan
 from .report import validate_report
 from .assemble import assemble_release
+from .collect import collect_project
 
 
 def _write(path: str, value: dict) -> None:
@@ -61,6 +62,14 @@ def cmd_validate(args: argparse.Namespace) -> int:
     result = {"project_id": report.get("project_id"), "validation_status": "passed" if not errors else "failed", "errors": errors}
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if not errors else 1
+
+
+def cmd_collect(args: argparse.Namespace) -> int:
+    catalog = Catalog.load(args.catalog)
+    context = RunContext.from_dict(_load_json(args.context))
+    report = collect_project(catalog, context, args.project, args.work_dir)
+    _write(args.report_out, report)
+    return 0 if report.get("collection_status") == "success" else 1
 
 
 def cmd_assemble(args: argparse.Namespace) -> int:
@@ -110,6 +119,14 @@ def build_parser() -> argparse.ArgumentParser:
     val_p.add_argument("--bundle", required=True, help="project bundle JSON (with a `report` field)")
     val_p.add_argument("--context", required=True, help="run context JSON from `plan`")
     val_p.set_defaults(func=cmd_validate)
+
+    col_p = sub.add_parser("collect", help="collect one project and emit its collection report")
+    col_p.add_argument("--catalog", required=True)
+    col_p.add_argument("--context", required=True, help="run context JSON from `plan`")
+    col_p.add_argument("--project", required=True, help="project_id to collect")
+    col_p.add_argument("--work-dir", required=True, help="isolated working directory for the collector")
+    col_p.add_argument("--report-out", required=True, help="path to write collection-report.json")
+    col_p.set_defaults(func=cmd_collect)
 
     asm_p = sub.add_parser("assemble", help="compose a candidate release manifest")
     asm_p.add_argument("--catalog", required=True)
