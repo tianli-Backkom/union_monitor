@@ -1,0 +1,55 @@
+{
+  "finding": "A06 · P1 · Triton请求挂起使已完成的UBS持续加载",
+  "requirements": [
+    "REQ-010"
+  ],
+  "generated_at": "2026-10-10T05:14:20.852Z",
+  "head": "edd038e51cc7e2b6bed685481906a0178f3f3ca2",
+  "base": "http://127.0.0.1:8766/",
+  "chromium": "/home/tianli/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+  "playwright": "1.64.0",
+  "probes": {
+    "domain_hang": {
+      "ubsStatus": "ok",
+      "repoAvailable": true,
+      "rows": 9,
+      "ubsResponsesCompleted": 9,
+      "expectedRows": 9,
+      "screenshot": "audit/2026-10-10-remediation/screenshots/a06-ubs-committed-while-triton-hung.png"
+    },
+    "triton_timeout": {
+      "tritonStatus": "failed",
+      "tritonError": "Triton 数据读取超时（30 秒未完成），请检查网络后重新加载",
+      "viewText": "Triton 数据读取失败：Triton 数据读取超时（30 秒未完成），请检查网络后重新加载。UBS 数据不受影响；请运行 python -X utf8 -m triton.dashboard 更新数据后重新加载。",
+      "screenshot": "audit/2026-10-10-remediation/screenshots/a06-triton-timeout-prompt.png"
+    },
+    "ubs_index_hang": {
+      "tritonMounted": true,
+      "ubsStatus": "failed",
+      "loading": "无法读取看板：仓库索引读取超时（30 秒未完成），请检查网络后重新加载。请运行 python collect.py --all 并通过本地服务打开。",
+      "screenshot": "audit/2026-10-10-remediation/screenshots/a06-ubs-index-timeout-banner.png"
+    },
+    "generation_protection": {
+      "tritonRequests": 2,
+      "seedBatches": 80,
+      "afterLateFirstResponse": {
+        "tritonStatus": "ok",
+        "batches": 80
+      }
+    }
+  },
+  "checks": {
+    "triton_hang_does_not_block_ubs": true,
+    "triton_hang_ends_in_timeout_prompt": true,
+    "ubs_index_hang_leaves_triton_usable": true,
+    "ubs_index_timeout_prompt": true,
+    "stale_generation_response_discarded": true
+  },
+  "page_errors": [],
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All network interception is in-process synthetic routing against the local read-only dashboard server; no production source, test, frozen audit evidence, or real snapshot was modified.",
+    "Mirrors audit/2026-10-10/evidence/triton-adversarial.json check DOMAIN-HANG: open #ubs, hold data/triton.json, wait for all repository snapshot responses to finish, then require the current generation to commit the UBS domain.",
+    "Extends the frozen input with the A06 remediation contract: per-domain commit, a 30-second read timeout with a distinct prompt in both directions, and generation protection against a late first-generation response."
+  ]
+}

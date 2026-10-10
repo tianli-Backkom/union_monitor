@@ -84,13 +84,16 @@ test('detail CSV export is bound to the detail entity, not the global current re
   assert.ok(!exportSrc.includes('snapshot.meta.repository'),'exportBatches must not read the global snapshot');
 });
 
-test('REQ-010: the two domains read independently — a UBS index failure cannot block Triton',()=>{
+test('REQ-010/A06: the two domains read and commit independently — a hanging request cannot block a healthy domain',()=>{
   const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
   const tritonStart=source.indexOf('const tritonTask=(async()=>{');
-  const ubsStart=source.indexOf("const response=await fetch('data/repositories.json'");
+  const ubsStart=source.indexOf("const response=await readWithTimeout(fetch('data/repositories.json'");
   assert.ok(tritonStart>-1&&ubsStart>-1,'load() must define both domain read tasks');
   assert.ok(tritonStart<ubsStart,'the Triton fetch must start before the UBS index fetch so an index failure can never prevent it');
-  assert.ok(source.includes('}),tritonTask]);'),'the success path awaits both domains together');
+  assert.ok(source.includes('await Promise.all(index.repositories.map('),'the UBS success path commits after only its own repository reads (A06: a hanging Triton request must not block the UBS domain)');
+  assert.ok(!source.includes('tritonTask]);'),'the UBS commit must not await the Triton task');
+  assert.match(source,/readWithTimeout\(fetch\('data\/triton\.json',\{cache:'no-store'\}\),'Triton 数据'\)/,'the Triton read carries a timeout so a hang ends in a distinct failure prompt instead of infinite loading (AC04)');
+  assert.match(source,/读取超时（'\+READ_TIMEOUT_MS\/1000\+' 秒未完成）/,'timeout failures carry a dedicated prompt naming the wait');
   assert.ok(!source.includes('window.tritonPayload=null'),'a failed Triton re-read must keep the previous payload visible instead of nulling it');
   assert.ok(source.includes("if(view==='ubs')$('loading').hidden=false;"),'the first-load UBS failure banner only takes over UBS views, leaving #triton usable');
 });
@@ -108,6 +111,7 @@ test('REQ-010: per-repo read failures degrade locally with distinct notices',()=
   const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
   assert.ok(source.includes("data.meta.repository!==entry.repository"),'a snapshot whose repository does not match its index entry must be rejected (no cross-repo borrowing)');
   assert.ok(source.includes("entry.status='failed';entry.error='快照读取失败：'+error.message"),'a failing repository is marked failed without aborting the other reads');
+  assert.match(source,/readWithTimeout\(fetch\('data\/'\+entry\.snapshot/,'a hanging repository snapshot read times out locally and degrades to the same failed-entry path instead of blocking the domain commit (A06)');
   assert.ok(source.includes("entry?.status==='failed'?'该仓库'+(entry.error||'数据不可用')+'。其他仓库与 Triton 数据不受影响。'"),'a read-failed repository must be told apart from a never-collected one');
   assert.ok(source.includes('该仓库尚未获取数据，请查看采集状态后运行采集命令。'),'the pending (未获取) notice stays distinct from the failure notice');
   assert.ok(source.includes("?' · 快照读取失败':' · 未获取数据'"),'the footer labels failure and never-collected differently');
