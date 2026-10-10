@@ -237,7 +237,7 @@ python -X utf8 scripts/verify_ubs_detail.py
 python -X utf8 scripts/verify_ubs_routes.py
 python -X utf8 scripts/verify_interactions.py
 python -X utf8 scripts/verify_freshness.py
-python -X utf8 scripts/verify_acceptance.py
+python -X utf8 scripts/verify_acceptance.py --delivering REQ-051
 python -X utf8 scripts/verify_requirements_doc.py
 python -X utf8 -m triton.verify_deployment <site-url> --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
 ```

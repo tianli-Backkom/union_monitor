@@ -325,6 +325,15 @@ class CommittedEvidenceTests(unittest.TestCase):
             },
         )
 
+    def test_readme_command_block_contract(self):
+        """README 验证命令块：verify_acceptance 需带 --delivering REQ-051 再跑文档工具。"""
+        text = (REPO / "README.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "python -X utf8 scripts/verify_acceptance.py --delivering REQ-051\n"
+            "python -X utf8 scripts/verify_requirements_doc.py",
+            text,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
