@@ -6,6 +6,7 @@ const path = require('node:path');
 const html = fs.readFileSync(path.join(__dirname, '..', 'web', 'index.html'), 'utf8');
 const shell = fs.readFileSync(path.join(__dirname, '..', 'web', 'shell.js'), 'utf8');
 const app = fs.readFileSync(path.join(__dirname, '..', 'web', 'app.js'), 'utf8');
+const tritonView = fs.readFileSync(path.join(__dirname, '..', 'web', 'triton-view.js'), 'utf8');
 
 test('P-002: shell modules load in dependency order before app.js', () => {
   const scripts = [...html.matchAll(/<script src="([^"]+)" defer>/g)].map(m => m[1]);
@@ -41,4 +42,12 @@ test('P-002: shell declares the fixed seven-task navigation', () => {
   assert.match(shell, /'数据质量'/, 'quality');
   assert.match(shell, /'数据与采集'/, 'collection');
   assert.match(shell, /'指标说明'/, 'metrics');
+});
+
+test('P-009: units.js loads before triton-view and Triton durations unify to minutes', () => {
+  const scripts = [...html.matchAll(/<script src="([^"]+)" defer>/g)].map(m => m[1]);
+  const idx = name => scripts.indexOf(name);
+  assert.ok(idx('units.js') > idx('core.js'), 'units after core');
+  assert.ok(idx('triton-view.js') > idx('units.js'), 'triton-view after units');
+  assert.match(tritonView, /const dur = value => Units\.minutes\(value == null \? null : value \* 1000\)/);
 });

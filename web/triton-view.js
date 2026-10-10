@@ -27,11 +27,9 @@
   /* REQ-031 AC01: .axis 刻度（11px/600）逐字符宽度的保守估计（实测约 6.05px/字符），
      用于把绘图区宽度折算成可容纳的刻度数。 */
   const AXIS_CHAR_W = 7;
-  const dur = value => {
-    if (value == null) return '—';
-    if (value >= 3600) return (value / 3600).toFixed(value >= 36000 ? 0 : 1) + 'h';
-    return Math.round(value / 60) + 'm';
-  };
+  /* P-009: durations unify to two-decimal minutes (Units.minutes takes ms);
+     CSV fields keep their original seconds unit. */
+  const dur = value => Units.minutes(value == null ? null : value * 1000);
   const spanText = ms => {
     const hours = ms / HOUR;
     return hours < 24 ? hours.toFixed(hours < 10 ? 1 : 0) + ' 小时' : (hours / 24).toFixed(1) + ' 天';
