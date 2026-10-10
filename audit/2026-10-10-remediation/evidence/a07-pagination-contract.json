@@ -1,0 +1,121 @@
+{
+  "finding": "A07 · P2 · API分页数量漂移及无ID重复页未拒绝",
+  "requirements": [
+    "REQ-018"
+  ],
+  "generated_at": "2026-10-10T05:38:28.494715+00:00",
+  "head": "cbc380581342a376292e8e75c3296434b76398ac",
+  "probes": {
+    "workflow-schema-missing": {
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: page 1 response has no usable 'workflow_runs' array"
+      }
+    },
+    "workflow-schema-null": {
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: page 1 response has no usable 'workflow_runs' array"
+      }
+    },
+    "workflow-schema-object": {
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: page 1 response has no usable 'workflow_runs' array"
+      }
+    },
+    "legal-zero-page": {
+      "expected": {
+        "rejected": false,
+        "count": 0
+      },
+      "actual": {
+        "rejected": false,
+        "count": 0
+      }
+    },
+    "duplicate-page-id": {
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: duplicate record id=0 across pages"
+      }
+    },
+    "declared-count-missing-page": {
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: pagination incomplete: total_count=101, received 100"
+      }
+    },
+    "declared-count-changes-hide-truncation": {
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: page 2 declared total_count=100 but page 1 declared 150"
+      }
+    },
+    "duplicate-records-without-id": {
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: page 1 contains a record without required 'id'"
+      }
+    },
+    "bare-array-unique-commits-still-accepted": {
+      "expected": {
+        "rejected": false,
+        "count": 103
+      },
+      "actual": {
+        "rejected": false,
+        "count": 103
+      }
+    },
+    "bare-array-duplicate-commits-rejected-by-content": {
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/pulls/1/commits: duplicate record without id across pages"
+      }
+    }
+  },
+  "checks": {
+    "workflow-schema-missing": true,
+    "workflow-schema-null": true,
+    "workflow-schema-object": true,
+    "legal-zero-page": true,
+    "duplicate-page-id": true,
+    "declared-count-missing-page": true,
+    "declared-count-changes-hide-truncation": true,
+    "duplicate-records-without-id": true,
+    "bare-array-unique-commits-still-accepted": true,
+    "bare-array-duplicate-commits-rejected-by-content": true
+  },
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All inputs are process-memory synthetic responses; no network request, production source, test, frozen audit evidence, or real snapshot was modified.",
+    "Mirrors audit/2026-10-10/scripts/data-adversarial.py pagination_cases: the six previously-passing contract probes keep their frozen verdicts and the two A07 defects (declared-count-changes-hide-truncation, duplicate-records-without-id) are now rejected.",
+    "Pre-fix frozen evidence recorded rejected=False for the two A07 cases (100 and 200 records returned silently); this probe asserts the fixed contract.",
+    "The bare-array cases cover /pulls/{n}/commits commit lists whose records carry no id: unique records stay accepted, duplicated content is rejected by content fingerprint."
+  ]
+}

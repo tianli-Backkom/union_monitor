@@ -118,6 +118,34 @@ class GitHubContractTests(unittest.TestCase):
                 GitHub().pages("/actions/runs", "workflow_runs")
             self.assertIn("total_count", str(ctx.exception))
 
+    def test_declared_count_drift_between_pages_fails_instead_of_hiding_truncation(self):
+        first={"workflow_runs":[{"id":i} for i in range(100)],"total_count":150}
+        second={"workflow_runs":[],"total_count":100}
+        with patch.object(GitHub, "get", side_effect=[(first,{}),(second,{})]):
+            with self.assertRaises(RuntimeError) as ctx:
+                GitHub().pages("/actions/runs", "workflow_runs")
+            self.assertIn("total_count", str(ctx.exception))
+
+    def test_records_without_id_fail_instead_of_double_counting_duplicates(self):
+        page={"workflow_runs":[{"name":"same"} for _ in range(100)],"total_count":200}
+        with patch.object(GitHub, "get", side_effect=[(page,{}),(page,{}),({"workflow_runs":[],"total_count":200},{})]):
+            with self.assertRaises(RuntimeError) as ctx:
+                GitHub().pages("/actions/runs", "workflow_runs")
+            self.assertIn("'id'", str(ctx.exception))
+
+    def test_bare_array_records_without_id_reject_duplicate_pages_by_content(self):
+        first=[{"sha":format(i,"040x")} for i in range(100)]
+        with patch.object(GitHub, "get", side_effect=[(first,{}),(first[:1],{})]):
+            with self.assertRaises(RuntimeError) as ctx:
+                GitHub().pages("/pulls/1/commits")
+            self.assertIn("duplicate", str(ctx.exception))
+
+    def test_bare_array_records_without_id_are_accepted_when_unique(self):
+        first=[{"sha":format(i,"040x")} for i in range(100)]
+        second=[{"sha":format(i,"040x")} for i in range(100,103)]
+        with patch.object(GitHub, "get", side_effect=[(first,{}),(second,{})]):
+            self.assertEqual(len(GitHub().pages("/pulls/1/commits")),103)
+
     def test_bare_array_endpoints_reject_object_responses(self):
         with patch.object(GitHub, "get", return_value=({"message": "Bad credentials"}, {})):
             with self.assertRaises(RuntimeError):

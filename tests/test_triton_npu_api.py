@@ -14,7 +14,7 @@ class NpuApiTests(unittest.TestCase):
 
     def test_jobs_pagination(self):
         api=GitHub()
-        with patch.object(api,"get",side_effect=[({"jobs":[{}]*100},{}),({"jobs":[{}]*3},{})]) as get:
+        with patch.object(api,"get",side_effect=[({"jobs":[{"id":i} for i in range(100)]},{}),({"jobs":[{"id":100+i} for i in range(3)]},{})]) as get:
             self.assertEqual(len(api.pages("/actions/runs/1/attempts/1/jobs","jobs")),103)
             self.assertIn("page=2",get.call_args[0][0])
 

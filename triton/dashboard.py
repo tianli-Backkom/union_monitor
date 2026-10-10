@@ -390,13 +390,24 @@ class GitHub:
                 if not isinstance(rows, list):
                     raise RuntimeError(f"{path}: page {page} response is not a JSON array")
             declared=data.get("total_count") if isinstance(data, dict) else None
-            if isinstance(declared,int): expected=declared
+            # REQ-018 (A07): the first declared total_count is the contract; a later
+            # page declaring a different count hides truncation and is rejected.
+            if isinstance(declared,int):
+                if expected is None: expected=declared
+                elif declared!=expected: raise RuntimeError(f"{path}: page {page} declared total_count={declared} but page 1 declared {expected}")
             for row in rows:
                 if not isinstance(row, dict): raise RuntimeError(f"{path}: page {page} contains a non-object record")
+                # REQ-018 (A07): every accepted record needs a usable identity so a
+                # repeated page can never pass: envelope endpoints (workflow_runs/jobs)
+                # must carry 'id'; bare-array records without 'id' (commit lists) fall
+                # back to their full record content, so identical repeats still fail.
                 identity=row.get("id")
-                if identity is not None:
-                    if identity in seen: raise RuntimeError(f"{path}: duplicate record id={identity} across pages")
-                    seen.add(identity)
+                if identity is None:
+                    if field is not None: raise RuntimeError(f"{path}: page {page} contains a record without required 'id'")
+                    identity="content:"+json.dumps(row,sort_keys=True,ensure_ascii=False)
+                    if identity in seen: raise RuntimeError(f"{path}: duplicate record without id across pages")
+                elif identity in seen: raise RuntimeError(f"{path}: duplicate record id={identity} across pages")
+                seen.add(identity)
             if len(rows)<100 and expected is not None and len(out)+len(rows)!=expected:
                 raise RuntimeError(f"{path}: pagination incomplete: total_count={expected}, received {len(out)+len(rows)}")
             out.extend(rows)
