@@ -276,7 +276,7 @@ class SyntheticTreeTests(unittest.TestCase):
 
     def test_tampered_query_trim_exit_one(self):
         root = self.build_tree()
-        self.tamper_core_js(root, 'query.toLowerCase().trim()', 'query.toLowerCase()')
+        self.tamper_core_js(root, '.toLowerCase().trim()', '.toLowerCase()')
         code, report = self.run_tool(root)
         self.assertEqual(code, 1)
         self.assertGreater(report['identity']['combo_mismatch_count'], 0)

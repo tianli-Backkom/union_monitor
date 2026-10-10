@@ -146,7 +146,7 @@ def _node_filter_check(root, combos_by_repo):
         "b[p.number]=p.batches.length;tc[p.number]=m.triggerCounts(p);}"
         "const per=[];"
         "for(const c of (combos[r.name]||[])){"
-        "per.push(m.filterPRs(prs,c).map(p=>{const mm=m.metrics(p.batches);"
+        "per.push(m.searchPRs(m.filterPRs(prs,c),c.query).map(p=>{const mm=m.metrics(p.batches);"
         "return {n:p.number,b:p.batches.length,r:mm.representative_batch_url,"
         "e:mm.e2e_ms,q:mm.x86.queue_ms,t:mm.x86.total_ms};}));}"
         "const first=m.sortPRs(prs)[0]||null;"

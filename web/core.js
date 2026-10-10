@@ -10,7 +10,8 @@
   }
   function sortPRs(prs,order='e2e'){const value=p=>metrics(p.batches);return [...prs].sort((a,b)=>order==='batches'?b.batches.length-a.batches.length||(b.created_ms||0)-(a.created_ms||0):order==='created'?(b.created_ms||0)-(a.created_ms||0):((value(b).e2e_ms??-1)-(value(a).e2e_ms??-1)||(b.created_ms||0)-(a.created_ms||0)));}
   function aggregate(prs){const values=prs.map(p=>metrics(p.batches)),out={e2e:stats(values.map(v=>v.e2e_ms))};for(const k of ['x86','arm','dt']){out[k]={};for(const f of ['queue','duration','total'])out[k][f]=stats(values.map(v=>v[k][f+'_ms']));}return out;}
-  function filterPRs(prs,{state='',query='',quality='',trigger=''}={}){const q=query.toLowerCase().trim();return prs.filter(p=>!trigger||triggerCounts(p)[trigger]>0).filter(p=>(!state||p.state===state)&&(!q||[p.number,p.title,p.author,...p.batches.map(b=>b.sha||'')].join(' ').toLowerCase().includes(q))).filter(p=>!quality||(quality==='complete'?p.batches.length>0&&p.batches.every(b=>b.eligible)&&!(p.issues||[]).length:!p.batches.length||(p.issues||[]).length||p.batches.some(b=>!b.eligible)));}
+  function filterPRs(prs,{state='',quality='',trigger=''}={}){return prs.filter(p=>!trigger||triggerCounts(p)[trigger]>0).filter(p=>!state||p.state===state).filter(p=>!quality||(quality==='complete'?p.batches.length>0&&p.batches.every(b=>b.eligible)&&!(p.issues||[]).length:!p.batches.length||(p.issues||[]).length||p.batches.some(b=>!b.eligible)));}
+  function searchPRs(prs,query=''){const q=String(query||'').toLowerCase().trim();return q?prs.filter(p=>[p.number,p.title,p.author,...p.batches.map(b=>b.sha||'')].join(' ').toLowerCase().includes(q)):prs.slice();}
   function repositoryRows(index,snapshots,state=''){return index.repositories.map(entry=>{const snapshot=snapshots[entry.name];const current=!!snapshot&&snapshot.meta.start_ms===index.start_ms&&snapshot.meta.end_ms===index.end_ms;const included=current&&['success','partial'].includes(entry.status);const prs=included?filterPRs(snapshot.prs,{state}):[];return {...entry,current,included,prs,metrics:aggregate(prs),counts:Object.fromEntries(['open','merged','closed'].map(k=>[k,prs.filter(p=>p.state===k).length]))};});}
   function csv(rows){return '\ufeff'+rows.map(row=>row.map(x=>{let s=x==null?'':String(x);if(/^[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"'}).join(',')).join('\r\n');}
   async function saveCsv(rows,name,env=root){
@@ -25,5 +26,5 @@
     return {mode:'download',name};
   }
   function createReloadGate(){let gen=0;return{begin(){return ++gen;},isCurrent(g){return g===gen;}};}
-  const api={triggerCounts,failedWait,detailGroups,stats,metrics,sortPRs,aggregate,filterPRs,repositoryRows,csv,saveCsv,createReloadGate};if(typeof module!=='undefined')module.exports=api;else root.Metrics=api;
+  const api={triggerCounts,failedWait,detailGroups,stats,metrics,sortPRs,aggregate,filterPRs,searchPRs,repositoryRows,csv,saveCsv,createReloadGate};if(typeof module!=='undefined')module.exports=api;else root.Metrics=api;
 })(typeof window!=='undefined'?window:globalThis);
