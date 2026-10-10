@@ -1,0 +1,164 @@
+name: Unified dashboard shadow pipeline
+
+# T-012/T-013 phase-2 shadow run. Exercises the modular ``python -m monitor``
+# pipeline alongside the legacy pages.yml workflow and publishes comparable
+# artifacts WITHOUT deploying to GitHub Pages. Trigger it manually; the daily
+# schedule is enabled in phase 3 once the shadow matches the legacy deploy.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: unified-dashboard-shadow
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Plan run context and project matrix
+        id: plan
+        run: |
+          mkdir -p .shadow
+          python -m monitor plan --catalog catalog.json \
+            --run-id "${{ github.run_id }}-${{ github.run_attempt }}" \
+            --code-sha "${{ github.sha }}" \
+            --trigger workflow_dispatch \
+            --context-out .shadow/context.json \
+            --matrix-out .shadow/matrix.json
+          {
+            echo 'matrix<<EOF'
+            cat .shadow/matrix.json
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+      - name: Upload frozen context
+        uses: actions/upload-artifact@v4
+        with:
+          name: shadow-context-${{ github.run_id }}
+          path: .shadow/context.json
+
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run Python tests
+        run: python -m unittest discover -s tests
+      - name: Run Node tests
+        run: node --test tests/*.test.cjs
+      - name: Validate catalog contract
+        run: python -c "from monitor.catalog import Catalog; c=Catalog.load('catalog.json'); assert c.enabled_project_ids(), 'no enabled projects'"
+
+  collect:
+    needs: [prepare, checks]
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download frozen context
+        uses: actions/download-artifact@v4
+        with:
+          name: shadow-context-${{ github.run_id }}
+          path: .shadow
+      - name: Collect project ${{ matrix.project_id }}
+        run: |
+          mkdir -p .shadow/work/${{ matrix.project_id }}
+          python -m monitor collect \
+            --catalog catalog.json \
+            --context .shadow/context.json \
+            --project "${{ matrix.project_id }}" \
+            --work-dir .shadow/work \
+            --report-out .shadow/work/${{ matrix.project_id }}/collection-report.json
+      - name: Upload project bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-bundle-${{ matrix.project_id }}-${{ github.run_id }}
+          path: .shadow/work/${{ matrix.project_id }}
+
+  assemble:
+    needs: [prepare, checks, collect]
+    runs-on: ubuntu-latest
+    if: ${{ always() && !cancelled() && needs.prepare.result == 'success' && needs.checks.result == 'success' }}
+    outputs:
+      publishable: ${{ steps.assemble.outputs.publishable }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download frozen context
+        uses: actions/download-artifact@v4
+        with:
+          name: shadow-context-${{ github.run_id }}
+          path: .shadow
+      - name: Download project bundles
+        uses: actions/download-artifact@v4
+        with:
+          pattern: project-bundle-*-${{ github.run_id }}
+          path: .shadow/bundles
+          merge-multiple: true
+      - name: Assemble candidate release
+        id: assemble
+        run: |
+          python - <<'PY'
+          import json, pathlib, os
+          reports = {}
+          for rp in pathlib.Path('.shadow/bundles').rglob('collection-report.json'):
+              rep = json.loads(rp.read_text(encoding='utf-8'))
+              reports[rep.get('project_id')] = rep
+          pathlib.Path('.shadow/inputs.json').write_text(
+              json.dumps({'projects': reports}, ensure_ascii=False), encoding='utf-8')
+          PY
+          python -m monitor assemble \
+            --catalog catalog.json \
+            --context .shadow/context.json \
+            --inputs .shadow/inputs.json \
+            --release-id "shadow-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --published-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --out .shadow/candidate.json
+          python - <<'PY'
+          import json, os
+          candidate = json.load(open('.shadow/candidate.json', encoding='utf-8'))
+          flag = 'true' if candidate.get('publishable') else 'false'
+          print('publishable=' + flag)
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
+              fh.write('publishable=' + flag + '\n')
+          PY
+      - name: Upload candidate release
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shadow-candidate-${{ github.run_id }}
+          path: .shadow/candidate.json
