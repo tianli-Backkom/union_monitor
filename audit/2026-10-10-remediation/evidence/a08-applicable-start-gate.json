@@ -1,0 +1,87 @@
+{
+  "finding": "A08 · P2 · 同SHA辅助workflow掩盖另一workflow时间倒置",
+  "requirements": [
+    "REQ-019"
+  ],
+  "generated_at": "2026-10-10T05:49:58.790261+00:00",
+  "head": "2e91f3cad23766ae02a4aeda424374eee630f082",
+  "probes": {
+    "baseline-quality-control": {
+      "expected": {
+        "passed": true
+      },
+      "actual": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    "rerun-end-before-start": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "batch 23-abc-rerun-1-2: end before start"
+        ]
+      }
+    },
+    "completed-after-as-of": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "run 1: completion time beyond the as-of reference"
+        ]
+      }
+    },
+    "exact-trigger-legal-passes": {
+      "expected": {
+        "passed": true
+      },
+      "actual": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    "inverted-applicable-start-single": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "run 1: completed workflow ends before its applicable start",
+          "batch 23-abc-initial: end before start"
+        ]
+      }
+    },
+    "other-workflow-masks-inverted-applicable-start": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "run 1: completed workflow ends before its applicable start"
+        ]
+      }
+    }
+  },
+  "checks": {
+    "baseline-quality-control": true,
+    "rerun-end-before-start": true,
+    "completed-after-as-of": true,
+    "exact-trigger-legal-passes": true,
+    "inverted-applicable-start-single": true,
+    "other-workflow-masks-inverted-applicable-start": true
+  },
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All inputs are process-memory synthetic rows; no network request, production source, test, frozen audit evidence, or real snapshot was modified.",
+    "Mirrors audit/2026-10-10/scripts/data-adversarial.py quality_cases: the frozen A08 counterexample and its baseline neighbours keep their frozen verdicts; the masked inversion is now rejected per workflow.",
+    "Pre-fix frozen evidence recorded passed=true for other-workflow-masks-inverted-applicable-start (the batch start, the minimum over exact triggers, masked the bad workflow); this probe asserts the fixed gate."
+  ]
+}

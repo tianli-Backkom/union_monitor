@@ -61,6 +61,21 @@ class WorkflowTimeGateTests(unittest.TestCase):
         self.assertIsNone(batch["duration_seconds"])
         self.assertTrue(any("倒置" in m for m in batch["missing"]))
         self.assertFalse(validate([row],{"batches":[batch]})["passed"])
+    def test_auxiliary_workflow_cannot_mask_inverted_applicable_start(self):
+        bad=self.run_row(id=1,created_at="2026-09-22T00:00:00Z",trigger_at="2026-09-22T02:30:00Z",trigger_exact=True,updated_at="2026-09-22T01:00:00Z")
+        aux=self.run_row(id=2,created_at="2026-09-22T00:00:00Z",trigger_at="2026-09-22T00:30:00Z",trigger_exact=True,updated_at="2026-09-22T03:00:00Z",
+                         pr_evidence={"method":"m","run_id":2,"pr":7,"resolved_head_sha":"abc"})
+        batches=build_batches([bad,aux],"2026-09-22T04:00:00Z")
+        self.assertEqual(len(batches),1)
+        report=validate([bad,aux],{"batches":batches})
+        self.assertFalse(report["passed"])
+        self.assertTrue(any("applicable start" in e for e in report["errors"]))
+    def test_legal_auxiliary_workflow_with_exact_triggers_still_passes(self):
+        first=self.run_row(id=1,created_at="2026-09-22T00:00:00Z",trigger_at="2026-09-22T00:30:00Z",trigger_exact=True,updated_at="2026-09-22T01:00:00Z")
+        aux=self.run_row(id=2,created_at="2026-09-22T00:00:00Z",trigger_at="2026-09-22T00:35:00Z",trigger_exact=True,updated_at="2026-09-22T03:00:00Z",
+                         pr_evidence={"method":"m","run_id":2,"pr":7,"resolved_head_sha":"abc"})
+        batches=build_batches([first,aux],"2026-09-22T04:00:00Z")
+        self.assertTrue(validate([first,aux],{"batches":batches})["passed"])
     def test_completed_workflow_with_missing_or_unparseable_timestamps_fails(self):
         self.assertFalse(validate([self.run_row(updated_at=None)],{"batches":[]})["passed"])
         self.assertFalse(validate([self.run_row(updated_at="not-a-timestamp")],{"batches":[]})["passed"])

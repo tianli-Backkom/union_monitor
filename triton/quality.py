@@ -28,10 +28,18 @@ def validate(runs, payload):
         if run.get("status")=="completed":
             try:
                 created=stamp(run.get("created_at")); updated=stamp(run.get("updated_at"))
+                # REQ-019 (A08): inversion is judged per workflow against its own
+                # applicable start — a proven exact trigger — because the batch
+                # start is the minimum over all rows; a legal auxiliary workflow
+                # on the same SHA must never mask another workflow completing
+                # before the trigger that started it.
+                applicable=stamp(run.get("trigger_at")) if run.get("trigger_exact") else None
                 if not created or not updated:
                     errors.append(prefix+": completed workflow missing created_at/updated_at")
                 elif updated<created:
                     errors.append(prefix+": completed workflow ends before its start")
+                elif applicable is not None and updated<applicable:
+                    errors.append(prefix+": completed workflow ends before its applicable start")
                 elif as_of is not None and updated>as_of:
                     errors.append(prefix+": completion time beyond the as-of reference")
             except (ValueError,TypeError,AttributeError):
