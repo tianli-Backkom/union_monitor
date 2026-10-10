@@ -1,0 +1,207 @@
+{
+  "requirement": "REQ-051 完整需求文档的版本与可追溯交付",
+  "generated_at": "2026-10-10T08:53:25.951800+08:00",
+  "input": {
+    "root": "/mnt/d/ubs_core_monitor",
+    "audit_dir": "audit/2026-10-09"
+  },
+  "structure": {
+    "requirements": 51,
+    "acceptance_criteria": 195,
+    "min_acs": 3,
+    "min_req": "REQ-011",
+    "tracking_union": "REQ-001..REQ-050",
+    "uncovered": []
+  },
+  "classification": {
+    "type_counts": {
+      "整改": 37,
+      "补证": 3,
+      "保持": 9,
+      "交付": 2
+    },
+    "groups": {
+      "整改": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-003",
+        "REQ-004",
+        "REQ-005",
+        "REQ-006",
+        "REQ-007",
+        "REQ-008",
+        "REQ-009",
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-013",
+        "REQ-014",
+        "REQ-015",
+        "REQ-016",
+        "REQ-017",
+        "REQ-018",
+        "REQ-019",
+        "REQ-020",
+        "REQ-021",
+        "REQ-022",
+        "REQ-023",
+        "REQ-024",
+        "REQ-025",
+        "REQ-026",
+        "REQ-027",
+        "REQ-028",
+        "REQ-029",
+        "REQ-030",
+        "REQ-031",
+        "REQ-032",
+        "REQ-033",
+        "REQ-034",
+        "REQ-035",
+        "REQ-036",
+        "REQ-037"
+      ],
+      "补证": [
+        "REQ-038",
+        "REQ-039",
+        "REQ-040"
+      ],
+      "保持": [
+        "REQ-041",
+        "REQ-042",
+        "REQ-043",
+        "REQ-044",
+        "REQ-045",
+        "REQ-046",
+        "REQ-047",
+        "REQ-048",
+        "REQ-049"
+      ],
+      "交付": [
+        "REQ-050",
+        "REQ-051"
+      ]
+    },
+    "rules": {
+      "rectification_with_findings": 37,
+      "supplement_unverified_rows": {
+        "REQ-038": [
+          "D10：缺原始来源、PR身份、queue和attempt证据",
+          "attempt真实历史影响未验证",
+          "原始工件→构建→公开数据指纹未验证"
+        ],
+        "REQ-039": [
+          "P04：真实pending取消及运行影响未验证"
+        ],
+        "REQ-040": [
+          "Python3.12/Node22兼容性未验证"
+        ]
+      }
+    },
+    "dependencies": {
+      "doc_dep_lines": 28,
+      "deps_total": 59,
+      "acyclic": true
+    }
+  },
+  "sources": {
+    "source_sha256": {
+      "coverage-matrix.md": {
+        "expected": "df04ef4cdfbc9b76c17b73e9f791560746aead11e5c3bcb6ef068402fd95752d",
+        "actual": "df04ef4cdfbc9b76c17b73e9f791560746aead11e5c3bcb6ef068402fd95752d",
+        "match": true
+      },
+      "evidence/all-checks.json": {
+        "expected": "4bf10d87dc2c6fb3affb83861d243a85e2d6f0f3a257ba0502ee65717f1239f1",
+        "actual": "4bf10d87dc2c6fb3affb83861d243a85e2d6f0f3a257ba0502ee65717f1239f1",
+        "match": true
+      },
+      "evidence/baseline-comparison.md": {
+        "expected": "624dc963a0bc6b8092973a36c2a5f9ba18cecf1148ef3ddc0b2b81c6494cead1",
+        "actual": "624dc963a0bc6b8092973a36c2a5f9ba18cecf1148ef3ddc0b2b81c6494cead1",
+        "match": true
+      },
+      "evidence/data-audit.json": {
+        "expected": "970509d2f8e1cc040da304ce41b19c38e9329e5ef026d3bb7aa93b1513984ee2",
+        "actual": "970509d2f8e1cc040da304ce41b19c38e9329e5ef026d3bb7aa93b1513984ee2",
+        "match": true
+      },
+      "evidence/deployment-audit.json": {
+        "expected": "8b2727655616ab4f469bfbadef1c19ba1497352946d4687a47a3cfc0eff5f0fc",
+        "actual": "8b2727655616ab4f469bfbadef1c19ba1497352946d4687a47a3cfc0eff5f0fc",
+        "match": true
+      },
+      "evidence/findings.json": {
+        "expected": "9488bfaee876633442c986c4b2b435515d434cc419a90691424aad61c93f1b1c",
+        "actual": "9488bfaee876633442c986c4b2b435515d434cc419a90691424aad61c93f1b1c",
+        "match": true
+      },
+      "review-report.md": {
+        "expected": "8259657f57b99b96a4c645f84438a3e761560bb67d709d159b4cea7f86ff162f",
+        "actual": "8259657f57b99b96a4c645f84438a3e761560bb67d709d159b4cea7f86ff162f",
+        "match": true
+      }
+    },
+    "requirements_md_unchanged": true,
+    "final_delivery": {
+      "history_commits": 1,
+      "status": "passed",
+      "findings": 19,
+      "broken_local_links": [],
+      "production_changed": []
+    },
+    "business_attribution": {
+      "root_commit": "db0d98f",
+      "commits": 35,
+      "non_req": []
+    },
+    "links": {
+      "local_links": {
+        "audit/2026-10-09/review-report.md": {
+          "label": "审查报告",
+          "ok": true
+        },
+        "audit/2026-10-09/coverage-matrix.md": {
+          "label": "覆盖矩阵",
+          "ok": true
+        },
+        "audit/2026-10-09/evidence/findings.json": {
+          "label": "问题清单",
+          "ok": true
+        },
+        "audit/2026-10-09/evidence/all-checks.json": {
+          "label": "全部检查",
+          "ok": true
+        },
+        "audit/2026-10-09/evidence/data-audit.json": {
+          "label": "数据审计",
+          "ok": true
+        },
+        "audit/2026-10-09/evidence/deployment-audit.json": {
+          "label": "发布审计",
+          "ok": true
+        },
+        "audit/2026-10-09/evidence/baseline-comparison.md": {
+          "label": "旧站能力对照",
+          "ok": true
+        }
+      },
+      "external_links": 0,
+      "broken": []
+    }
+  },
+  "overall_acceptance": {
+    "acceptance": {
+      "delivering": "REQ-051",
+      "overall_status": "verified",
+      "ledger": 51,
+      "passed": 51,
+      "unverified": 0,
+      "acs": 195,
+      "unverified_conclusions": 6
+    }
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}

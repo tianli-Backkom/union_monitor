@@ -1,9 +1,9 @@
 {
   "requirement": "REQ-050 需求验收记录与证据闭环",
-  "generated_at": "2026-10-10T08:36:27.889162+08:00",
+  "generated_at": "2026-10-10T08:51:20.632030+08:00",
   "input": {
     "root": "/mnt/d/ubs_core_monitor",
-    "delivering": "REQ-050",
+    "delivering": "REQ-051",
     "audit_dir": "audit/2026-10-09"
   },
   "doc": {
@@ -284,7 +284,7 @@
       "ok": true
     },
     "tests_inventory": {
-      "python_test_files": 30,
+      "python_test_files": 31,
       "node_test_files": 12
     }
   },
@@ -981,25 +981,26 @@
       "type": "交付",
       "priority": "P2",
       "status": "通过",
-      "version": "本提交（紧随本证据生成）",
+      "version": "b00a329",
       "input_kind": [
         "真实快照",
         "静态规则"
       ],
       "input": "冻结审计记录（requirements.md、需求模型、验收记录、238 项检查、git 历史）结构化核验",
-      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+      "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
     },
     {
       "req": "REQ-051",
       "title": "完整需求文档的版本与可追溯交付",
       "type": "交付",
       "priority": "P2",
-      "status": "未验证",
-      "version": null,
-      "input_kind": [],
-      "input": "待交付",
-      "evidence": "待交付",
-      "pending_reason": "待交付（验收工具与测试尚未提交）"
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "input_kind": [
+        "静态规则"
+      ],
+      "input": "冻结需求文档与来源文件（文档结构、链接与 SHA-256 核验）",
+      "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
     }
   ],
   "acceptance_criteria": [
@@ -2316,57 +2317,57 @@
       "id": "REQ-050-AC01",
       "req": "REQ-050",
       "status": "通过",
-      "version": "本提交（紧随本证据生成）",
-      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+      "version": "b00a329",
+      "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
     },
     {
       "id": "REQ-050-AC02",
       "req": "REQ-050",
       "status": "通过",
-      "version": "本提交（紧随本证据生成）",
-      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+      "version": "b00a329",
+      "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
     },
     {
       "id": "REQ-050-AC03",
       "req": "REQ-050",
       "status": "通过",
-      "version": "本提交（紧随本证据生成）",
-      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+      "version": "b00a329",
+      "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
     },
     {
       "id": "REQ-050-AC04",
       "req": "REQ-050",
       "status": "通过",
-      "version": "本提交（紧随本证据生成）",
-      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+      "version": "b00a329",
+      "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
     },
     {
       "id": "REQ-051-AC01",
       "req": "REQ-051",
-      "status": "未验证",
-      "version": null,
-      "evidence": "待交付"
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
     },
     {
       "id": "REQ-051-AC02",
       "req": "REQ-051",
-      "status": "未验证",
-      "version": null,
-      "evidence": "待交付"
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
     },
     {
       "id": "REQ-051-AC03",
       "req": "REQ-051",
-      "status": "未验证",
-      "version": null,
-      "evidence": "待交付"
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
     },
     {
       "id": "REQ-051-AC04",
       "req": "REQ-051",
-      "status": "未验证",
-      "version": null,
-      "evidence": "待交付"
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
     }
   ],
   "kinds": {
