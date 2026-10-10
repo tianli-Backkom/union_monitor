@@ -3,7 +3,7 @@
 import unittest
 from pathlib import Path
 
-from monitor.adapters import AdapterError, resolve
+from monitor.adapters import resolve
 from monitor.catalog import Catalog
 from monitor.collect import CollectError, build_report, collect_project
 from monitor.context import RunContext
@@ -17,12 +17,12 @@ def make_context():
 
 
 class ResolveAdapterTests(unittest.TestCase):
-    def test_known_but_unimplemented_adapter_is_a_clear_error(self):
-        # The catalog maps ubs -> monitor.adapters.gitcode_jenkins, which does
-        # not exist yet; resolution must fail loudly, never silently.
-        project = CATALOG.project("ubs")
-        with self.assertRaises(AdapterError):
-            resolve(CATALOG, project)
+    def test_catalog_adapter_now_resolves(self):
+        # The catalog maps ubs -> monitor.adapters.gitcode_jenkins, which is now
+        # implemented; resolution returns its collect callable (never a fake).
+        fn = resolve(CATALOG, CATALOG.project("ubs"))
+        self.assertEqual(fn.__module__, "monitor.adapters.gitcode_jenkins")
+        self.assertTrue(callable(fn))
 
     def test_entrypoint_surfaces_the_catalog_path(self):
         from monitor.adapters import entrypoint
@@ -31,8 +31,14 @@ class ResolveAdapterTests(unittest.TestCase):
 
 class CollectProjectTests(unittest.TestCase):
     def test_missing_adapter_yields_honest_failed_report(self):
+        # A collector whose entrypoint cannot be imported still resolves to an
+        # honest failed report — collect never fakes success.
+        import copy
+        data = copy.deepcopy(CATALOG.data)
+        data["collectors"]["gitcode-jenkins-v1"]["entrypoint"] = "monitor.adapters.no_such_adapter"
+        catalog = Catalog(data)
         context = make_context()
-        report = collect_project(CATALOG, context, "ubs", "/tmp/isolated",
+        report = collect_project(catalog, context, "ubs", "/tmp/isolated",
                                  now=lambda: "2026-10-10T00:00:00Z")
         self.assertEqual(report["task_status"], "failed")
         self.assertEqual(report["collection_status"], "failed")
