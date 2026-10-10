@@ -1,0 +1,3058 @@
+test_findings_and_conclusions (test_acceptance.CommittedEvidenceTests.test_findings_and_conclusions) ... ok
+test_integrity (test_acceptance.CommittedEvidenceTests.test_integrity) ... ok
+test_ledger_and_kinds (test_acceptance.CommittedEvidenceTests.test_ledger_and_kinds) ... ok
+test_overall_and_doc (test_acceptance.CommittedEvidenceTests.test_overall_and_doc) ... ok
+test_conclusion_status (test_acceptance.ParserTests.test_conclusion_status) ... ok
+test_expand_req_refs (test_acceptance.ParserTests.test_expand_req_refs) ... ok
+test_generation_time_and_rate_claim (test_acceptance.ParserTests.test_generation_time_and_rate_claim) ... ok
+test_parse_conclusions_table (test_acceptance.ParserTests.test_parse_conclusions_table) ... ok
+test_parse_findings_table (test_acceptance.ParserTests.test_parse_findings_table) ... ok
+test_parse_requirements_doc (test_acceptance.ParserTests.test_parse_requirements_doc) ... ok
+test_parse_sha_table (test_acceptance.ParserTests.test_parse_sha_table) ... ok
+test_clean_tree_exit_zero (test_acceptance.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_missing_req_commit_exit_one (test_acceptance.SyntheticTreeTests.test_missing_req_commit_exit_one) ... ok
+test_tamper_artifact_status_relaxed (test_acceptance.SyntheticTreeTests.test_tamper_artifact_status_relaxed) ... ok
+test_tamper_drop_ac_line (test_acceptance.SyntheticTreeTests.test_tamper_drop_ac_line) ... ok
+test_tamper_drop_finding (test_acceptance.SyntheticTreeTests.test_tamper_drop_finding) ... ok
+test_tamper_evidence_status (test_acceptance.SyntheticTreeTests.test_tamper_evidence_status) ... ok
+test_tamper_flip_failed_check (test_acceptance.SyntheticTreeTests.test_tamper_flip_failed_check) ... ok
+test_tamper_source_content (test_acceptance.SyntheticTreeTests.test_tamper_source_content) ... ok
+test_ac01_freeze_entry_matches_immutable_fixture (test_artifact_verification.CommittedReportTest.test_ac01_freeze_entry_matches_immutable_fixture) ... ok
+test_ac01_inventory_marks_d10_missing (test_artifact_verification.CommittedReportTest.test_ac01_inventory_marks_d10_missing) ... ok
+test_ac02_arithmetic_per_category (test_artifact_verification.CommittedReportTest.test_ac02_arithmetic_per_category) ... ok
+test_ac04_deployment_sections (test_artifact_verification.CommittedReportTest.test_ac04_deployment_sections) ... ok
+test_sections_and_overall_derivation (test_artifact_verification.CommittedReportTest.test_sections_and_overall_derivation) ... ok
+test_site_probe_file_structure (test_artifact_verification.CommittedReportTest.test_site_probe_file_structure) ... ok
+[ubs-bundle] index ok: 1 repositories, 1 snapshots referenced
+::warning::[ubs-bundle] C:\Users\tianli\AppData\Local\Temp\tmpgenwygtb\web\data\snapshot.json missing (ubs-engine compat copy; CI restores or fetches it)
+::warning::[ubs-bundle] mirror C:\Users\tianli\AppData\Local\Temp\tmpgenwygtb\data\repositories.json missing (local subset; the shared cache restores it in CI)
+::warning::[ubs-bundle] mirror C:\Users\tianli\AppData\Local\Temp\tmpgenwygtb\data\repos\alpha.json missing (local subset; the shared cache restores it in CI)
+::warning::[ubs-bundle] mirror C:\Users\tianli\AppData\Local\Temp\tmpgenwygtb\data\snapshot.json missing (local subset; the shared cache restores it in CI)
+::warning::[ubs-bundle] C:\Users\tianli\AppData\Local\Temp\tmpgenwygtb\web\data\ubs-manifest.json missing (first run or legacy bundle; version binding unavailable)
+test_clean_tree_exit_zero (test_artifact_verification.SyntheticTreeTest.test_clean_tree_exit_zero) ... ok
+test_derive_overall (test_artifact_verification.SyntheticTreeTest.test_derive_overall) ... ok
+{"overall_status": "unverified", "sections": {"ac01": "pass", "ac02": "partial", "ac03": "partial", "ac04": "unverified"}, "categories": {"raw_timestamps": {"applicable": 3, "verified_consistent": 0, "derived_consistent": 3, "differ": 0, "missing_evidence": 0}, "queue_components": {"applicable": 2, "verified_consistent": 0, "derived_consistent": 1, "differ": 0, "missing_evidence": 1}, "pr_identity": {"applicable": 3, "verified_consistent": 0, "derived_consistent": 3, "differ": 0, "missing_evidence": 0}, "attempt_history": {"applicable": 2, "verified_consistent": 0, "derived_consistent": 2, "differ": 0, "missing_evidence": 0}}, "rerun_impact": {"rerun_batches": 1, "recorded_matches_old": 1, "provably_affected_batches": 0, "max_overestimate_bound_seconds": 40.0}, "local_bundle": "absent", "report": "C:\\Users\\tianli\\AppData\\Local\\Temp\\tmpgenwygtb\\report.json"}
+[ubs-bundle] index ok: 1 repositories, 1 snapshots referenced
+::warning::[ubs-bundle] C:\Users\tianli\AppData\Local\Temp\tmp55sp3n0w\web\data\snapshot.json missing (ubs-engine compat copy; CI restores or fetches it)
+::warning::[ubs-bundle] mirror C:\Users\tianli\AppData\Local\Temp\tmp55sp3n0w\data\repositories.json missing (local subset; the shared cache restores it in CI)
+::warning::[ubs-bundle] mirror C:\Users\tianli\AppData\Local\Temp\tmp55sp3n0w\data\repos\alpha.json missing (local subset; the shared cache restores it in CI)
+::warning::[ubs-bundle] mirror C:\Users\tianli\AppData\Local\Temp\tmp55sp3n0w\data\snapshot.json missing (local subset; the shared cache restores it in CI)
+::warning::[ubs-bundle] C:\Users\tianli\AppData\Local\Temp\tmp55sp3n0w\web\data\ubs-manifest.json missing (first run or legacy bundle; version binding unavailable)
+test_drift_tree_exit_one (test_artifact_verification.SyntheticTreeTest.test_drift_tree_exit_one) ... ok
+test_rerun_bound_math (test_artifact_verification.SyntheticTreeTest.test_rerun_bound_math) ... ok
+test_attempt_history_checks (test_artifact_verification.TritonImmutableChecks.test_attempt_history_checks) ... ok
+test_freeze_vs_audit_exports (test_artifact_verification.TritonImmutableChecks.test_freeze_vs_audit_exports) ... ok
+test_pr_identity_propagation (test_artifact_verification.TritonImmutableChecks.test_pr_identity_propagation) ... ok
+test_rerun_impact_real_data (test_artifact_verification.TritonImmutableChecks.test_rerun_impact_real_data) ... ok
+test_s01_synthetic_separated_from_real (test_artifact_verification.TritonImmutableChecks.test_s01_synthetic_separated_from_real) ... ok
+test_cache_roundtrip_preserves_fingerprint (test_bundle_verifier.BundleVerifierTests.test_cache_roundtrip_preserves_fingerprint) ... ok
+test_consistent_bundle_passes_with_fingerprint (test_bundle_verifier.BundleVerifierTests.test_consistent_bundle_passes_with_fingerprint) ... ok
+test_cross_repo_identity_mismatch_fails (test_bundle_verifier.BundleVerifierTests.test_cross_repo_identity_mismatch_fails) ... ok
+test_current_scope_entry_without_snapshot_fails (test_bundle_verifier.BundleVerifierTests.test_current_scope_entry_without_snapshot_fails) ... ok
+test_current_scope_snapshot_must_match_index_range (test_bundle_verifier.BundleVerifierTests.test_current_scope_snapshot_must_match_index_range) ... ok
+test_empty_index_and_empty_snapshot_files_fail (test_bundle_verifier.BundleVerifierTests.test_empty_index_and_empty_snapshot_files_fail) ... ok
+test_ensure_manifest_creates_when_absent_and_preserves_when_present (test_bundle_verifier.BundleVerifierTests.test_ensure_manifest_creates_when_absent_and_preserves_when_present) ... ok
+test_failed_entry_without_snapshot_is_legal_like_pending (test_bundle_verifier.BundleVerifierTests.test_failed_entry_without_snapshot_is_legal_like_pending) ... ok
+test_failed_retained_snapshot_with_old_range_is_legal (test_bundle_verifier.BundleVerifierTests.test_failed_retained_snapshot_with_old_range_is_legal) ... ok
+test_fingerprint_tracks_content (test_bundle_verifier.BundleVerifierTests.test_fingerprint_tracks_content) ... ok
+test_index_without_repositories_object_structure_fails (test_bundle_verifier.BundleVerifierTests.test_index_without_repositories_object_structure_fails) ... ok
+test_invalid_index_fails (test_bundle_verifier.BundleVerifierTests.test_invalid_index_fails) ... ok
+test_mirror_mismatch_fails_but_missing_mirror_only_warns (test_bundle_verifier.BundleVerifierTests.test_mirror_mismatch_fails_but_missing_mirror_only_warns) ... ok
+test_missing_referenced_snapshot_fails (test_bundle_verifier.BundleVerifierTests.test_missing_referenced_snapshot_fails) ... ok
+test_pending_entry_without_snapshot_is_legal (test_bundle_verifier.BundleVerifierTests.test_pending_entry_without_snapshot_is_legal) ... ok
+test_stale_compat_snapshot_fails (test_bundle_verifier.BundleVerifierTests.test_stale_compat_snapshot_fails) ... ok
+test_stale_manifest_blocks_mixed_bundle (test_bundle_verifier.BundleVerifierTests.test_stale_manifest_blocks_mixed_bundle) ... ok
+test_write_manifest_then_plain_run_verifies (test_bundle_verifier.BundleVerifierTests.test_write_manifest_then_plain_run_verifies) ... ok
+test_cache_hit_with_invalid_artifact_blocks_publish (test_cache_chain.CacheChainTests.test_cache_hit_with_invalid_artifact_blocks_publish) ... FAIL
+test_cold_start_empty_snapshot_file_blocks_deploy (test_cache_chain.CacheChainTests.test_cold_start_empty_snapshot_file_blocks_deploy) ... FAIL
+test_cold_start_missing_snapshot_blocks_deploy_beyond_non_empty_index (test_cache_chain.CacheChainTests.test_cold_start_missing_snapshot_blocks_deploy_beyond_non_empty_index) ... FAIL
+test_cold_start_restores_complete_bundle_from_fallback_site (test_cache_chain.CacheChainTests.test_cold_start_restores_complete_bundle_from_fallback_site) ... FAIL
+test_missing_index_after_fallback_refuses_to_deploy (test_cache_chain.CacheChainTests.test_missing_index_after_fallback_refuses_to_deploy) ... ok
+test_pending_and_first_failed_entries_restore_without_fake_success (test_cache_chain.CacheChainTests.test_pending_and_first_failed_entries_restore_without_fake_success) ... FAIL
+test_warm_cache_daily_update_publishes_b_not_a (test_cache_chain.CacheChainTests.test_warm_cache_daily_update_publishes_b_not_a) ... FAIL
+test_warm_incomplete_cache_with_unavailable_file_blocks_deploy (test_cache_chain.CacheChainTests.test_warm_incomplete_cache_with_unavailable_file_blocks_deploy) ... FAIL
+{"overall_status": "failed", "sections": {"ac01": "pass", "ac02": "differ", "ac03": "partial", "ac04": "unverified"}, "categories": {"raw_timestamps": {"applicable": 3, "verified_consistent": 0, "derived_consistent": 2, "differ": 1, "missing_evidence": 0}, "queue_components": {"applicable": 2, "verified_consistent": 0, "derived_consistent": 1, "differ": 0, "missing_evidence": 1}, "pr_identity": {"applicable": 3, "verified_consistent": 0, "derived_consistent": 3, "differ": 0, "missing_evidence": 0}, "attempt_history": {"applicable": 2, "verified_consistent": 0, "derived_consistent": 2, "differ": 0, "missing_evidence": 0}}, "rerun_impact": {"rerun_batches": 1, "recorded_matches_old": 1, "provably_affected_batches": 0, "max_overestimate_bound_seconds": 40.0}, "local_bundle": "absent", "report": "C:\\Users\\tianli\\AppData\\Local\\Temp\\tmp55sp3n0w\\report.json"}
+[chain] AC02 guard: index missing everywhere → exit 1
+REPOSITORY ubs-engine
+REPOSITORY ubs-comm
+REPOSITORY FAILED ubs-comm: unavailable
+REPOSITORY ubs-virt
+REPOSITORY ubs-io
+REPOSITORY ubs-mem
+REPOSITORY OmniStateStore
+REPOSITORY ham
+REPOSITORY ubturbo
+REPOSITORY ubs-atomic
+test_all_shares_cutoff_and_failure_keeps_previous_snapshot (test_collection_multi.CollectionTests.test_all_shares_cutoff_and_failure_keeps_previous_snapshot) ... ok
+test_discovery_uses_report_paths_and_ignores_other_comment_authors (test_collection_multi.CollectionTests.test_discovery_uses_report_paths_and_ignores_other_comment_authors) ... ok
+test_ac01_unverified_with_protocol (test_concurrency_evidence.CommittedEvidenceTests.test_ac01_unverified_with_protocol) ... ok
+test_ac03_unverified_with_procedure (test_concurrency_evidence.CommittedEvidenceTests.test_ac03_unverified_with_procedure) ... ok
+test_ac04_deferred (test_concurrency_evidence.CommittedEvidenceTests.test_ac04_deferred) ... ok
+test_alignment_locks_test_name_and_readme (test_concurrency_evidence.CommittedEvidenceTests.test_alignment_locks_test_name_and_readme) ... ok
+test_business_impact_scenarios (test_concurrency_evidence.CommittedEvidenceTests.test_business_impact_scenarios) ... ok
+test_documented_semantics_with_reference (test_concurrency_evidence.CommittedEvidenceTests.test_documented_semantics_with_reference) ... ok
+test_overall_aligned_and_unverified_tolerated (test_concurrency_evidence.CommittedEvidenceTests.test_overall_aligned_and_unverified_tolerated) ... ok
+test_cancel_in_progress_true_exit_one (test_concurrency_evidence.SyntheticTreeTests.test_cancel_in_progress_true_exit_one) ... ok
+test_clean_tree_exit_zero (test_concurrency_evidence.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_missing_readme_marker_exit_one (test_concurrency_evidence.SyntheticTreeTests.test_missing_readme_marker_exit_one) ... ok
+test_missing_workflow_exit_one (test_concurrency_evidence.SyntheticTreeTests.test_missing_workflow_exit_one) ... ok
+test_old_test_name_restored_exit_one (test_concurrency_evidence.SyntheticTreeTests.test_old_test_name_restored_exit_one) ... ok
+test_explicit_queue_is_flagged_as_strategy_drift (test_concurrency_evidence.WorkflowConfigTests.test_explicit_queue_is_flagged_as_strategy_drift) ... ok
+test_extract_concurrency_absent_returns_none (test_concurrency_evidence.WorkflowConfigTests.test_extract_concurrency_absent_returns_none) ... ok
+test_extract_concurrency_parses_group_cancel_and_queue (test_concurrency_evidence.WorkflowConfigTests.test_extract_concurrency_parses_group_cancel_and_queue) ... ok
+test_real_workflows_declare_documented_strategy (test_concurrency_evidence.WorkflowConfigTests.test_real_workflows_declare_documented_strategy) ... ok
+test_csv_export_is_saved_and_readable (test_exports.ExportTest.test_csv_export_is_saved_and_readable) ... 127.0.0.1 - - [10/Oct/2026 10:33:22] "POST /api/export HTTP/1.1" 201 -
+127.0.0.1 - - [10/Oct/2026 10:33:22] "GET /exports/ubs-engine-pr-summary-3fcfa596.csv HTTP/1.1" 200 -
+ok
+test_path_traversal_and_external_origin_rejected (test_exports.ExportTest.test_path_traversal_and_external_origin_rejected) ... 127.0.0.1 - - [10/Oct/2026 10:33:22] code 400, message Invalid export request
+127.0.0.1 - - [10/Oct/2026 10:33:22] "POST /api/export HTTP/1.1" 400 -
+127.0.0.1 - - [10/Oct/2026 10:33:22] code 403, message Same-origin local requests only
+127.0.0.1 - - [10/Oct/2026 10:33:22] "POST /api/export HTTP/1.1" 403 -
+ok
+test_frozen_baseline (test_freshness.CommittedEvidenceTests.test_frozen_baseline) ... ok
+test_frozen_overall (test_freshness.CommittedEvidenceTests.test_frozen_overall) ... ok
+test_ac01_exact_case (test_freshness.FreshnessMirrorTests.test_ac01_exact_case) ... ok
+test_before_grace_not_stale (test_freshness.FreshnessMirrorTests.test_before_grace_not_stale) ... ok
+test_bj_day_start_integer_math (test_freshness.FreshnessMirrorTests.test_bj_day_start_integer_math) ... ok
+test_early_morning_prev_day_slot (test_freshness.FreshnessMirrorTests.test_early_morning_prev_day_slot) ... ok
+test_midnight_rollover (test_freshness.FreshnessMirrorTests.test_midnight_rollover) ... ok
+test_missing_collected (test_freshness.FreshnessMirrorTests.test_missing_collected) ... ok
+test_next_day_and_boundaries (test_freshness.FreshnessMirrorTests.test_next_day_and_boundaries) ... ok
+test_strict_comparison_and_newer (test_freshness.FreshnessMirrorTests.test_strict_comparison_and_newer) ... ok
+test_clean_tree_exit_zero (test_freshness.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_tampered_export_recover_exit_one (test_freshness.SyntheticTreeTests.test_tampered_export_recover_exit_one) ... ok
+test_tampered_freshness_text_exit_one (test_freshness.SyntheticTreeTests.test_tampered_freshness_text_exit_one) ... ok
+test_tampered_http_error_exit_one (test_freshness.SyntheticTreeTests.test_tampered_http_error_exit_one) ... ok
+test_tampered_slots_hours_exit_one (test_freshness.SyntheticTreeTests.test_tampered_slots_hours_exit_one) ... ok
+test_live_data_self_consistent_by_contract (test_frozen_audit.ContractShapeTests.test_live_data_self_consistent_by_contract) ... ok
+test_single_sample_percentiles_equal_the_value (test_frozen_audit.ContractShapeTests.test_single_sample_percentiles_equal_the_value) ... ok
+test_zero_npu_batch_is_legal_with_null_queue (test_frozen_audit.ContractShapeTests.test_zero_npu_batch_is_legal_with_null_queue) ... ok
+test_all_batches_approximate_visible (test_frozen_audit.FrozenTritonSnapshotTests.test_all_batches_approximate_visible) ... ok
+test_cancelled_batch_is_observed_but_not_a_completion_sample (test_frozen_audit.FrozenTritonSnapshotTests.test_cancelled_batch_is_observed_but_not_a_completion_sample) ... ok
+test_d08_summary_and_npu_points_independently_recompute (test_frozen_audit.FrozenTritonSnapshotTests.test_d08_summary_and_npu_points_independently_recompute) ... ok
+test_d09_e2e_recomputes_from_retained_workflows (test_frozen_audit.FrozenTritonSnapshotTests.test_d09_e2e_recomputes_from_retained_workflows) ... ok
+test_d09_npu_wait_and_batch_maximum_recompute (test_frozen_audit.FrozenTritonSnapshotTests.test_d09_npu_wait_and_batch_maximum_recompute) ... ok
+test_inverted_npu_jobs_stay_excluded_not_deleted (test_frozen_audit.FrozenTritonSnapshotTests.test_inverted_npu_jobs_stay_excluded_not_deleted) ... ok
+test_audit_evidence_pins_the_frozen_boundaries (test_frozen_audit.FrozenUbsBoundaryTests.test_audit_evidence_pins_the_frozen_boundaries) ... ok
+test_local_ubs_boundaries_stay_traceable (test_frozen_audit.FrozenUbsBoundaryTests.test_local_ubs_boundaries_stay_traceable) ... ok
+test_frozen_baseline (test_interactions.CommittedEvidenceTests.test_frozen_baseline) ... ok
+test_frozen_overall (test_interactions.CommittedEvidenceTests.test_frozen_overall) ... ok
+test_js_round_half_up (test_interactions.RoundAndSpanTests.test_js_round_half_up) ... ok
+test_min_window_span (test_interactions.RoundAndSpanTests.test_min_window_span) ... ok
+test_clean_tree_exit_zero (test_interactions.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_tampered_app_mount_exit_one (test_interactions.SyntheticTreeTests.test_tampered_app_mount_exit_one) ... ok
+test_tampered_min_span_exit_one (test_interactions.SyntheticTreeTests.test_tampered_min_span_exit_one) ... ok
+test_tampered_preset_hours_exit_one (test_interactions.SyntheticTreeTests.test_tampered_preset_hours_exit_one) ... ok
+test_tampered_touch_action_exit_one (test_interactions.SyntheticTreeTests.test_tampered_touch_action_exit_one) ... ok
+test_axis_ticks (test_interactions.TimeRuleTests.test_axis_ticks) ... ok
+test_clamp_boundary (test_interactions.TimeRuleTests.test_clamp_boundary) ... ok
+test_key_window (test_interactions.TimeRuleTests.test_key_window) ... ok
+test_move_window (test_interactions.TimeRuleTests.test_move_window) ... ok
+test_nav_slider_semantics (test_interactions.TimeRuleTests.test_nav_slider_semantics) ... ok
+test_place_tip_box (test_interactions.TimeRuleTests.test_place_tip_box) ... ok
+test_recover_window (test_interactions.TimeRuleTests.test_recover_window) ... ok
+test_window_for_hours (test_interactions.TimeRuleTests.test_window_for_hours) ... ok
+test_all_children_required (test_metrics.MetricsTest.test_all_children_required) ... ok
+test_create_sha_comes_from_platform_creation_log (test_metrics.MetricsTest.test_create_sha_comes_from_platform_creation_log) ... ok
+test_missing_request_is_excluded_but_completed_cancellation_is_measurable (test_metrics.MetricsTest.test_missing_request_is_excluded_but_completed_cancellation_is_measurable) ... ok
+test_parallel_e2e_uses_latest_completion (test_metrics.MetricsTest.test_parallel_e2e_uses_latest_completion) ... ok
+test_percentile_inc (test_metrics.MetricsTest.test_percentile_inc) ... ok
+test_queue_is_not_zero_when_missing (test_metrics.MetricsTest.test_queue_is_not_zero_when_missing) ... ok
+test_retest_exact_discussion_and_ambiguous_push (test_metrics.MetricsTest.test_retest_exact_discussion_and_ambiguous_push) ... ok
+test_running_and_aborted (test_metrics.MetricsTest.test_running_and_aborted) ... ok
+test_scope_includes_all_three_states (test_metrics.MetricsTest.test_scope_includes_all_three_states) ... ok
+test_trigger_success_does_not_override_child_failure (test_metrics.MetricsTest.test_trigger_success_does_not_override_child_failure) ... ok
+test_ac01_p90_is_interpolated_not_the_max_sample (test_minimal_fixtures.MinimalTritonContractTests.test_ac01_p90_is_interpolated_not_the_max_sample) ... ok
+test_ac02_kind_follows_initial_rerun_semantics (test_minimal_fixtures.MinimalTritonContractTests.test_ac02_kind_follows_initial_rerun_semantics) ... ok
+test_ac02_summary_recomputes_from_same_input (test_minimal_fixtures.MinimalTritonContractTests.test_ac02_summary_recomputes_from_same_input) ... ok
+test_ac03_durations_and_npu_queue_recompute (test_minimal_fixtures.MinimalTritonContractTests.test_ac03_durations_and_npu_queue_recompute) ... ok
+test_ac03_missing_value_batch_stays_out_of_completion_samples (test_minimal_fixtures.MinimalTritonContractTests.test_ac03_missing_value_batch_stays_out_of_completion_samples) ... ok
+test_ac03_running_batch_observes_to_window_end (test_minimal_fixtures.MinimalTritonContractTests.test_ac03_running_batch_observes_to_window_end) ... ok
+test_ac02_ubs_metrics_recompute_representative_batch (test_minimal_fixtures.MinimalUbsContractTests.test_ac02_ubs_metrics_recompute_representative_batch) ... ok
+test_ac03_single_sample_fixture_percentiles_equal_the_value (test_minimal_fixtures.ScenarioFixtureTests.test_ac03_single_sample_fixture_percentiles_equal_the_value) ... ok
+test_ac03_zero_data_fixture_is_legal_and_recomputes (test_minimal_fixtures.ScenarioFixtureTests.test_ac03_zero_data_fixture_is_legal_and_recomputes) ... ok
+test_legacy_migration_backs_up_and_preserves_engine (test_multi_storage.MultiStorageTests.test_legacy_migration_backs_up_and_preserves_engine) ... ok
+test_same_pr_and_event_numbers_are_isolated_and_update_is_idempotent (test_multi_storage.MultiStorageTests.test_same_pr_and_event_numbers_are_isolated_and_update_is_idempotent) ... ok
+test_shared_build_cannot_be_reassigned_to_another_repository (test_multi_storage.MultiStorageTests.test_shared_build_cannot_be_reassigned_to_another_repository) ... ok
+test_cache_is_versioned_and_excludes_pages_artifact (test_pages_workflow.PagesWorkflowTests.test_cache_is_versioned_and_excludes_pages_artifact) ... ok
+test_collection_validation_and_pages_upload_are_ordered (test_pages_workflow.PagesWorkflowTests.test_collection_validation_and_pages_upload_are_ordered) ... ok
+test_deploy_job_uses_pages_environment_and_concurrency (test_pages_workflow.PagesWorkflowTests.test_deploy_job_uses_pages_environment_and_concurrency) ... ok
+test_triggers_and_minimal_permissions (test_pages_workflow.PagesWorkflowTests.test_triggers_and_minimal_permissions) ... ok
+test_completed_cancelled_batch_represents_developer_wait (test_representative.RepresentativeTest.test_completed_cancelled_batch_represents_developer_wait) ... ok
+test_longest_and_tie (test_representative.RepresentativeTest.test_longest_and_tie) ... ok
+test_missing_task_does_not_fall_back (test_representative.RepresentativeTest.test_missing_task_does_not_fall_back) ... ok
+test_classification_frozen (test_requirements_doc.CommittedEvidenceTests.test_classification_frozen) ... ok
+test_overall_frozen (test_requirements_doc.CommittedEvidenceTests.test_overall_frozen) ... ok
+test_readme_command_block_contract (test_requirements_doc.CommittedEvidenceTests.test_readme_command_block_contract)
+README 验证命令块：verify_acceptance 需带 --delivering REQ-051 再跑文档工具。 ... ok
+test_sources_frozen (test_requirements_doc.CommittedEvidenceTests.test_sources_frozen) ... ok
+test_structure_frozen (test_requirements_doc.CommittedEvidenceTests.test_structure_frozen) ... ok
+test_clean_run_exit_zero (test_requirements_doc.SyntheticTreeTests.test_clean_run_exit_zero) ... ok
+test_tamper_business_commit (test_requirements_doc.SyntheticTreeTests.test_tamper_business_commit) ... ok
+test_tamper_keep_with_findings (test_requirements_doc.SyntheticTreeTests.test_tamper_keep_with_findings) ... ok
+test_tamper_link_target (test_requirements_doc.SyntheticTreeTests.test_tamper_link_target) ... ok
+test_tamper_remove_min_ac (test_requirements_doc.SyntheticTreeTests.test_tamper_remove_min_ac) ... ok
+test_tamper_stale_acceptance_delivering (test_requirements_doc.SyntheticTreeTests.test_tamper_stale_acceptance_delivering) ... ok
+test_check_dependencies_rules (test_requirements_doc.UnitTests.test_check_dependencies_rules) ... ok
+test_parse_doc_dependencies (test_requirements_doc.UnitTests.test_parse_doc_dependencies) ... ok
+test_re_md_link (test_requirements_doc.UnitTests.test_re_md_link) ... ok
+test_re_req_subject (test_requirements_doc.UnitTests.test_re_req_subject) ... ok
+test_classify_audit_never_fakes_passed (test_runtime_evidence.AuditHonestyTests.test_classify_audit_never_fakes_passed) ... ok
+test_baseline_note_kept_as_original_env_only (test_runtime_evidence.CommittedEvidenceTests.test_baseline_note_kept_as_original_env_only) ... ok
+test_data_gates_pass_on_target_runtime (test_runtime_evidence.CommittedEvidenceTests.test_data_gates_pass_on_target_runtime) ... ok
+test_node_tests_pass_on_target_runtime (test_runtime_evidence.CommittedEvidenceTests.test_node_tests_pass_on_target_runtime) ... ok
+test_overall_verified (test_runtime_evidence.CommittedEvidenceTests.test_overall_verified) ... ok
+test_python_tests_pass_on_target_runtime (test_runtime_evidence.CommittedEvidenceTests.test_python_tests_pass_on_target_runtime) ... ok
+test_raw_audit_honestly_not_passed (test_runtime_evidence.CommittedEvidenceTests.test_raw_audit_honestly_not_passed) ... ok
+test_runtimes_match_ci_declarations (test_runtime_evidence.CommittedEvidenceTests.test_runtimes_match_ci_declarations) ... ok
+test_version_consistency_with_readme (test_runtime_evidence.CommittedEvidenceTests.test_version_consistency_with_readme) ... ok
+test_node_major (test_runtime_evidence.ParserTests.test_node_major) ... ok
+test_parse_node_summary_both_prefix_styles (test_runtime_evidence.ParserTests.test_parse_node_summary_both_prefix_styles) ... ok
+test_parse_node_summary_failed (test_runtime_evidence.ParserTests.test_parse_node_summary_failed) ... ok
+test_parse_unittest_summary_failed_counts (test_runtime_evidence.ParserTests.test_parse_unittest_summary_failed_counts) ... ok
+test_parse_unittest_summary_ok_with_skip (test_runtime_evidence.ParserTests.test_parse_unittest_summary_ok_with_skip) ... ok
+test_parse_workflow_declarations (test_runtime_evidence.ParserTests.test_parse_workflow_declarations) ... ok
+test_bundle_verification_precedes_every_upload (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_bundle_verification_precedes_every_upload) ... ok
+test_cache_uses_the_same_action_versions_in_both_flows (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_cache_uses_the_same_action_versions_in_both_flows) ... ok
+test_collection_cache_stays_daily_only_and_disjoint (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_collection_cache_stays_daily_only_and_disjoint) ... ok
+test_daily_restores_and_saves_both_cache_families (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_daily_restores_and_saves_both_cache_families) ... ok
+test_failed_restore_never_saves_cache_or_deploys (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_failed_restore_never_saves_cache_or_deploys) ... ok
+test_incremental_shares_the_exact_snapshot_cache_identity (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_incremental_shares_the_exact_snapshot_cache_identity) ... ok
+test_no_wholesale_web_data_and_no_legacy_prefix (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_no_wholesale_web_data_and_no_legacy_prefix) ... ok
+test_audit_crash_writes_failure_report_and_preserves_error (test_source_coverage.AuditStatusSemanticsTests.test_audit_crash_writes_failure_report_and_preserves_error) ... ok
+test_derived_passed_and_source_unverified_reported_explicitly (test_source_coverage.AuditStatusSemanticsTests.test_derived_passed_and_source_unverified_reported_explicitly) ... ok
+{"overall_status": "drift", "config": {"pages.yml": "pages", "triton-refresh.yml": "pages"}, "ac01": "unverified", "ac03": "unverified", "ac04": "deferred", "alignment": true, "problems": ["pages.yml: cancel-in-progress 为 true，策略要求 false"], "report": "C:\\Users\\tianli\\AppData\\Local\\Temp\\tmpm061ybqn\\report.json"}
+{"overall_status": "aligned", "config": {"pages.yml": "pages", "triton-refresh.yml": "pages"}, "ac01": "unverified", "ac03": "unverified", "ac04": "deferred", "alignment": true, "problems": [], "report": "C:\\Users\\tianli\\AppData\\Local\\Temp\\tmpvmo0vkfi\\report.json"}
+{"overall_status": "drift", "config": {"pages.yml": "pages", "triton-refresh.yml": "pages"}, "ac01": "unverified", "ac03": "unverified", "ac04": "deferred", "alignment": false, "problems": ["README 未声明排队运行的平台默认替换规则"], "report": "C:\\Users\\tianli\\AppData\\Local\\Temp\\tmpdd78c6ju\\report.json"}
+{"overall_status": "drift", "config": {"pages.yml": "pages", "triton-refresh.yml": "missing"}, "ac01": "unverified", "ac03": "unverified", "ac04": "deferred", "alignment": true, "problems": ["triton-refresh.yml: 工作流文件缺失"], "report": "C:\\Users\\tianli\\AppData\\Local\\Temp\\tmpe81c83w3\\report.json"}
+{"overall_status": "drift", "config": {"pages.yml": "pages", "triton-refresh.yml": "pages"}, "ac01": "unverified", "ac03": "unverified", "ac04": "deferred", "alignment": false, "problems": ["测试仍使用失实名 test_queued_runs_never_cancel_the_daily_build", "缺少语义正确的测试名 test_concurrency_protects_running_pending_replaced_by_platform_default"], "report": "C:\\Users\\tianli\\AppData\\Local\\Temp\\tmpfr621616\\report.json"}
+{
+  "overall_status": "unverified",
+  "checks_passed": false,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "unverified"
+    },
+    "queue_components": {
+      "status": "unverified"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "unverified",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 2,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/trigger/7/",
+          "https://ci.example/job/ubs-test/job/x86/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "unverified"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 2,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/trigger/7/",
+          "https://ci.example/job/ubs-test/job/x86/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "unverified"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+}
+{
+  "overall_status": "differences_found",
+  "checks_passed": false,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "differences_found"
+    },
+    "queue_components": {
+      "status": "verified"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "differences_found",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 1,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [
+          "https://ci.example/job/ubs-test/job/x86/7/: raw(1100, 999) != snapshot(1100, 300)"
+        ],
+        "status": "differences_found"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+test_difference_is_failed_not_unverified (test_source_coverage.AuditStatusSemanticsTests.test_difference_is_failed_not_unverified) ... ok
+test_full_coverage_overall_verified_and_exit_consistent (test_source_coverage.AuditStatusSemanticsTests.test_full_coverage_overall_verified_and_exit_consistent) ... ok
+test_not_applicable_sections_explain_reasons (test_source_coverage.AuditStatusSemanticsTests.test_not_applicable_sections_explain_reasons) ... ok
+}
+{
+  "overall_status": "verified",
+  "checks_passed": true,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "verified"
+    },
+    "queue_components": {
+      "status": "verified"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "verified",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+}
+{
+  "overall_status": "not_applicable",
+  "checks_passed": true,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "not_applicable",
+      "reason": "no applicable objects in this run (nothing to verify against raw sources)"
+    },
+    "queue_components": {
+      "status": "not_applicable",
+      "reason": "no applicable objects in this run (nothing to verify against raw sources)"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "not_applicable",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 0,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "not_applicable",
+        "reason": "no applicable objects in this run (nothing to verify against raw sources)"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 0,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "not_applicable",
+        "reason": "no applicable objects in this run (nothing to verify against raw sources)"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "open": 1
+      },
+      "representatives": 0
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 0,
+      "mean": null,
+      "p90": null
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 0
+}
+{
+  "overall_status": "partial",
+  "checks_passed": false,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "partial"
+    },
+    "queue_components": {
+      "status": "partial"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "partial",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 1,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/x86/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "partial"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 1,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/x86/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "partial"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+test_partial_coverage_overall_partial (test_source_coverage.AuditStatusSemanticsTests.test_partial_coverage_overall_partial) ... ok
+test_full_raw_coverage_passes_as_verified (test_source_coverage.MultiAuditSourceCoverageTests.test_full_raw_coverage_passes_as_verified) ... ok
+test_no_applicable_jobs_is_not_applicable_and_passes (test_source_coverage.MultiAuditSourceCoverageTests.test_no_applicable_jobs_is_not_applicable_and_passes) ... ok
+}
+{
+  "overall_status": "verified",
+  "checks_passed": true,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "verified"
+    },
+    "queue_components": {
+      "status": "verified"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "verified",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+}
+{
+  "overall_status": "not_applicable",
+  "checks_passed": true,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "not_applicable",
+      "reason": "no applicable objects in this run (nothing to verify against raw sources)"
+    },
+    "queue_components": {
+      "status": "not_applicable",
+      "reason": "no applicable objects in this run (nothing to verify against raw sources)"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "not_applicable",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 0,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "not_applicable",
+        "reason": "no applicable objects in this run (nothing to verify against raw sources)"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 0,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "not_applicable",
+        "reason": "no applicable objects in this run (nothing to verify against raw sources)"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "open": 1
+      },
+      "representatives": 0
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 0,
+      "mean": null,
+      "p90": null
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 0
+}
+{
+  "overall_status": "partial",
+  "checks_passed": false,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "partial"
+    },
+    "queue_components": {
+      "status": "partial"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "partial",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 1,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/x86/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "partial"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 1,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/x86/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "partial"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+test_partial_raw_coverage_fails_with_missing_identities (test_source_coverage.MultiAuditSourceCoverageTests.test_partial_raw_coverage_fails_with_missing_identities) ... ok
+test_raw_difference_is_reported_and_fails (test_source_coverage.MultiAuditSourceCoverageTests.test_raw_difference_is_reported_and_fails) ... ok
+test_zero_raw_coverage_fails_without_claiming_sources_passed (test_source_coverage.MultiAuditSourceCoverageTests.test_zero_raw_coverage_fails_without_claiming_sources_passed) ... ok
+}
+{
+  "overall_status": "differences_found",
+  "checks_passed": false,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "differences_found"
+    },
+    "queue_components": {
+      "status": "verified"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "differences_found",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 1,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [
+          "https://ci.example/job/ubs-test/job/x86/7/: raw(1100, 999) != snapshot(1100, 300)"
+        ],
+        "status": "differences_found"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+}
+{
+  "overall_status": "unverified",
+  "checks_passed": false,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "unverified"
+    },
+    "queue_components": {
+      "status": "unverified"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "unverified",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 2,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/trigger/7/",
+          "https://ci.example/job/ubs-test/job/x86/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "unverified"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 2,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/trigger/7/",
+          "https://ci.example/job/ubs-test/job/x86/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "unverified"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+}
+{
+  "overall_status": "verified",
+  "checks_passed": true,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "verified"
+    },
+    "queue_components": {
+      "status": "verified"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "verified",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 1,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+test_missing_component_keeps_queue_unknown (test_source_coverage.QueueComponentAuditTests.test_missing_component_keeps_queue_unknown) ... ok
+test_queue_components_verified_from_raw (test_source_coverage.QueueComponentAuditTests.test_queue_components_verified_from_raw) ... ok
+test_queue_report_distinguishes_three_buckets (test_source_coverage.QueueComponentAuditTests.test_queue_report_distinguishes_three_buckets) ... ok
+}
+{
+  "overall_status": "verified",
+  "checks_passed": true,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "verified"
+    },
+    "queue_components": {
+      "status": "verified"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "verified",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 1,
+        "mean": 20,
+        "p90": 20
+      },
+      "duration": {
+        "n": 1,
+        "mean": 300,
+        "p90": 300
+      },
+      "total": {
+        "n": 1,
+        "mean": 320,
+        "p90": 320
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+}
+{
+  "overall_status": "partial",
+  "checks_passed": false,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "partial"
+    },
+    "queue_components": {
+      "status": "partial"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "partial",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 3,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 1,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/arm/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "partial"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 3,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 1,
+        "differences": 0,
+        "missing_evidence": 1,
+        "missing": [
+          "https://ci.example/job/ubs-test/job/arm/7/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "partial"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+}
+{
+  "overall_status": "differences_found",
+  "checks_passed": false,
+  "sections": {
+    "derived_consistency": {
+      "status": "passed"
+    },
+    "source_time": {
+      "status": "verified"
+    },
+    "queue_components": {
+      "status": "differences_found"
+    },
+    "publish_consistency": {
+      "status": "not_applicable",
+      "reason": "owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it"
+    }
+  },
+  "source_audit": {
+    "status": "differences_found",
+    "categories": {
+      "job_timing": {
+        "category": "job_timing",
+        "applicable": 2,
+        "verified_consistent": 2,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      },
+      "queue_components": {
+        "category": "queue_components",
+        "applicable": 2,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 1,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [
+          "https://ci.example/job/ubs-test/job/trigger/7/: raw queue components waiting=999, blocked=6, buildable=4 sum to 1009 != snapshot queue_ms 50"
+        ],
+        "status": "differences_found"
+      }
+    }
+  },
+  "repositories": [
+    {
+      "repository": "openeuler/ubs-test",
+      "status": "success",
+      "current": true,
+      "prs": 1,
+      "states": {
+        "merged": 1
+      },
+      "representatives": 1
+    },
+    {
+      "repository": "openeuler/ubs-other-0",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-1",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-2",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-3",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-4",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-5",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-6",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    },
+    {
+      "repository": "openeuler/ubs-other-7",
+      "status": "pending",
+      "prs": null,
+      "error": null
+    }
+  ],
+  "included_prs": 1,
+  "metrics": {
+    "e2e": {
+      "n": 1,
+      "mean": 400,
+      "p90": 400
+    },
+    "x86": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "arm": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    },
+    "dt": {
+      "queue": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "duration": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      },
+      "total": {
+        "n": 0,
+        "mean": null,
+        "p90": null
+      }
+    }
+  },
+  "batches": 1
+test_tampered_raw_component_detected_with_url_and_field (test_source_coverage.QueueComponentAuditTests.test_tampered_raw_component_detected_with_url_and_field) ... ok
+test_crash_writes_failure_report_and_preserves_error (test_source_coverage.SingleRepoValidateTests.test_crash_writes_failure_report_and_preserves_error) ... ok
+test_full_coverage_passes (test_source_coverage.SingleRepoValidateTests.test_full_coverage_passes) ... ok
+test_queue_tamper_fails_with_url_and_field (test_source_coverage.SingleRepoValidateTests.test_queue_tamper_fails_with_url_and_field) ... ok
+test_zero_coverage_fails_unverified (test_source_coverage.SingleRepoValidateTests.test_zero_coverage_fails_unverified) ... ok
+test_all_derived_without_raw_verification_is_unverified (test_source_coverage.SourceCoverageTests.test_all_derived_without_raw_verification_is_unverified) ... ok
+test_counts_add_up_and_identities_stay_traceable (test_source_coverage.SourceCoverageTests.test_counts_add_up_and_identities_stay_traceable) ... ok
+test_derived_bucket_keeps_equation_and_partial_status (test_source_coverage.SourceCoverageTests.test_derived_bucket_keeps_equation_and_partial_status) ... ok
+test_difference_dominates_partial_coverage (test_source_coverage.SourceCoverageTests.test_difference_dominates_partial_coverage) ... ok
+test_full_coverage_is_verified_without_reason (test_source_coverage.SourceCoverageTests.test_full_coverage_is_verified_without_reason) ... ok
+test_missing_list_is_capped_with_truncation_flag (test_source_coverage.SourceCoverageTests.test_missing_list_is_capped_with_truncation_flag) ... ok
+test_no_applicable_objects_is_not_applicable_with_reason (test_source_coverage.SourceCoverageTests.test_no_applicable_objects_is_not_applicable_with_reason) ... ok
+test_partial_coverage_keeps_missing_identities (test_source_coverage.SourceCoverageTests.test_partial_coverage_keeps_missing_identities) ... ok
+test_queue_from_raw_mirrors_normalize_job (test_source_coverage.SourceCoverageTests.test_queue_from_raw_mirrors_normalize_job) ... ok
+test_verified_absence_counts_as_verified_with_subcount (test_source_coverage.SourceCoverageTests.test_verified_absence_counts_as_verified_with_subcount) ... ok
+test_zero_coverage_with_applicable_objects_is_unverified (test_source_coverage.SourceCoverageTests.test_zero_coverage_with_applicable_objects_is_unverified) ... ok
+test_aux_workflows_join_initial_but_rerun_stays_separate (test_triton_dashboard.AttemptIdentityTests.test_aux_workflows_join_initial_but_rerun_stays_separate) ... ok
+test_recollecting_the_same_attempt_never_doubles_it (test_triton_dashboard.AttemptIdentityTests.test_recollecting_the_same_attempt_never_doubles_it) ... ok
+test_rerun_e2e_spans_only_the_current_attempt (test_triton_dashboard.AttemptIdentityTests.test_rerun_e2e_spans_only_the_current_attempt) ... ok
+test_rerun_without_attempt_start_leaves_e2e_empty (test_triton_dashboard.AttemptIdentityTests.test_rerun_without_attempt_start_leaves_e2e_empty) ... ok
+test_same_run_attempts_keep_both_identities_and_jobs (test_triton_dashboard.AttemptIdentityTests.test_same_run_attempts_keep_both_identities_and_jobs) ... ok
+test_unresolved_runs_are_isolated_by_run_and_attempt (test_triton_dashboard.AttemptIdentityTests.test_unresolved_runs_are_isolated_by_run_and_attempt) ... ok
+test_window_recognition_keeps_only_current_window_attempts (test_triton_dashboard.AttemptIdentityTests.test_window_recognition_keeps_only_current_window_attempts) ... ok
+test_approximate_start_is_retained_and_marked (test_triton_dashboard.BatchAggregationTests.test_approximate_start_is_retained_and_marked) ... ok
+test_batch_exposes_actual_action_run_links (test_triton_dashboard.BatchAggregationTests.test_batch_exposes_actual_action_run_links) ... ok
+test_batch_exposes_focus_jobs_for_chart_cards (test_triton_dashboard.BatchAggregationTests.test_batch_exposes_focus_jobs_for_chart_cards) ... ok
+test_batch_uses_longest_npu_job_queue_time (test_triton_dashboard.BatchAggregationTests.test_batch_uses_longest_npu_job_queue_time) ... ok
+test_failure_wins_over_success_for_completed_batch (test_triton_dashboard.BatchAggregationTests.test_failure_wins_over_success_for_completed_batch) ... ok
+test_parallel_workflows_use_last_completion_not_sum (test_triton_dashboard.BatchAggregationTests.test_parallel_workflows_use_last_completion_not_sum) ... ok
+test_rerun_is_kept_as_separate_batch (test_triton_dashboard.BatchAggregationTests.test_rerun_is_kept_as_separate_batch) ... ok
+test_running_batch_reports_elapsed_and_is_not_complete (test_triton_dashboard.BatchAggregationTests.test_running_batch_reports_elapsed_and_is_not_complete) ... ok
+test_same_pr_and_sha_are_one_initial_e2e_even_when_workflows_arrive_late (test_triton_dashboard.BatchAggregationTests.test_same_pr_and_sha_are_one_initial_e2e_even_when_workflows_arrive_late) ... ok
+test_collect_discovers_rerun_created_before_window (test_triton_dashboard.CollectWindowTests.test_collect_discovers_rerun_created_before_window) ... ok
+test_api_terminal_state_wins_when_html_label_is_ambiguous (test_triton_dashboard.HtmlEvidenceTests.test_api_terminal_state_wins_when_html_label_is_ambiguous) ... ok
+test_extracts_only_requested_matrix_jobs_with_direct_links (test_triton_dashboard.HtmlEvidenceTests.test_extracts_only_requested_matrix_jobs_with_direct_links) ... ok
+test_job_header_derives_queue_and_execution_duration (test_triton_dashboard.HtmlEvidenceTests.test_job_header_derives_queue_and_execution_duration) ... ok
+test_pr_api_payload_extracts_merge_target_branch (test_triton_dashboard.HtmlEvidenceTests.test_pr_api_payload_extracts_merge_target_branch) ... ok
+test_pr_page_parser_extracts_merge_target_branch (test_triton_dashboard.HtmlEvidenceTests.test_pr_page_parser_extracts_merge_target_branch) ... ok
+test_run_page_parser_extracts_pr_status_and_jobs (test_triton_dashboard.HtmlEvidenceTests.test_run_page_parser_extracts_pr_status_and_jobs) ... ok
+test_empty_percentile_is_none (test_triton_dashboard.PercentileTests.test_empty_percentile_is_none) ... ok
+test_percentile_uses_linear_interpolation (test_triton_dashboard.PercentileTests.test_percentile_uses_linear_interpolation) ... ok
+test_attempt_start_is_reported_as_approximate_span (test_triton_dashboard.RerunStartEvidenceTests.test_attempt_start_is_reported_as_approximate_span) ... ok
+test_csv_carries_the_same_start_source_and_approximate_flags (test_triton_dashboard.RerunStartEvidenceTests.test_csv_carries_the_same_start_source_and_approximate_flags) ... ok
+test_missing_start_evidence_keeps_batch_visible_with_explicit_gap (test_triton_dashboard.RerunStartEvidenceTests.test_missing_start_evidence_keeps_batch_visible_with_explicit_gap) ... ok
+test_trusted_trigger_spans_only_this_attempt (test_triton_dashboard.RerunStartEvidenceTests.test_trusted_trigger_spans_only_this_attempt) ... ok
+test_run_created_inside_window_is_included (test_triton_dashboard.RunWindowTests.test_run_created_inside_window_is_included) ... ok
+test_run_fully_outside_window_is_excluded (test_triton_dashboard.RunWindowTests.test_run_fully_outside_window_is_excluded) ... ok
+test_run_in_window_uses_current_attempt_start (test_triton_dashboard.RunWindowTests.test_run_in_window_uses_current_attempt_start) ... ok
+test_build_payload_excludes_rerun_without_start_from_valid_count (test_triton_dashboard.SummaryValidityTests.test_build_payload_excludes_rerun_without_start_from_valid_count) ... ok
+test_export_csv_distinguishes_zero_from_missing (test_triton_dashboard.SummaryValidityTests.test_export_csv_distinguishes_zero_from_missing) ... ok
+test_real_zero_is_a_valid_duration (test_triton_dashboard.SummaryValidityTests.test_real_zero_is_a_valid_duration) ... ok
+test_summary_counts_only_valid_completed_durations (test_triton_dashboard.SummaryValidityTests.test_summary_counts_only_valid_completed_durations) ... ok
+test_summary_without_valid_samples_has_empty_statistics (test_triton_dashboard.SummaryValidityTests.test_summary_without_valid_samples_has_empty_statistics) ... ok
+test_jobs_pagination (test_triton_npu_api.NpuApiTests.test_jobs_pagination) ... ok
+test_missing_created_is_not_zero (test_triton_npu_api.NpuApiTests.test_missing_created_is_not_zero) ... ok
+test_new_a5_and_old_a5_are_recognized (test_triton_npu_api.NpuApiTests.test_new_a5_and_old_a5_are_recognized) ... ok
+test_real_sample (test_triton_npu_api.NpuApiTests.test_real_sample) ... ok
+test_direct_historical_association_retains_its_head_not_current_head (test_triton_pr_identity.PRIdentityTests.test_direct_historical_association_retains_its_head_not_current_head) ... ok
+test_fork_run_with_empty_association_resolves_exact_source_and_sha (test_triton_pr_identity.PRIdentityTests.test_fork_run_with_empty_association_resolves_exact_source_and_sha) ... ok
+test_future_pr_cannot_match_an_earlier_run (test_triton_pr_identity.PRIdentityTests.test_future_pr_cannot_match_an_earlier_run) ... ok
+test_matching_title_and_time_without_sha_evidence_is_unresolved (test_triton_pr_identity.PRIdentityTests.test_matching_title_and_time_without_sha_evidence_is_unresolved) ... ok
+test_metadata_api_failure_is_propagated_instead_of_publishing_unknown (test_triton_pr_identity.PRIdentityTests.test_metadata_api_failure_is_propagated_instead_of_publishing_unknown) ... ok
+test_older_run_matches_pr_commit_history_and_retains_original_sha (test_triton_pr_identity.PRIdentityTests.test_older_run_matches_pr_commit_history_and_retains_original_sha) ... ok
+test_reused_branch_selects_current_sha_not_first_or_nearest_pr (test_triton_pr_identity.PRIdentityTests.test_reused_branch_selects_current_sha_not_first_or_nearest_pr) ... ok
+test_same_sha_in_another_fork_does_not_establish_pr_identity (test_triton_pr_identity.PRIdentityTests.test_same_sha_in_another_fork_does_not_establish_pr_identity) ... ok
+test_shared_head_on_two_prs_is_ambiguous (test_triton_pr_identity.PRIdentityTests.test_shared_head_on_two_prs_is_ambiguous) ... ok
+test_sparse_run_association_is_hydrated_with_title_and_target_branch (test_triton_pr_identity.PRIdentityTests.test_sparse_run_association_is_hydrated_with_title_and_target_branch) ... ok
+test_target_event_base_sha_is_not_silently_replaced_by_latest_pr_head (test_triton_pr_identity.PRIdentityTests.test_target_event_base_sha_is_not_silently_replaced_by_latest_pr_head) ... ok
+test_evidence_from_another_run_blocks_publication (test_triton_pr_quality.PRQualityTests.test_evidence_from_another_run_blocks_publication) ... ok
+test_lost_batch_identity_blocks_publication (test_triton_pr_quality.PRQualityTests.test_lost_batch_identity_blocks_publication) ... ok
+test_missing_evidence_blocks_publication (test_triton_pr_quality.PRQualityTests.test_missing_evidence_blocks_publication) ... ok
+test_missing_pr_blocks_publication (test_triton_pr_quality.PRQualityTests.test_missing_pr_blocks_publication) ... ok
+test_unknown_runs_do_not_merge_on_shared_sha (test_triton_pr_quality.PRQualityTests.test_unknown_runs_do_not_merge_on_shared_sha) ... ok
+test_valid_metadata_passes (test_triton_pr_quality.PRQualityTests.test_valid_metadata_passes) ... ok
+test_collected_at_disagreement_fails_the_gate (test_triton_quality.ArtifactConsistencyTests.test_collected_at_disagreement_fails_the_gate) ... ok
+test_consistent_artifacts_pass_the_gate (test_triton_quality.ArtifactConsistencyTests.test_consistent_artifacts_pass_the_gate) ... ok
+test_diverged_evidence_copy_fails_the_gate (test_triton_quality.ArtifactConsistencyTests.test_diverged_evidence_copy_fails_the_gate) ... ok
+test_dropped_csv_row_fails_the_gate (test_triton_quality.ArtifactConsistencyTests.test_dropped_csv_row_fails_the_gate) ... ok
+test_live_artifacts_stay_consistent_when_present (test_triton_quality.ArtifactConsistencyTests.test_live_artifacts_stay_consistent_when_present) ... skipped 'no local Triton artifacts (collect first)'
+test_main_gates_the_upload_on_artifact_consistency (test_triton_quality.ArtifactConsistencyTests.test_main_gates_the_upload_on_artifact_consistency) ... ok
+test_missing_evidence_copy_fails_the_gate (test_triton_quality.ArtifactConsistencyTests.test_missing_evidence_copy_fails_the_gate) ... ok
+test_tampered_json_breaks_manifest_fingerprint_and_csv_row (test_triton_quality.ArtifactConsistencyTests.test_tampered_json_breaks_manifest_fingerprint_and_csv_row) ... ok
+test_bare_array_endpoints_reject_object_responses (test_triton_quality.GitHubContractTests.test_bare_array_endpoints_reject_object_responses) ... ok
+test_collect_contract_failure_names_source_without_credentials (test_triton_quality.GitHubContractTests.test_collect_contract_failure_names_source_without_credentials) ... ok
+test_declared_count_mismatch_fails_instead_of_silent_truncation (test_triton_quality.GitHubContractTests.test_declared_count_mismatch_fails_instead_of_silent_truncation) ... ok
+test_duplicate_records_across_pages_fail_instead_of_double_counting (test_triton_quality.GitHubContractTests.test_duplicate_records_across_pages_fail_instead_of_double_counting) ... ok
+test_legal_empty_workflow_runs_is_zero_data_not_a_failure (test_triton_quality.GitHubContractTests.test_legal_empty_workflow_runs_is_zero_data_not_a_failure) ... ok
+test_missing_null_or_non_array_workflow_runs_fails_closed (test_triton_quality.GitHubContractTests.test_missing_null_or_non_array_workflow_runs_fails_closed) ... ok
+test_lost_aggregation (test_triton_quality.QualityTests.test_lost_aggregation) ... ok
+test_missing_timestamp (test_triton_quality.QualityTests.test_missing_timestamp) ... ok
+test_negative_timestamp (test_triton_quality.QualityTests.test_negative_timestamp) ... ok
+test_pending_is_not_failed_measurement (test_triton_quality.QualityTests.test_pending_is_not_failed_measurement) ... ok
+test_published_old_data (test_triton_quality.QualityTests.test_published_old_data) ... ok
+test_runner_rename (test_triton_quality.QualityTests.test_runner_rename) ... ok
+test_truncated_page (test_triton_quality.QualityTests.test_truncated_page) ... ok
+test_valid (test_triton_quality.QualityTests.test_valid) ... ok
+test_wrong_maximum (test_triton_quality.QualityTests.test_wrong_maximum) ... ok
+test_zero_npu_is_valid (test_triton_quality.QualityTests.test_zero_npu_is_valid) ... ok
+test_completed_batch_without_end_time_warns_and_is_excluded (test_triton_quality.WorkflowTimeGateTests.test_completed_batch_without_end_time_warns_and_is_excluded) ... ok
+test_completed_workflow_with_missing_or_unparseable_timestamps_fails (test_triton_quality.WorkflowTimeGateTests.test_completed_workflow_with_missing_or_unparseable_timestamps_fails) ... ok
+test_completion_beyond_as_of_is_flagged (test_triton_quality.WorkflowTimeGateTests.test_completion_beyond_as_of_is_flagged) ... ok
+test_inverted_workflow_time_fails_the_gate_and_never_clamps_to_zero (test_triton_quality.WorkflowTimeGateTests.test_inverted_workflow_time_fails_the_gate_and_never_clamps_to_zero) ... ok
+test_running_batch_reports_only_the_observed_span_to_as_of (test_triton_quality.WorkflowTimeGateTests.test_running_batch_reports_only_the_observed_span_to_as_of) ... ok
+test_skipped_and_unstarted_cancelled_jobs_are_not_missing_time (test_triton_quality.WorkflowTimeGateTests.test_skipped_and_unstarted_cancelled_jobs_are_not_missing_time) ... ok
+test_concurrency_protects_running_pending_replaced_by_platform_default (test_triton_workflow.TritonWorkflowTests.test_concurrency_protects_running_pending_replaced_by_platform_default) ... ok
+test_ensure_step_covers_index_snapshot_and_repos (test_triton_workflow.TritonWorkflowTests.test_ensure_step_covers_index_snapshot_and_repos) ... ok
+test_ensure_step_uses_fallback_site_and_fails_without_index (test_triton_workflow.TritonWorkflowTests.test_ensure_step_uses_fallback_site_and_fails_without_index) ... ok
+test_permissions_match_daily_build (test_triton_workflow.TritonWorkflowTests.test_permissions_match_daily_build) ... ok
+test_restore_fallback_collect_tests_upload_are_ordered (test_triton_workflow.TritonWorkflowTests.test_restore_fallback_collect_tests_upload_are_ordered) ... ok
+test_schedule_matches_beijing_refresh_slots (test_triton_workflow.TritonWorkflowTests.test_schedule_matches_beijing_refresh_slots) ... ok
+test_shares_versioned_snapshot_cache_with_daily_build (test_triton_workflow.TritonWorkflowTests.test_shares_versioned_snapshot_cache_with_daily_build) ... ok
+test_expansion_and_placeholder (test_ubs_csv.BatchCsvTests.test_expansion_and_placeholder) ... ok
+test_issues_join_and_name_maps (test_ubs_csv.BatchCsvTests.test_issues_join_and_name_maps) ... ok
+test_representative_flag_rows (test_ubs_csv.BatchCsvTests.test_representative_flag_rows) ... ok
+test_frozen_baseline_checks (test_ubs_csv.CommittedEvidenceTests.test_frozen_baseline_checks) ... ok
+test_frozen_batch_and_quality_csv (test_ubs_csv.CommittedEvidenceTests.test_frozen_batch_and_quality_csv) ... ok
+test_frozen_overall_and_encoding (test_ubs_csv.CommittedEvidenceTests.test_frozen_overall_and_encoding) ... ok
+test_frozen_pr_and_repo_csv (test_ubs_csv.CommittedEvidenceTests.test_frozen_pr_and_repo_csv) ... ok
+test_bom_crlf_quote_doubling (test_ubs_csv.CsvEncodingTests.test_bom_crlf_quote_doubling) ... ok
+test_nasty_roundtrip_and_formula_escape (test_ubs_csv.CsvEncodingTests.test_nasty_roundtrip_and_formula_escape) ... ok
+test_null_bool_and_integral_float_cells (test_ubs_csv.CsvEncodingTests.test_null_bool_and_integral_float_cells) ... ok
+test_empty_values_em_dash (test_ubs_csv.DateTests.test_empty_values_em_dash) ... ok
+test_shanghai_format (test_ubs_csv.DateTests.test_shanghai_format) ... ok
+test_full_filter_set_not_paged (test_ubs_csv.PrCsvTests.test_full_filter_set_not_paged) ... ok
+test_row_layout_and_units (test_ubs_csv.PrCsvTests.test_row_layout_and_units) ... ok
+test_state_filter_rows (test_ubs_csv.PrCsvTests.test_state_filter_rows) ... ok
+test_composition_order (test_ubs_csv.QualityRowsTests.test_composition_order) ... ok
+test_default_p90_order (test_ubs_csv.RepoCsvTests.test_default_p90_order) ... ok
+test_included_and_excluded_rows (test_ubs_csv.RepoCsvTests.test_included_and_excluded_rows) ... ok
+test_clean_tree_exit_zero (test_ubs_csv.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_tampered_formula_escape_exit_one (test_ubs_csv.SyntheticTreeTests.test_tampered_formula_escape_exit_one) ... ok
+test_tampered_pr_heads_exit_one (test_ubs_csv.SyntheticTreeTests.test_tampered_pr_heads_exit_one) ... ok
+test_frozen_overall_and_cross_checks (test_ubs_detail.CommittedEvidenceTests.test_frozen_overall_and_cross_checks) ... ok
+test_frozen_per_repo_counts (test_ubs_detail.CommittedEvidenceTests.test_frozen_per_repo_counts) ... ok
+test_frozen_top8_and_baseline (test_ubs_detail.CommittedEvidenceTests.test_frozen_top8_and_baseline) ... ok
+test_exception_rows_order (test_ubs_detail.CrossRowsTests.test_exception_rows_order) ... ok
+test_failed_wait_rows_order (test_ubs_detail.CrossRowsTests.test_failed_wait_rows_order) ... ok
+test_all_batches_covered_exactly_once (test_ubs_detail.DetailGroupsTests.test_all_batches_covered_exactly_once) ... ok
+test_batches_grouped_by_event_id_in_event_order (test_ubs_detail.DetailGroupsTests.test_batches_grouped_by_event_id_in_event_order) ... ok
+test_event_dedup_last_value_wins_first_position (test_ubs_detail.DetailGroupsTests.test_event_dedup_last_value_wins_first_position) ... ok
+test_unmatched_group_reason_and_no_forged_event (test_ubs_detail.DetailGroupsTests.test_unmatched_group_reason_and_no_forged_event) ... ok
+test_cancelled_terminal_included (test_ubs_detail.FailedWaitTests.test_cancelled_terminal_included) ... ok
+test_filter_and_order (test_ubs_detail.FailedWaitTests.test_filter_and_order) ... ok
+test_none_when_no_candidates (test_ubs_detail.FailedWaitTests.test_none_when_no_candidates) ... ok
+test_later_success_flag (test_ubs_detail.LaterSuccessTests.test_later_success_flag) ... ok
+test_null_request_ms_coerces_zero (test_ubs_detail.LaterSuccessTests.test_null_request_ms_coerces_zero) ... ok
+test_boundaries (test_ubs_detail.MinuteExactTests.test_boundaries) ... ok
+test_thousands_and_real_values (test_ubs_detail.MinuteExactTests.test_thousands_and_real_values) ... ok
+test_clean_tree_exit_zero (test_ubs_detail.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_tampered_failed_wait_filter_exit_one (test_ubs_detail.SyntheticTreeTests.test_tampered_failed_wait_filter_exit_one) ... ok
+test_tampered_minute_threshold_exit_one (test_ubs_detail.SyntheticTreeTests.test_tampered_minute_threshold_exit_one) ... ok
+test_tampered_rep_expand_exit_one (test_ubs_detail.SyntheticTreeTests.test_tampered_rep_expand_exit_one) ... ok
+test_frozen_baseline_u12_u19 (test_ubs_filtering.CommittedEvidenceTests.test_frozen_baseline_u12_u19) ... ok
+test_frozen_combo_matrix_zero_mismatch (test_ubs_filtering.CommittedEvidenceTests.test_frozen_combo_matrix_zero_mismatch) ... ok
+test_frozen_cross_repo_and_orphan (test_ubs_filtering.CommittedEvidenceTests.test_frozen_cross_repo_and_orphan) ... ok
+test_frozen_no_result_default_and_nulls (test_ubs_filtering.CommittedEvidenceTests.test_frozen_no_result_default_and_nulls) ... ok
+test_frozen_predicate_and_overall (test_ubs_filtering.CommittedEvidenceTests.test_frozen_predicate_and_overall) ... ok
+test_filter_no_result_and_default (test_ubs_filtering.IndependentPredicateTests.test_filter_no_result_and_default) ... ok
+test_filter_quality_rules (test_ubs_filtering.IndependentPredicateTests.test_filter_quality_rules) ... ok
+test_filter_query_case_and_trim_normalization (test_ubs_filtering.IndependentPredicateTests.test_filter_query_case_and_trim_normalization) ... ok
+test_filter_state_and_query_dimensions (test_ubs_filtering.IndependentPredicateTests.test_filter_state_and_query_dimensions) ... ok
+test_filter_trigger_dedup_and_combined (test_ubs_filtering.IndependentPredicateTests.test_filter_trigger_dedup_and_combined) ... ok
+test_trigger_counts_event_identity_dedup (test_ubs_filtering.IndependentPredicateTests.test_trigger_counts_event_identity_dedup) ... ok
+test_trigger_counts_kinds (test_ubs_filtering.IndependentPredicateTests.test_trigger_counts_kinds) ... ok
+test_clean_tree_exit_zero (test_ubs_filtering.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_tampered_query_trim_exit_one (test_ubs_filtering.SyntheticTreeTests.test_tampered_query_trim_exit_one) ... ok
+test_tampered_trigger_dedup_exit_one (test_ubs_filtering.SyntheticTreeTests.test_tampered_trigger_dedup_exit_one) ... ok
+test_frozen_baseline (test_ubs_routes.CommittedEvidenceTests.test_frozen_baseline) ... ok
+test_frozen_overall (test_ubs_routes.CommittedEvidenceTests.test_frozen_overall) ... ok
+test_frozen_views_and_aliases (test_ubs_routes.CommittedEvidenceTests.test_frozen_views_and_aliases) ... ok
+test_keep_pr_page (test_ubs_routes.KeepPRPageTests.test_keep_pr_page) ... ok
+test_decode_safety (test_ubs_routes.ParseHashTests.test_decode_safety) ... ok
+test_domains_and_views (test_ubs_routes.ParseHashTests.test_domains_and_views) ... ok
+test_edge_parts (test_ubs_routes.ParseHashTests.test_edge_parts) ... ok
+test_legacy_aliases (test_ubs_routes.ResolveTests.test_legacy_aliases) ... ok
+test_repo_alias_and_unknown (test_ubs_routes.ResolveTests.test_repo_alias_and_unknown) ... ok
+test_clean_tree_exit_zero (test_ubs_routes.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_tampered_legacy_map_exit_one (test_ubs_routes.SyntheticTreeTests.test_tampered_legacy_map_exit_one) ... ok
+test_tampered_quality_branch_exit_one (test_ubs_routes.SyntheticTreeTests.test_tampered_quality_branch_exit_one) ... ok
+test_tampered_unknown_repo_notice_exit_one (test_ubs_routes.SyntheticTreeTests.test_tampered_unknown_repo_notice_exit_one) ... ok
+test_encoding (test_ubs_routes.ToHashTests.test_encoding) ... ok
+test_routes_and_defaults (test_ubs_routes.ToHashTests.test_routes_and_defaults) ... ok
+test_view_name_and_nav (test_ubs_routes.ViewNameTests.test_view_name_and_nav) ... ok
+test_views_from_synthetic_index (test_ubs_routes.ViewsEnumerationTests.test_views_from_synthetic_index) ... ok
+test_aggregate_locks_baseline_values (test_ubs_semantics.CommittedEvidenceTests.test_aggregate_locks_baseline_values) ... ok
+test_frontend_and_baseline_matched (test_ubs_semantics.CommittedEvidenceTests.test_frontend_and_baseline_matched) ... ok
+test_frozen_counts_and_valid_samples (test_ubs_semantics.CommittedEvidenceTests.test_frozen_counts_and_valid_samples) ... ok
+test_participation_all_success_repos (test_ubs_semantics.CommittedEvidenceTests.test_participation_all_success_repos) ... ok
+test_zero_differences_and_identity (test_ubs_semantics.CommittedEvidenceTests.test_zero_differences_and_identity) ... ok
+test_equal_numeric_tolerance (test_ubs_semantics.IndependentImplementationTests.test_equal_numeric_tolerance) ... ok
+test_own_batch_status_and_eligibility (test_ubs_semantics.IndependentImplementationTests.test_own_batch_status_and_eligibility) ... ok
+test_representative_longest_then_tie_breaks_by_number (test_ubs_semantics.IndependentImplementationTests.test_representative_longest_then_tie_breaks_by_number) ... ok
+test_representative_task_nulls_and_no_cross_batch_borrowing (test_ubs_semantics.IndependentImplementationTests.test_representative_task_nulls_and_no_cross_batch_borrowing) ... ok
+test_stats_p90_linear_interpolation_and_valid_zero (test_ubs_semantics.IndependentImplementationTests.test_stats_p90_linear_interpolation_and_valid_zero) ... ok
+test_participation_rules_and_exclusion_reasons (test_ubs_semantics.ParticipationTests.test_participation_rules_and_exclusion_reasons) ... ok
+test_clean_tree_exit_zero (test_ubs_semantics.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_duplicate_batch_url_exit_one (test_ubs_semantics.SyntheticTreeTests.test_duplicate_batch_url_exit_one) ... ok
+test_event_time_mismatch_exit_one (test_ubs_semantics.SyntheticTreeTests.test_event_time_mismatch_exit_one) ... ok
+test_tampered_representative_metrics_exit_one (test_ubs_semantics.SyntheticTreeTests.test_tampered_representative_metrics_exit_one) ... ok
+test_frozen_baseline_replay (test_ubs_sorting.CommittedEvidenceTests.test_frozen_baseline_replay) ... ok
+test_frozen_overall_status (test_ubs_sorting.CommittedEvidenceTests.test_frozen_overall_status) ... ok
+test_frozen_pagination_and_contracts (test_ubs_sorting.CommittedEvidenceTests.test_frozen_pagination_and_contracts) ... ok
+test_frozen_pr_sorting_sequences (test_ubs_sorting.CommittedEvidenceTests.test_frozen_pr_sorting_sequences) ... ok
+test_frozen_repo_sorting_orders (test_ubs_sorting.CommittedEvidenceTests.test_frozen_repo_sorting_orders) ... ok
+test_paging_boundaries (test_ubs_sorting.PagingModelTests.test_paging_boundaries) ... ok
+test_paging_clamp_and_last_page (test_ubs_sorting.PagingModelTests.test_paging_clamp_and_last_page) ... ok
+test_paging_partitions_cover_all_sizes (test_ubs_sorting.PagingModelTests.test_paging_partitions_cover_all_sizes) ... ok
+test_paging_rows_per_page (test_ubs_sorting.PagingModelTests.test_paging_rows_per_page) ... ok
+test_repo_orders (test_ubs_sorting.SortPredicateTests.test_repo_orders) ... ok
+test_sort_batches_tie_breaks_by_created (test_ubs_sorting.SortPredicateTests.test_sort_batches_tie_breaks_by_created) ... ok
+test_sort_created_desc_and_stable_ties (test_ubs_sorting.SortPredicateTests.test_sort_created_desc_and_stable_ties) ... ok
+test_sort_e2e_tie_breaks_by_created_and_null_last (test_ubs_sorting.SortPredicateTests.test_sort_e2e_tie_breaks_by_created_and_null_last) ... ok
+test_clean_tree_exit_zero (test_ubs_sorting.SyntheticTreeTests.test_clean_tree_exit_zero) ... ok
+test_tampered_page_size_exit_one (test_ubs_sorting.SyntheticTreeTests.test_tampered_page_size_exit_one) ... ok
+test_tampered_sort_tiebreak_exit_one (test_ubs_sorting.SyntheticTreeTests.test_tampered_sort_tiebreak_exit_one) ... ok
+test_both_workflows_wire_post_deploy_verification (test_verify_deployment.VerifyDeploymentTests.test_both_workflows_wire_post_deploy_verification) ... ok
+}
+::error::[verify-deployment] manifest missing: C:\Users\tianli\AppData\Local\Temp\verify-deploy-5l_ii7px\missing.json — cannot verify without this build's baseline
+test_missing_local_manifest_fails_closed (test_verify_deployment.VerifyDeploymentTests.test_missing_local_manifest_fails_closed) ... ok
+[verify-deployment] attempt 1/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66
+[verify-deployment] attempt 2/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66
+[verify-deployment] attempt 3/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66
+[verify-deployment] attempt 4/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66
+[verify-deployment] attempt 5/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66
+[verify-deployment] attempt 6/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66
+[verify-deployment] attempt 7/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66
+[verify-deployment] attempt 8/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66
+::error::[verify-deployment] deployment verification FAILED — published files disagree with this build: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66. The workflow fails; no rollback is claimed or performed (Pages keeps serving the deployed version until a later run replaces it).
+test_stale_published_manifest_fails_naming_it (test_verify_deployment.VerifyDeploymentTests.test_stale_published_manifest_fails_naming_it) ... ok
+[verify-deployment] attempt 1/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)
+[verify-deployment] attempt 2/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)
+[verify-deployment] attempt 3/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)
+[verify-deployment] attempt 4/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)
+[verify-deployment] attempt 5/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)
+[verify-deployment] attempt 6/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)
+[verify-deployment] attempt 7/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)
+[verify-deployment] attempt 8/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)
+::error::[verify-deployment] deployment verification FAILED — published files disagree with this build: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756). The workflow fails; no rollback is claimed or performed (Pages keeps serving the deployed version until a later run replaces it).
+test_stale_triton_data_fails_naming_the_file_without_claiming_rollback (test_verify_deployment.VerifyDeploymentTests.test_stale_triton_data_fails_naming_the_file_without_claiming_rollback) ... ok
+[verify-deployment] PASS {"run_id": "12345", "run_number": "67", "workflow": "Collect and deploy dashboard", "site": "https://example.github.io/ubs_core_monitor", "verified_at": "2026-10-10T02:33:32.252113+00:00", "triton": {"file": "triton.json", "url": "https://example.github.io/ubs_core_monitor/data/triton.json", "fingerprint": "f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756", "collected_at": "2026-10-09T00:00:00Z"}, "ubs": {"files": [{"file": "repos/ubs-engine.json", "url": "https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json", "sha256": "d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9"}, {"file": "repositories.json", "url": "https://example.github.io/ubs_core_monitor/data/repositories.json", "sha256": "2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3"}, {"file": "snapshot.json", "url": "https://example.github.io/ubs_core_monitor/data/snapshot.json", "sha256": "d9dda0c2a586711f673ca4772dcc65d4cc7768957eba27d2d9973db05b1c62bc"}], "file_count": 3, "fingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "generated_at": "2026-10-09T00:00:00+00:00"}}
+test_success_verifies_the_real_triton_entry_and_records_the_run (test_verify_deployment.VerifyDeploymentTests.test_success_verifies_the_real_triton_entry_and_records_the_run) ... ok
+[verify-deployment] attempt 1/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3
+[verify-deployment] attempt 2/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3
+[verify-deployment] attempt 3/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3
+[verify-deployment] attempt 4/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3
+[verify-deployment] attempt 5/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3
+[verify-deployment] attempt 6/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3
+[verify-deployment] attempt 7/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3
+[verify-deployment] attempt 8/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3
+::error::[verify-deployment] deployment verification FAILED — published files disagree with this build: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3. The workflow fails; no rollback is claimed or performed (Pages keeps serving the deployed version until a later run replaces it).
+test_tampered_ubs_index_and_snapshot_are_named_in_the_failure (test_verify_deployment.VerifyDeploymentTests.test_tampered_ubs_index_and_snapshot_are_named_in_the_failure) ... ok
+[verify-deployment] attempt 1/8: verification error: URLError('connection reset: https://example.github.io/ubs_core_monitor/data/triton.json')
+[verify-deployment] attempt 2/8: verification error: URLError('connection reset: https://example.github.io/ubs_core_monitor/data/triton.json')
+[verify-deployment] PASS {"run_id": null, "run_number": null, "workflow": null, "site": "https://example.github.io/ubs_core_monitor", "verified_at": "2026-10-10T02:33:32.258361+00:00", "triton": {"file": "triton.json", "url": "https://example.github.io/ubs_core_monitor/data/triton.json", "fingerprint": "f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756", "collected_at": "2026-10-09T00:00:00Z"}, "ubs": {"files": [{"file": "repos/ubs-engine.json", "url": "https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json", "sha256": "d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9"}, {"file": "repositories.json", "url": "https://example.github.io/ubs_core_monitor/data/repositories.json", "sha256": "2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3"}, {"file": "snapshot.json", "url": "https://example.github.io/ubs_core_monitor/data/snapshot.json", "sha256": "d9dda0c2a586711f673ca4772dcc65d4cc7768957eba27d2d9973db05b1c62bc"}], "file_count": 3, "fingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "generated_at": "2026-10-09T00:00:00+00:00"}}
+test_transient_failures_retry_then_succeed (test_verify_deployment.VerifyDeploymentTests.test_transient_failures_retry_then_succeed) ... ok
+
+======================================================================
+FAIL: test_cache_hit_with_invalid_artifact_blocks_publish (test_cache_chain.CacheChainTests.test_cache_hit_with_invalid_artifact_blocks_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\ubs_core_monitor\tests\test_cache_chain.py", line 202, in test_cache_hit_with_invalid_artifact_blocks_publish
+    self.assertIn('summary: cache=4 fallback=0 mirrored=0 missing=0', log)
+AssertionError: 'summary: cache=4 fallback=0 mirrored=0 missing=0' not found in '[ensure-UBS-data] fallback site: \n[ensure-UBS-data] web/data/repositories.json already present (cache hit)\n[ensure-UBS-data] web/data/snapshot.json already present (cache hit)\n[ensure-UBS-data] web/data/ubs-manifest.json already present (cache hit)\n[ensure-UBS-data] data/snapshot.json already present (cache hit)\n[ensure-UBS-data] summary: cache= fallback= mirrored= missing=0\n[ensure-UBS-data] UBS index verified; UBS data ensured (sources logged above; bundle fingerprint checked by validate_bundle.py)\n/bin/bash: line 1: /mnt/c/Users/tianli/AppData/Local/Temp/ubs-chain-1zov6gy8/shim/python: cannot execute: required file not found\n'
+
+======================================================================
+FAIL: test_cold_start_empty_snapshot_file_blocks_deploy (test_cache_chain.CacheChainTests.test_cold_start_empty_snapshot_file_blocks_deploy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\ubs_core_monitor\tests\test_cache_chain.py", line 222, in test_cold_start_empty_snapshot_file_blocks_deploy
+    self.assertEqual(code, 0, log)
+AssertionError: 1 != 0 : [ensure-UBS-data] fallback site: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data] no manifest on the fallback site yet (first run); validate_bundle.py will stamp one
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data] no index available; skipping per-repo snapshot checks
+::error::[ensure-UBS-data] web/data/repositories.json is still missing after fallback; refusing to deploy
+/bin/bash: line 1: /mnt/c/Users/tianli/AppData/Local/Temp/ubs-chain-u0z_yc2_/shim/python: cannot execute: required file not found
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+
+
+======================================================================
+FAIL: test_cold_start_missing_snapshot_blocks_deploy_beyond_non_empty_index (test_cache_chain.CacheChainTests.test_cold_start_missing_snapshot_blocks_deploy_beyond_non_empty_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\ubs_core_monitor\tests\test_cache_chain.py", line 159, in test_cold_start_missing_snapshot_blocks_deploy_beyond_non_empty_index
+    self.assertEqual(code, 0, log)        # ensure logs the gap; only the index is fatal there
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : [ensure-UBS-data] fallback site: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data] no manifest on the fallback site yet (first run); validate_bundle.py will stamp one
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data] no index available; skipping per-repo snapshot checks
+::error::[ensure-UBS-data] web/data/repositories.json is still missing after fallback; refusing to deploy
+/bin/bash: line 1: /mnt/c/Users/tianli/AppData/Local/Temp/ubs-chain-pi78iiy8/shim/python: cannot execute: required file not found
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+
+
+======================================================================
+FAIL: test_cold_start_restores_complete_bundle_from_fallback_site (test_cache_chain.CacheChainTests.test_cold_start_restores_complete_bundle_from_fallback_site)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\ubs_core_monitor\tests\test_cache_chain.py", line 139, in test_cold_start_restores_complete_bundle_from_fallback_site
+    self.assertEqual(code, 0, log)
+AssertionError: 1 != 0 : [ensure-UBS-data] fallback site: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data] no manifest on the fallback site yet (first run); validate_bundle.py will stamp one
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data] no index available; skipping per-repo snapshot checks
+::error::[ensure-UBS-data] web/data/repositories.json is still missing after fallback; refusing to deploy
+/bin/bash: line 1: /mnt/c/Users/tianli/AppData/Local/Temp/ubs-chain-3nyrqv40/shim/python: cannot execute: required file not found
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+
+
+======================================================================
+FAIL: test_pending_and_first_failed_entries_restore_without_fake_success (test_cache_chain.CacheChainTests.test_pending_and_first_failed_entries_restore_without_fake_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\ubs_core_monitor\tests\test_cache_chain.py", line 255, in test_pending_and_first_failed_entries_restore_without_fake_success
+    self.assertEqual(code, 0, log)
+AssertionError: 1 != 0 : [ensure-UBS-data] fallback site: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data] no manifest on the fallback site yet (first run); validate_bundle.py will stamp one
+[ensure-UBS-data]  is missing; downloading 
+::warning::[ensure-UBS-data] download failed: 
+[ensure-UBS-data] no index available; skipping per-repo snapshot checks
+::error::[ensure-UBS-data] web/data/repositories.json is still missing after fallback; refusing to deploy
+/bin/bash: line 1: /mnt/c/Users/tianli/AppData/Local/Temp/ubs-chain-1od_uomk/shim/python: cannot execute: required file not found
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+curl: option -o: is badly used here
+curl: try 'curl --help' or 'curl --manual' for more information
+
+
+======================================================================
+FAIL: test_warm_cache_daily_update_publishes_b_not_a (test_cache_chain.CacheChainTests.test_warm_cache_daily_update_publishes_b_not_a)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\ubs_core_monitor\tests\test_cache_chain.py", line 113, in test_warm_cache_daily_update_publishes_b_not_a
+    self.assertIn('summary: cache=4 fallback=0 mirrored=0 missing=0', log)
+AssertionError: 'summary: cache=4 fallback=0 mirrored=0 missing=0' not found in '[ensure-UBS-data] fallback site: \n[ensure-UBS-data] web/data/repositories.json already present (cache hit)\n[ensure-UBS-data] web/data/snapshot.json already present (cache hit)\n[ensure-UBS-data] web/data/ubs-manifest.json already present (cache hit)\n[ensure-UBS-data] data/snapshot.json already present (cache hit)\n[ensure-UBS-data] summary: cache= fallback= mirrored= missing=0\n[ensure-UBS-data] UBS index verified; UBS data ensured (sources logged above; bundle fingerprint checked by validate_bundle.py)\n/bin/bash: line 1: /mnt/c/Users/tianli/AppData/Local/Temp/ubs-chain-azrs1lhg/shim/python: cannot execute: required file not found\n'
+
+======================================================================
+FAIL: test_warm_incomplete_cache_with_unavailable_file_blocks_deploy (test_cache_chain.CacheChainTests.test_warm_incomplete_cache_with_unavailable_file_blocks_deploy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\ubs_core_monitor\tests\test_cache_chain.py", line 285, in test_warm_incomplete_cache_with_unavailable_file_blocks_deploy
+    self.assertIn('summary: cache=3 fallback=0 mirrored=0 missing=1', log)
+AssertionError: 'summary: cache=3 fallback=0 mirrored=0 missing=1' not found in '[ensure-UBS-data] fallback site: \n[ensure-UBS-data] web/data/repositories.json already present (cache hit)\n[ensure-UBS-data] web/data/snapshot.json already present (cache hit)\n[ensure-UBS-data] web/data/ubs-manifest.json already present (cache hit)\n[ensure-UBS-data] data/snapshot.json already present (cache hit)\n[ensure-UBS-data] summary: cache= fallback= mirrored= missing=0\n[ensure-UBS-data] UBS index verified; UBS data ensured (sources logged above; bundle fingerprint checked by validate_bundle.py)\n/bin/bash: line 1: /mnt/c/Users/tianli/AppData/Local/Temp/ubs-chain-_3gmfcb5/shim/python: cannot execute: required file not found\n'
+
+----------------------------------------------------------------------
+Ran 425 tests in 17.920s
+
+FAILED (failures=7, skipped=1)

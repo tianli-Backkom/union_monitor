@@ -1,0 +1,742 @@
+TAP version 13
+# Subtest: REQ-033 AC01: branchBadgeText maps the selection to badge text (all/single/multi)
+ok 1 - REQ-033 AC01: branchBadgeText maps the selection to badge text (all/single/multi)
+  ---
+  duration_ms: 0.798286
+  type: 'test'
+  ...
+# Subtest: REQ-033 AC02: the badge is script-managed with a stable name element
+ok 2 - REQ-033 AC02: the badge is script-managed with a stable name element
+  ---
+  duration_ms: 0.294459
+  type: 'test'
+  ...
+# Subtest: REQ-033 AC02/AC03: applyRoute hides the badge on the method page and derives UBS text from snapshot meta.branch
+ok 3 - REQ-033 AC02/AC03: applyRoute hides the badge on the method page and derives UBS text from snapshot meta.branch
+  ---
+  duration_ms: 0.111422
+  type: 'test'
+  ...
+# Subtest: REQ-033 AC01: renderBranchOptions syncs the topbar badge on every selection change
+ok 4 - REQ-033 AC01: renderBranchOptions syncs the topbar badge on every selection change
+  ---
+  duration_ms: 0.086606
+  type: 'test'
+  ...
+# Subtest: REQ-033 AC03: the sameSessionMount early-return path re-syncs the badge after a reload reset it
+ok 5 - REQ-033 AC03: the sameSessionMount early-return path re-syncs the badge after a reload reset it
+  ---
+  duration_ms: 0.100195
+  type: 'test'
+  ...
+# Subtest: trigger counts use distinct platform events and preserve unlinked requests
+ok 6 - trigger counts use distinct platform events and preserve unlinked requests
+  ---
+  duration_ms: 1.661022
+  type: 'test'
+  ...
+# Subtest: failed wait surfaces cancellation even when longest representative succeeded
+ok 7 - failed wait surfaces cancellation even when longest representative succeeded
+  ---
+  duration_ms: 0.159076
+  type: 'test'
+  ...
+# Subtest: retest filter selects PRs without discarding any batches
+ok 8 - retest filter selects PRs without discarding any batches
+  ---
+  duration_ms: 0.167427
+  type: 'test'
+  ...
+# Subtest: REQ-035 AC01: 口径页清空页脚，UBS 跨仓未读取时不遗留旧域数值
+ok 9 - REQ-035 AC01: 口径页清空页脚，UBS 跨仓未读取时不遗留旧域数值
+  ---
+  duration_ms: 0.749261
+  type: 'test'
+  ...
+# Subtest: REQ-035 AC02/AC03: Triton 域先置快照范围默认并标注，失败有明确提示而非旧域数值
+ok 10 - REQ-035 AC02/AC03: Triton 域先置快照范围默认并标注，失败有明确提示而非旧域数值
+  ---
+  duration_ms: 0.134971
+  type: 'test'
+  ...
+# Subtest: REQ-035 AC02: 视图页脚与摘要条共用 pageSet（G）并标注当前筛选范围
+ok 11 - REQ-035 AC02: 视图页脚与摘要条共用 pageSet（G）并标注当前筛选范围
+  ---
+  duration_ms: 0.84381
+  type: 'test'
+  ...
+# Subtest: REQ-035 AC03: sameSessionMount 早退路径重新同步页脚，reload 双导航后不残留快照默认
+ok 12 - REQ-035 AC03: sameSessionMount 早退路径重新同步页脚，reload 双导航后不残留快照默认
+  ---
+  duration_ms: 0.120665
+  type: 'test'
+  ...
+# Subtest: one representative per PR gives mean25 P9029
+ok 13 - one representative per PR gives mean25 P9029
+  ---
+  duration_ms: 2.578673
+  type: 'test'
+  ...
+# Subtest: ties, exclusions, missing tasks and no valid batch
+ok 14 - ties, exclusions, missing tasks and no valid batch
+  ---
+  duration_ms: 0.211701
+  type: 'test'
+  ...
+# Subtest: task values come from same representative and filters preserve batches
+ok 15 - task values come from same representative and filters preserve batches
+  ---
+  duration_ms: 0.294805
+  type: 'test'
+  ...
+# Subtest: percentile, empty and CSV formula escaping
+ok 16 - percentile, empty and CSV formula escaping
+  ---
+  duration_ms: 0.193108
+  type: 'test'
+  ...
+# Subtest: frontend matches every persisted PR representative
+ok 17 - frontend matches every persisted PR representative
+  ---
+  duration_ms: 55.191842
+  type: 'test'
+  ...
+# Subtest: CSV exporter is available to browser and Node callers
+ok 18 - CSV exporter is available to browser and Node callers
+  ---
+  duration_ms: 0.078944
+  type: 'test'
+  ...
+# Subtest: static Pages export downloads a Blob without posting to the local API
+ok 19 - static Pages export downloads a Blob without posting to the local API
+  ---
+  duration_ms: 0.510383
+  type: 'test'
+  ...
+# Subtest: localhost export posts CSV to the local save endpoint
+ok 20 - localhost export posts CSV to the local save endpoint
+  ---
+  duration_ms: 0.143514
+  type: 'test'
+  ...
+# Subtest: dashboard routes every CSV download through the environment-aware exporter
+ok 21 - dashboard routes every CSV download through the environment-aware exporter
+  ---
+  duration_ms: 2.736267
+  type: 'test'
+  ...
+# Subtest: PR sorting has deterministic E2E, execution-count and creation orders
+ok 22 - PR sorting has deterministic E2E, execution-count and creation orders
+  ---
+  duration_ms: 0.390885
+  type: 'test'
+  ...
+# Subtest: createReloadGate: only the newest generation is current
+ok 23 - createReloadGate: only the newest generation is current
+  ---
+  duration_ms: 0.132018
+  type: 'test'
+  ...
+# Subtest: app load() guards every await boundary with the reload gate
+ok 24 - app load() guards every await boundary with the reload gate
+  ---
+  duration_ms: 2.48714
+  type: 'test'
+  ...
+# Subtest: reload failure keeps the previous snapshot visible with its collection time
+ok 25 - reload failure keeps the previous snapshot visible with its collection time
+  ---
+  duration_ms: 2.983474
+  type: 'test'
+  ...
+# Subtest: navigation or reload closes a stale PR detail and clears its reference
+ok 26 - navigation or reload closes a stale PR detail and clears its reference
+  ---
+  duration_ms: 2.468624
+  type: 'test'
+  ...
+# Subtest: detail CSV export is bound to the detail entity, not the global current repository
+ok 27 - detail CSV export is bound to the detail entity, not the global current repository
+  ---
+  duration_ms: 2.637262
+  type: 'test'
+  ...
+# Subtest: REQ-010: the two domains read independently — a UBS index failure cannot block Triton
+ok 28 - REQ-010: the two domains read independently — a UBS index failure cannot block Triton
+  ---
+  duration_ms: 2.476932
+  type: 'test'
+  ...
+# Subtest: REQ-010: Triton view states distinguish in-flight, failure and previous data
+ok 29 - REQ-010: Triton view states distinguish in-flight, failure and previous data
+  ---
+  duration_ms: 2.190027
+  type: 'test'
+  ...
+# Subtest: REQ-010: per-repo read failures degrade locally with distinct notices
+ok 30 - REQ-010: per-repo read failures degrade locally with distinct notices
+  ---
+  duration_ms: 2.05961
+  type: 'test'
+  ...
+# Subtest: REQ-011: the methodology page renders without waiting for snapshot reads
+ok 31 - REQ-011: the methodology page renders without waiting for snapshot reads
+  ---
+  duration_ms: 1.835135
+  type: 'test'
+  ...
+# Subtest: REQ-016 AC01: a batch whose event_id is not in events stays visible in the detail groups
+ok 32 - REQ-016 AC01: a batch whose event_id is not in events stays visible in the detail groups
+  ---
+  duration_ms: 0.245314
+  type: 'test'
+  ...
+# Subtest: REQ-016 AC02: every batch identity appears exactly once across empty, unknown, missing and duplicate event shapes
+ok 33 - REQ-016 AC02: every batch identity appears exactly once across empty, unknown, missing and duplicate event shapes
+  ---
+  duration_ms: 0.221043
+  type: 'test'
+  ...
+# Subtest: REQ-016 AC03/AC04: unmatched group keeps batch links and the representative; the detail CSV stays the full set
+ok 34 - REQ-016 AC03/AC04: unmatched group keeps batch links and the representative; the detail CSV stays the full set
+  ---
+  duration_ms: 2.039336
+  type: 'test'
+  ...
+# Subtest: REQ-020 AC02: first-failed and pending repositories show 未获取, never fabricated success
+ok 35 - REQ-020 AC02: first-failed and pending repositories show 未获取, never fabricated success
+  ---
+  duration_ms: 2.038091
+  type: 'test'
+  ...
+# Subtest: REQ-021 AC01/AC02: repositoryRows keeps stale and failed data out of cross-repo metrics while showing every repo
+ok 36 - REQ-021 AC01/AC02: repositoryRows keeps stale and failed data out of cross-repo metrics while showing every repo
+  ---
+  duration_ms: 4.992739
+  type: 'test'
+  ...
+# Subtest: cross repo pools PR samples, preserves colliding IDs, excludes stale and failed
+ok 37 - cross repo pools PR samples, preserves colliding IDs, excludes stale and failed
+  ---
+  duration_ms: 1.397242
+  type: 'test'
+  ...
+# Subtest: state filter only selects PRs, keeps empty repository rows and representatives
+ok 38 - state filter only selects PRs, keeps empty repository rows and representatives
+  ---
+  duration_ms: 0.244986
+  type: 'test'
+  ...
+# Subtest: missing snapshot excluded; current partial snapshot included explicitly
+ok 39 - missing snapshot excluded; current partial snapshot included explicitly
+  ---
+  duration_ms: 1.217476
+  type: 'test'
+  ...
+# Subtest: REQ-036 AC01/AC02: navigate() 对直接目标导航推进历史，仅规范化替换当前记录
+ok 40 - REQ-036 AC01/AC02: navigate() 对直接目标导航推进历史，仅规范化替换当前记录
+  ---
+  duration_ms: 0.698922
+  type: 'test'
+  ...
+# Subtest: REQ-036 AC02: hashchange 保持 navigate 单一路径，历史写入有守卫不产生重复条目
+ok 41 - REQ-036 AC02: hashchange 保持 navigate 单一路径，历史写入有守卫不产生重复条目
+  ---
+  duration_ms: 0.160265
+  type: 'test'
+  ...
+# Subtest: REQ-032 AC01: icon rail shows real labels — font-size:0 hiding is gone, entries stack icon over 10px label
+ok 42 - REQ-032 AC01: icon rail shows real labels — font-size:0 hiding is gone, entries stack icon over 10px label
+  ---
+  duration_ms: 0.645765
+  type: 'test'
+  ...
+# Subtest: REQ-032 AC01: rail width fits 6-char CJK labels and the workspace margin matches
+ok 43 - REQ-032 AC01: rail width fits 6-char CJK labels and the workspace margin matches
+  ---
+  duration_ms: 0.16905
+  type: 'test'
+  ...
+# Subtest: REQ-032 AC01: group headers stay visible in the icon rail for domain context
+ok 44 - REQ-032 AC01: group headers stay visible in the icon rail for domain context
+  ---
+  duration_ms: 0.254438
+  type: 'test'
+  ...
+# Subtest: REQ-032 AC01/AC03: every nav entry keeps a real text label in the DOM (accessible name source)
+ok 45 - REQ-032 AC01/AC03: every nav entry keeps a real text label in the DOM (accessible name source)
+  ---
+  duration_ms: 1.063143
+  type: 'test'
+  ...
+# Subtest: REQ-032 AC02: hover/focus/touch can get the name — native title mirrors every label, brand included
+ok 46 - REQ-032 AC02: hover/focus/touch can get the name — native title mirrors every label, brand included
+  ---
+  duration_ms: 0.237011
+  type: 'test'
+  ...
+# Subtest: REQ-032 AC02: active highlight stays and the icon rail adds no popup overlay over the click target
+ok 47 - REQ-032 AC02: active highlight stays and the icon rail adds no popup overlay over the click target
+  ---
+  duration_ms: 0.130629
+  type: 'test'
+  ...
+# Subtest: REQ-034: 侧栏代码仓链接文本节点可独立更新
+ok 48 - REQ-034: 侧栏代码仓链接文本节点可独立更新
+  ---
+  duration_ms: 0.767173
+  type: 'test'
+  ...
+# Subtest: REQ-034 AC01: Triton 域链接指向 triton-ascend GitHub 仓库
+ok 49 - REQ-034 AC01: Triton 域链接指向 triton-ascend GitHub 仓库
+  ---
+  duration_ms: 0.136331
+  type: 'test'
+  ...
+# Subtest: REQ-034: 口径页隐藏代码仓链接，不伪装单仓对象
+ok 50 - REQ-034: 口径页隐藏代码仓链接，不伪装单仓对象
+  ---
+  duration_ms: 0.074125
+  type: 'test'
+  ...
+# Subtest: REQ-034 AC03: 跨仓总览为组织目录参考链接，名称可区分单仓来源
+ok 51 - REQ-034 AC03: 跨仓总览为组织目录参考链接，名称可区分单仓来源
+  ---
+  duration_ms: 0.072394
+  type: 'test'
+  ...
+# Subtest: REQ-034 AC02: 单仓链接使用当前仓库标识与提示
+ok 52 - REQ-034 AC02: 单仓链接使用当前仓库标识与提示
+  ---
+  duration_ms: 0.685625
+  type: 'test'
+  ...
+# Subtest: parseHash parses every new route shape
+ok 53 - parseHash parses every new route shape
+  ---
+  duration_ms: 1.069409
+  type: 'test'
+  ...
+# Subtest: parseHash decodes repo names and rejects legacy or unknown hashes
+ok 54 - parseHash decodes repo names and rejects legacy or unknown hashes
+  ---
+  duration_ms: 0.25129
+  type: 'test'
+  ...
+# Subtest: toHash emits canonical hashes for every route
+ok 55 - toHash emits canonical hashes for every route
+  ---
+  duration_ms: 0.160817
+  type: 'test'
+  ...
+# Subtest: resolve maps every legacy hash to its new route
+ok 56 - resolve maps every legacy hash to its new route
+  ---
+  duration_ms: 0.121608
+  type: 'test'
+  ...
+# Subtest: resolve canonicalizes near-canonical and unknown hashes to the default
+ok 57 - resolve canonicalizes near-canonical and unknown hashes to the default
+  ---
+  duration_ms: 0.152871
+  type: 'test'
+  ...
+# Subtest: resolve is idempotent and round-trips with parseHash and toHash
+ok 58 - resolve is idempotent and round-trips with parseHash and toHash
+  ---
+  duration_ms: 0.792072
+  type: 'test'
+  ...
+# Subtest: keepPRPage resets pagination only when switching repositories
+ok 59 - keepPRPage resets pagination only when switching repositories
+  ---
+  duration_ms: 0.141791
+  type: 'test'
+  ...
+# Subtest: REQ-030 AC01: topbar grows instead of clipping — min-height floor, wrap allowed, no fixed 64px height
+ok 60 - REQ-030 AC01: topbar grows instead of clipping — min-height floor, wrap allowed, no fixed 64px height
+  ---
+  duration_ms: 1.254165
+  type: 'test'
+  ...
+# Subtest: REQ-030 AC01: text buttons stay single-line and never collapse into a per-character column
+ok 61 - REQ-030 AC01: text buttons stay single-line and never collapse into a per-character column
+  ---
+  duration_ms: 0.120105
+  type: 'test'
+  ...
+# Subtest: REQ-030 AC02: topbar padding keeps vertical breathing room at every breakpoint
+ok 62 - REQ-030 AC02: topbar padding keeps vertical breathing room at every breakpoint
+  ---
+  duration_ms: 0.228088
+  type: 'test'
+  ...
+# Subtest: REQ-030 AC02: repository controls wrap instead of overflowing once text buttons stop shrinking
+ok 63 - REQ-030 AC02: repository controls wrap instead of overflowing once text buttons stop shrinking
+  ---
+  duration_ms: 0.096596
+  type: 'test'
+  ...
+# Subtest: REQ-030 AC03: reload keeps a visible name, an accessible hint, and the same wiring
+ok 64 - REQ-030 AC03: reload keeps a visible name, an accessible hint, and the same wiring
+  ---
+  duration_ms: 0.156193
+  type: 'test'
+  ...
+# Subtest: selectWindow keeps the lower boundary of the requested range
+ok 65 - selectWindow keeps the lower boundary of the requested range
+  ---
+  duration_ms: 1.028891
+  type: 'test'
+  ...
+# Subtest: windowForHours and moveWindow clamp against the domain
+ok 66 - windowForHours and moveWindow clamp against the domain
+  ---
+  duration_ms: 0.146487
+  type: 'test'
+  ...
+# Subtest: spreadPoints offsets overlapping marks and stays inside the plot bounds
+ok 67 - spreadPoints offsets overlapping marks and stays inside the plot bounds
+  ---
+  duration_ms: 0.278348
+  type: 'test'
+  ...
+# Subtest: chartStats measures completed batches and keeps a readable empty scale
+ok 68 - chartStats measures completed batches and keeps a readable empty scale
+  ---
+  duration_ms: 0.839125
+  type: 'test'
+  ...
+# Subtest: filterBranches and dashboardStats aggregate branch-filtered rows
+ok 69 - filterBranches and dashboardStats aggregate branch-filtered rows
+  ---
+  duration_ms: 0.272689
+  type: 'test'
+  ...
+# Subtest: circleMark renders solid circles with a larger hit area
+ok 70 - circleMark renders solid circles with a larger hit area
+  ---
+  duration_ms: 0.217624
+  type: 'test'
+  ...
+# Subtest: isSlow flags completed batches at or beyond P90 and excludes running ones
+ok 71 - isSlow flags completed batches at or beyond P90 and excludes running ones
+  ---
+  duration_ms: 0.132284
+  type: 'test'
+  ...
+# Subtest: validDuration accepts only finite non-negative raw numbers
+ok 72 - validDuration accepts only finite non-negative raw numbers
+  ---
+  duration_ms: 0.085088
+  type: 'test'
+  ...
+# Subtest: REQ-017 AC01: null, empty-string and negative durations yield zero valid completions
+ok 73 - REQ-017 AC01: null, empty-string and negative durations yield zero valid completions
+  ---
+  duration_ms: 0.220913
+  type: 'test'
+  ...
+# Subtest: REQ-017 AC02/AC03: real zero stays valid; mixed samples use only valid values
+ok 74 - REQ-017 AC02/AC03: real zero stays valid; mixed samples use only valid values
+  ---
+  duration_ms: 0.327955
+  type: 'test'
+  ...
+# Subtest: REQ-017: dashboardStats applies the same validity to the page-level summary
+ok 75 - REQ-017: dashboardStats applies the same validity to the page-level summary
+  ---
+  duration_ms: 0.128714
+  type: 'test'
+  ...
+# Subtest: REQ-017: isSlow and the small-sample fallback use only valid durations
+ok 76 - REQ-017: isSlow and the small-sample fallback use only valid durations
+  ---
+  duration_ms: 0.217168
+  type: 'test'
+  ...
+# Subtest: attentionGroups falls back to longest completed runs when valid samples are scarce
+ok 77 - attentionGroups falls back to longest completed runs when valid samples are scarce
+  ---
+  duration_ms: 0.133235
+  type: 'test'
+  ...
+# Subtest: attentionGroups keeps the P90 slow group once samples are sufficient
+ok 78 - attentionGroups keeps the P90 slow group once samples are sufficient
+  ---
+  duration_ms: 0.097653
+  type: 'test'
+  ...
+# Subtest: attentionGroups tolerates empty input
+ok 79 - attentionGroups tolerates empty input
+  ---
+  duration_ms: 0.049866
+  type: 'test'
+  ...
+# Subtest: REQ-026 AC01: searching the frozen snapshot for PR2455 keeps the G strategy
+ok 80 - REQ-026 AC01: searching the frozen snapshot for PR2455 keeps the G strategy
+  ---
+  duration_ms: 31.171536
+  type: 'test'
+  ...
+# Subtest: REQ-026 AC02: 9 and 10 valid samples pick different strategies with the same denominator in the note
+ok 81 - REQ-026 AC02: 9 and 10 valid samples pick different strategies with the same denominator in the note
+  ---
+  duration_ms: 0.187433
+  type: 'test'
+  ...
+# Subtest: REQ-026 AC03: search keeps group names and counts consistent; groups may overlap
+ok 82 - REQ-026 AC03: search keeps group names and counts consistent; groups may overlap
+  ---
+  duration_ms: 0.242361
+  type: 'test'
+  ...
+# Subtest: REQ-026 AC04: the CSV scope stays G × search even under the top-5 attention strategy
+ok 83 - REQ-026 AC04: the CSV scope stays G × search even under the top-5 attention strategy
+  ---
+  duration_ms: 0.11872
+  type: 'test'
+  ...
+# Subtest: REQ-027 AC01: keyWindow pans the window and reaches the domain edges
+ok 84 - REQ-027 AC01: keyWindow pans the window and reaches the domain edges
+  ---
+  duration_ms: 0.181326
+  type: 'test'
+  ...
+# Subtest: REQ-027 AC01/AC03: keyWindow adjusts boundaries with the 30-minute floor
+ok 85 - REQ-027 AC01/AC03: keyWindow adjusts boundaries with the 30-minute floor
+  ---
+  duration_ms: 0.141738
+  type: 'test'
+  ...
+# Subtest: REQ-027 AC03: a domain shorter than 30 minutes allows only the whole window
+ok 86 - REQ-027 AC03: a domain shorter than 30 minutes allows only the whole window
+  ---
+  duration_ms: 0.054351
+  type: 'test'
+  ...
+# Subtest: REQ-027 AC04: pointer and keyboard share the boundary clamp
+ok 87 - REQ-027 AC04: pointer and keyboard share the boundary clamp
+  ---
+  duration_ms: 0.045659
+  type: 'test'
+  ...
+# Subtest: REQ-027 AC02: navSliderSemantics tracks the live window in every control
+ok 88 - REQ-027 AC02: navSliderSemantics tracks the live window in every control
+  ---
+  duration_ms: 0.097293
+  type: 'test'
+  ...
+# Subtest: REQ-028 AC01: rowDomIds qualifies row and detail ids by attention group
+ok 89 - REQ-028 AC01: rowDomIds qualifies row and detail ids by attention group
+  ---
+  duration_ms: 0.069263
+  type: 'test'
+  ...
+# Subtest: REQ-028 AC01: the same batch in overlapping groups keeps distinct row targets
+ok 90 - REQ-028 AC01: the same batch in overlapping groups keeps distinct row targets
+  ---
+  duration_ms: 0.120174
+  type: 'test'
+  ...
+# Subtest: REQ-029 AC01: circleMark emits a focusable named button for keyboard users
+ok 91 - REQ-029 AC01: circleMark emits a focusable named button for keyboard users
+  ---
+  duration_ms: 0.059242
+  type: 'test'
+  ...
+# Subtest: REQ-029 AC01: markLabel falls back for incomplete batch identity
+ok 92 - REQ-029 AC01: markLabel falls back for incomplete batch identity
+  ---
+  duration_ms: 0.038926
+  type: 'test'
+  ...
+# Subtest: REQ-029 AC02: placeTipBox places the card beside the mark with a gap by default
+ok 93 - REQ-029 AC02: placeTipBox places the card beside the mark with a gap by default
+  ---
+  duration_ms: 0.087078
+  type: 'test'
+  ...
+# Subtest: REQ-029 AC02: placeTipBox flips above when bottom clamping would cover the mark
+ok 94 - REQ-029 AC02: placeTipBox flips above when bottom clamping would cover the mark
+  ---
+  duration_ms: 0.039387
+  type: 'test'
+  ...
+# Subtest: REQ-029 AC02: placeTipBox flips left when the card cannot fit above either
+ok 95 - REQ-029 AC02: placeTipBox flips left when the card cannot fit above either
+  ---
+  duration_ms: 0.035495
+  type: 'test'
+  ...
+# Subtest: REQ-029 AC02: the capped card never covers the mark anywhere in a short viewport (grid)
+ok 96 - REQ-029 AC02: the capped card never covers the mark anywhere in a short viewport (grid)
+  ---
+  duration_ms: 7.684056
+  type: 'test'
+  ...
+# Subtest: REQ-029 AC02: placeTipBox degrades to a clamped position when no escape exists
+ok 97 - REQ-029 AC02: placeTipBox degrades to a clamped position when no escape exists
+  ---
+  duration_ms: 0.120049
+  type: 'test'
+  ...
+# Subtest: REQ-031 AC01: axisTicks thins the label count as the plot narrows, endpoints always kept
+ok 98 - REQ-031 AC01: axisTicks thins the label count as the plot narrows, endpoints always kept
+  ---
+  duration_ms: 0.116739
+  type: 'test'
+  ...
+# Subtest: REQ-031 AC01: middle ticks divide the window evenly
+ok 99 - REQ-031 AC01: middle ticks divide the window evenly
+  ---
+  duration_ms: 0.046242
+  type: 'test'
+  ...
+# Subtest: REQ-031 AC01: degenerate widths and inputs still yield the two endpoints
+ok 100 - REQ-031 AC01: degenerate widths and inputs still yield the two endpoints
+  ---
+  duration_ms: 0.108517
+  type: 'test'
+  ...
+# Subtest: REQ-031 AC02: a wider gap or label fits fewer labels
+ok 101 - REQ-031 AC02: a wider gap or label fits fewer labels
+  ---
+  duration_ms: 0.038899
+  type: 'test'
+  ...
+# Subtest: REQ-031 AC01/AC03: both charts render adaptive ticks with edge anchors; fixed seven-label loops are gone
+ok 102 - REQ-031 AC01/AC03: both charts render adaptive ticks with edge anchors; fixed seven-label loops are gone
+  ---
+  duration_ms: 2.489675
+  type: 'test'
+  ...
+# Subtest: freshnessSlots finds the latest grace-elapsed Beijing slot
+ok 103 - freshnessSlots finds the latest grace-elapsed Beijing slot
+  ---
+  duration_ms: 0.15524
+  type: 'test'
+  ...
+# Subtest: freshnessSlots respects the grace window and the early-morning fallback
+ok 104 - freshnessSlots respects the grace window and the early-morning fallback
+  ---
+  duration_ms: 0.084881
+  type: 'test'
+  ...
+# Subtest: page-level set G composes branch and time-window predicates with inclusive bounds
+ok 105 - page-level set G composes branch and time-window predicates with inclusive bounds
+  ---
+  duration_ms: 0.107905
+  type: 'test'
+  ...
+# Subtest: an empty page-level set G yields a zeroed summary without falling back to the full snapshot
+ok 106 - an empty page-level set G yields a zeroed summary without falling back to the full snapshot
+  ---
+  duration_ms: 0.056288
+  type: 'test'
+  ...
+# Subtest: single valid sample yields P90 equal to the sample; zero valid keeps threshold null
+ok 107 - single valid sample yields P90 equal to the sample; zero valid keeps threshold null
+  ---
+  duration_ms: 0.06099
+  type: 'test'
+  ...
+# Subtest: chart-local stats and the page-level threshold are distinct computations
+ok 108 - chart-local stats and the page-level threshold are distinct computations
+  ---
+  duration_ms: 0.059906
+  type: 'test'
+  ...
+# Subtest: matchesQuery: shared predicate for the list and CSV export scope
+ok 109 - matchesQuery: shared predicate for the list and CSV export scope
+  ---
+  duration_ms: 0.051535
+  type: 'test'
+  ...
+# Subtest: REQ-003: export scope is the page-level set G filtered by the list search
+ok 110 - REQ-003: export scope is the page-level set G filtered by the list search
+  ---
+  duration_ms: 0.088765
+  type: 'test'
+  ...
+# Subtest: sameSessionMount: skip remount only for the same live payload/container pair
+ok 111 - sameSessionMount: skip remount only for the same live payload/container pair
+  ---
+  duration_ms: 0.101917
+  type: 'test'
+  ...
+# Subtest: recoverWindow: intersection, full-coverage and end-anchored recovery rules
+ok 112 - recoverWindow: intersection, full-coverage and end-anchored recovery rules
+  ---
+  duration_ms: 0.113461
+  type: 'test'
+  ...
+# Subtest: recoverWindow: invalid old selections and degenerate new windows
+ok 113 - recoverWindow: invalid old selections and degenerate new windows
+  ---
+  duration_ms: 0.050759
+  type: 'test'
+  ...
+# Subtest: REQ-014 AC02/AC04: startSourceLabel reports the start source and approximate flag
+ok 114 - REQ-014 AC02/AC04: startSourceLabel reports the start source and approximate flag
+  ---
+  duration_ms: 0.069135
+  type: 'test'
+  ...
+# Subtest: REQ-046 AC01: both charts recompute selection stats over the frozen audit snapshot
+ok 115 - REQ-046 AC01: both charts recompute selection stats over the frozen audit snapshot
+  ---
+  duration_ms: 26.922206
+  type: 'test'
+  ...
+# Subtest: REQ-046 AC04: a single sample expresses itself in every statistic
+ok 116 - REQ-046 AC04: a single sample expresses itself in every statistic
+  ---
+  duration_ms: 0.104632
+  type: 'test'
+  ...
+# Subtest: REQ-037 AC01: minimal fixture p90 is the interpolated 840, not the 900 sample
+ok 117 - REQ-037 AC01: minimal fixture p90 is the interpolated 840, not the 900 sample
+  ---
+  duration_ms: 8.363122
+  type: 'test'
+  ...
+# Subtest: REQ-037 AC02: frontend dashboardStats recomputes the same summary from minimal batches
+ok 118 - REQ-037 AC02: frontend dashboardStats recomputes the same summary from minimal batches
+  ---
+  duration_ms: 3.04472
+  type: 'test'
+  ...
+# Subtest: REQ-037 AC02: kind semantics — rerun start source and per-PR E2E labels
+ok 119 - REQ-037 AC02: kind semantics — rerun start source and per-PR E2E labels
+  ---
+  duration_ms: 2.860697
+  type: 'test'
+  ...
+# Subtest: REQ-037 AC03: zero-data fixture loads and stays legal zero
+ok 120 - REQ-037 AC03: zero-data fixture loads and stays legal zero
+  ---
+  duration_ms: 2.197999
+  type: 'test'
+  ...
+# Subtest: REQ-037 AC03: single-sample fixture expresses itself
+ok 121 - REQ-037 AC03: single-sample fixture expresses itself
+  ---
+  duration_ms: 2.256704
+  type: 'test'
+  ...
+# Subtest: REQ-037 AC03: missing-value and running batches never join valid samples
+ok 122 - REQ-037 AC03: missing-value and running batches never join valid samples
+  ---
+  duration_ms: 2.585217
+  type: 'test'
+  ...
+1..122
+# tests 122
+# suites 0
+# pass 122
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 182.93182

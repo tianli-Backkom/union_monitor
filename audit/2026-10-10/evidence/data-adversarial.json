@@ -1,0 +1,2482 @@
+{
+  "head": "4cfff7d49052734cfb9b3c3c2f03187d01c92108",
+  "recorded_at": "2026-10-10T02:39:34.817634+00:00",
+  "cases": [
+    {
+      "id": "trusted-attempt-trigger",
+      "acs": [
+        "REQ-014-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "duration_seconds": 300,
+        "start_source": "trigger_event",
+        "approximate": false
+      },
+      "actual": {
+        "duration_seconds": 300.0,
+        "start_at": "2026-10-08T02:00:00Z",
+        "start_source": "trigger_event",
+        "approximate": false,
+        "complete": true,
+        "missing": []
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "attempt-start-proxy",
+      "acs": [
+        "REQ-014-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "duration_seconds": 300,
+        "start_source": "attempt_start",
+        "approximate": true
+      },
+      "actual": {
+        "duration_seconds": 300.0,
+        "start_at": "2026-10-08T02:00:00Z",
+        "start_source": "attempt_start",
+        "approximate": true,
+        "complete": true,
+        "missing": []
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "no-current-attempt-start",
+      "acs": [
+        "REQ-014-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "duration_seconds": null,
+        "start_at": null,
+        "complete": false,
+        "valid": 0,
+        "workflow_count": 1
+      },
+      "actual": {
+        "duration_seconds": null,
+        "start_at": null,
+        "start_source": null,
+        "approximate": false,
+        "complete": false,
+        "missing": [
+          "无本次 attempt 起点证据，E2E 留空"
+        ],
+        "valid": 0,
+        "workflow_count": 1
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "attempt-csv-source-and-unknown-value",
+      "acs": [
+        "REQ-014-AC04",
+        "REQ-017-AC02"
+      ],
+      "scope": "synthetic in-memory CSV; UI alignment belongs to browser reviewer",
+      "expected": [
+        {
+          "start_source": "",
+          "approximate": "False",
+          "duration_seconds": ""
+        },
+        {
+          "start_source": "trigger_event",
+          "approximate": "False",
+          "duration_seconds": "300.0"
+        },
+        {
+          "start_source": "attempt_start",
+          "approximate": "True",
+          "duration_seconds": "300.0"
+        }
+      ],
+      "actual": [
+        {
+          "start_source": "",
+          "approximate": "False",
+          "duration_seconds": ""
+        },
+        {
+          "start_source": "trigger_event",
+          "approximate": "False",
+          "duration_seconds": "300.0"
+        },
+        {
+          "start_source": "attempt_start",
+          "approximate": "True",
+          "duration_seconds": "300.0"
+        }
+      ],
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "explicit-attempt-history-and-dedup",
+      "acs": [
+        "REQ-015-AC01",
+        "REQ-015-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "attempts": [
+          1,
+          2
+        ],
+        "job_ids": [
+          11,
+          22
+        ]
+      },
+      "actual": {
+        "attempts": [
+          1,
+          2
+        ],
+        "job_ids": [
+          11,
+          22
+        ]
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "provided-old-run-current-attempt",
+      "acs": [
+        "REQ-015-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "count": 1,
+        "duration_seconds": 300
+      },
+      "actual": {
+        "count": 1,
+        "duration_seconds": 300.0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "unresolved-run-attempt-isolation",
+      "acs": [
+        "REQ-015-AC04"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "count": 3,
+        "unique_ids": 3,
+        "missing_pr": 3
+      },
+      "actual": {
+        "count": 3,
+        "unique_ids": 3,
+        "missing_pr": 3
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "collector-still-enumerates-only-current-attempt",
+      "acs": [
+        "REQ-015-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "attempts": [
+          1,
+          2,
+          3
+        ]
+      },
+      "actual": {
+        "attempts": [
+          3
+        ],
+        "job_calls": [
+          "/actions/runs/1/attempts/3/jobs"
+        ],
+        "batches": 1
+      },
+      "passed": false,
+      "location": "triton/dashboard.py:470-491",
+      "severity": "P1"
+    },
+    {
+      "id": "collector-old-run-beyond-lookback-is-lost",
+      "acs": [
+        "REQ-015-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "attempts": [
+          2
+        ],
+        "batches": 1
+      },
+      "actual": {
+        "attempts": [],
+        "job_calls": [],
+        "batches": 0
+      },
+      "passed": false,
+      "location": "triton/dashboard.py:192,457-471",
+      "severity": "P1"
+    },
+    {
+      "id": "workflow-schema-missing",
+      "acs": [
+        "REQ-018-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: page 1 response has no usable 'workflow_runs' array"
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "workflow-schema-null",
+      "acs": [
+        "REQ-018-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: page 1 response has no usable 'workflow_runs' array"
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "workflow-schema-object",
+      "acs": [
+        "REQ-018-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: page 1 response has no usable 'workflow_runs' array"
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "legal-zero-page",
+      "acs": [
+        "REQ-018-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "rejected": false,
+        "count": 0
+      },
+      "actual": {
+        "rejected": false,
+        "count": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "duplicate-page-id",
+      "acs": [
+        "REQ-018-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: duplicate record id=0 across pages"
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "declared-count-missing-page",
+      "acs": [
+        "REQ-018-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": true,
+        "error": "/actions/runs: pagination incomplete: total_count=101, received 100"
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "declared-count-changes-hide-truncation",
+      "acs": [
+        "REQ-018-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": false,
+        "count": 100
+      },
+      "passed": false,
+      "location": "triton/dashboard.py:362-373",
+      "severity": "P2"
+    },
+    {
+      "id": "duplicate-records-without-id",
+      "acs": [
+        "REQ-018-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "rejected": true
+      },
+      "actual": {
+        "rejected": false,
+        "count": 200
+      },
+      "passed": false,
+      "location": "triton/dashboard.py:364-369",
+      "severity": "P2"
+    },
+    {
+      "id": "baseline-quality-control",
+      "acs": [
+        "REQ-019-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": true
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "rerun-end-before-start",
+      "acs": [
+        "REQ-019-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "batch 23-abc-rerun-1-2: end before start"
+        ],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "completed-after-as-of",
+      "acs": [
+        "REQ-019-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "run 1: completion time beyond the as-of reference"
+        ],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "other-workflow-masks-inverted-applicable-start",
+      "acs": [
+        "REQ-019-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 2,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": false,
+      "location": "triton/quality.py:28-38; triton/dashboard.py:231-248",
+      "severity": "P2"
+    },
+    {
+      "id": "invalid-as-of-missing",
+      "acs": [
+        "REQ-019-AC02",
+        "REQ-019-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": false,
+      "location": "triton/quality.py:15-18",
+      "severity": "P2"
+    },
+    {
+      "id": "invalid-as-of-invalid",
+      "acs": [
+        "REQ-019-AC02",
+        "REQ-019-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": false,
+      "location": "triton/quality.py:15-18",
+      "severity": "P2"
+    },
+    {
+      "id": "quality-duration-negative",
+      "acs": [
+        "REQ-019-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0,
+        "input_duration": -1,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 0,
+          "median": null,
+          "p90": null,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      },
+      "passed": false,
+      "location": "triton/quality.py:77-89",
+      "severity": "P2"
+    },
+    {
+      "id": "quality-duration-null",
+      "acs": [
+        "REQ-019-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0,
+        "input_duration": null,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 0,
+          "median": null,
+          "p90": null,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      },
+      "passed": false,
+      "location": "triton/quality.py:77-89",
+      "severity": "P2"
+    },
+    {
+      "id": "quality-duration-bool",
+      "acs": [
+        "REQ-019-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0,
+        "input_duration": true,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 0,
+          "median": null,
+          "p90": null,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      },
+      "passed": false,
+      "location": "triton/quality.py:77-89",
+      "severity": "P2"
+    },
+    {
+      "id": "quality-duration-string",
+      "acs": [
+        "REQ-019-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0,
+        "input_duration": "300",
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 0,
+          "median": null,
+          "p90": null,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      },
+      "passed": false,
+      "location": "triton/quality.py:77-89",
+      "severity": "P2"
+    },
+    {
+      "id": "quality-duration-wrong-span",
+      "acs": [
+        "REQ-019-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0,
+        "input_duration": 999,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 999,
+          "p90": 999,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      },
+      "passed": false,
+      "location": "triton/quality.py:77-89",
+      "severity": "P2"
+    },
+    {
+      "id": "quality-contradictory-summary",
+      "acs": [
+        "REQ-019-AC02",
+        "REQ-046-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 99,
+          "median": 300.0,
+          "p90": 999,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      },
+      "passed": false,
+      "location": "triton/quality.py:13-92",
+      "severity": "P2"
+    },
+    {
+      "id": "running-nan-observed-span",
+      "acs": [
+        "REQ-019-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": false,
+      "location": "triton/quality.py:85-89",
+      "severity": "P2"
+    },
+    {
+      "id": "npu-inverted-source-warning",
+      "acs": [
+        "REQ-019-AC04"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": true,
+        "warnings": 1,
+        "queue": null
+      },
+      "actual": {
+        "passed": true,
+        "warnings": 1,
+        "queue": null
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "npu-unstarted-skipped",
+      "acs": [
+        "REQ-019-AC04"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": true
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "npu-unstarted-cancelled",
+      "acs": [
+        "REQ-019-AC04"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "passed": true
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": [],
+        "runs": 1,
+        "batches": 1,
+        "npu_points": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "current-ubs-independent-values",
+      "acs": [
+        "REQ-041-AC01",
+        "REQ-041-AC04"
+      ],
+      "scope": "real current snapshots; not original 203/826 freeze",
+      "expected": {
+        "differences": []
+      },
+      "actual": {
+        "counts": {
+          "prs": 193,
+          "batches": 800,
+          "x86": 184,
+          "arm": 193,
+          "dt": 184
+        },
+        "differences": []
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "current-ubs-identities",
+      "acs": [
+        "REQ-041-AC04"
+      ],
+      "scope": "real preserved snapshots",
+      "expected": {
+        "duplicate_prs": 0,
+        "duplicate_batches": 0
+      },
+      "actual": {
+        "duplicate_prs": 0,
+        "duplicate_batches": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "current-triton-summary",
+      "acs": [
+        "REQ-046-AC01"
+      ],
+      "scope": "real current snapshots",
+      "expected": {
+        "prs": 44,
+        "batches": 80,
+        "valid": 78,
+        "median": 1810.5,
+        "p90": 5888.7,
+        "approximate": 80,
+        "incomplete": 0
+      },
+      "actual": {
+        "prs": 44,
+        "batches": 80,
+        "valid": 78,
+        "median": 1810.5,
+        "p90": 5888.7,
+        "approximate": 80,
+        "incomplete": 0,
+        "api_calls": 674
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "current-triton-npu-and-boundaries",
+      "acs": [
+        "REQ-046-AC01",
+        "REQ-046-AC02"
+      ],
+      "scope": "real preserved snapshots",
+      "expected": {
+        "inverted_jobs": 9,
+        "inverted_batches": 5,
+        "differences": []
+      },
+      "actual": {
+        "npu_points": 61,
+        "approximate": 80,
+        "inverted_jobs": 9,
+        "inverted_batches": 5,
+        "differences": []
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "current-triton-quality-retains-warnings",
+      "acs": [
+        "REQ-046-AC02"
+      ],
+      "scope": "derived reconstruction, not raw source",
+      "expected": {
+        "passed": true,
+        "warnings": 9
+      },
+      "actual": {
+        "passed": true,
+        "warnings": 9
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "original-triton-freeze-summary",
+      "acs": [
+        "REQ-046-AC01"
+      ],
+      "scope": "real original frozen fixture",
+      "expected": {
+        "prs": 38,
+        "batches": 66,
+        "valid": 65,
+        "median": 1580,
+        "p90": 3620.2,
+        "approximate": 66,
+        "incomplete": 0
+      },
+      "actual": {
+        "prs": 38,
+        "batches": 66,
+        "valid": 65,
+        "median": 1580.0,
+        "p90": 3620.2000000000003,
+        "approximate": 66,
+        "incomplete": 0,
+        "api_calls": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "original-triton-freeze-queue-warning-preservation",
+      "acs": [
+        "REQ-046-AC01",
+        "REQ-046-AC02"
+      ],
+      "scope": "real original frozen fixture",
+      "expected": {
+        "npu_points": 48,
+        "warnings": 9,
+        "passed": true
+      },
+      "actual": {
+        "npu_points": 48,
+        "warnings": 9,
+        "passed": true
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "fixture-triton.json",
+      "acs": [
+        "REQ-037-AC01",
+        "REQ-037-AC02",
+        "REQ-037-AC03",
+        "REQ-046-AC04"
+      ],
+      "scope": "fixture",
+      "expected": {
+        "prs": 2,
+        "batches": 5,
+        "valid": 3,
+        "median": 600,
+        "p90": 840.0,
+        "approximate": 5,
+        "incomplete": 1,
+        "api_calls": 0
+      },
+      "actual": {
+        "prs": 2,
+        "batches": 5,
+        "valid": 3,
+        "median": 600,
+        "p90": 840,
+        "approximate": 5,
+        "incomplete": 1,
+        "api_calls": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "fixture-kinds-triton.json",
+      "acs": [
+        "REQ-037-AC02"
+      ],
+      "scope": "fixture",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "fixture-triton-zero.json",
+      "acs": [
+        "REQ-037-AC01",
+        "REQ-037-AC02",
+        "REQ-037-AC03",
+        "REQ-046-AC04"
+      ],
+      "scope": "fixture",
+      "expected": {
+        "prs": 0,
+        "batches": 0,
+        "valid": 0,
+        "median": null,
+        "p90": null,
+        "approximate": 0,
+        "incomplete": 0,
+        "api_calls": 0
+      },
+      "actual": {
+        "prs": 0,
+        "batches": 0,
+        "valid": 0,
+        "median": null,
+        "p90": null,
+        "approximate": 0,
+        "incomplete": 0,
+        "api_calls": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "fixture-kinds-triton-zero.json",
+      "acs": [
+        "REQ-037-AC02"
+      ],
+      "scope": "fixture",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "fixture-triton-single.json",
+      "acs": [
+        "REQ-037-AC01",
+        "REQ-037-AC02",
+        "REQ-037-AC03",
+        "REQ-046-AC04"
+      ],
+      "scope": "fixture",
+      "expected": {
+        "prs": 1,
+        "batches": 1,
+        "valid": 1,
+        "median": 720,
+        "p90": 720,
+        "approximate": 1,
+        "incomplete": 0,
+        "api_calls": 0
+      },
+      "actual": {
+        "prs": 1,
+        "batches": 1,
+        "valid": 1,
+        "median": 720,
+        "p90": 720,
+        "approximate": 1,
+        "incomplete": 0,
+        "api_calls": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "fixture-kinds-triton-single.json",
+      "acs": [
+        "REQ-037-AC02"
+      ],
+      "scope": "fixture",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "numeric-boundaries-node",
+      "acs": [
+        "REQ-017-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "count": 0,
+        "average": null,
+        "p50": null,
+        "p90": null
+      },
+      "actual": {
+        "max": 300,
+        "p90": null,
+        "p50": null,
+        "average": null,
+        "count": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "numeric-boundaries-python",
+      "acs": [
+        "REQ-017-AC01"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "valid": 0,
+        "median": null,
+        "p90": null
+      },
+      "actual": {
+        "prs": 1,
+        "batches": 3,
+        "valid": 0,
+        "median": null,
+        "p90": null,
+        "approximate": 0,
+        "incomplete": 0,
+        "api_calls": 0
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "mixed-validity-node",
+      "acs": [
+        "REQ-017-AC02",
+        "REQ-017-AC03",
+        "REQ-017-AC04"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "count": 3,
+        "average": 500.0,
+        "p50": 600.0,
+        "p90": 840.0
+      },
+      "actual": {
+        "max": 1200,
+        "p90": 840,
+        "p50": 600,
+        "average": 500,
+        "count": 3
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "all-unmatched-group-shapes",
+      "acs": [
+        "REQ-016-AC01",
+        "REQ-016-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": [
+        [
+          "a",
+          "b",
+          "c"
+        ],
+        [
+          "a",
+          "b"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "actual": [
+        [
+          "a",
+          "b",
+          "c"
+        ],
+        [
+          "a",
+          "b"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "ubs-tie-same-batch-no-fallback",
+      "acs": [
+        "REQ-041-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "representative_batch_number": 2,
+        "representative_batch_url": "new",
+        "x86": {
+          "url": null,
+          "total_ms": null
+        }
+      },
+      "actual": {
+        "representative_batch_url": "new",
+        "representative_batch_number": 2,
+        "e2e_ms": 300,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "ubs-ambiguous-category-no-fallback",
+      "acs": [
+        "REQ-041-AC02"
+      ],
+      "scope": "synthetic",
+      "expected": {
+        "representative_batch_number": 2,
+        "x86": {
+          "url": null,
+          "total_ms": null
+        }
+      },
+      "actual": {
+        "representative_batch_url": "new",
+        "representative_batch_number": 2,
+        "e2e_ms": 300,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "ubs-cross-repo-status-stale-zero",
+      "acs": [
+        "REQ-041-AC03"
+      ],
+      "scope": "synthetic",
+      "expected": [
+        {
+          "name": "success",
+          "included": true,
+          "count": 1
+        },
+        {
+          "name": "partial",
+          "included": true,
+          "count": 1
+        },
+        {
+          "name": "failed",
+          "included": false,
+          "count": 0
+        },
+        {
+          "name": "stale",
+          "included": false,
+          "count": 0
+        },
+        {
+          "name": "zero",
+          "included": true,
+          "count": 0
+        }
+      ],
+      "actual": [
+        {
+          "name": "success",
+          "included": true,
+          "count": 1
+        },
+        {
+          "name": "partial",
+          "included": true,
+          "count": 1
+        },
+        {
+          "name": "failed",
+          "included": false,
+          "count": 0
+        },
+        {
+          "name": "stale",
+          "included": false,
+          "count": 0
+        },
+        {
+          "name": "zero",
+          "included": true,
+          "count": 0
+        }
+      ],
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    },
+    {
+      "id": "current-ubs-independent-cross-repo-aggregate",
+      "acs": [
+        "REQ-041-AC01"
+      ],
+      "scope": "real current snapshots",
+      "expected": {
+        "e2e": {
+          "n": 193,
+          "mean": 19552392.968911916,
+          "p90": 3474601.200000011
+        },
+        "x86": {
+          "queue": {
+            "n": 184,
+            "mean": 8498.119565217392,
+            "p90": 12226.5
+          },
+          "duration": {
+            "n": 184,
+            "mean": 99104.46739130435,
+            "p90": 357514.7000000001
+          },
+          "total": {
+            "n": 184,
+            "mean": 107602.58695652174,
+            "p90": 380237.40000000026
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 193,
+            "mean": 7829.072538860104,
+            "p90": 11222.000000000002
+          },
+          "duration": {
+            "n": 193,
+            "mean": 189162.73056994818,
+            "p90": 397752.2
+          },
+          "total": {
+            "n": 193,
+            "mean": 196991.8031088083,
+            "p90": 425165.4000000003
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 184,
+            "mean": 81612.42934782608,
+            "p90": 13071.700000000008
+          },
+          "duration": {
+            "n": 184,
+            "mean": 525887.4347826086,
+            "p90": 1247637.6
+          },
+          "total": {
+            "n": 184,
+            "mean": 607499.8641304348,
+            "p90": 1275569.6
+          }
+        }
+      },
+      "actual": {
+        "e2e": {
+          "n": 193,
+          "mean": 19552392.968911916,
+          "p90": 3474601.200000011
+        },
+        "x86": {
+          "queue": {
+            "n": 184,
+            "mean": 8498.119565217392,
+            "p90": 12226.5
+          },
+          "duration": {
+            "n": 184,
+            "mean": 99104.46739130435,
+            "p90": 357514.7000000001
+          },
+          "total": {
+            "n": 184,
+            "mean": 107602.58695652174,
+            "p90": 380237.40000000026
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 193,
+            "mean": 7829.072538860104,
+            "p90": 11222.000000000002
+          },
+          "duration": {
+            "n": 193,
+            "mean": 189162.73056994818,
+            "p90": 397752.2
+          },
+          "total": {
+            "n": 193,
+            "mean": 196991.8031088083,
+            "p90": 425165.4000000003
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 184,
+            "mean": 81612.42934782608,
+            "p90": 13071.700000000008
+          },
+          "duration": {
+            "n": 184,
+            "mean": 525887.4347826086,
+            "p90": 1247637.6
+          },
+          "total": {
+            "n": 184,
+            "mean": 607499.8641304348,
+            "p90": 1275569.6
+          }
+        }
+      },
+      "passed": true,
+      "location": "",
+      "severity": "P2"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "audit/2026-10-09/evidence/requirements-model.json",
+      "sha256": "9e84953adb5bc63e9c6b0dbe8f92f7c8c8ef568ebc8fb015be55c434b8a0697b",
+      "bytes": 72456
+    },
+    {
+      "path": "web/data/repositories.json",
+      "sha256": "2e1de389998f46e07f5ee2aa55f21d1fabedc2117ee92cc9793ceef4cb7f3ebd",
+      "bytes": 55000
+    },
+    {
+      "path": "web/data/repos/ubs-engine.json",
+      "sha256": "fa2ecb40eab802b20294443f8788927864292f2cf2ee590aba34d797c1b0a879",
+      "bytes": 1845753
+    },
+    {
+      "path": "web/data/repos/ubs-comm.json",
+      "sha256": "3d05a35137ecd7be244ac50b86cf1cc6d7d6424c673cb27b801c07068e8fe5e1",
+      "bytes": 882378
+    },
+    {
+      "path": "web/data/repos/ubs-virt.json",
+      "sha256": "63daa6f53113623866543045fd18c795ba0b6c6cb070d2973270754dcafe7bc2",
+      "bytes": 1626071
+    },
+    {
+      "path": "web/data/repos/ubs-io.json",
+      "sha256": "75f6d4b459387a4e4a7222fa8b31bb5162737202fa5b0b99fb4cf42fe3f8284b",
+      "bytes": 100459
+    },
+    {
+      "path": "web/data/repos/ubs-mem.json",
+      "sha256": "4439c184fde147eed97f1b1fe8de92f898be9982a52dbd2081a265f7f37e1039",
+      "bytes": 296885
+    },
+    {
+      "path": "web/data/repos/OmniStateStore.json",
+      "sha256": "9232b2c79fa00caeebfe30c2f84105aba4e6abb5a6c5f0a4cd7b816e3c8a1020",
+      "bytes": 402381
+    },
+    {
+      "path": "web/data/repos/ham.json",
+      "sha256": "7f154d8c9a0e078b4f4af8cc19c7260740254c89a1d82cc81583290677ef0445",
+      "bytes": 56481
+    },
+    {
+      "path": "web/data/repos/ubturbo.json",
+      "sha256": "94e7dad30fde06bf72807f9e4729b5e64c10ff2e51b4ddf0468ee0ba9d72be72",
+      "bytes": 654124
+    },
+    {
+      "path": "web/data/repos/ubs-atomic.json",
+      "sha256": "df2d5aa5c68c3d4251d1b3fbef12d41125c131f6139353391f1783598b62a290",
+      "bytes": 172599
+    },
+    {
+      "path": "web/data/triton.json",
+      "sha256": "91cffcd81fcec98bc1a807a7969296f1f34e350629f4a7d4f9546d89d6a9d2e9",
+      "bytes": 1521357
+    },
+    {
+      "path": "tests/fixtures/triton-audit-freeze.json",
+      "sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+      "bytes": 1209308
+    },
+    {
+      "path": "tests/fixtures/minimal/triton.json",
+      "sha256": "b9d62da659706a8ea6a5ad9f083d0c21a01e799631738ee97eca4fb760e2ac0b",
+      "bytes": 15387
+    },
+    {
+      "path": "tests/fixtures/minimal/triton-zero.json",
+      "sha256": "2cfa5522dcc32971559c54fac758315ebf12f0d7347fd2060a06044985f48f99",
+      "bytes": 350
+    },
+    {
+      "path": "tests/fixtures/minimal/triton-single.json",
+      "sha256": "1e872255ce9c2a1b727343fde6424b7d39589bcbbdf4d0b8fd1717da42590ac2",
+      "bytes": 3369
+    }
+  ],
+  "real": {
+    "ubs_counts": {
+      "prs": 193,
+      "batches": 800,
+      "x86": 184,
+      "arm": 193,
+      "dt": 184
+    },
+    "ubs_gaps": {
+      "unlinked_requests": 12,
+      "missing_request": 6,
+      "incomplete": 17,
+      "running": 1,
+      "cancelled": 16
+    },
+    "triton_summary": {
+      "prs": 44,
+      "batches": 80,
+      "valid": 78,
+      "median": 1810.5,
+      "p90": 5888.7,
+      "approximate": 80,
+      "incomplete": 0
+    },
+    "frozen_equal": false,
+    "npu_warnings": [
+      {
+        "batch": "2460-53a3d701136cd2687787fd5f1a244182b4c77b08-rerun-37723445447-2",
+        "job": 113220202640,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      },
+      {
+        "batch": "2460-53a3d701136cd2687787fd5f1a244182b4c77b08-rerun-37723445447-2",
+        "job": 113220256581,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      },
+      {
+        "batch": "2280-c02a06de3ae84d974247a82248970925bfbb17ce-rerun-37763352046-2",
+        "job": 113282355375,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      },
+      {
+        "batch": "2280-c02a06de3ae84d974247a82248970925bfbb17ce-rerun-37763352046-2",
+        "job": 113282356161,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      },
+      {
+        "batch": "2338-55be5c2e80ee58f2fcaad1bbdc690478dead419a-rerun-37763354241-2",
+        "job": 113273402552,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      },
+      {
+        "batch": "2338-55be5c2e80ee58f2fcaad1bbdc690478dead419a-rerun-37763354241-2",
+        "job": 113273402879,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      },
+      {
+        "batch": "2172-1dc121ff68de4c83d9c9da10e79da866fe743419-rerun-37763354034-2",
+        "job": 113282115784,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      },
+      {
+        "batch": "2172-1dc121ff68de4c83d9c9da10e79da866fe743419-rerun-37763354034-2",
+        "job": 113282115995,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      },
+      {
+        "batch": "2331-6660627371475594e5ab6cd405d4b3791746cbe0-rerun-37763353883-2",
+        "job": 113398006417,
+        "queue": null,
+        "error": "源时间戳异常：开始时间早于创建时间"
+      }
+    ],
+    "reconstructed_quality": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "run 37723445447 job 113220202640: source timestamps inverted; excluded from queue statistics",
+        "run 37723445447 job 113220256581: source timestamps inverted; excluded from queue statistics",
+        "run 37763352046 job 113282355375: source timestamps inverted; excluded from queue statistics",
+        "run 37763352046 job 113282356161: source timestamps inverted; excluded from queue statistics",
+        "run 37763354241 job 113273402552: source timestamps inverted; excluded from queue statistics",
+        "run 37763354241 job 113273402879: source timestamps inverted; excluded from queue statistics",
+        "run 37763354034 job 113282115784: source timestamps inverted; excluded from queue statistics",
+        "run 37763354034 job 113282115995: source timestamps inverted; excluded from queue statistics",
+        "run 37763353883 job 113398006417: source timestamps inverted; excluded from queue statistics"
+      ],
+      "runs": 548,
+      "batches": 80,
+      "npu_points": 61
+    },
+    "independent_ubs_aggregate": {
+      "e2e": {
+        "n": 193,
+        "mean": 19552392.968911916,
+        "p90": 3474601.200000011
+      },
+      "x86": {
+        "queue": {
+          "n": 184,
+          "mean": 8498.119565217392,
+          "p90": 12226.5
+        },
+        "duration": {
+          "n": 184,
+          "mean": 99104.46739130435,
+          "p90": 357514.7000000001
+        },
+        "total": {
+          "n": 184,
+          "mean": 107602.58695652174,
+          "p90": 380237.40000000026
+        }
+      },
+      "arm": {
+        "queue": {
+          "n": 193,
+          "mean": 7829.072538860104,
+          "p90": 11222.000000000002
+        },
+        "duration": {
+          "n": 193,
+          "mean": 189162.73056994818,
+          "p90": 397752.2
+        },
+        "total": {
+          "n": 193,
+          "mean": 196991.8031088083,
+          "p90": 425165.4000000003
+        }
+      },
+      "dt": {
+        "queue": {
+          "n": 184,
+          "mean": 81612.42934782608,
+          "p90": 13071.700000000008
+        },
+        "duration": {
+          "n": 184,
+          "mean": 525887.4347826086,
+          "p90": 1247637.6
+        },
+        "total": {
+          "n": 184,
+          "mean": 607499.8641304348,
+          "p90": 1275569.6
+        }
+      }
+    },
+    "frozen_ubs_original_203_826_status": "unverified: original full UBS frozen corpus is not available in this workspace",
+    "frozen_triton_quality": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "run 37723445447 job 113220202640: source timestamps inverted; excluded from queue statistics",
+        "run 37723445447 job 113220256581: source timestamps inverted; excluded from queue statistics",
+        "run 37763352046 job 113282355375: source timestamps inverted; excluded from queue statistics",
+        "run 37763352046 job 113282356161: source timestamps inverted; excluded from queue statistics",
+        "run 37763354241 job 113273402552: source timestamps inverted; excluded from queue statistics",
+        "run 37763354241 job 113273402879: source timestamps inverted; excluded from queue statistics",
+        "run 37763354034 job 113282115784: source timestamps inverted; excluded from queue statistics",
+        "run 37763354034 job 113282115995: source timestamps inverted; excluded from queue statistics",
+        "run 37763353883 job 113398006417: source timestamps inverted; excluded from queue statistics"
+      ],
+      "runs": 434,
+      "batches": 66,
+      "npu_points": 48
+    },
+    "node_ubs_aggregate": {
+      "e2e": {
+        "n": 193,
+        "mean": 19552392.968911916,
+        "p90": 3474601.200000011
+      },
+      "x86": {
+        "queue": {
+          "n": 184,
+          "mean": 8498.119565217392,
+          "p90": 12226.5
+        },
+        "duration": {
+          "n": 184,
+          "mean": 99104.46739130435,
+          "p90": 357514.7000000001
+        },
+        "total": {
+          "n": 184,
+          "mean": 107602.58695652174,
+          "p90": 380237.40000000026
+        }
+      },
+      "arm": {
+        "queue": {
+          "n": 193,
+          "mean": 7829.072538860104,
+          "p90": 11222.000000000002
+        },
+        "duration": {
+          "n": 193,
+          "mean": 189162.73056994818,
+          "p90": 397752.2
+        },
+        "total": {
+          "n": 193,
+          "mean": 196991.8031088083,
+          "p90": 425165.4000000003
+        }
+      },
+      "dt": {
+        "queue": {
+          "n": 184,
+          "mean": 81612.42934782608,
+          "p90": 13071.700000000008
+        },
+        "duration": {
+          "n": 184,
+          "mean": 525887.4347826086,
+          "p90": 1247637.6
+        },
+        "total": {
+          "n": 184,
+          "mean": 607499.8641304348,
+          "p90": 1275569.6
+        }
+      }
+    }
+  },
+  "limits": [
+    "No live API, collector cache writes, refresh, migration or deployment occurred; collect() is called only with all I/O mocked.",
+    "Current frozen snapshots are preserved inputs; their agreement cannot establish real source pagination or complete attempt history.",
+    "Full raw source evidence is not present; source accuracy and historical impact are unverified.",
+    "REQ-014 AC04/REQ-016 AC03-04 UI/CSV checks belong to browser reviewer; these cases only establish pure data behavior.",
+    "audit/2026-10-09 is read only; .playwright-mcp is untouched. Root coordinates the required commit."
+  ],
+  "requirements": [
+    {
+      "id": "REQ-014",
+      "title": "重跑E2E使用本次attempt的可证明起点",
+      "priority": "P1",
+      "kind": "整改",
+      "source_findings": [
+        "F08"
+      ],
+      "goal": "避免把两次运行之间的间隔算成本次重跑等待。",
+      "rule": "优先使用本次重跑触发事件；缺少精确触发证据时使用可证明的本次attempt起点并标记近似。不能沿用原run首次创建时间。没有本次起点证据时E2E留空并明示缺口。",
+      "acceptance": [
+        {
+          "id": "REQ-014-AC01",
+          "text": "合成输入：原run00:00、attempt2可信触发02:00、最后结束02:05，E2E为300秒，而非7500秒。"
+        },
+        {
+          "id": "REQ-014-AC02",
+          "text": "只提供attempt2开始02:00、结束02:05时，可展示300秒已观测近似跨度，必须注明起点来源与approximate；不能称为已经证明的真实提交E2E。"
+        },
+        {
+          "id": "REQ-014-AC03",
+          "text": "没有任何本次起点证据时，不从原run创建时间或时间接近猜起点；保持批次和workflow明细可见，E2E为空且不参与完成耗时统计。"
+        },
+        {
+          "id": "REQ-014-AC04",
+          "text": "批次起点、图表、详情、汇总和CSV使用同一时间来源与近似标记；真实历史影响只有完成REQ-038后才可下结论。"
+        }
+      ],
+      "evidence_checks": [
+        "S01"
+      ],
+      "dependencies": [
+        "REQ-015",
+        "REQ-019"
+      ]
+    },
+    {
+      "id": "REQ-015",
+      "title": "attempt独立身份与历史明细保留",
+      "priority": "P1",
+      "kind": "整改",
+      "source_findings": [
+        "F08"
+      ],
+      "goal": "使每次重跑可单独追踪，历史attempt不会被最新一次覆盖。",
+      "rule": "attempt身份包含run_id与attempt编号，并保留PR/head SHA关联证据；初次提交仍按既有PR+SHA批次聚合，多workflow并行不制造重复初始点。",
+      "acceptance": [
+        {
+          "id": "REQ-015-AC01",
+          "text": "同一run的attempt1、attempt2输入后，两次历史身份及其各自jobs均保留，不能只剩最新attempt；重复采集同一attempt不会重复计数。"
+        },
+        {
+          "id": "REQ-015-AC02",
+          "text": "采集窗口内实际触发的重跑即使原run首次创建在窗口外也能被识别；窗口外证据只用于关联时不得误计入当前窗口。"
+        },
+        {
+          "id": "REQ-015-AC03",
+          "text": "相同SHA的辅助workflow保持既有初次批次聚合，独立重跑不并回初次提交，也不与别的run/attempt串用任务。"
+        },
+        {
+          "id": "REQ-015-AC04",
+          "text": "无法可靠关联PR时，按run/attempt隔离并明示缺证据；不能按标题或时间接近猜PR。真实历史核验保留各attempt原始输入。"
+        }
+      ],
+      "evidence_checks": [
+        "S01",
+        "D10"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "REQ-016",
+      "title": "事件关联失配批次完整下钻",
+      "priority": "P2",
+      "kind": "整改",
+      "source_findings": [
+        "F09"
+      ],
+      "goal": "在关联证据缺失时仍完整展示PR批次。",
+      "rule": "已知事件先展示，未能归入已知事件的所有批次进入“关联未知/失配”组；event_id为空与非空失配均不能遗漏。",
+      "acceptance": [
+        {
+          "id": "REQ-016-AC01",
+          "text": "合成PR共有3批，其中一批event_id不在events，详情显示3批而非2批。"
+        },
+        {
+          "id": "REQ-016-AC02",
+          "text": "空event_id、未知非空event_id、无events、重复events场景下，每个批次身份恰好展示一次。"
+        },
+        {
+          "id": "REQ-016-AC03",
+          "text": "失配原因与原始批次链接可见；该PR批次CSV包含同一完整集合，不因分组变化丢行。"
+        },
+        {
+          "id": "REQ-016-AC04",
+          "text": "代表批次在未知组时仍可标注代表并默认展开；不得为显示完整而伪造事件。"
+        }
+      ],
+      "evidence_checks": [
+        "U37",
+        "U24",
+        "U25"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "REQ-017",
+      "title": "Triton数值有效性统一过滤",
+      "priority": "P2",
+      "kind": "整改",
+      "source_findings": [
+        "F10"
+      ],
+      "goal": "保证缺失和非法耗时不会污染计数、平均与分位数。",
+      "rule": "有效耗时必须是有限且非负的原始数值；缺失、null、空串、数字字符串、NaN、无穷或负值不转换为有效0。适用于汇总、图内统计、阈值和小样本策略。",
+      "acceptance": [
+        {
+          "id": "REQ-017-AC01",
+          "text": "成功null、失败空串、成功-1秒三条输入的有效完成count为0，平均/P50/P90为空。"
+        },
+        {
+          "id": "REQ-017-AC02",
+          "text": "真实数值0作为合法0保留；无值与合法0在展示、图表和CSV中可区分。"
+        },
+        {
+          "id": "REQ-017-AC03",
+          "text": "混合有效/无效样本的分母只包含适用状态下的有效数值，独立重算平均与分位数完全一致。"
+        },
+        {
+          "id": "REQ-017-AC04",
+          "text": "运行中与取消仍可按有效已观测值展示，但不成为成功/失败完成E2E统计样本；无效点不得静默画在0位置。"
+        }
+      ],
+      "evidence_checks": [
+        "S04",
+        "D08",
+        "A13-e2e"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "REQ-018",
+      "title": "GitHub响应字段与分页契约校验",
+      "priority": "P2",
+      "kind": "整改",
+      "source_findings": [
+        "F11"
+      ],
+      "goal": "防止坏响应被当成合法零数据发布。",
+      "rule": "读取workflow_runs、jobs及必要关联数据时校验必要字段、容器类型和分页完整性；缺字段和错误响应必须产生可辨识失败。",
+      "acceptance": [
+        {
+          "id": "REQ-018-AC01",
+          "text": "workflow_runs字段缺失、为null或非数组时明确报错，不能返回合法空列表。"
+        },
+        {
+          "id": "REQ-018-AC02",
+          "text": "合法workflow_runs=[]可以表示零数据；其结果与缺字段失败在状态和报告中明确区分。"
+        },
+        {
+          "id": "REQ-018-AC03",
+          "text": "重复分页记录、分页缺失及声明数量与实际记录不符时能识别异常，不静默截断或重复计数。"
+        },
+        {
+          "id": "REQ-018-AC04",
+          "text": "采集契约失败时本次不发布，旧有效快照保持；错误报告指明来源、响应问题及受影响范围，不包含凭证。"
+        }
+      ],
+      "evidence_checks": [
+        "S03"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "REQ-019",
+      "title": "workflow与批次时间异常门禁",
+      "priority": "P2",
+      "kind": "整改",
+      "source_findings": [
+        "F11"
+      ],
+      "goal": "让异常时间不能以补零形式进入有效统计。",
+      "rule": "质量门禁独立检查workflow/批次起止、观测参照、结果状态与汇总；倒置或无效时间明确记录，并排除相关指标或阻断该次发布。",
+      "acceptance": [
+        {
+          "id": "REQ-019-AC01",
+          "text": "completed workflow updated_at早于其适用起点时，不能通过截成0秒使quality.passed为true。"
+        },
+        {
+          "id": "REQ-019-AC02",
+          "text": "缺失、不可解析、结束早于起点、完成时间超出适用as_of等边界有明确检查结果；不伪造精确E2E。"
+        },
+        {
+          "id": "REQ-019-AC03",
+          "text": "运行中只有已观测跨度，as_of和起点可追溯；没有合法完成时间的批次不作为完成样本。"
+        },
+        {
+          "id": "REQ-019-AC04",
+          "text": "源NPU时间倒置继续写warning并留空排队值；合法跳过或取消前未启动不能误判为已完成时间缺失。"
+        }
+      ],
+      "evidence_checks": [
+        "S02",
+        "D09"
+      ],
+      "dependencies": [
+        "REQ-017"
+      ]
+    },
+    {
+      "id": "REQ-037",
+      "title": "最小fixture遵循当前统计契约",
+      "priority": "P3",
+      "kind": "整改",
+      "source_findings": [
+        "F19"
+      ],
+      "goal": "让开发与验收使用的最小数据可靠。",
+      "rule": "fixture的派生summary、批次kind及有效样本语义与实际采集/前端契约一致；示例输入不替代真实来源证据。",
+      "acceptance": [
+        {
+          "id": "REQ-037-AC01",
+          "text": "[600,600,900]三条完成样本的线性插值P90为840秒，fixture不能保存900。"
+        },
+        {
+          "id": "REQ-037-AC02",
+          "text": "fixture kind符合当前initial/rerun语义，必要summary均由同一输入独立重算一致。"
+        },
+        {
+          "id": "REQ-037-AC03",
+          "text": "最小数据、合法零数据、单样本、缺值及重跑fixture均可加载；测试直接核对结果，不只检查字段存在。"
+        }
+      ],
+      "evidence_checks": [
+        "S05"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "REQ-041",
+      "title": "UBS代表值和跨仓算法保持正确",
+      "priority": "P1",
+      "kind": "保持",
+      "source_findings": [],
+      "goal": "整改后维持已经核对正确的UBS统计语义。",
+      "rule": "保持30天创建时间/master PR范围、最长有效终态代表、同代表任务、不平均仓均值/分位数、毫秒计算和线性插值P90。",
+      "acceptance": [
+        {
+          "id": "REQ-041-AC01",
+          "text": "冻结输入全量203 PR/826批次的代表值、事件时间、任务值及跨仓结果与独立重算一致；x86/ARM/DT有效样本仍为191/203/195。"
+        },
+        {
+          "id": "REQ-041-AC02",
+          "text": "E2E相同按trigger编号确定代表；任务缺失或同类关联不唯一留空，不从其他批次补取。"
+        },
+        {
+          "id": "REQ-041-AC03",
+          "text": "当前范围success/partial参与跨仓；失败/过期排除且可解释，合法零PR仓库保留。"
+        },
+        {
+          "id": "REQ-041-AC04",
+          "text": "复合PR主键及批次完整URL唯一；同PR编号跨仓互不污染。新快照验收计算契约，不硬编码旧数量。"
+        }
+      ],
+      "evidence_checks": [
+        "D03",
+        "D04",
+        "D05",
+        "D06",
+        "D07"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "REQ-046",
+      "title": "Triton统计及数据边界保持真实",
+      "priority": "P1",
+      "kind": "保持",
+      "source_findings": [],
+      "goal": "保持已验证正确的派生算法及限制说明。",
+      "rule": "保留批次粒度、并行最后完成墙钟跨度、NPU同批最长有效排队和近似/缺失披露；新增筛选使用同一计算契约。",
+      "acceptance": [
+        {
+          "id": "REQ-046-AC01",
+          "text": "冻结输入的38 PR/66批、65完成样本、48NPU排队点及summary独立重算一致；两图选区样本/平均/P50/P90与适用集合重算一致。"
+        },
+        {
+          "id": "REQ-046-AC02",
+          "text": "全部66个近似起点标记仍如实可见；9条NPU时间倒置涉及5批的排队未知及warning保留，不删除记录或补0来消除缺陷。"
+        },
+        {
+          "id": "REQ-046-AC03",
+          "text": "UBS的12个无trigger请求、6批无唯一请求、17不完整、2运行中、16取消边界继续可追踪；两域粒度及取消统计区别明确。"
+        },
+        {
+          "id": "REQ-046-AC04",
+          "text": "合法零NPU、零批次、单样本和缺值分别表达；新数据按契约计算，不固定未来数量为旧快照值。"
+        }
+      ],
+      "evidence_checks": [
+        "D08",
+        "D09",
+        "A13-e2e",
+        "A13-npu"
+      ],
+      "dependencies": [
+        "REQ-001",
+        "REQ-017",
+        "REQ-019"
+      ]
+    }
+  ],
+  "source_evidence": [
+    {
+      "path": "data/raw",
+      "exists": false,
+      "source_accuracy": "unverified"
+    },
+    {
+      "path": "data/efficiency.sqlite",
+      "exists": false,
+      "source_accuracy": "unverified"
+    },
+    {
+      "path": "evidence/triton/runs.json",
+      "exists": false,
+      "source_accuracy": "unverified"
+    },
+    {
+      "path": "evidence/triton/enriched-runs.json",
+      "exists": false,
+      "source_accuracy": "unverified"
+    },
+    {
+      "path": "evidence/triton/jobs",
+      "exists": false,
+      "source_accuracy": "unverified"
+    },
+    {
+      "path": "web/data/triton-manifest.json",
+      "exists": false,
+      "source_accuracy": "unverified"
+    }
+  ],
+  "ac_coverage": {
+    "REQ-014-AC01": {
+      "cases": [
+        "trusted-attempt-trigger"
+      ],
+      "failed_cases": []
+    },
+    "REQ-014-AC02": {
+      "cases": [
+        "attempt-start-proxy"
+      ],
+      "failed_cases": []
+    },
+    "REQ-014-AC03": {
+      "cases": [
+        "no-current-attempt-start"
+      ],
+      "failed_cases": []
+    },
+    "REQ-014-AC04": {
+      "cases": [
+        "attempt-csv-source-and-unknown-value"
+      ],
+      "failed_cases": []
+    },
+    "REQ-015-AC01": {
+      "cases": [
+        "explicit-attempt-history-and-dedup",
+        "collector-still-enumerates-only-current-attempt"
+      ],
+      "failed_cases": [
+        "collector-still-enumerates-only-current-attempt"
+      ]
+    },
+    "REQ-015-AC02": {
+      "cases": [
+        "provided-old-run-current-attempt",
+        "collector-old-run-beyond-lookback-is-lost"
+      ],
+      "failed_cases": [
+        "collector-old-run-beyond-lookback-is-lost"
+      ]
+    },
+    "REQ-015-AC03": {
+      "cases": [
+        "explicit-attempt-history-and-dedup"
+      ],
+      "failed_cases": []
+    },
+    "REQ-015-AC04": {
+      "cases": [
+        "unresolved-run-attempt-isolation"
+      ],
+      "failed_cases": []
+    },
+    "REQ-016-AC01": {
+      "cases": [
+        "all-unmatched-group-shapes"
+      ],
+      "failed_cases": []
+    },
+    "REQ-016-AC02": {
+      "cases": [
+        "all-unmatched-group-shapes"
+      ],
+      "failed_cases": []
+    },
+    "REQ-016-AC03": {
+      "cases": [],
+      "failed_cases": []
+    },
+    "REQ-016-AC04": {
+      "cases": [],
+      "failed_cases": []
+    },
+    "REQ-017-AC01": {
+      "cases": [
+        "numeric-boundaries-node",
+        "numeric-boundaries-python"
+      ],
+      "failed_cases": []
+    },
+    "REQ-017-AC02": {
+      "cases": [
+        "attempt-csv-source-and-unknown-value",
+        "mixed-validity-node"
+      ],
+      "failed_cases": []
+    },
+    "REQ-017-AC03": {
+      "cases": [
+        "mixed-validity-node"
+      ],
+      "failed_cases": []
+    },
+    "REQ-017-AC04": {
+      "cases": [
+        "mixed-validity-node"
+      ],
+      "failed_cases": []
+    },
+    "REQ-018-AC01": {
+      "cases": [
+        "workflow-schema-missing",
+        "workflow-schema-null",
+        "workflow-schema-object"
+      ],
+      "failed_cases": []
+    },
+    "REQ-018-AC02": {
+      "cases": [
+        "legal-zero-page"
+      ],
+      "failed_cases": []
+    },
+    "REQ-018-AC03": {
+      "cases": [
+        "duplicate-page-id",
+        "declared-count-missing-page",
+        "declared-count-changes-hide-truncation",
+        "duplicate-records-without-id"
+      ],
+      "failed_cases": [
+        "declared-count-changes-hide-truncation",
+        "duplicate-records-without-id"
+      ]
+    },
+    "REQ-018-AC04": {
+      "cases": [],
+      "failed_cases": []
+    },
+    "REQ-019-AC01": {
+      "cases": [
+        "baseline-quality-control",
+        "rerun-end-before-start",
+        "other-workflow-masks-inverted-applicable-start"
+      ],
+      "failed_cases": [
+        "other-workflow-masks-inverted-applicable-start"
+      ]
+    },
+    "REQ-019-AC02": {
+      "cases": [
+        "completed-after-as-of",
+        "invalid-as-of-missing",
+        "invalid-as-of-invalid",
+        "quality-duration-negative",
+        "quality-duration-null",
+        "quality-duration-bool",
+        "quality-duration-string",
+        "quality-duration-wrong-span",
+        "quality-contradictory-summary"
+      ],
+      "failed_cases": [
+        "invalid-as-of-missing",
+        "invalid-as-of-invalid",
+        "quality-duration-negative",
+        "quality-duration-null",
+        "quality-duration-bool",
+        "quality-duration-string",
+        "quality-duration-wrong-span",
+        "quality-contradictory-summary"
+      ]
+    },
+    "REQ-019-AC03": {
+      "cases": [
+        "invalid-as-of-missing",
+        "invalid-as-of-invalid",
+        "running-nan-observed-span"
+      ],
+      "failed_cases": [
+        "invalid-as-of-missing",
+        "invalid-as-of-invalid",
+        "running-nan-observed-span"
+      ]
+    },
+    "REQ-019-AC04": {
+      "cases": [
+        "npu-inverted-source-warning",
+        "npu-unstarted-skipped",
+        "npu-unstarted-cancelled"
+      ],
+      "failed_cases": []
+    },
+    "REQ-037-AC01": {
+      "cases": [
+        "fixture-triton.json",
+        "fixture-triton-zero.json",
+        "fixture-triton-single.json"
+      ],
+      "failed_cases": []
+    },
+    "REQ-037-AC02": {
+      "cases": [
+        "fixture-triton.json",
+        "fixture-kinds-triton.json",
+        "fixture-triton-zero.json",
+        "fixture-kinds-triton-zero.json",
+        "fixture-triton-single.json",
+        "fixture-kinds-triton-single.json"
+      ],
+      "failed_cases": []
+    },
+    "REQ-037-AC03": {
+      "cases": [
+        "fixture-triton.json",
+        "fixture-triton-zero.json",
+        "fixture-triton-single.json"
+      ],
+      "failed_cases": []
+    },
+    "REQ-041-AC01": {
+      "cases": [
+        "current-ubs-independent-values",
+        "current-ubs-independent-cross-repo-aggregate"
+      ],
+      "failed_cases": []
+    },
+    "REQ-041-AC02": {
+      "cases": [
+        "ubs-tie-same-batch-no-fallback",
+        "ubs-ambiguous-category-no-fallback"
+      ],
+      "failed_cases": []
+    },
+    "REQ-041-AC03": {
+      "cases": [
+        "ubs-cross-repo-status-stale-zero"
+      ],
+      "failed_cases": []
+    },
+    "REQ-041-AC04": {
+      "cases": [
+        "current-ubs-independent-values",
+        "current-ubs-identities"
+      ],
+      "failed_cases": []
+    },
+    "REQ-046-AC01": {
+      "cases": [
+        "quality-contradictory-summary",
+        "current-triton-summary",
+        "current-triton-npu-and-boundaries",
+        "original-triton-freeze-summary",
+        "original-triton-freeze-queue-warning-preservation"
+      ],
+      "failed_cases": [
+        "quality-contradictory-summary"
+      ]
+    },
+    "REQ-046-AC02": {
+      "cases": [
+        "current-triton-npu-and-boundaries",
+        "current-triton-quality-retains-warnings",
+        "original-triton-freeze-queue-warning-preservation"
+      ],
+      "failed_cases": []
+    },
+    "REQ-046-AC03": {
+      "cases": [],
+      "failed_cases": []
+    },
+    "REQ-046-AC04": {
+      "cases": [
+        "fixture-triton.json",
+        "fixture-triton-zero.json",
+        "fixture-triton-single.json"
+      ],
+      "failed_cases": []
+    }
+  },
+  "audit_regression_suite": {
+    "returncode": 0,
+    "tests": 10,
+    "explicit_expected_failures": 6,
+    "output": "test_attempt_current_start_control (__main__.DataReviewTests.test_attempt_current_start_control) ... ok\ntest_independent_interpolation (__main__.DataReviewTests.test_independent_interpolation) ... ok\ntest_no_attempt_start_remains_visible_and_unmeasured (__main__.DataReviewTests.test_no_attempt_start_remains_visible_and_unmeasured) ... ok\ntest_pages_schema_controls (__main__.DataReviewTests.test_pages_schema_controls) ... ok\ntest_req015_ac01_collector_keeps_previous_attempts (__main__.DataReviewTests.test_req015_ac01_collector_keeps_previous_attempts) ... expected failure\ntest_req018_ac03_declared_count_drift_rejected (__main__.DataReviewTests.test_req018_ac03_declared_count_drift_rejected) ... expected failure\ntest_req019_ac01_checks_each_workflow_applicable_start (__main__.DataReviewTests.test_req019_ac01_checks_each_workflow_applicable_start) ... expected failure\ntest_req019_ac02_invalid_as_of_rejected (__main__.DataReviewTests.test_req019_ac02_invalid_as_of_rejected) ... expected failure\ntest_req019_ac03_running_nan_not_observed (__main__.DataReviewTests.test_req019_ac03_running_nan_not_observed) ... expected failure\ntest_req019_gate_reconciles_summary (__main__.DataReviewTests.test_req019_gate_reconciles_summary) ... expected failure\n\n----------------------------------------------------------------------\nRan 10 tests in 0.006s\n\nOK (expected failures=6)\n",
+    "interpretation": "Expected failures document unmet acceptance criteria; they are not proof those ACs pass."
+  },
+  "script_sha256": "1e04fe48e7c5007466dd9f8315923d47f46f0e9661a274b86b569ebaa4a7a6de",
+  "regression_script_sha256": "911ab14d7ce46ed67103cf3c39b90d05958b50a6fcce9d42251b8e040e3802d5",
+  "counts": {
+    "cases": 54,
+    "passed": 40,
+    "failed": 14
+  }
+}

@@ -1,0 +1,15 @@
+test_attempt_current_start_control (__main__.DataReviewTests.test_attempt_current_start_control) ... ok
+test_independent_interpolation (__main__.DataReviewTests.test_independent_interpolation) ... ok
+test_no_attempt_start_remains_visible_and_unmeasured (__main__.DataReviewTests.test_no_attempt_start_remains_visible_and_unmeasured) ... ok
+test_pages_schema_controls (__main__.DataReviewTests.test_pages_schema_controls) ... ok
+test_req015_ac01_collector_keeps_previous_attempts (__main__.DataReviewTests.test_req015_ac01_collector_keeps_previous_attempts) ... expected failure
+test_req018_ac03_declared_count_drift_rejected (__main__.DataReviewTests.test_req018_ac03_declared_count_drift_rejected) ... expected failure
+test_req019_ac01_checks_each_workflow_applicable_start (__main__.DataReviewTests.test_req019_ac01_checks_each_workflow_applicable_start) ... expected failure
+test_req019_ac02_invalid_as_of_rejected (__main__.DataReviewTests.test_req019_ac02_invalid_as_of_rejected) ... expected failure
+test_req019_ac03_running_nan_not_observed (__main__.DataReviewTests.test_req019_ac03_running_nan_not_observed) ... expected failure
+test_req019_gate_reconciles_summary (__main__.DataReviewTests.test_req019_gate_reconciles_summary) ... expected failure
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.006s
+
+OK (expected failures=6)

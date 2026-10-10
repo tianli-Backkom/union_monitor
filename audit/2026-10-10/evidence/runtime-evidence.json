@@ -1,0 +1,29 @@
+{
+  "head": "4cfff7d49052734cfb9b3c3c2f03187d01c92108",
+  "environment": "WSL Ubuntu; CI-target versions",
+  "python": {
+    "version": "3.12.3",
+    "tests": 425,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "node": {
+    "version": "22.23.3",
+    "tests": 122,
+    "passed": 122,
+    "failed": 0
+  },
+  "logs": [
+    {
+      "file": "python-tests-ci.log",
+      "sha256": "f7d9fddec5cdf9c731b872b24545f81bc3239b289d74e008c5de447562c5d473"
+    },
+    {
+      "file": "node-tests-ci.log",
+      "sha256": "7fe7c83cbbc4dfb2d68bdc1db5afbe0de35f7836f2e09484739800c00453cb46"
+    }
+  ],
+  "validation_command": "python3.12 -B -m unittest discover -s tests -v; node --test tests/*.test.cjs",
+  "scope": "current audited HEAD; audit artifact tests are separate"
+}

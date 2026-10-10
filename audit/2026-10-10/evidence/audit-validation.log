@@ -1,0 +1,12 @@
+test_all_requirements_and_criteria_present (__main__.AuditArtifactTests.test_all_requirements_and_criteria_present) ... ok
+test_browser_findings_are_recorded_as_failures (__main__.AuditArtifactTests.test_browser_findings_are_recorded_as_failures) ... ok
+test_ci_logs_have_target_runtime_success (__main__.AuditArtifactTests.test_ci_logs_have_target_runtime_success) ... ok
+test_findings_reproducible_and_traceable (__main__.AuditArtifactTests.test_findings_reproducible_and_traceable) ... ok
+test_matrix_evidence_versions_match (__main__.AuditArtifactTests.test_matrix_evidence_versions_match) ... ok
+test_original_files_unchanged (__main__.AuditArtifactTests.test_original_files_unchanged) ... ok
+test_report_and_matrix_are_not_complete_claims (__main__.AuditArtifactTests.test_report_and_matrix_are_not_complete_claims) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.042s
+
+OK

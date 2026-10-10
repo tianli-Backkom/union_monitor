@@ -1,0 +1,985 @@
+{
+  "head": "4cfff7d49052734cfb9b3c3c2f03187d01c92108",
+  "files": [
+    {
+      "path": ".github/workflows/pages.yml",
+      "sha256": "8e1685e29931f6053230b37441332894f8c5b1c288cc59e7194023dd5f97a5e6"
+    },
+    {
+      "path": ".github/workflows/triton-refresh.yml",
+      "sha256": "b1c9a1fd82958d47902e5555413ebaad6a8ff3954275753346ca676eea6b11c3"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "fe73a32405b27968c07e62f9a4898182a61f23adddf01ba9e955ac094a0561c2"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "d5843c4429f4148a294e0dd65808e955e2fd1d65934396b337edcdf8e3a1a76c"
+    },
+    {
+      "path": "README.md",
+      "sha256": "fc723981cf4e96940a68318db738058cf125ad1f604eef1aa475f8a9d1b3385e"
+    },
+    {
+      "path": "audit/2026-10-09/coverage-matrix.md",
+      "sha256": "df04ef4cdfbc9b76c17b73e9f791560746aead11e5c3bcb6ef068402fd95752d"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/acceptance-evidence.json",
+      "sha256": "e1b500f516c919a9443995c2565f54976f9c73f57d9e6a8159307d008fef7998"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/additional-browser-run.log",
+      "sha256": "bf75762ab3f4ec5944849db194d24dc7520b5ac01f9b3c5e3e6979bfe1b763b9"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/additional-browser.json",
+      "sha256": "4ea67785fd9d85566a0332e522defef93daf5e95e8f63fa2c818c51bacc46d90"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/all-checks.json",
+      "sha256": "4bf10d87dc2c6fb3affb83861d243a85e2d6f0f3a257ba0502ee65717f1239f1"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/artifact-verification.json",
+      "sha256": "176592c47b6d7d6d76b293fdfbf2e1217a01481d4358554b7de4b566a431a9a6"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/baseline-comparison.md",
+      "sha256": "624dc963a0bc6b8092973a36c2a5f9ba18cecf1148ef3ddc0b2b81c6494cead1"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/concurrency-evidence.json",
+      "sha256": "eb7aa7a03d3df9c53e55b4a6eb51332444061fb792204511e95bb5353c5be489"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/coverage.json",
+      "sha256": "24f27b44bc9f5afdb4c5c70c6a265b0d6c820d3d1bb1f42c07bb2876fc88e0b5"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/data-audit-run.log",
+      "sha256": "ab28c830f5e21bd9656297887034b0aeb3cd76488a360bcc2f75ab3ff991cb9b"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/data-audit.json",
+      "sha256": "970509d2f8e1cc040da304ce41b19c38e9329e5ef026d3bb7aa93b1513984ee2"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/deployment-audit-run.log",
+      "sha256": "9710627371d6bd04e91e53ed64f1fd32077f2c7b6a1e6bc56b1218cc456a7fb0"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/deployment-audit.json",
+      "sha256": "8b2727655616ab4f469bfbadef1c19ba1497352946d4687a47a3cfc0eff5f0fc"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/deployment-oldsite-summary.json",
+      "sha256": "c4a10ab809b57fd88f97cf4a75c06b20499c24584974ebd67affffb3ace33ef6"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/deployment-oldsite-triton-index.html",
+      "sha256": "b21b58992157b4f8df85a38350cdce7c34d5a16dd737b1e2513ab49545070fbb"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/deployment-oldsite-ubs-app.js",
+      "sha256": "426124abd143fa8db2e9d6a20dcb94e6e24f26d607ec09316114f58fe421b941"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/deployment-oldsite-ubs-core.js",
+      "sha256": "dba9a21ea131bb509c6d7655d890d0a86708c9a1f3b28a09c1e7109b11b0ba77"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/deployment-oldsite-ubs-index.html",
+      "sha256": "683f77252507a574c16dec1acce35903c87865041ee303d8760cf906e9bd3f2e"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/final-delivery-verification.json",
+      "sha256": "ec9e14593d5be8e5e4ae73b9bceb145fccbb2c592f75ed8ce8286556c405d681"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/findings.json",
+      "sha256": "9488bfaee876633442c986c4b2b435515d434cc419a90691424aad61c93f1b1c"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/freshness-evidence.json",
+      "sha256": "86ec360efeb70d02d10a20af81e0a510788dae9872b2bf95ec95274e0bfa596c"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/interaction-evidence.json",
+      "sha256": "4bb1931ae0ac20c70596250abeaf74bd970fe5baa7b0098bddef269fdcfa3e99"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/protected-files-after.json",
+      "sha256": "f07012e07f1c12f7b65ff26baa9ef81604568d472b5044d4bc8c1c2cf1b17269"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/protected-files-before.json",
+      "sha256": "6f803b157669c6202c3c4f3299f5d95950bc674607c559270bd7a86316d1488f"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/requirements-doc-evidence.json",
+      "sha256": "1c74a0aead7e67f90879c29fc90125e8e2d09257e75cdd5c8d066dab7c3da069"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/requirements-editorial-review.md",
+      "sha256": "5b32c93e09d9bfad7cae15d61035dcd28805a96e641b670d897b9f7a366fc3a4"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/requirements-model.json",
+      "sha256": "9e84953adb5bc63e9c6b0dbe8f92f7c8c8ef568ebc8fb015be55c434b8a0697b"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/requirements-verification.json",
+      "sha256": "c1075c31ed4ab1d25c8cd891434c1bfb56a134d2953968d16b9edfcd2b4e9bc6"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/runtime-evidence.json",
+      "sha256": "ad9d13cc3e166265a9bb58192a178beda8413ec9135bb38bcf0295dc699d7b7e"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/scorecard.md",
+      "sha256": "2de09c2c80fc13e194601dba8594f0ac987a6d5187ec58ea73907b8e22dd5cfa"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/site-probe.json",
+      "sha256": "c73a08eca7bf333d2c846ce5d4b5df2dd38d1c993a4d53fb160485ed1c03d84e"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/triton-browser-run.log",
+      "sha256": "66c7064c12ed087ceb41245444bd7daf47ecc4a87f9cb41266ef7b35365ca7e8"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/triton-browser-supplement.json",
+      "sha256": "3866cb425f3ec1f7883618a43bb4cd1640efcaa869057b5a93b03ec79eb10b19"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/triton-browser.json",
+      "sha256": "a2f46b8c4136bd2b7cf9c658e5c346066126ecd6f7a4fec29bd9d01af4a560e0"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/triton-export.csv",
+      "sha256": "5eb23469064804ded59bdb4e26fde67b2ae4ef6d14145ecd032a0798af0c4e32"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/triton-pages-export.csv",
+      "sha256": "5eb23469064804ded59bdb4e26fde67b2ae4ef6d14145ecd032a0798af0c4e32"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/triton-supplement-run.log",
+      "sha256": "cdfbbcf75bf2b5c25de36c719f6a3ec8280e2e66aefd67eed646c8b569616682"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-batch-export.csv",
+      "sha256": "70bd4dba69042b4585b545c229193ea54f67df49becaf0bccd237fb63de28720"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-browser-run.log",
+      "sha256": "57093226abc940813755436c8fa9ab74e7992d4574e53cf14b0b17650cbe636b"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-browser.json",
+      "sha256": "5b2767716b00367852b14f5e3d19a2853c99f8dd945330a4a89762dea406fa2d"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-cross-repo-wrong-export.csv",
+      "sha256": "14a90c67b628e35a9e59f7fb9b87c589a9e11e5d070fab23f54f906303e32026"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-csv-evidence.json",
+      "sha256": "b7277e1ef59d0961eed6860b5698ea6834f1648b37b6669b3ca3301867f2abd5"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-detail-evidence.json",
+      "sha256": "80bddb43d5aa39230362dba5d88f8a9ed9a3be6aee9060dbfde2726a3df98fb0"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-filtering-evidence.json",
+      "sha256": "3f57054948d705f59c185d4feb2a03b78f00343abea4442da9e88a71500de2f6"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-pages-export.csv",
+      "sha256": "3b586283de2b7384ed76ec66f76d64dc2c04d725904659c4e5adce0ce1cbf318"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-pr-export.csv",
+      "sha256": "c38f56ffd6e837ab6f5dd65e4aa3ee6ad07ee54313de091a24cde4fc87fea1cc"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-quality-export.csv",
+      "sha256": "80ca67332ecb99cc754a4f0c26a34f956a890c095626372b47d06d38adcd7798"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-repository-export.csv",
+      "sha256": "87ffb2f6ed321ff39d0c4d560636557a289fd646fcf12793b034e5480de80477"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-routes-evidence.json",
+      "sha256": "dfade999169bd1028de2b833c506a27e2374d0346d2b38c4d2e86f583ff3c5bf"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-semantics-evidence.json",
+      "sha256": "b9c2fe080c8de4cd4b0185ce6d2730d8230888708240596551ddab559dec3922"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-sorting-evidence.json",
+      "sha256": "d78fad536ab9e1321dfedcd14d7d7a43618e4a41b857eeba765e5f0326daed59"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/ubs-special-csv.csv",
+      "sha256": "f412f336497f768f1749ab52c6a6d184322f69e89b8bf910eecf2e152d4af504"
+    },
+    {
+      "path": "audit/2026-10-09/evidence/visual-review.json",
+      "sha256": "42ab5086f76db2d56c2ae31ad5e0d7b103fa422396329de0832428411a3e89d5"
+    },
+    {
+      "path": "audit/2026-10-09/progress.md",
+      "sha256": "10fabb8faef5b21e85c07a163de18889ccdfa469c980e20f24d75a993fa699a1"
+    },
+    {
+      "path": "audit/2026-10-09/requirements.md",
+      "sha256": "507a6daafada9fb4f86391ca67bacb94f3edde352f462f087f732ff893a672c0"
+    },
+    {
+      "path": "audit/2026-10-09/review-report.md",
+      "sha256": "8259657f57b99b96a4c645f84438a3e761560bb67d709d159b4cea7f86ff162f"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/contact-sheet.png",
+      "sha256": "47b5a8b06d5201003e1b77be2509f17cc146e02b4573accbb0c83a706de2dfaf"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/failure-ubs-index-blocks-triton.png",
+      "sha256": "51758622698829ed9054ad979acbe8550709bcd23770b7135fca42f17d4765ce"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/mobile-triton-charts-crop.png",
+      "sha256": "18b3b934a6a08a3c733bf07f53b425f5655811f7e07fddbf980711eebce0920e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/reload-older-response-overwrites.png",
+      "sha256": "6c23965319eec417c7732cb525f29b725aa7f79967741603762072202c54670e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/triton-desktop-initial-viewport.png",
+      "sha256": "f79012c7bc4d6983fe4cdec1d451a6ce429a187428185c7060485839dd1ef30b"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/triton-desktop-initial.png",
+      "sha256": "c7d315246a54643e4fb759438fd8e451e6cd259f106a855736d8fb49e47a7cb6"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/triton-return-state-reset-viewport.png",
+      "sha256": "84dd22b52d650d5a2a7bb0b1a8e1eec87e94152a748e2f4ad76b343eeb7863f0"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/triton-return-state-reset.png",
+      "sha256": "948dc8a32ccd9fb3674105a59b05d12d87967bb18e9c3fe89ad39a17ec558d7c"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/triton-search-note-mismatch.png",
+      "sha256": "1baebdccf00605b74d83bfd95c2ea76692c8c541ed9142b8d2c86a895ea95c2d"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/triton-six-hour-mismatch-viewport.png",
+      "sha256": "17038bf8995002a015ef3e03a7f005c06a93d3b77a8afbfb57029d1e1736838e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/triton-six-hour-mismatch.png",
+      "sha256": "aeb7c639d690d48d2429ff81377a3bceddbb2a162ce921e565d57b0335beac0e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/triton-tooltip-pinned.png",
+      "sha256": "01c4b2611350c668db4ab8166a1940a5e3813c80f61c93fa14c066606d3a04f8"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-OmniStateStore-quality-viewport.png",
+      "sha256": "d19ce9fd5418161ea5cbfdbc08b23574c008fcbad3534b3d3cdb30bbb82e136d"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-OmniStateStore-quality.png",
+      "sha256": "2c1f9cf6738dbb0796990a52b0544b2770d2886901f8153aaf878727763d9723"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-OmniStateStore-viewport.png",
+      "sha256": "15c3d4c7aba86884633d70987ad6701c97291a8aa8a2fa48b2e77f399ef875f4"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-OmniStateStore.png",
+      "sha256": "ab946a5d146e5e4810abc9bc7dc3736fcc79ababbd56ed62dfe7d8c4b0d49d4d"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-cross-repo-wrong-detail-viewport.png",
+      "sha256": "544c7f92d4e032263da6622a7b7e8d75770bbdacf6c7ae8e005d632bb9801e2e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-cross-repo-wrong-detail.png",
+      "sha256": "0d3d9f7e99b3d2be9723363db991dbd2a7a041e6de00721d76937c658b6f336b"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-detail-crop.png",
+      "sha256": "1a792efe2a0eca7fe795bafdbf9eb3de7fd766285dbb2063ca2f97845dbcae54"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-detail-viewport.png",
+      "sha256": "b2b7e4adddaebd175e4ae14521c260f0b87456f35b47590f730bad69c85ec454"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-detail.png",
+      "sha256": "6136b501673515ef121ce2b9e922bbf8c4d975920eb1fad3c0ad0e11de223cbb"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ham-quality-viewport.png",
+      "sha256": "ceb2d23237bec32ca08b557c7cbfd1d992f9bfb22506283065d622113ec5c5cb"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ham-quality.png",
+      "sha256": "ceb2d23237bec32ca08b557c7cbfd1d992f9bfb22506283065d622113ec5c5cb"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ham-viewport.png",
+      "sha256": "1483a6216f113a0a97c2e57583b6d95a5f701ae26c99d2534481e73820489de7"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ham.png",
+      "sha256": "ec90c86bc18b1bcf2aecb84a692af30bd3361bdc659c8e2d73f0a7be72bf264a"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-orphan-batch.png",
+      "sha256": "ea27673267309f72bd251e526d881ea805b36f55bf24f4614f003403d161905e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-atomic-quality-viewport.png",
+      "sha256": "a130b5d84265df9bff8d0901c6fb99588a5690458038ca336f92611020ddb017"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-atomic-quality.png",
+      "sha256": "a130b5d84265df9bff8d0901c6fb99588a5690458038ca336f92611020ddb017"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-atomic-viewport.png",
+      "sha256": "2e117a2784412b33e6b9f3ae5ea0af59acfd191ecdc292b9544d040790a326b2"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-atomic.png",
+      "sha256": "7aae45b1a3e626a89b7fac6090e3b131e96eb42ce79c29053ed8d85fd1f29980"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-comm-quality-viewport.png",
+      "sha256": "283f29aeaaef38d80eff952c0c1d421e68bb9334801246e39f00c805a11a2e1c"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-comm-quality.png",
+      "sha256": "283f29aeaaef38d80eff952c0c1d421e68bb9334801246e39f00c805a11a2e1c"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-comm-viewport.png",
+      "sha256": "c06cbbf53b9e441469ede7eb58a0202af6b836b2d44fbf6559d08f7c3ef4e2ea"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-comm.png",
+      "sha256": "5a06b7fd262d9ae27fb9d94aca34c86af33a29a57440c692518c0f6ea986ef96"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-engine-quality-viewport.png",
+      "sha256": "165fad96ee018163d3055a042837c044eb37b6a3091de4333025488746d5d612"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-engine-quality.png",
+      "sha256": "f87c5365ed38f964445e519c6495b45a5f9ab14f80d3eb96fcd2b8d66359b614"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-engine-viewport.png",
+      "sha256": "93c325be6479a3d1a2e205e1464841016c72676288f2309360743a30e000e15e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-engine.png",
+      "sha256": "daed34520e1ab453c3323fa00525cbc139b8407c12fef8e7df49a39adf5e3b1d"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-io-quality-viewport.png",
+      "sha256": "64f2cdbccd95b601ae5f58708e9f341cc0d2d5537f7ad3f1ba396b4340795a2d"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-io-quality.png",
+      "sha256": "64f2cdbccd95b601ae5f58708e9f341cc0d2d5537f7ad3f1ba396b4340795a2d"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-io-viewport.png",
+      "sha256": "740bbc74647d2efdd88e4093e6ade54fc16a625ecd3833ec836497ab622bb063"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-io.png",
+      "sha256": "418110ee4bb9b1edd2c46fd593b5dace98daeba576b9cd8aeb353e1f7eef4b5c"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-mem-quality-viewport.png",
+      "sha256": "d6708b696d542a8aac83922b96cad11280de6b7e1dad443ad0f111ae6b790739"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-mem-quality.png",
+      "sha256": "d6708b696d542a8aac83922b96cad11280de6b7e1dad443ad0f111ae6b790739"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-mem-viewport.png",
+      "sha256": "b6ca60660965ac400c544feee4d7df43876fec20d01f7f3e586d7fd0b51832ea"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-mem.png",
+      "sha256": "9f14faf6aa85b774c0897c586c210a258c5971048a71c543353a64917b6d7aff"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-virt-quality-viewport.png",
+      "sha256": "d2fd27539bd82d76ab87baf116e93727d0437d0169d6cbf20c24d7985d7a5294"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-virt-quality.png",
+      "sha256": "d2fd27539bd82d76ab87baf116e93727d0437d0169d6cbf20c24d7985d7a5294"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-virt-viewport.png",
+      "sha256": "03d52ccbf61adcc46124e34f46508db7e1d4b9fd8c5aef9e500f6c14923a417a"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubs-virt.png",
+      "sha256": "12e61a055cff664e611507659a38fa64a51f33b9353797ea068e64b736ee6ff5"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubturbo-quality-viewport.png",
+      "sha256": "13cdb7556927c4be89cdacbd8e363dbeb1835be8e78b8b407ecb424a6e032849"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubturbo-quality.png",
+      "sha256": "13cdb7556927c4be89cdacbd8e363dbeb1835be8e78b8b407ecb424a6e032849"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubturbo-viewport.png",
+      "sha256": "0e5c2c3bc2dad60dcfce04f5c795bf83c2c4795b53a7d9f4846cb743089faa66"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/ubs-ubturbo.png",
+      "sha256": "31f82cd204de413bbc371aa70993ba6d2546850839c5773c9dbd34dd78db8c7f"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-method-viewport.png",
+      "sha256": "40098dd6a27fb46b65b7bf693f9dec63970f0665d44c70c74f49e685dd4b67de"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-method.png",
+      "sha256": "ac4072630a3bdaaed29a523b968ee045350a7061ba4496b810cad9e30300c8fd"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-triton-viewport.png",
+      "sha256": "ebc6c237ee9745ac0f0edace0ab947e4e0a0ffabe9cd6db20d13c85f6ae4f6b0"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-triton.png",
+      "sha256": "4eb3e1a68673958e994779f86e0ff16ca4fa1cf4160af48cf2b60b489bb423e0"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-ubs-repo-ubs-engine-quality-viewport.png",
+      "sha256": "165fad96ee018163d3055a042837c044eb37b6a3091de4333025488746d5d612"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-ubs-repo-ubs-engine-quality.png",
+      "sha256": "f87c5365ed38f964445e519c6495b45a5f9ab14f80d3eb96fcd2b8d66359b614"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-ubs-repo-ubs-engine-viewport.png",
+      "sha256": "93c325be6479a3d1a2e205e1464841016c72676288f2309360743a30e000e15e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-ubs-repo-ubs-engine.png",
+      "sha256": "484966af3e7b9bef3a3946b4fbd07fbba928fe5338af4f20a4aa2980a1d193f7"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-ubs-viewport.png",
+      "sha256": "06339d27b71ed775697729c318772005fcdc1f4b3449551aa8e35cf7d2848792"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-desktop-ubs.png",
+      "sha256": "a9b2c712f1115ce490bbb9c063013aa95e146cc0d403b7ccd8671c6e6dbc387e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-method-viewport.png",
+      "sha256": "c994bc5551eab3cabd63acaeb92da147f5262929a9d2a0b99cb6a1f966ecd9c5"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-method.png",
+      "sha256": "76aed69ce5afedf73be92abf6393e32a41aabe713669bb3f7c0e86afcecd399e"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-triton-tooltip-viewport.png",
+      "sha256": "b31c1e7a1a366cf36c13acd1ed073f0f9381efe5fb5c0dcfe54d5c3c25e3da0b"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-triton-tooltip.png",
+      "sha256": "078b5a21bf191a48a78b681035ec65a3cb4ed733dd46f7f327991a6df378d2d7"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-triton-viewport.png",
+      "sha256": "b7ba9916875f97bf14ae084c826e30db3ad5bf14a5cebfcf5ad0ac738f89ddda"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-triton.png",
+      "sha256": "08b161972421dfe0ab76895d9312f3cb400f731598185e1e4254f693f7efbdc8"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-ubs-repo-ubs-engine-quality-viewport.png",
+      "sha256": "b04a87ca8c875d598a50ca03504f0979ce72bcfd6f4e361ea682d56d347edc75"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-ubs-repo-ubs-engine-quality.png",
+      "sha256": "d664503ddb6c801612bc1ca19bc034f77dbe51f5b5b0a25cd9c3edb6d80c9c71"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-ubs-repo-ubs-engine-viewport.png",
+      "sha256": "08de09e79220ad91247a58177099db86d55d45f6cf82f06ace2b899541bce526"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-ubs-repo-ubs-engine.png",
+      "sha256": "c120a4a62161d832342e5c79a2f008904683f73c7f3e35283ce988a7a9a36a94"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-ubs-viewport.png",
+      "sha256": "a11032935b2e098977aef8ae5ded5773153bdd8ea00ceac1efb88588fd870260"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-mobile-ubs.png",
+      "sha256": "740b3592814685b263a31923b9492fa7bf23a8ef2ac4c104139e4048335152f5"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-method-viewport.png",
+      "sha256": "9ab9cd540630a6c3125fb07dd5bc72e0e7d7d735d03bd622ab707de78e6ff37f"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-method.png",
+      "sha256": "e0a7465d3caf68215e1df915c1bfbf7e42882d429dce56f83c697c8098b9ad39"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-triton-viewport.png",
+      "sha256": "c253d0a91780ddacc746442847123f41acfd2a8aae86a102a225f9486f458db6"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-triton.png",
+      "sha256": "60f0c11ddf82960944956886422d91b382ed9cbbb0b1bc9d8837d7f1253cb491"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-ubs-repo-ubs-engine-quality-viewport.png",
+      "sha256": "a6e373c5747386c3466bf5877962c1bc6f931b2210404d2a6cf99a39b8717e30"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-ubs-repo-ubs-engine-quality.png",
+      "sha256": "6bcbe97861af0890d4dc4cf3b1b5e8b865a25cf24f9a7f9330979c2db60e9525"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-ubs-repo-ubs-engine-viewport.png",
+      "sha256": "91c5d92d4241062b5cb25052c8ef36459fd106ff544973762807390c13ebafb0"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-ubs-repo-ubs-engine.png",
+      "sha256": "1f8af940f9c6928083eff8675ebc375c116f914de86164b5a0438d80757620ca"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-ubs-viewport.png",
+      "sha256": "a5eda12f02ebcb1185c1f9e22e63221d299cb5913bbaab10f5871e04549443d9"
+    },
+    {
+      "path": "audit/2026-10-09/screenshots/visual-tablet-ubs.png",
+      "sha256": "f692b51142f81e19194980de72a6e659b2f379f4760a3a9b6d952d249a5a36af"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/additional-browser.cjs",
+      "sha256": "899fe3f0a99e604513179db440cfefadac1240647c81076d097442bb032c172a"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/build-report.py",
+      "sha256": "d8c117e76a0be384558af79809393d77400a42e5c3ab90ea11adc82aae08060b"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/build-requirements.py",
+      "sha256": "4c220e4a61af474b7288dbc8dbb241bb8de590900afa811f732a24ad6df36a23"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/data-audit.py",
+      "sha256": "25b64f0f45cb13e4c4f88cca4bac041d708d393602f0cc2222d7e34338fb01bb"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/deployment-audit.py",
+      "sha256": "60d9da260bec0e7d7cb43924b639d908bc53625b98a63dd2d14bc77a95e9e23e"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/deployment-baseline.py",
+      "sha256": "e422c194172628abbd4fbb114ba02a16b8264645b8bf158a0c066783fd793fc4"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/finalize-report.py",
+      "sha256": "268ab968195359ec657d39dca2e15377257f24763dea8ef640eae78657f4f9fb"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/screenshot-contact-sheet.py",
+      "sha256": "d5938b9bf697039b0fe9280b9a85b2dfe19f9179a18e0c746ffb6927485754bc"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/triton-browser.cjs",
+      "sha256": "887eb9ae25b7d0ab05b75245016ec3d9bacbaed85bf30ab8d148feb15068fba0"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/ubs-browser.cjs",
+      "sha256": "649a418c038a44157b6d6f57383ae03e132612db8774d62aad997ef5fd293676"
+    },
+    {
+      "path": "audit/2026-10-09/scripts/validate-requirements.py",
+      "sha256": "5b13bb47b94911ea5a3562ef7fcffca27dfbbd3f5b4c7f62bfdb17cd8e4652be"
+    },
+    {
+      "path": "collect.py",
+      "sha256": "37f11f589d691c418dbc401ea390fca45645afd4ea8ea3b3d061dbb5c18aa4aa"
+    },
+    {
+      "path": "metrics.py",
+      "sha256": "d0ec8508b57199431a5933b1bc29d68c76eccaf4ee25aea08bf6da7329b827fd"
+    },
+    {
+      "path": "repositories.json",
+      "sha256": "ee86affc5bc1b5bab3c99a33a5a428d8f5eca868c0c4389f2df2f797c4a194cf"
+    },
+    {
+      "path": "repository_store.py",
+      "sha256": "581d9a2487c6c738d17babc5b80651c630a97480d9571e786f969f4c6649560c"
+    },
+    {
+      "path": "scripts/devdata.py",
+      "sha256": "e076f191b56ddf7c12ee019036a69f1f497ccd4c439679f02efd8c1bac027c4d"
+    },
+    {
+      "path": "scripts/verify_acceptance.py",
+      "sha256": "170fe15508aec7bf38f3209c9b958d4471bed31be4bcb16eb68ee810207ad17e"
+    },
+    {
+      "path": "scripts/verify_artifacts.py",
+      "sha256": "1576f5ad3cf47e0307eb7ca8e94b89b77ec195dc16209eb63fda44ac0d008763"
+    },
+    {
+      "path": "scripts/verify_concurrency.py",
+      "sha256": "5c51ff51e75daac76ebf69a8691a478ebba36c468c16065008474ef942c5cfd2"
+    },
+    {
+      "path": "scripts/verify_freshness.py",
+      "sha256": "d587422e92da04366adb4501b4ba823e96caa64cc2694e8a8119c662ee1f4b7d"
+    },
+    {
+      "path": "scripts/verify_interactions.py",
+      "sha256": "38a95e8da928efc4957a376cd6f3838027d88a3964c21c6f16e704f6af9e054b"
+    },
+    {
+      "path": "scripts/verify_requirements_doc.py",
+      "sha256": "7babcf04f4f48eaddb4184e330cbf3957ce9b231dd806eb2766dffad9f69738a"
+    },
+    {
+      "path": "scripts/verify_runtime.py",
+      "sha256": "7cedf5b9ec21fee9c1e5e90c86cf53a865ffd3ab0ee4fbac8a8cbc3f6cb2135b"
+    },
+    {
+      "path": "scripts/verify_ubs_csv.py",
+      "sha256": "81a94c1ae171e07e1af08fb08f564d1ea273a29dbc5850ca1d5f89119cc15aaf"
+    },
+    {
+      "path": "scripts/verify_ubs_detail.py",
+      "sha256": "232869dea8e1daa45a196852ec15613293bfb834392878253a776ec379845f66"
+    },
+    {
+      "path": "scripts/verify_ubs_filtering.py",
+      "sha256": "83bb480c9d4c1652a25ba2b44e021feda9493e2349e88f6b519b129cadd46cd6"
+    },
+    {
+      "path": "scripts/verify_ubs_routes.py",
+      "sha256": "0bc9c0669472d4f1831d148837293f8e766cb75dd17f2fb1ae1d82b97e541c6d"
+    },
+    {
+      "path": "scripts/verify_ubs_semantics.py",
+      "sha256": "38abfb185a88a0b9a8bcc2b6c5c51ded08db7e37aed10ada4ad7f0f8e6e93fc3"
+    },
+    {
+      "path": "scripts/verify_ubs_sorting.py",
+      "sha256": "6284883f1b0ca641bd0b48aeda7686b05bfe4ff5febf553102039f93c4f106d7"
+    },
+    {
+      "path": "serve.py",
+      "sha256": "8728d3d9d9610db208e2feb97d92ebf8eda54e44742b2c7afa8c7a15f9f06968"
+    },
+    {
+      "path": "source_coverage.py",
+      "sha256": "22b7b2c01ea829335c08c4871624f668dd3b3a269c5e5dbb8c2452bccef43ae5"
+    },
+    {
+      "path": "tests/branchbadge.test.cjs",
+      "sha256": "ffa08e42a13368d11fafa48e27ca14e4c8fbb5905db614631a1ce84ba9edaf96"
+    },
+    {
+      "path": "tests/experience.test.cjs",
+      "sha256": "22a2addb06390809a30792b737722cb6ab9e1e1a2a2ca6948881c09f4646a563"
+    },
+    {
+      "path": "tests/fixtures/minimal/repos/ubs-engine.json",
+      "sha256": "32f32ffe5b8ed5ba6abae44144c2e3cf6b81036217af620ed5bfca2087a0b661"
+    },
+    {
+      "path": "tests/fixtures/minimal/repositories.json",
+      "sha256": "2212d4d8651ccc01ec7f3b8e6d7396f9bf23356e738cd5bf24a460f080e28d25"
+    },
+    {
+      "path": "tests/fixtures/minimal/snapshot.json",
+      "sha256": "32f32ffe5b8ed5ba6abae44144c2e3cf6b81036217af620ed5bfca2087a0b661"
+    },
+    {
+      "path": "tests/fixtures/minimal/triton-single.json",
+      "sha256": "1e872255ce9c2a1b727343fde6424b7d39589bcbbdf4d0b8fd1717da42590ac2"
+    },
+    {
+      "path": "tests/fixtures/minimal/triton-zero.json",
+      "sha256": "2cfa5522dcc32971559c54fac758315ebf12f0d7347fd2060a06044985f48f99"
+    },
+    {
+      "path": "tests/fixtures/minimal/triton.json",
+      "sha256": "b9d62da659706a8ea6a5ad9f083d0c21a01e799631738ee97eca4fb760e2ac0b"
+    },
+    {
+      "path": "tests/fixtures/triton-audit-freeze.json",
+      "sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb"
+    },
+    {
+      "path": "tests/footermeta.test.cjs",
+      "sha256": "3c54d11982978e3530d0d7377141cd2d4722e77e38823027f8f2d69b51a76115"
+    },
+    {
+      "path": "tests/frontend.test.cjs",
+      "sha256": "c1b1a537ff846b8c0e039fc46f9957f4f9c73d31af227a0b13b6b2a9ee0d510c"
+    },
+    {
+      "path": "tests/multi_repo_frontend.test.cjs",
+      "sha256": "40dbb48a480042c40217421c3cb142aef0b518df9f9abfee51e84b1030cdcd34"
+    },
+    {
+      "path": "tests/navhistory.test.cjs",
+      "sha256": "30a399390ff4136ee5c7ca85c3629adab8179519b9a897c81cb08779b0f20c83"
+    },
+    {
+      "path": "tests/navicon.test.cjs",
+      "sha256": "48b96a552bc7917a6aef1cd72290c17fb4a532193fef473d1724aa68e8605bc7"
+    },
+    {
+      "path": "tests/repolink.test.cjs",
+      "sha256": "0cddfed7657573920f6f7ab9ae52be39a276efd7b129fe8fd73d17d96b6e570e"
+    },
+    {
+      "path": "tests/router.test.cjs",
+      "sha256": "6a0b6a98ad4aef2c78e3532721770bd423b30d52d37c24d79ac071890917133e"
+    },
+    {
+      "path": "tests/test_acceptance.py",
+      "sha256": "40be8540d9f205f2bb936d92ffdee57d9dc71ee79d1d12776e13e36dd8949aa1"
+    },
+    {
+      "path": "tests/test_artifact_verification.py",
+      "sha256": "2398328a7b5eda70e8637b1fea596fea8e98ce8bbc659f21c1abebc69ca9793b"
+    },
+    {
+      "path": "tests/test_bundle_verifier.py",
+      "sha256": "b327e64a643f942747a15661d1954a79dc347a4c320e52408e440929af85f421"
+    },
+    {
+      "path": "tests/test_cache_chain.py",
+      "sha256": "3c66e5134353ef97adbdb8bb59c536d509e407ee9dc54a42d048be6d7e75fcbd"
+    },
+    {
+      "path": "tests/test_collection_multi.py",
+      "sha256": "a4ddc44816918a62bacd002b40c9ef6768fe4b89d4eca7f30abde7db696e775c"
+    },
+    {
+      "path": "tests/test_concurrency_evidence.py",
+      "sha256": "467b366475410e245adff3abee892fce3758bba81a1b0284708795a1342bb2a6"
+    },
+    {
+      "path": "tests/test_exports.py",
+      "sha256": "76450e575bd48c0c3536fee4e5e246d9078eaff53f62226dcb151450741c3669"
+    },
+    {
+      "path": "tests/test_freshness.py",
+      "sha256": "3f546611b7fcff169bd991237d74b6743c36b437ba68e30c138ed5e1cd3b15bd"
+    },
+    {
+      "path": "tests/test_frozen_audit.py",
+      "sha256": "ccd2cddd33db12325e622f2930fb78ff9f26b501783b3ecbd4a838e329ca1e4f"
+    },
+    {
+      "path": "tests/test_interactions.py",
+      "sha256": "0660dd1c856ad21de78208796a37bccd489e8809fc508928efd5349e4da63cb3"
+    },
+    {
+      "path": "tests/test_metrics.py",
+      "sha256": "56bb27ce41d7859e6901670b2a673749af4e185ded282f3e042ea998283ee0a8"
+    },
+    {
+      "path": "tests/test_minimal_fixtures.py",
+      "sha256": "e8ba131715ea7eee7696b8b88d92b59f614a538ea323e404787111835859ed0a"
+    },
+    {
+      "path": "tests/test_multi_storage.py",
+      "sha256": "42ad9a9a582b6cbb62d89620dd37525dba9a25cde60f45b940f9f9cb15157b21"
+    },
+    {
+      "path": "tests/test_pages_workflow.py",
+      "sha256": "e310e26049b749a7329d46d2a9df4d57a71cf4d9e430f4e93048f87cf66d1569"
+    },
+    {
+      "path": "tests/test_representative.py",
+      "sha256": "c2c517990f9766c452e031c0a9d8b7953583e75530b2f15577ca790dabcdf365"
+    },
+    {
+      "path": "tests/test_requirements_doc.py",
+      "sha256": "f7ba2c36b555387f41e0536c2dc4c40a61624583c6c430e12940120ce5d46740"
+    },
+    {
+      "path": "tests/test_runtime_evidence.py",
+      "sha256": "ed9ac02878a74c35327d6c4fe0887e17b43ff67332083f323c5c8c6430fe5890"
+    },
+    {
+      "path": "tests/test_shared_cache_config.py",
+      "sha256": "37ab0201c1d935b7de64d905ed53919745e2f57cefeb4373421b6a94103c068f"
+    },
+    {
+      "path": "tests/test_source_coverage.py",
+      "sha256": "058d1ec1d6f93da454b17cb9359bf6e5c1d817455f4e2cb330adb12fae2372f6"
+    },
+    {
+      "path": "tests/test_triton_dashboard.py",
+      "sha256": "82b93defa64252bf1767d5a3f8734e1a3ebfddf799ff5853c2d627fc61473b8d"
+    },
+    {
+      "path": "tests/test_triton_npu_api.py",
+      "sha256": "8065a58285992d2cb9cc53c1321a2917c33f000bc2b6a505e155268ce109c304"
+    },
+    {
+      "path": "tests/test_triton_pr_identity.py",
+      "sha256": "a3660c6520a99648d9ea0a1764ac994c2d6f7a30d509cb58a4e85915d9b65e11"
+    },
+    {
+      "path": "tests/test_triton_pr_quality.py",
+      "sha256": "4e311335b00859dcf4997bcaa375e056e8744f901de649263fcb1373d57208da"
+    },
+    {
+      "path": "tests/test_triton_quality.py",
+      "sha256": "0a340e925363abb4deaea745b4a4d42c3f8acb8130ee5c3e12903d80d1358584"
+    },
+    {
+      "path": "tests/test_triton_workflow.py",
+      "sha256": "f0c6b23a2e123138e5ae08d88ca3ba50aa4d18eb3e0a3df7250eca891ca0a570"
+    },
+    {
+      "path": "tests/test_ubs_csv.py",
+      "sha256": "6e5f7d234648a60945df62e3253a76ab4b5cfbf14e8bcb5e1fb235f7b1a57401"
+    },
+    {
+      "path": "tests/test_ubs_detail.py",
+      "sha256": "d741e5d20ce66cf24f138868740414c5660ef92bae7bf742f0e144a822d8e24c"
+    },
+    {
+      "path": "tests/test_ubs_filtering.py",
+      "sha256": "f1f82c23046110182779d28dcac0545361e4ce313c53ae113d9b2dedb8f94339"
+    },
+    {
+      "path": "tests/test_ubs_routes.py",
+      "sha256": "d604cb45cbca456a03b6954de55b45ace84e5b7f49fd4a2ab5b01cb3887bc457"
+    },
+    {
+      "path": "tests/test_ubs_semantics.py",
+      "sha256": "a3980809c86c8eb3b86e25d7a5047b844c483898dde6c7981bd61a4d1b07d68b"
+    },
+    {
+      "path": "tests/test_ubs_sorting.py",
+      "sha256": "a9c24b6bf01b199951cedd6e4c08b69b36472c10d454578c0942fadc7ab73194"
+    },
+    {
+      "path": "tests/test_verify_deployment.py",
+      "sha256": "0145e2eb594e14b781980625d76483e08d08d2c40aedf2131c544f6b54af5c1a"
+    },
+    {
+      "path": "tests/topbar.test.cjs",
+      "sha256": "b7c4830a8025378b1775dac389fd03612906e2b550e8dcd8382b20d9ce8ed860"
+    },
+    {
+      "path": "tests/triton_core.test.cjs",
+      "sha256": "ff9583be61303b17c913e136bd5991c0d70add1ee102f1ee4281044c63de8981"
+    },
+    {
+      "path": "tests/triton_fixtures.test.cjs",
+      "sha256": "673fb518ae840338e65898bd5d4b70fe0235900b1117569877f409bb14008529"
+    },
+    {
+      "path": "triton/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "triton/dashboard.py",
+      "sha256": "388be55cdecf92e56f2e83a546c2caa3a9b4f96e51fa02c873cd5cdb82f6c895"
+    },
+    {
+      "path": "triton/pr_identity.py",
+      "sha256": "16f2d8f1767bfbb5e57d600acb515f1f623168e5d78cdab3c34e124e81a8d215"
+    },
+    {
+      "path": "triton/quality.py",
+      "sha256": "6f9010bec3550436bd79c7f32e9b8faab497efd45389695b381cd6f0015b86c3"
+    },
+    {
+      "path": "triton/verify_deployment.py",
+      "sha256": "5dbb6f6ff1d5fd4697e8df951edd01f0ed50117ec19b97b9692117d068ad1be1"
+    },
+    {
+      "path": "validate.py",
+      "sha256": "6d4fc3403014e5e6047dcd36c608d4e677c629b27e75c198f31a790d3b66519f"
+    },
+    {
+      "path": "validate_bundle.py",
+      "sha256": "f4e9712a319d3f0c2cc722a9a53a54920ef4fceb83bc5e45a3d9d8dfd9202cf8"
+    },
+    {
+      "path": "validate_multi.py",
+      "sha256": "5e326cddabf7d19d96cbed30b7661608b129448f0407d0fb395665d12543143e"
+    },
+    {
+      "path": "web/app.js",
+      "sha256": "37c9735d91c458d532907386f3a5df0e456f73ca9901b0ecca8e3a44ed78fee0"
+    },
+    {
+      "path": "web/core.js",
+      "sha256": "9f32148f0cf3004a1f6bee4e5999fbf558f780177c3c9ab9754913aaf5841b7b"
+    },
+    {
+      "path": "web/favicon.svg",
+      "sha256": "129d036ab969267e95f647d53e1c4d910d3d1f4bac97bf0d8b2fafdce37b0f96"
+    },
+    {
+      "path": "web/index.html",
+      "sha256": "7cedae69870cfebc0e49713e2b8461cc204707ece891ab286d99f1780682d8ef"
+    },
+    {
+      "path": "web/router.js",
+      "sha256": "c2941b8ef3b0a84c5c7cc7391e20d47ef7476d2a26ce34c296c120e435c1d561"
+    },
+    {
+      "path": "web/style.css",
+      "sha256": "4ff086e7f07bcbacc3f88474b5940f428463fd3c8aaafe17afc5f3b9912275b3"
+    },
+    {
+      "path": "web/triton-core.js",
+      "sha256": "556c9c39415ea569aeca97281150131b471a08ba73a0681ad564f6692d4ada5d"
+    },
+    {
+      "path": "web/triton-view.js",
+      "sha256": "76ed53b81e64d03c03b2a70e37aa33cb4e7bb2246c32959947a0dc65d6bd4bea"
+    }
+  ]
+}

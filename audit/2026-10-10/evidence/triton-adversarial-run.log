@@ -1,0 +1,33 @@
+{"id":"ASSET-app.js","state":"passed","actual":"37c9735d91c458d532907386f3a5df0e456f73ca9901b0ecca8e3a44ed78fee0","expected":"37c9735d91c458d532907386f3a5df0e456f73ca9901b0ecca8e3a44ed78fee0"}
+{"id":"ASSET-core.js","state":"passed","actual":"9f32148f0cf3004a1f6bee4e5999fbf558f780177c3c9ab9754913aaf5841b7b","expected":"9f32148f0cf3004a1f6bee4e5999fbf558f780177c3c9ab9754913aaf5841b7b"}
+{"id":"ASSET-triton-view.js","state":"passed","actual":"76ed53b81e64d03c03b2a70e37aa33cb4e7bb2246c32959947a0dc65d6bd4bea","expected":"76ed53b81e64d03c03b2a70e37aa33cb4e7bb2246c32959947a0dc65d6bd4bea"}
+{"id":"ASSET-triton-core.js","state":"passed","actual":"556c9c39415ea569aeca97281150131b471a08ba73a0681ad564f6692d4ada5d","expected":"556c9c39415ea569aeca97281150131b471a08ba73a0681ad564f6692d4ada5d"}
+{"id":"ASSET-style.css","state":"passed","actual":"4ff086e7f07bcbacc3f88474b5940f428463fd3c8aaafe17afc5f3b9912275b3","expected":"4ff086e7f07bcbacc3f88474b5940f428463fd3c8aaafe17afc5f3b9912275b3"}
+{"id":"ASSET-data/triton.json","state":"passed","actual":"91cffcd81fcec98bc1a807a7969296f1f34e350629f4a7d4f9546d89d6a9d2e9","expected":"91cffcd81fcec98bc1a807a7969296f1f34e350629f4a7d4f9546d89d6a9d2e9"}
+{"id":"G-6","state":"passed","actual":{"count":14,"list":14,"points":14},"expected":{"count":14,"list":14,"points":14}}
+{"id":"G-12","state":"passed","actual":{"count":15,"list":15,"points":15},"expected":{"count":15,"list":15,"points":15}}
+{"id":"G-24","state":"passed","actual":{"count":65,"list":65,"points":65},"expected":{"count":65,"list":65,"points":65}}
+{"id":"G-48","state":"passed","actual":{"count":78,"list":78,"points":78},"expected":{"count":78,"list":78,"points":78}}
+{"id":"G-72","state":"passed","actual":{"count":80,"list":80,"points":80},"expected":{"count":80,"list":80,"points":80}}
+{"id":"SLOW","state":"passed","actual":3,"expected":3}
+{"id":"EXPORT","state":"passed","actual":2,"expected":2}
+{"id":"NAV-STATE","state":"passed","actual":{"branches":["main"],"range":"10/09 07:52 — 10/09 13:52","query":"2476","filter":"failure","npuFilter":"all","mode":"返回关注列表"},"expected":{"branches":["main"],"range":"10/09 07:52 — 10/09 13:52","query":"2476","filter":"failure","npuFilter":"all","mode":"返回关注列表"}}
+{"id":"RELOAD-STATE","state":"passed","actual":{"branches":["main"],"range":"10/09 07:52 — 10/09 13:52","query":"2476","filter":"failure","npuFilter":"all","mode":"返回关注列表"},"expected":{"branches":["main"],"range":"10/09 07:52 — 10/09 13:52","query":"2476","filter":"failure","npuFilter":"all","mode":"返回关注列表"}}
+{"id":"FROZEN-G-6","state":"passed","actual":{"k":1,"list":1},"expected":{"k":1,"list":1}}
+{"id":"FROZEN-G-12","state":"passed","actual":{"k":13,"list":13},"expected":{"k":13,"list":13}}
+{"id":"FROZEN-G-24","state":"passed","actual":{"k":64,"list":64},"expected":{"k":64,"list":64}}
+{"id":"FROZEN-G-48","state":"passed","actual":{"k":66,"list":66},"expected":{"k":66,"list":66}}
+{"id":"FROZEN-G-72","state":"passed","actual":{"k":66,"list":66},"expected":{"k":66,"list":66}}
+{"id":"SEARCH-STRATEGY","state":"passed","actual":"优先显示超过 P90（按页级范围 65 个有效完成样本计算）、执行中和失败的批次；三组之间可能有批次重叠，组计数之和不是唯一批次数。","expected":"优先显示超过 P90（按页级范围 65 个有效完成样本计算）、执行中和失败的批次；三组之间可能有批次重叠，组计数之和不是唯一批次数。"}
+{"id":"LOCAL-E2E","state":"passed","actual":{"k":"66","npu":48,"list":40},"expected":{"k":"66","npu":48,"list":40}}
+{"id":"CODE-LINK","state":"passed","actual":"https://github.com/triton-lang/triton-ascend","expected":"https://github.com/triton-lang/triton-ascend"}
+{"id":"EDGE-UBS","state":"passed","actual":9,"expected":9}
+{"id":"EDGE-TRITON","state":"passed","actual":14,"expected":14}
+{"id":"EMPTY-RESTORE","state":"failed","actual":{"branches":[],"range":"10/06 13:52 — 10/09 13:52","query":"","filter":"all","npuFilter":"all","mode":"查看全部批次"},"expected":{"branches":["main"],"range":"10/09 07:52 — 10/09 13:52","query":"2475","filter":"failure","npuFilter":"all","mode":"查看全部批次"}}
+{"id":"INVALID-WINDOW","state":"failed","actual":"ok","expected":"failed"}
+{"id":"DOMAIN-HANG","state":"failed","actual":{"ubsStatus":"loading","repoAvailable":false,"rows":0},"expected":{"ubsStatus":"ok","repoAvailable":true,"rows":9}}
+{"id":"BRANCH-PROTOTYPE","state":"failed","actual":[],"expected":["__proto__"]}
+{"id":"KEY-SLIDER","state":"passed","actual":true,"expected":true}
+{"id":"KEY-ARIA","state":"passed","actual":true,"expected":true}
+{"id":"KEY-TIP","state":"passed","actual":{"visible":true,"hidden":true},"expected":{"visible":true,"hidden":true}}
+{"id":"MOBILE-HEADER","state":"passed","actual":true,"expected":true}

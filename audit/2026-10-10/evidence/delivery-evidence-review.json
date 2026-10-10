@@ -1,0 +1,2968 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-10T02:36:34.267581+00:00",
+  "head": "4cfff7d49052734cfb9b3c3c2f03187d01c92108",
+  "runtime": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "scope": [
+    12,
+    13,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    38,
+    39,
+    40,
+    50,
+    51
+  ],
+  "source_records": {
+    "artifact-verification.json": {
+      "sha256": "176592c47b6d7d6d76b293fdfbf2e1217a01481d4358554b7de4b566a431a9a6",
+      "generated_at": "2026-10-09T21:47:14.987232+00:00",
+      "overall": "unverified",
+      "sections": {
+        "ac01": "pass",
+        "ac02": "partial",
+        "ac03": "partial",
+        "ac04": "unverified"
+      },
+      "categories": {
+        "raw_timestamps": {
+          "applicable": 892,
+          "verified_consistent": 0,
+          "derived_consistent": 71,
+          "differ": 0,
+          "missing_evidence": 821,
+          "status": "partial"
+        },
+        "queue_components": {
+          "applicable": 4830,
+          "verified_consistent": 0,
+          "derived_consistent": 23,
+          "differ": 0,
+          "missing_evidence": 4807,
+          "status": "partial"
+        },
+        "pr_identity": {
+          "applicable": 269,
+          "verified_consistent": 0,
+          "derived_consistent": 67,
+          "differ": 0,
+          "missing_evidence": 202,
+          "status": "partial"
+        },
+        "attempt_history": {
+          "applicable": 130,
+          "verified_consistent": 0,
+          "derived_consistent": 130,
+          "differ": 0,
+          "missing_evidence": 0,
+          "status": "partial"
+        }
+      },
+      "rerun_impact": {
+        "rerun_batches": 7,
+        "recorded_matches_old": 7,
+        "start_at_equals_created": 7,
+        "provably_identical_to_new_rule": 0,
+        "provably_affected_batches": 0,
+        "bounded_possibly_divergent": 7,
+        "max_overestimate_bound_seconds": 60.0,
+        "median_overestimate_bound_seconds": 10.0,
+        "same_run_multi_attempt_records": "冻结工件未保留任何同一 run 的多次 attempt 记录；同一 run 多 attempt 原始证据（run/job 页面）缺失",
+        "attempt_start_evidence": "run_started_at 未持久化于冻结 payload（workflow 字段不含该键）→ 新规则 E2E 无法从冻结工件精确重算，仅给出区间",
+        "conclusion": "冻结窗口 7 个真实重跑批次的旧规则值与冻结记录一致（start_at == 原 run created_at，7/7）；本次 attempt 起点未持久化，新旧规则差异不可精确判定，旧规则高估上限 60.0 秒（中位 10.0 秒），无 S01 式小时级跨度；可证明受影响批次数 = 0。"
+      },
+      "deployment": {
+        "status": "unverified",
+        "git_remotes": [],
+        "gh_cli_available": false,
+        "reasons": [
+          "本仓库无 git remote → 从未推送，不存在 Actions 构建/部署运行",
+          "合并看板 Pages 地址未部署（README 在线地址段仍为待部署后填写）",
+          "REQ-022 已将 verify_deployment 接入两个发布流程，但该流程从未真实运行，无运行 ID/URL/校验时刻与指纹可记录"
+        ],
+        "old_site_scraping_substitute": "拒绝：本地 Pages 模拟下载或旧站公开源码抓取不能替代真实构建/部署工件（REQ-038 AC04）"
+      }
+    },
+    "concurrency-evidence.json": {
+      "sha256": "eb7aa7a03d3df9c53e55b4a6eb51332444061fb792204511e95bb5353c5be489",
+      "generated_at": "2026-10-09T21:47:15.071410+00:00",
+      "overall": {
+        "status": "aligned",
+        "problems": [],
+        "note": "unverified 的受控序列与运行历史如实记录，不影响退出码；退出码只由策略一致性与文档/测试对齐决定"
+      },
+      "ac01": {
+        "status": "unverified",
+        "reasons": [
+          "无 git remote",
+          "无 gh CLI"
+        ],
+        "requirement": "运行中任务 A、随后 pending B 及 C 的受控序列，记录 A 是否被取消及 B/C 实际排队/替换结果，并提供隔离工作流运行 ID/事件记录",
+        "protocol": {
+          "isolation": "使用独立并发组（如 concurrency-probe-${{ github.run_id }} 派生组）或隔离仓库，不影响生产 pages 组",
+          "steps": [
+            "A：workflow_dispatch 触发长任务（如 sleep 600），进入 running",
+            "B：再次触发短任务（sleep 60），进入 pending",
+            "C：第三次触发短任务（sleep 60），观察 B 被取消替换、C 保持 pending",
+            "A 自然结束后 C 启动执行",
+            "记录三个 run ID、每次运行的状态事件时间线（queued/in_progress/cancelled）与 conclusion"
+          ],
+          "expected": "A 不被取消（cancel-in-progress:false）；B 被 C 取代（平台默认 pending 替换）；C 在 A 结束后运行",
+          "evidence_to_record": [
+            "隔离工作流运行 ID",
+            "每次运行的状态事件与时间戳",
+            "B 的取消/替换事件记录"
+          ]
+        }
+      },
+      "ac03": {
+        "status": "unverified",
+        "reasons": [
+          "无 git remote",
+          "无 gh CLI"
+        ],
+        "requirement": "读取可取得的真实运行历史并记录是否影响每日全量更新",
+        "procedure": [
+          "gh run list --workflow pages.yml --limit 100 --json databaseId,status,conclusion,event,createdAt,updatedAt",
+          "REST: GET /repos/{owner}/{repo}/actions/runs?per_page=100（公开仓库无凭证亦可读取）",
+          "筛选 conclusion 含 cancelled 的运行与同日 07:30 全量/08:00 增量触发对，核对排队替换是否实际发生并影响每日全量更新"
+        ],
+        "recorded": "本仓库无 git remote 且无 gh CLI，无可取得的运行历史；保持未验证，不推断已线上发生"
+      },
+      "ac04": {
+        "decision": "deferred",
+        "rationale": "沿用当前策略：cancel-in-progress:false 保护运行中构建，接受平台默认排队替换；缺少 queue:max 本身不是新增必改功能",
+        "p04_resolution": "审计期 P04 期望两工作流声明 queue:max；REQ-039 采纳\"缺 queue:max 非新增必改功能\"，决策缓期并记录于此",
+        "future_policy": "如未来要求保留全部排队任务：需制定明确新运行策略（如 queue: max——与 cancel-in-progress:true 互斥、按工作流拆分并发组、或错峰计划），并附受控序列记录与真实历史核对的对应验收，另行立项"
+      }
+    },
+    "runtime-evidence.json": {
+      "sha256": "ad9d13cc3e166265a9bb58192a178beda8413ec9135bb38bcf0295dc699d7b7e",
+      "generated_at": "2026-10-09T21:47:15.307572+00:00",
+      "overall": {
+        "status": "verified",
+        "problems": []
+      },
+      "runtimes": {
+        "python": {
+          "version": "3.12.3 (cpython)",
+          "major_minor": "3.12",
+          "executable": "/usr/bin/python3"
+        },
+        "node": {
+          "version": "v22.23.3",
+          "major": "22",
+          "binary": "/tmp/opencode/node22/bin/node"
+        }
+      },
+      "runs": [
+        {
+          "label": "python_tests",
+          "command": "/usr/bin/python3 -X utf8 -m unittest discover -s tests",
+          "exit_code": 0,
+          "log": ".omo/evidence/req-040/logs/python_tests.txt",
+          "exists": true,
+          "summary": {
+            "tests": 255,
+            "skipped": 1,
+            "failures": 0,
+            "errors": 0,
+            "result": "OK"
+          },
+          "kind": "unittest",
+          "audit_classification": null,
+          "bytes": 70207,
+          "sha256": "f6b1b85b6187ad2a8da7fe6d9a3fbe51e78d1c33146806e9cd3a12f0e803eb74",
+          "tail_matches": true
+        },
+        {
+          "label": "node_tests",
+          "command": "/tmp/opencode/node22/bin/node --test tests/branchbadge.test.cjs tests/experience.test.cjs tests/footermeta.test.cjs tests/frontend.test.cjs tests/multi_repo_frontend.test.cjs tests/navhistory.test.cjs tests/navicon.test.cjs tests/repolink.test.cjs tests/router.test.cjs tests/topbar.test.cjs tests/triton_core.test.cjs tests/triton_fixtures.test.cjs",
+          "exit_code": 0,
+          "log": ".omo/evidence/req-040/logs/node_tests.txt",
+          "exists": true,
+          "summary": {
+            "tests": 122,
+            "pass": 122,
+            "fail": 0,
+            "skipped": 0,
+            "result": "OK"
+          },
+          "kind": "node",
+          "audit_classification": null,
+          "bytes": 27067,
+          "sha256": "98ddacc843fd765b995abf84eb7cee6cf27b7e3cb1b31c4bd4294ba8172a8d02",
+          "tail_matches": true
+        },
+        {
+          "label": "validate_bundle",
+          "command": "/usr/bin/python3 -X utf8 validate_bundle.py",
+          "exit_code": 0,
+          "log": ".omo/evidence/req-040/logs/validate_bundle.txt",
+          "exists": true,
+          "summary": null,
+          "kind": "gate",
+          "audit_classification": null,
+          "bytes": 1862,
+          "sha256": "32e8fd538a5c4ff1a219a6995164038b80816e778d9fd30666c747816021646c",
+          "tail_matches": true
+        },
+        {
+          "label": "verify_artifacts",
+          "command": "/usr/bin/python3 -X utf8 scripts/verify_artifacts.py",
+          "exit_code": 0,
+          "log": ".omo/evidence/req-040/logs/verify_artifacts.txt",
+          "exists": true,
+          "summary": null,
+          "kind": "gate",
+          "audit_classification": null,
+          "bytes": 2646,
+          "sha256": "79c5a4afbbd9a3676af6b1537bd2d8a2f876998e39a4dca486f0bc7436dff79b",
+          "tail_matches": true
+        },
+        {
+          "label": "verify_concurrency",
+          "command": "/usr/bin/python3 -X utf8 scripts/verify_concurrency.py",
+          "exit_code": 0,
+          "log": ".omo/evidence/req-040/logs/verify_concurrency.txt",
+          "exists": true,
+          "summary": null,
+          "kind": "gate",
+          "audit_classification": null,
+          "bytes": 283,
+          "sha256": "404a5a49ab210fef8d9f6ef022232ccef6d41c5e24a500596bbd0758acf92491",
+          "tail_matches": true
+        },
+        {
+          "label": "raw_audit_multi",
+          "command": "/usr/bin/python3 -X utf8 validate_multi.py",
+          "exit_code": 1,
+          "log": ".omo/evidence/req-040/logs/raw_audit_multi.txt",
+          "exists": true,
+          "summary": null,
+          "kind": "audit",
+          "audit_classification": "failed_missing_artifacts",
+          "bytes": 1022,
+          "sha256": "15783a05706f906274f476810ea59a2832ff89b24c79e1bcbb849bcd4fbc0c9c",
+          "tail_matches": true
+        },
+        {
+          "label": "raw_audit_ubs",
+          "command": "/usr/bin/python3 -X utf8 validate.py",
+          "exit_code": 1,
+          "log": ".omo/evidence/req-040/logs/raw_audit_ubs.txt",
+          "exists": true,
+          "summary": null,
+          "kind": "audit",
+          "audit_classification": "failed_missing_artifacts",
+          "bytes": 691,
+          "sha256": "dff883f670b81f886d0660471a8cdb54ed1430a1e7e9e5748828bd48535d0ed6",
+          "tail_matches": true
+        }
+      ],
+      "raw_audit_summary": {
+        "status": "not_passed",
+        "classifications": {
+          "raw_audit_multi": "failed_missing_artifacts",
+          "raw_audit_ubs": "failed_missing_artifacts"
+        },
+        "note": "原始审计在目标运行时运行并如实分类；工件缺失（D10）时审计失败，wrapper 不因自身退出 0 报审计通过（REQ-040-AC03）；审计状态不影响本工具退出码，退出码只由测试/门禁与版本一致性决定"
+      },
+      "has_source_revision": false,
+      "ci_declarations": {
+        "python": [
+          "3.12"
+        ],
+        "node": [
+          "22"
+        ],
+        "sources": [
+          "pages.yml",
+          "triton-refresh.yml"
+        ]
+      }
+    },
+    "acceptance-evidence.json": {
+      "sha256": "e1b500f516c919a9443995c2565f54976f9c73f57d9e6a8159307d008fef7998",
+      "generated_at": "2026-10-10T08:51:20.632030+08:00",
+      "overall": {
+        "status": "verified",
+        "problems": []
+      }
+    },
+    "requirements-doc-evidence.json": {
+      "sha256": "1c74a0aead7e67f90879c29fc90125e8e2d09257e75cdd5c8d066dab7c3da069",
+      "generated_at": "2026-10-10T08:53:25.951800+08:00",
+      "overall": {
+        "status": "verified",
+        "problems": []
+      }
+    }
+  },
+  "fresh_artifact_report_summary": {
+    "overall_status": "unverified",
+    "sections": {
+      "ac01": "pass",
+      "ac02": "partial",
+      "ac03": "partial",
+      "ac04": "unverified"
+    },
+    "has_differences": false
+  },
+  "fresh_concurrency_summary": {
+    "overall": {
+      "status": "aligned",
+      "problems": [],
+      "note": "unverified 的受控序列与运行历史如实记录，不影响退出码；退出码只由策略一致性与文档/测试对齐决定"
+    },
+    "ac01": "unverified",
+    "ac03": "unverified"
+  },
+  "probes": {
+    "baseline_acceptance": {
+      "overall": {
+        "status": "verified",
+        "problems": []
+      },
+      "req_statuses": {
+        "通过": 51
+      },
+      "ac_statuses": {
+        "通过": 195
+      },
+      "selected_acs": [
+        {
+          "id": "REQ-012-AC01",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC02",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC03",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC04",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC01",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC02",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC03",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC04",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC01",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC02",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC03",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC04",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC01",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC02",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC03",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC04",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC01",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC02",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC03",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC04",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC01",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC02",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC03",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC04",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC01",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC02",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC03",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC04",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC01",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC02",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC03",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC04",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-038-AC01",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC02",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC03",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC04",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-039-AC01",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC02",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC03",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC04",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC01",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC02",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC03",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC04",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC01",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC02",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC03",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC04",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-051-AC01",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC02",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC03",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC04",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        }
+      ]
+    },
+    "erase_all_evidence_details_keep_expected_status_only": {
+      "overall": {
+        "status": "verified",
+        "problems": []
+      },
+      "req_statuses": {
+        "通过": 51
+      },
+      "ac_statuses": {
+        "通过": 195
+      },
+      "selected_acs": [
+        {
+          "id": "REQ-012-AC01",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC02",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC03",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC04",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC01",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC02",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC03",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC04",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC01",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC02",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC03",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC04",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC01",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC02",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC03",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC04",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC01",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC02",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC03",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC04",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC01",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC02",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC03",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC04",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC01",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC02",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC03",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC04",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC01",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC02",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC03",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC04",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-038-AC01",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC02",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC03",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC04",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-039-AC01",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC02",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC03",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC04",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC01",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC02",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC03",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC04",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC01",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC02",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC03",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC04",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-051-AC01",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC02",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC03",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC04",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        }
+      ]
+    },
+    "remove_selected_test_files_from_inventory_in_memory": {
+      "hidden_files": [
+        "test_acceptance.py",
+        "test_artifact_verification.py",
+        "test_concurrency_evidence.py",
+        "test_runtime_evidence.py",
+        "test_requirements_doc.py"
+      ],
+      "overall": {
+        "status": "verified",
+        "problems": []
+      },
+      "req_statuses": {
+        "通过": 51
+      },
+      "ac_statuses": {
+        "通过": 195
+      },
+      "selected_acs": [
+        {
+          "id": "REQ-012-AC01",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC02",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC03",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC04",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC01",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC02",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC03",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC04",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC01",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC02",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC03",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC04",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC01",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC02",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC03",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC04",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC01",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC02",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC03",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC04",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC01",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC02",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC03",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC04",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC01",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC02",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC03",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC04",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC01",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC02",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC03",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC04",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-038-AC01",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC02",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC03",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC04",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-039-AC01",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC02",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC03",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC04",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC01",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC02",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC03",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC04",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC01",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC02",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC03",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC04",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-051-AC01",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC02",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC03",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC04",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        }
+      ]
+    },
+    "omit_req051_commit_in_memory": {
+      "overall": {
+        "status": "verified",
+        "problems": []
+      },
+      "req_statuses": {
+        "通过": 51
+      },
+      "ac_statuses": {
+        "通过": 195
+      },
+      "selected_acs": [
+        {
+          "id": "REQ-012-AC01",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC02",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC03",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-012-AC04",
+          "req": "REQ-012",
+          "status": "通过",
+          "version": "625c6ee",
+          "evidence": "commit 625c6ee（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC01",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC02",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC03",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-013-AC04",
+          "req": "REQ-013",
+          "status": "通过",
+          "version": "9ccfd9f",
+          "evidence": "commit 9ccfd9f（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC01",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC02",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC03",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-020-AC04",
+          "req": "REQ-020",
+          "status": "通过",
+          "version": "95af5a0",
+          "evidence": "commit 95af5a0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC01",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC02",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC03",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-021-AC04",
+          "req": "REQ-021",
+          "status": "通过",
+          "version": "306caa3",
+          "evidence": "commit 306caa3（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC01",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC02",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC03",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-022-AC04",
+          "req": "REQ-022",
+          "status": "通过",
+          "version": "0813b95",
+          "evidence": "commit 0813b95（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC01",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC02",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC03",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-023-AC04",
+          "req": "REQ-023",
+          "status": "通过",
+          "version": "5091df4",
+          "evidence": "commit 5091df4（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC01",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC02",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC03",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-024-AC04",
+          "req": "REQ-024",
+          "status": "通过",
+          "version": "e4a4bc0",
+          "evidence": "commit e4a4bc0（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC01",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC02",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC03",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-025-AC04",
+          "req": "REQ-025",
+          "status": "通过",
+          "version": "f0775f5",
+          "evidence": "commit f0775f5（代码整改+测试）"
+        },
+        {
+          "id": "REQ-038-AC01",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC02",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC03",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-038-AC04",
+          "req": "REQ-038",
+          "status": "通过",
+          "version": "c615a1e",
+          "evidence": "commit c615a1e + evidence/artifact-verification.json"
+        },
+        {
+          "id": "REQ-039-AC01",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC02",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC03",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-039-AC04",
+          "req": "REQ-039",
+          "status": "通过",
+          "version": "60cdda9",
+          "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC01",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC02",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC03",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-040-AC04",
+          "req": "REQ-040",
+          "status": "通过",
+          "version": "c8e41d2",
+          "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC01",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC02",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC03",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-050-AC04",
+          "req": "REQ-050",
+          "status": "通过",
+          "version": "b00a329",
+          "evidence": "commit b00a329 + scripts/verify_acceptance.py + tests/test_acceptance.py + evidence/acceptance-evidence.json"
+        },
+        {
+          "id": "REQ-051-AC01",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC02",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC03",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        },
+        {
+          "id": "REQ-051-AC04",
+          "req": "REQ-051",
+          "status": "通过",
+          "version": "本提交（紧随本证据生成）",
+          "evidence": "REQ-051 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+        }
+      ]
+    },
+    "truthful_unverified_req038_req039_rejected_by_req051": {
+      "result": {
+        "acceptance": {
+          "delivering": "REQ-051",
+          "overall_status": "verified",
+          "ledger": 51,
+          "passed": 49,
+          "unverified": 2,
+          "acs": 195,
+          "unverified_conclusions": 6
+        }
+      },
+      "problems": [
+        "验收台账未达 51/51 通过（通过 49/51，未验证 2）"
+      ]
+    },
+    "derived_without_independent_raw": {
+      "result": {
+        "category": "queue_components",
+        "applicable": 1,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 1,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "unverified"
+      },
+      "required_ac02_sum": 0,
+      "denominator": 1
+    },
+    "duplicate_source_identity": {
+      "category": "job_timing",
+      "applicable": 2,
+      "verified_consistent": 1,
+      "verified_absent": 0,
+      "derived_consistent": 0,
+      "differences": 0,
+      "missing_evidence": 0,
+      "missing": [],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "verified"
+    },
+    "invalid_raw_queue_components": [
+      {
+        "input_kind": "boolean",
+        "queue_returned": "9",
+        "components_accepted": true
+      },
+      {
+        "input_kind": "negative",
+        "queue_returned": "-4",
+        "components_accepted": true
+      },
+      {
+        "input_kind": "nan",
+        "queue_returned": "nan",
+        "components_accepted": true
+      },
+      {
+        "input_kind": "infinity",
+        "queue_returned": "inf",
+        "components_accepted": true
+      }
+    ],
+    "daily_refresh_existing_manifest": {
+      "mutation": "Only index.generated_at advanced; retained manifest from restored warm cache",
+      "exit_code": 1,
+      "manifest_written": false,
+      "log": "[ubs-bundle] index ok: 9 repositories, 9 snapshots referenced\n::warning::[ubs-bundle] D:\\ubs_core_monitor\\web\\data\\snapshot.json missing (ubs-engine compat copy; CI restores or fetches it)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repositories.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-engine.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-comm.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-virt.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-io.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-mem.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\OmniStateStore.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ham.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubturbo.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-atomic.json missing (local subset; the shared cache restores it in CI)\n::error::[ubs-bundle] manifest fingerprint mismatch: expected sha256:52ac6880b71a0cdf163e90426057eaabf1f007c79a352d5909cf7b3b27c2c410, bundle is sha256:c67f4e10b9e5eb60b6889ac6fe78332c2b03dbf69beccfc31ee6fd83631f53be; differs: repositories.json\n::error::[ubs-bundle] 1 bundle problem(s); refusing to publish or share this bundle\n"
+    },
+    "truncated_manifest_files": {
+      "build_gate_manifest_state": "verified",
+      "build_gate_error_count": 0,
+      "computed_file_count": 10,
+      "recorded_file_count": 1,
+      "postdeploy_record": {
+        "files": [
+          {
+            "file": "repositories.json",
+            "url": "https://example.invalid/audit/data/repositories.json",
+            "sha256": "2e1de389998f46e07f5ee2aa55f21d1fabedc2117ee92cc9793ceef4cb7f3ebd"
+          }
+        ],
+        "file_count": 1,
+        "fingerprint": "sha256:52ac6880b71a0cdf163e90426057eaabf1f007c79a352d5909cf7b3b27c2c410",
+        "generated_at": "2026-10-10T01:46:33.623378+00:00"
+      },
+      "fetched_urls": [
+        "https://example.invalid/audit/data/repositories.json"
+      ],
+      "log": "[ubs-bundle] index ok: 9 repositories, 9 snapshots referenced\n::warning::[ubs-bundle] D:\\ubs_core_monitor\\web\\data\\snapshot.json missing (ubs-engine compat copy; CI restores or fetches it)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repositories.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-engine.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-comm.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-virt.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-io.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-mem.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\OmniStateStore.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ham.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubturbo.json missing (local subset; the shared cache restores it in CI)\n::warning::[ubs-bundle] mirror D:\\ubs_core_monitor\\data\\repos\\ubs-atomic.json missing (local subset; the shared cache restores it in CI)\n[ubs-bundle] manifest verified: bundle matches the recorded artifact fingerprint sha256:52ac6880b71a0cdf163e90426057eaabf1f007c79a352d5909cf7b3b27c2c410\n"
+    },
+    "missing_file_failure_classification": {
+      "overall_status": "failed",
+      "checks_passed": false,
+      "error": "FileNotFoundError: raw artifact unavailable",
+      "affected_scope": "audit aborted before completion; no section of this run can be claimed passed"
+    }
+  },
+  "protected_evidence_unchanged": true,
+  "notes": [
+    "All tampering is process-memory-only. No test, production snapshot, business source, or frozen evidence was modified.",
+    "Actual fresh helper reports were built in memory; their default output paths were never used.",
+    "No network writes, collection or deployment occurred."
+  ],
+  "additional_review": [
+    {
+      "id": "REQ-041-AC01",
+      "status": "unverified",
+      "requirement": "Full replay of frozen203PR/826batch events/tasks/representatives with191/203/195task samples",
+      "fresh_counts": {
+        "prs": 193,
+        "batches": 800,
+        "participating_metrics_checked": 193
+      },
+      "fresh_overall": {
+        "status": "verified",
+        "problems": []
+      },
+      "fresh_baseline": {
+        "status": "not_applicable_input_drifted"
+      },
+      "fresh_matches_audit_frozen_input": false,
+      "historical_counts": {
+        "prs": 203,
+        "batches": 826,
+        "participating_metrics_checked": 203
+      },
+      "historical_input": {
+        "repositories": [
+          {
+            "name": "ubs-engine",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          },
+          {
+            "name": "ubs-comm",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          },
+          {
+            "name": "ubs-virt",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          },
+          {
+            "name": "ubs-io",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          },
+          {
+            "name": "ubs-mem",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          },
+          {
+            "name": "OmniStateStore",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          },
+          {
+            "name": "ham",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          },
+          {
+            "name": "ubturbo",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          },
+          {
+            "name": "ubs-atomic",
+            "status": "success",
+            "current": true,
+            "participates": true,
+            "reason": "participates"
+          }
+        ],
+        "participating_repos": 9,
+        "excluded_repos": [],
+        "zero_pr_participating_repos": [],
+        "bundle_fingerprint": "sha256:66f1da360414424006878e771a2bdf3f5922051ef2c0bf56385a4cb64593ec39",
+        "manifest_state": "verified",
+        "matches_audit_frozen_input": true
+      },
+      "available_fixtures": [
+        "tests\\fixtures\\triton-audit-freeze.json",
+        "tests\\fixtures\\minimal\\repositories.json",
+        "tests\\fixtures\\minimal\\snapshot.json",
+        "tests\\fixtures\\minimal\\triton-single.json",
+        "tests\\fixtures\\minimal\\triton-zero.json",
+        "tests\\fixtures\\minimal\\triton.json",
+        "tests\\fixtures\\minimal\\repos\\ubs-engine.json"
+      ],
+      "reason": "Current193PR/800batch data can be recomputed and is legitimate new input; old203PR event/batch/task source JSON is not retained as a replayable fixture. Stored hashes/aggregate audit report or historical verified status cannot replace those rows. Quantity drift itself is not a defect.",
+      "evidence": [
+        "scripts/verify_ubs_semantics.py:296",
+        "scripts/verify_ubs_semantics.py:298",
+        "scripts/verify_ubs_semantics.py:368",
+        "tests/test_ubs_semantics.py:301",
+        "audit/2026-10-09/evidence/ubs-semantics-evidence.json"
+      ]
+    }
+  ],
+  "fresh_scoped_tests": {
+    "modules": [
+      "test_source_coverage",
+      "test_bundle_verifier",
+      "test_verify_deployment",
+      "test_shared_cache_config"
+    ],
+    "runtime": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "tests": 62,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true,
+    "log": "test_audit_crash_writes_failure_report_and_preserves_error (test_source_coverage.AuditStatusSemanticsTests.test_audit_crash_writes_failure_report_and_preserves_error) ... ok\ntest_derived_passed_and_source_unverified_reported_explicitly (test_source_coverage.AuditStatusSemanticsTests.test_derived_passed_and_source_unverified_reported_explicitly) ... {\n  \"overall_status\": \"unverified\",\n  \"checks_passed\": false,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"unverified\"\n    },\n    \"queue_components\": {\n      \"status\": \"unverified\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"unverified\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 0,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 2,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/trigger/7/\",\n          \"https://ci.example/job/ubs-test/job/x86/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"unverified\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 0,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 2,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/trigger/7/\",\n          \"https://ci.example/job/ubs-test/job/x86/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"unverified\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_difference_is_failed_not_unverified (test_source_coverage.AuditStatusSemanticsTests.test_difference_is_failed_not_unverified) ... {\n  \"overall_status\": \"differences_found\",\n  \"checks_passed\": false,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"differences_found\"\n    },\n    \"queue_components\": {\n      \"status\": \"verified\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"differences_found\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 1,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 1,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [\n          \"https://ci.example/job/ubs-test/job/x86/7/: raw(1100, 999) != snapshot(1100, 300)\"\n        ],\n        \"status\": \"differences_found\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_full_coverage_overall_verified_and_exit_consistent (test_source_coverage.AuditStatusSemanticsTests.test_full_coverage_overall_verified_and_exit_consistent) ... {\n  \"overall_status\": \"verified\",\n  \"checks_passed\": true,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"verified\"\n    },\n    \"queue_components\": {\n      \"status\": \"verified\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"verified\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_not_applicable_sections_explain_reasons (test_source_coverage.AuditStatusSemanticsTests.test_not_applicable_sections_explain_reasons) ... {\n  \"overall_status\": \"not_applicable\",\n  \"checks_passed\": true,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"no applicable objects in this run (nothing to verify against raw sources)\"\n    },\n    \"queue_components\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"no applicable objects in this run (nothing to verify against raw sources)\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"not_applicable\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 0,\n        \"verified_consistent\": 0,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"not_applicable\",\n        \"reason\": \"no applicable objects in this run (nothing to verify against raw sources)\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 0,\n        \"verified_consistent\": 0,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"not_applicable\",\n        \"reason\": \"no applicable objects in this run (nothing to verify against raw sources)\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"open\": 1\n      },\n      \"representatives\": 0\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 0,\n      \"mean\": null,\n      \"p90\": null\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 0\n}\nok\ntest_partial_coverage_overall_partial (test_source_coverage.AuditStatusSemanticsTests.test_partial_coverage_overall_partial) ... {\n  \"overall_status\": \"partial\",\n  \"checks_passed\": false,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"partial\"\n    },\n    \"queue_components\": {\n      \"status\": \"partial\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"partial\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 1,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 1,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/x86/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"partial\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 1,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 1,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/x86/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"partial\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_full_raw_coverage_passes_as_verified (test_source_coverage.MultiAuditSourceCoverageTests.test_full_raw_coverage_passes_as_verified) ... {\n  \"overall_status\": \"verified\",\n  \"checks_passed\": true,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"verified\"\n    },\n    \"queue_components\": {\n      \"status\": \"verified\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"verified\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_no_applicable_jobs_is_not_applicable_and_passes (test_source_coverage.MultiAuditSourceCoverageTests.test_no_applicable_jobs_is_not_applicable_and_passes) ... {\n  \"overall_status\": \"not_applicable\",\n  \"checks_passed\": true,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"no applicable objects in this run (nothing to verify against raw sources)\"\n    },\n    \"queue_components\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"no applicable objects in this run (nothing to verify against raw sources)\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"not_applicable\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 0,\n        \"verified_consistent\": 0,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"not_applicable\",\n        \"reason\": \"no applicable objects in this run (nothing to verify against raw sources)\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 0,\n        \"verified_consistent\": 0,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"not_applicable\",\n        \"reason\": \"no applicable objects in this run (nothing to verify against raw sources)\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"open\": 1\n      },\n      \"representatives\": 0\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 0,\n      \"mean\": null,\n      \"p90\": null\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 0\n}\nok\ntest_partial_raw_coverage_fails_with_missing_identities (test_source_coverage.MultiAuditSourceCoverageTests.test_partial_raw_coverage_fails_with_missing_identities) ... {\n  \"overall_status\": \"partial\",\n  \"checks_passed\": false,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"partial\"\n    },\n    \"queue_components\": {\n      \"status\": \"partial\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"partial\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 1,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 1,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/x86/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"partial\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 1,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 1,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/x86/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"partial\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_raw_difference_is_reported_and_fails (test_source_coverage.MultiAuditSourceCoverageTests.test_raw_difference_is_reported_and_fails) ... {\n  \"overall_status\": \"differences_found\",\n  \"checks_passed\": false,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"differences_found\"\n    },\n    \"queue_components\": {\n      \"status\": \"verified\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"differences_found\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 1,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 1,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [\n          \"https://ci.example/job/ubs-test/job/x86/7/: raw(1100, 999) != snapshot(1100, 300)\"\n        ],\n        \"status\": \"differences_found\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_zero_raw_coverage_fails_without_claiming_sources_passed (test_source_coverage.MultiAuditSourceCoverageTests.test_zero_raw_coverage_fails_without_claiming_sources_passed) ... {\n  \"overall_status\": \"unverified\",\n  \"checks_passed\": false,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"unverified\"\n    },\n    \"queue_components\": {\n      \"status\": \"unverified\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"unverified\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 0,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 2,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/trigger/7/\",\n          \"https://ci.example/job/ubs-test/job/x86/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"unverified\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 0,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 2,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/trigger/7/\",\n          \"https://ci.example/job/ubs-test/job/x86/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"unverified\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_missing_component_keeps_queue_unknown (test_source_coverage.QueueComponentAuditTests.test_missing_component_keeps_queue_unknown) ... {\n  \"overall_status\": \"verified\",\n  \"checks_passed\": true,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"verified\"\n    },\n    \"queue_components\": {\n      \"status\": \"verified\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"verified\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 1,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_queue_components_verified_from_raw (test_source_coverage.QueueComponentAuditTests.test_queue_components_verified_from_raw) ... {\n  \"overall_status\": \"verified\",\n  \"checks_passed\": true,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"verified\"\n    },\n    \"queue_components\": {\n      \"status\": \"verified\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"verified\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 1,\n        \"mean\": 20,\n        \"p90\": 20\n      },\n      \"duration\": {\n        \"n\": 1,\n        \"mean\": 300,\n        \"p90\": 300\n      },\n      \"total\": {\n        \"n\": 1,\n        \"mean\": 320,\n        \"p90\": 320\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_queue_report_distinguishes_three_buckets (test_source_coverage.QueueComponentAuditTests.test_queue_report_distinguishes_three_buckets) ... {\n  \"overall_status\": \"partial\",\n  \"checks_passed\": false,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"partial\"\n    },\n    \"queue_components\": {\n      \"status\": \"partial\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"partial\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 3,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 1,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/arm/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"partial\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 3,\n        \"verified_consistent\": 1,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 1,\n        \"differences\": 0,\n        \"missing_evidence\": 1,\n        \"missing\": [\n          \"https://ci.example/job/ubs-test/job/arm/7/\"\n        ],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"partial\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_tampered_raw_component_detected_with_url_and_field (test_source_coverage.QueueComponentAuditTests.test_tampered_raw_component_detected_with_url_and_field) ... {\n  \"overall_status\": \"differences_found\",\n  \"checks_passed\": false,\n  \"sections\": {\n    \"derived_consistency\": {\n      \"status\": \"passed\"\n    },\n    \"source_time\": {\n      \"status\": \"verified\"\n    },\n    \"queue_components\": {\n      \"status\": \"differences_found\"\n    },\n    \"publish_consistency\": {\n      \"status\": \"not_applicable\",\n      \"reason\": \"owned by validate_bundle.py before upload and triton.verify_deployment after deploy; this audit does not re-verify it\"\n    }\n  },\n  \"source_audit\": {\n    \"status\": \"differences_found\",\n    \"categories\": {\n      \"job_timing\": {\n        \"category\": \"job_timing\",\n        \"applicable\": 2,\n        \"verified_consistent\": 2,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 0,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [],\n        \"status\": \"verified\"\n      },\n      \"queue_components\": {\n        \"category\": \"queue_components\",\n        \"applicable\": 2,\n        \"verified_consistent\": 1,\n        \"verified_absent\": 0,\n        \"derived_consistent\": 0,\n        \"differences\": 1,\n        \"missing_evidence\": 0,\n        \"missing\": [],\n        \"missing_truncated\": false,\n        \"difference_details\": [\n          \"https://ci.example/job/ubs-test/job/trigger/7/: raw queue components waiting=999, blocked=6, buildable=4 sum to 1009 != snapshot queue_ms 50\"\n        ],\n        \"status\": \"differences_found\"\n      }\n    }\n  },\n  \"repositories\": [\n    {\n      \"repository\": \"openeuler/ubs-test\",\n      \"status\": \"success\",\n      \"current\": true,\n      \"prs\": 1,\n      \"states\": {\n        \"merged\": 1\n      },\n      \"representatives\": 1\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-0\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-1\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-2\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-3\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-4\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-5\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-6\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    },\n    {\n      \"repository\": \"openeuler/ubs-other-7\",\n      \"status\": \"pending\",\n      \"prs\": null,\n      \"error\": null\n    }\n  ],\n  \"included_prs\": 1,\n  \"metrics\": {\n    \"e2e\": {\n      \"n\": 1,\n      \"mean\": 400,\n      \"p90\": 400\n    },\n    \"x86\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"arm\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    },\n    \"dt\": {\n      \"queue\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"duration\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      },\n      \"total\": {\n        \"n\": 0,\n        \"mean\": null,\n        \"p90\": null\n      }\n    }\n  },\n  \"batches\": 1\n}\nok\ntest_crash_writes_failure_report_and_preserves_error (test_source_coverage.SingleRepoValidateTests.test_crash_writes_failure_report_and_preserves_error) ... ok\ntest_full_coverage_passes (test_source_coverage.SingleRepoValidateTests.test_full_coverage_passes) ... ok\ntest_queue_tamper_fails_with_url_and_field (test_source_coverage.SingleRepoValidateTests.test_queue_tamper_fails_with_url_and_field) ... ok\ntest_zero_coverage_fails_unverified (test_source_coverage.SingleRepoValidateTests.test_zero_coverage_fails_unverified) ... ok\ntest_all_derived_without_raw_verification_is_unverified (test_source_coverage.SourceCoverageTests.test_all_derived_without_raw_verification_is_unverified) ... ok\ntest_counts_add_up_and_identities_stay_traceable (test_source_coverage.SourceCoverageTests.test_counts_add_up_and_identities_stay_traceable) ... ok\ntest_derived_bucket_keeps_equation_and_partial_status (test_source_coverage.SourceCoverageTests.test_derived_bucket_keeps_equation_and_partial_status) ... ok\ntest_difference_dominates_partial_coverage (test_source_coverage.SourceCoverageTests.test_difference_dominates_partial_coverage) ... ok\ntest_full_coverage_is_verified_without_reason (test_source_coverage.SourceCoverageTests.test_full_coverage_is_verified_without_reason) ... ok\ntest_missing_list_is_capped_with_truncation_flag (test_source_coverage.SourceCoverageTests.test_missing_list_is_capped_with_truncation_flag) ... ok\ntest_no_applicable_objects_is_not_applicable_with_reason (test_source_coverage.SourceCoverageTests.test_no_applicable_objects_is_not_applicable_with_reason) ... ok\ntest_partial_coverage_keeps_missing_identities (test_source_coverage.SourceCoverageTests.test_partial_coverage_keeps_missing_identities) ... ok\ntest_queue_from_raw_mirrors_normalize_job (test_source_coverage.SourceCoverageTests.test_queue_from_raw_mirrors_normalize_job) ... ok\ntest_verified_absence_counts_as_verified_with_subcount (test_source_coverage.SourceCoverageTests.test_verified_absence_counts_as_verified_with_subcount) ... ok\ntest_zero_coverage_with_applicable_objects_is_unverified (test_source_coverage.SourceCoverageTests.test_zero_coverage_with_applicable_objects_is_unverified) ... ok\ntest_cache_roundtrip_preserves_fingerprint (test_bundle_verifier.BundleVerifierTests.test_cache_roundtrip_preserves_fingerprint) ... ok\ntest_consistent_bundle_passes_with_fingerprint (test_bundle_verifier.BundleVerifierTests.test_consistent_bundle_passes_with_fingerprint) ... ok\ntest_cross_repo_identity_mismatch_fails (test_bundle_verifier.BundleVerifierTests.test_cross_repo_identity_mismatch_fails) ... ok\ntest_current_scope_entry_without_snapshot_fails (test_bundle_verifier.BundleVerifierTests.test_current_scope_entry_without_snapshot_fails) ... ok\ntest_current_scope_snapshot_must_match_index_range (test_bundle_verifier.BundleVerifierTests.test_current_scope_snapshot_must_match_index_range) ... ok\ntest_empty_index_and_empty_snapshot_files_fail (test_bundle_verifier.BundleVerifierTests.test_empty_index_and_empty_snapshot_files_fail) ... ok\ntest_ensure_manifest_creates_when_absent_and_preserves_when_present (test_bundle_verifier.BundleVerifierTests.test_ensure_manifest_creates_when_absent_and_preserves_when_present) ... ok\ntest_failed_entry_without_snapshot_is_legal_like_pending (test_bundle_verifier.BundleVerifierTests.test_failed_entry_without_snapshot_is_legal_like_pending) ... ok\ntest_failed_retained_snapshot_with_old_range_is_legal (test_bundle_verifier.BundleVerifierTests.test_failed_retained_snapshot_with_old_range_is_legal) ... ok\ntest_fingerprint_tracks_content (test_bundle_verifier.BundleVerifierTests.test_fingerprint_tracks_content) ... ok\ntest_index_without_repositories_object_structure_fails (test_bundle_verifier.BundleVerifierTests.test_index_without_repositories_object_structure_fails) ... ok\ntest_invalid_index_fails (test_bundle_verifier.BundleVerifierTests.test_invalid_index_fails) ... ok\ntest_mirror_mismatch_fails_but_missing_mirror_only_warns (test_bundle_verifier.BundleVerifierTests.test_mirror_mismatch_fails_but_missing_mirror_only_warns) ... ok\ntest_missing_referenced_snapshot_fails (test_bundle_verifier.BundleVerifierTests.test_missing_referenced_snapshot_fails) ... ok\ntest_pending_entry_without_snapshot_is_legal (test_bundle_verifier.BundleVerifierTests.test_pending_entry_without_snapshot_is_legal) ... ok\ntest_stale_compat_snapshot_fails (test_bundle_verifier.BundleVerifierTests.test_stale_compat_snapshot_fails) ... ok\ntest_stale_manifest_blocks_mixed_bundle (test_bundle_verifier.BundleVerifierTests.test_stale_manifest_blocks_mixed_bundle) ... ok\ntest_write_manifest_then_plain_run_verifies (test_bundle_verifier.BundleVerifierTests.test_write_manifest_then_plain_run_verifies) ... ok\ntest_both_workflows_wire_post_deploy_verification (test_verify_deployment.VerifyDeploymentTests.test_both_workflows_wire_post_deploy_verification) ... ok\ntest_missing_local_manifest_fails_closed (test_verify_deployment.VerifyDeploymentTests.test_missing_local_manifest_fails_closed) ... ::error::[verify-deployment] manifest missing: D:\\ubs_core_monitor\\audit\\2026-10-10\\evidence\\delivery-test-temp\\verify-deploy-qbe4m9tz\\missing.json — cannot verify without this build's baseline\nok\ntest_stale_published_manifest_fails_naming_it (test_verify_deployment.VerifyDeploymentTests.test_stale_published_manifest_fails_naming_it) ... [verify-deployment] attempt 1/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66\n[verify-deployment] attempt 2/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66\n[verify-deployment] attempt 3/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66\n[verify-deployment] attempt 4/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66\n[verify-deployment] attempt 5/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66\n[verify-deployment] attempt 6/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66\n[verify-deployment] attempt 7/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66\n[verify-deployment] attempt 8/8: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66\n::error::[verify-deployment] deployment verification FAILED — published files disagree with this build: ubs-manifest.json at https://example.github.io/ubs_core_monitor/data/ubs-manifest.json: published manifest sha256 10827e0f3ff5e3ba86d86989b2648e8591cb6fec47a0b462be8414a879e6dd6b differs from this build's 1fd8c2e8cc2602b53282f331d9b38ab36c2d10a8870765e513cceeda9f00df66. The workflow fails; no rollback is claimed or performed (Pages keeps serving the deployed version until a later run replaces it).\nok\ntest_stale_triton_data_fails_naming_the_file_without_claiming_rollback (test_verify_deployment.VerifyDeploymentTests.test_stale_triton_data_fails_naming_the_file_without_claiming_rollback) ... [verify-deployment] attempt 1/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)\n[verify-deployment] attempt 2/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)\n[verify-deployment] attempt 3/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)\n[verify-deployment] attempt 4/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)\n[verify-deployment] attempt 5/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)\n[verify-deployment] attempt 6/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)\n[verify-deployment] attempt 7/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)\n[verify-deployment] attempt 8/8: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756)\n::error::[verify-deployment] deployment verification FAILED — published files disagree with this build: triton.json at https://example.github.io/ubs_core_monitor/data/triton.json: published data differs from this build (expected fingerprint f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756). The workflow fails; no rollback is claimed or performed (Pages keeps serving the deployed version until a later run replaces it).\nok\ntest_success_verifies_the_real_triton_entry_and_records_the_run (test_verify_deployment.VerifyDeploymentTests.test_success_verifies_the_real_triton_entry_and_records_the_run) ... [verify-deployment] PASS {\"run_id\": \"12345\", \"run_number\": \"67\", \"workflow\": \"Collect and deploy dashboard\", \"site\": \"https://example.github.io/ubs_core_monitor\", \"verified_at\": \"2026-10-10T02:36:38.422090+00:00\", \"triton\": {\"file\": \"triton.json\", \"url\": \"https://example.github.io/ubs_core_monitor/data/triton.json\", \"fingerprint\": \"f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756\", \"collected_at\": \"2026-10-09T00:00:00Z\"}, \"ubs\": {\"files\": [{\"file\": \"repos/ubs-engine.json\", \"url\": \"https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json\", \"sha256\": \"d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9\"}, {\"file\": \"repositories.json\", \"url\": \"https://example.github.io/ubs_core_monitor/data/repositories.json\", \"sha256\": \"2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\"}, {\"file\": \"snapshot.json\", \"url\": \"https://example.github.io/ubs_core_monitor/data/snapshot.json\", \"sha256\": \"d9dda0c2a586711f673ca4772dcc65d4cc7768957eba27d2d9973db05b1c62bc\"}], \"file_count\": 3, \"fingerprint\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"generated_at\": \"2026-10-09T00:00:00+00:00\"}}\nok\ntest_tampered_ubs_index_and_snapshot_are_named_in_the_failure (test_verify_deployment.VerifyDeploymentTests.test_tampered_ubs_index_and_snapshot_are_named_in_the_failure) ... [verify-deployment] attempt 1/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\n[verify-deployment] attempt 2/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\n[verify-deployment] attempt 3/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\n[verify-deployment] attempt 4/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\n[verify-deployment] attempt 5/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\n[verify-deployment] attempt 6/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\n[verify-deployment] attempt 7/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\n[verify-deployment] attempt 8/8: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\n::error::[verify-deployment] deployment verification FAILED — published files disagree with this build: repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: published sha256 1668173bd98328721f1fed33f690df7a2c0ff6d770c42841038a91eb186e74a4, this build recorded d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9; repositories.json at https://example.github.io/ubs_core_monitor/data/repositories.json: published sha256 38dfe37a585a7144c8cd85a06f65ca68baa1b241057ea18bcf2dc31203e19706, this build recorded 2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3. The workflow fails; no rollback is claimed or performed (Pages keeps serving the deployed version until a later run replaces it).\nok\ntest_transient_failures_retry_then_succeed (test_verify_deployment.VerifyDeploymentTests.test_transient_failures_retry_then_succeed) ... [verify-deployment] attempt 1/8: verification error: URLError('connection reset: https://example.github.io/ubs_core_monitor/data/triton.json')\n[verify-deployment] attempt 2/8: verification error: URLError('connection reset: https://example.github.io/ubs_core_monitor/data/triton.json')\n[verify-deployment] PASS {\"run_id\": null, \"run_number\": null, \"workflow\": null, \"site\": \"https://example.github.io/ubs_core_monitor\", \"verified_at\": \"2026-10-10T02:36:38.428933+00:00\", \"triton\": {\"file\": \"triton.json\", \"url\": \"https://example.github.io/ubs_core_monitor/data/triton.json\", \"fingerprint\": \"f786c56bb0939e54ef66908ba26b1424e74d0db72af0d9bc025843f6b340b756\", \"collected_at\": \"2026-10-09T00:00:00Z\"}, \"ubs\": {\"files\": [{\"file\": \"repos/ubs-engine.json\", \"url\": \"https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json\", \"sha256\": \"d74d7ff8374ff00c324ce405c698af7e9b8f7b8615ea3d812a1577fb6bfbdff9\"}, {\"file\": \"repositories.json\", \"url\": \"https://example.github.io/ubs_core_monitor/data/repositories.json\", \"sha256\": \"2741c6c0a6885ec159aedc2b78c8b652b32ca7301dcfcae9dc1933645069b9c3\"}, {\"file\": \"snapshot.json\", \"url\": \"https://example.github.io/ubs_core_monitor/data/snapshot.json\", \"sha256\": \"d9dda0c2a586711f673ca4772dcc65d4cc7768957eba27d2d9973db05b1c62bc\"}], \"file_count\": 3, \"fingerprint\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"generated_at\": \"2026-10-09T00:00:00+00:00\"}}\nok\ntest_bundle_verification_precedes_every_upload (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_bundle_verification_precedes_every_upload) ... ok\ntest_cache_uses_the_same_action_versions_in_both_flows (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_cache_uses_the_same_action_versions_in_both_flows) ... ok\ntest_collection_cache_stays_daily_only_and_disjoint (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_collection_cache_stays_daily_only_and_disjoint) ... ok\ntest_daily_restores_and_saves_both_cache_families (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_daily_restores_and_saves_both_cache_families) ... ok\ntest_failed_restore_never_saves_cache_or_deploys (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_failed_restore_never_saves_cache_or_deploys) ... ok\ntest_incremental_shares_the_exact_snapshot_cache_identity (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_incremental_shares_the_exact_snapshot_cache_identity) ... ok\ntest_no_wholesale_web_data_and_no_legacy_prefix (test_shared_cache_config.SharedSnapshotCacheConfigTests.test_no_wholesale_web_data_and_no_legacy_prefix) ... ok\n\n----------------------------------------------------------------------\nRan 62 tests in 3.928s\n\nOK\n"
+  },
+  "acceptance_review": [
+    {
+      "id": "REQ-012-AC01",
+      "req": "REQ-012",
+      "status": "pass",
+      "acceptance_text": "配置检查证明共享UBS缓存的路径和影响版本的选项一致，或提供明确的替代快照工件版本协议。仅key前缀一致不能作为通过依据。",
+      "reason": "Both workflows now use identical ordered shared paths and versioned ubs-snapshots-v1 keys; collection evidence cache is separated.",
+      "evidence": [
+        ".github/workflows/pages.yml:32",
+        ".github/workflows/triton-refresh.yml:36",
+        "tests/test_shared_cache_config.py",
+        "validate_bundle.py:180",
+        "validate_bundle.py:225",
+        "probes.daily_refresh_existing_manifest",
+        "probes.truncated_manifest_files"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-012-AC02",
+      "req": "REQ-012",
+      "status": "fail",
+      "acceptance_text": "每日生成快照B后，增量流程能恢复B的索引及全部被引用仓库快照，内容指纹与B一致。",
+      "reason": "Warm daily generation cannot stamp bundle B while restored A manifest remains: --write-manifest exits 1 before stamping even if only generated_at changed.",
+      "evidence": [
+        ".github/workflows/pages.yml:32",
+        ".github/workflows/triton-refresh.yml:36",
+        "tests/test_shared_cache_config.py",
+        "validate_bundle.py:180",
+        "validate_bundle.py:225",
+        "probes.daily_refresh_existing_manifest",
+        "probes.truncated_manifest_files"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-012-AC03",
+      "req": "REQ-012",
+      "status": "fail",
+      "acceptance_text": "索引与单仓快照来自同一工件版本，不能把旧索引与新单仓或相反组合发布。",
+      "reason": "The manifest files table is not checked against computed digests: truncating it to index-only still yields verified, losing the promised complete artifact binding.",
+      "evidence": [
+        ".github/workflows/pages.yml:32",
+        ".github/workflows/triton-refresh.yml:36",
+        "tests/test_shared_cache_config.py",
+        "validate_bundle.py:180",
+        "validate_bundle.py:225",
+        "probes.daily_refresh_existing_manifest",
+        "probes.truncated_manifest_files"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-012-AC04",
+      "req": "REQ-012",
+      "status": "partial",
+      "acceptance_text": "缓存缺失、版本不兼容或证据无法取得时，日志准确标记命中/未命中和回退来源，不虚称共享成功。",
+      "reason": "Per-file fallback and cache-present logs exist, but file presence is labelled cache hit without binding it to actions/cache-hit/cache-matched-key outputs; warm daily failure remains.",
+      "evidence": [
+        ".github/workflows/pages.yml:32",
+        ".github/workflows/triton-refresh.yml:36",
+        "tests/test_shared_cache_config.py",
+        "validate_bundle.py:180",
+        "validate_bundle.py:225",
+        "probes.daily_refresh_existing_manifest",
+        "probes.truncated_manifest_files"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-013-AC01",
+      "req": "REQ-013",
+      "status": "fail",
+      "acceptance_text": "使用内容不同的A/B快照：暖缓存A→每日更新B→Triton增量发布，最终UBS索引及引用快照为B，不能回到A。",
+      "reason": "Existing warm-chain test constructs B in a fresh directory, skipping the production condition of a restored A manifest in the daily workspace. Real --write-manifest rejects that condition.",
+      "evidence": [
+        "tests/test_cache_chain.py:95",
+        ".omo/evidence/req-013/SUMMARY.txt",
+        "repository_store.py:76",
+        "validate_bundle.py:225",
+        "probes.daily_refresh_existing_manifest"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-013-AC02",
+      "req": "REQ-013",
+      "status": "pass",
+      "acceptance_text": "无缓存冷启动时，从规定回退站点恢复的文件可通过完整性及一致性检查后再发布；缺文件不能以索引非空判成功。",
+      "reason": "Local replay extracts production Ensure UBS data script and checks cold fallback plus missing/empty references through the bundle gate; historical chain log is available.",
+      "evidence": [
+        "tests/test_cache_chain.py:95",
+        ".omo/evidence/req-013/SUMMARY.txt",
+        "repository_store.py:76",
+        "validate_bundle.py:225",
+        "probes.daily_refresh_existing_manifest"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-013-AC03",
+      "req": "REQ-013",
+      "status": "pass",
+      "acceptance_text": "缓存命中但工件无效时，该次发布被阻断或明确恢复到可验证的完整工件，不能发布混合版本。",
+      "reason": "Mixed cached snapshot is rejected by manifest/range verification in local tests.",
+      "evidence": [
+        "tests/test_cache_chain.py:95",
+        ".omo/evidence/req-013/SUMMARY.txt",
+        "repository_store.py:76",
+        "validate_bundle.py:225",
+        "probes.daily_refresh_existing_manifest"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-013-AC04",
+      "req": "REQ-013",
+      "status": "partial",
+      "acceptance_text": "交付测试输入、流程次序、缓存命中/回退日志及每一步UBS指纹；真实Actions验收另附隔离工作流运行ID，静态配置检查不替代链路证据。",
+      "reason": "Local A/B fingerprints and source logs exist, but the SUMMARY explicitly says isolated Actions run IDs are still missing.",
+      "evidence": [
+        "tests/test_cache_chain.py:95",
+        ".omo/evidence/req-013/SUMMARY.txt",
+        "repository_store.py:76",
+        "validate_bundle.py:225",
+        "probes.daily_refresh_existing_manifest"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-020-AC01",
+      "req": "REQ-020",
+      "status": "pass",
+      "acceptance_text": "坏JSON、缺少repositories必要结构、引用单仓下载失败、空文件均产生恢复失败结果，不能只凭index非空继续上传。",
+      "reason": "Malformed/empty index and referenced snapshot failures are covered by the actual bundle gate and local controlled tests.",
+      "evidence": [
+        "validate_bundle.py:58",
+        "validate_bundle.py:104",
+        "tests/test_bundle_verifier.py",
+        "tests/test_cache_chain.py",
+        ".github/workflows/pages.yml:80",
+        ".github/workflows/triton-refresh.yml:182"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-020-AC02",
+      "req": "REQ-020",
+      "status": "pass",
+      "acceptance_text": "索引引用的全部快照都可读取、解析并确认仓库归属；未引用/明确无快照的pending或首次failed仓库显示未获取，不能造空成功数据。",
+      "reason": "Every referenced snapshot is parsed and repository ownership checked; pending/first-failed entries without snapshots remain distinct.",
+      "evidence": [
+        "validate_bundle.py:58",
+        "validate_bundle.py:104",
+        "tests/test_bundle_verifier.py",
+        "tests/test_cache_chain.py",
+        ".github/workflows/pages.yml:80",
+        ".github/workflows/triton-refresh.yml:182"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-020-AC03",
+      "req": "REQ-020",
+      "status": "pass",
+      "acceptance_text": "命中缓存与从站点回退两种路径执行同一完整性检查，错误报告包含具体缺失引用及恢复来源。",
+      "reason": "Both workflow paths call the same validate_bundle gate; local chain tests name missing references and restore sources.",
+      "evidence": [
+        "validate_bundle.py:58",
+        "validate_bundle.py:104",
+        "tests/test_bundle_verifier.py",
+        "tests/test_cache_chain.py",
+        ".github/workflows/pages.yml:80",
+        ".github/workflows/triton-refresh.yml:182"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-020-AC04",
+      "req": "REQ-020",
+      "status": "pass",
+      "acceptance_text": "恢复不完整时不会覆盖上一份已发布的有效页面；失败后的重试只在完整性通过后进入发布前检查。",
+      "reason": "Build gate precedes cache save/upload and deploy needs build. Controlled negative tests cover failed restore; actual online rollback is not claimed.",
+      "evidence": [
+        "validate_bundle.py:58",
+        "validate_bundle.py:104",
+        "tests/test_bundle_verifier.py",
+        "tests/test_cache_chain.py",
+        ".github/workflows/pages.yml:80",
+        ".github/workflows/triton-refresh.yml:182"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-021-AC01",
+      "req": "REQ-021",
+      "status": "pass",
+      "acceptance_text": "成功/部分成功且纳入跨仓的单仓，其repository及时间范围必须与索引一致；跨仓汇总只纳入满足既有条件的PR。",
+      "reason": "Success/partial snapshots must match index repository and start/end window; repositoryRows applies the current/included rule.",
+      "evidence": [
+        "validate_bundle.py:77",
+        "validate_bundle.py:132",
+        "tests/test_bundle_verifier.py:258",
+        "triton/quality.py:110",
+        "triton/dashboard.py",
+        "tests/test_triton_quality.py"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-021-AC02",
+      "req": "REQ-021",
+      "status": "pass",
+      "acceptance_text": "失败、过期保留快照及合法零PR成功快照有不同标识；过期/失败不混入跨仓指标，空仓仍展示。",
+      "reason": "Failed/stale/pending/zero-PR scopes have distinct inclusion and display rules with controlled tests.",
+      "evidence": [
+        "validate_bundle.py:77",
+        "validate_bundle.py:132",
+        "tests/test_bundle_verifier.py:258",
+        "triton/quality.py:110",
+        "triton/dashboard.py",
+        "tests/test_triton_quality.py"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-021-AC03",
+      "req": "REQ-021",
+      "status": "pass",
+      "acceptance_text": "将其他仓库JSON置于当前引用路径、混合索引版本或修改关键字段，门禁失败并说明原因。",
+      "reason": "Repository/range/manifest mismatches are blocked with explicit reasons in existing tests.",
+      "evidence": [
+        "validate_bundle.py:77",
+        "validate_bundle.py:132",
+        "tests/test_bundle_verifier.py:258",
+        "triton/quality.py:110",
+        "triton/dashboard.py",
+        "tests/test_triton_quality.py"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-021-AC04",
+      "req": "REQ-021",
+      "status": "partial",
+      "acceptance_text": "Triton JSON、CSV、manifest和构建输入的批次身份、统计范围、采集时间可追溯一致；检查通过后才上传当前工件。",
+      "reason": "Triton JSON/CSV/manifest/output-evidence consistency is checked, but dashboard-data.json is itself written from the final payload; verify_artifacts does not read or recompute enriched-runs.json build inputs.",
+      "evidence": [
+        "validate_bundle.py:77",
+        "validate_bundle.py:132",
+        "tests/test_bundle_verifier.py:258",
+        "triton/quality.py:110",
+        "triton/dashboard.py",
+        "tests/test_triton_quality.py"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-022-AC01",
+      "req": "REQ-022",
+      "status": "fail",
+      "acceptance_text": "受控构建到部署提供manifest、工件及实际URL证据；每个被校验数据文件的身份和SHA-256/稳定JSON指纹与构建一致。",
+      "reason": "No real build/deploy/URL record is provided, and an index-only manifest files list passes the build gate and postdeploy verifier without fetching nine referenced snapshots.",
+      "evidence": [
+        "triton/verify_deployment.py:27",
+        "triton/verify_deployment.py:42",
+        "triton/verify_deployment.py:94",
+        "tests/test_verify_deployment.py",
+        "source_records.artifact-verification.json.deployment",
+        "probes.truncated_manifest_files"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-022-AC02",
+      "req": "REQ-022",
+      "status": "pass",
+      "acceptance_text": "Triton验证读取实际/data/triton.json入口，不能仅对合成内嵌HTML验证后宣称真实部署通过。",
+      "reason": "Production verify_triton reads /data/triton.json; fresh controlled tests verify that route.",
+      "evidence": [
+        "triton/verify_deployment.py:27",
+        "triton/verify_deployment.py:42",
+        "triton/verify_deployment.py:94",
+        "tests/test_verify_deployment.py",
+        "source_records.artifact-verification.json.deployment",
+        "probes.truncated_manifest_files"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-022-AC03",
+      "req": "REQ-022",
+      "status": "pass",
+      "acceptance_text": "公开URL仍返回旧数据或篡改数据时，限定重试后workflow失败，并在运行摘要指出不一致文件；不得显示部署验证成功。",
+      "reason": "Bounded retry and failure summary/no-rollback behavior are exercised by fresh controlled mismatch/fetch-error tests and wired into both workflows.",
+      "evidence": [
+        "triton/verify_deployment.py:27",
+        "triton/verify_deployment.py:42",
+        "triton/verify_deployment.py:94",
+        "tests/test_verify_deployment.py",
+        "source_records.artifact-verification.json.deployment",
+        "probes.truncated_manifest_files"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-022-AC04",
+      "req": "REQ-022",
+      "status": "unverified",
+      "acceptance_text": "成功结果记录构建/运行ID、URL、校验时刻与指纹；失败不会被宣称已自动回滚，除非另有真实回滚证据。",
+      "reason": "record_success can emit run IDs/URL/time/fingerprints in real CI, but all retained examples are synthetic example.github.io records with null IDs; artifact evidence declares actual deployment unverified.",
+      "evidence": [
+        "triton/verify_deployment.py:27",
+        "triton/verify_deployment.py:42",
+        "triton/verify_deployment.py:94",
+        "tests/test_verify_deployment.py",
+        "source_records.artifact-verification.json.deployment",
+        "probes.truncated_manifest_files"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-023-AC01",
+      "req": "REQ-023",
+      "status": "pass",
+      "acceptance_text": "raw为空但有应核验的完成任务时，来源覆盖为0且状态未验证，不能报告来源全部通过。",
+      "reason": "Raw-empty applicable jobs remain source-unverified with checks_passed false in fresh integration tests.",
+      "evidence": [
+        "source_coverage.py:47",
+        "source_coverage.py:83",
+        "tests/test_source_coverage.py",
+        "probes.derived_without_independent_raw",
+        "probes.duplicate_source_identity"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-023-AC02",
+      "req": "REQ-023",
+      "status": "fail",
+      "acceptance_text": "覆盖计数满足“已验证一致+已发现差异+缺证据=适用总数”，可追溯到任务/批次身份；原始行数不冒充组件准确率。",
+      "reason": "Derived-only object yields applicable=1 but verified+difference+missing=0; duplicate applicable identities can yield verified with denominator2/verified1/missing0. The stated three-term accounting invariant is violated.",
+      "evidence": [
+        "source_coverage.py:47",
+        "source_coverage.py:83",
+        "tests/test_source_coverage.py",
+        "probes.derived_without_independent_raw",
+        "probes.duplicate_source_identity"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-023-AC03",
+      "req": "REQ-023",
+      "status": "pass",
+      "acceptance_text": "只补齐一部分原始证据时，报告保持分项覆盖和缺失清单，不因为存在任意raw文件就转为完整通过。",
+      "reason": "Partial independent evidence is kept partial and task missing identities are retained in fresh tests.",
+      "evidence": [
+        "source_coverage.py:47",
+        "source_coverage.py:83",
+        "tests/test_source_coverage.py",
+        "probes.derived_without_independent_raw",
+        "probes.duplicate_source_identity"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-023-AC04",
+      "req": "REQ-023",
+      "status": "pass",
+      "acceptance_text": "没有适用对象时写N/A或无样本及原因，不能用0/0或100%表示来源准确。",
+      "reason": "No-applicable-object result is N/A with a reason and no accuracy percentage.",
+      "evidence": [
+        "source_coverage.py:47",
+        "source_coverage.py:83",
+        "tests/test_source_coverage.py",
+        "probes.derived_without_independent_raw",
+        "probes.duplicate_source_identity"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-024-AC01",
+      "req": "REQ-024",
+      "status": "pass",
+      "acceptance_text": "原始分项12/5/3毫秒时queue为20毫秒；与快照queue、total及有效统计样本一致。",
+      "reason": "12/5/3 component sum and queue/total/statistical propagation are covered by fresh integrated source tests.",
+      "evidence": [
+        "source_coverage.py:13",
+        "source_coverage.py:83",
+        "tests/test_source_coverage.py",
+        "probes.invalid_raw_queue_components",
+        "probes.derived_without_independent_raw"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-024-AC02",
+      "req": "REQ-024",
+      "status": "fail",
+      "acceptance_text": "任一分项缺失或非法时queue与total保持未知，已知duration可保留；未知不得补0。",
+      "reason": "queue_from_raw accepts bool, negative values, NaN and infinity as components; invalid parts do not remain unknown.",
+      "evidence": [
+        "source_coverage.py:13",
+        "source_coverage.py:83",
+        "tests/test_source_coverage.py",
+        "probes.invalid_raw_queue_components",
+        "probes.derived_without_independent_raw"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-024-AC03",
+      "req": "REQ-024",
+      "status": "pass",
+      "acceptance_text": "篡改raw分项而保留派生总和值自洽时，独立核验能发现差异并给出任务完整URL及字段。",
+      "reason": "Controlled raw-only component tampering is detected with full job URL and components in the existing fresh tests.",
+      "evidence": [
+        "source_coverage.py:13",
+        "source_coverage.py:83",
+        "tests/test_source_coverage.py",
+        "probes.invalid_raw_queue_components",
+        "probes.derived_without_independent_raw"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-024-AC04",
+      "req": "REQ-024",
+      "status": "partial",
+      "acceptance_text": "报告区分原始queue已验证、派生queue自洽及缺证据三种情况，并给出适用对象覆盖。",
+      "reason": "Verified/derived/missing categories exist, but derived-only evidence is removed from missing denominator and duplicate identities break complete coverage accounting.",
+      "evidence": [
+        "source_coverage.py:13",
+        "source_coverage.py:83",
+        "tests/test_source_coverage.py",
+        "probes.invalid_raw_queue_components",
+        "probes.derived_without_independent_raw"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-025-AC01",
+      "req": "REQ-025",
+      "status": "partial",
+      "acceptance_text": "派生通过而原始工件缺失时，报告明确“派生通过、来源未验证、覆盖Partial”，不能写成来源正确。",
+      "reason": "Job time/queue source states are separated from derived consistency, but source PR identity and attempt-history sections promised by the requirement are omitted/deferred.",
+      "evidence": [
+        "validate.py:90",
+        "validate_multi.py:134",
+        "source_coverage.py:38",
+        "tests/test_source_coverage.py",
+        ".omo/evidence/req-025/SUMMARY.txt",
+        "probes.missing_file_failure_classification"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-025-AC02",
+      "req": "REQ-025",
+      "status": "fail",
+      "acceptance_text": "真实比对发现差异标失败；仅缺权限或文件标未验证；不适用必须解释，不将未验证伪装为失败或通过。",
+      "reason": "failure_report(FileNotFoundError) yields overall_status=failed, contradicting missing-file=unverified distinction required by AC02.",
+      "evidence": [
+        "validate.py:90",
+        "validate_multi.py:134",
+        "source_coverage.py:38",
+        "tests/test_source_coverage.py",
+        ".omo/evidence/req-025/SUMMARY.txt",
+        "probes.missing_file_failure_classification"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-025-AC03",
+      "req": "REQ-025",
+      "status": "pass",
+      "acceptance_text": "过程退出码0只代表执行完成时，不作为未执行审计通过的证据；实际审计异常保留错误与受影响范围。",
+      "reason": "Unexpected exceptions retain error and affected_scope and are re-raised; runtime evidence correctly records raw-audit exit1 rather than wrapper success.",
+      "evidence": [
+        "validate.py:90",
+        "validate_multi.py:134",
+        "source_coverage.py:38",
+        "tests/test_source_coverage.py",
+        ".omo/evidence/req-025/SUMMARY.txt",
+        "probes.missing_file_failure_classification"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-025-AC04",
+      "req": "REQ-025",
+      "status": "partial",
+      "acceptance_text": "报告和命令/CI结果的总体状态一致；只有所声明必需来源分项完成且无差异时，才可宣称该范围来源验证通过。",
+      "reason": "Exit/report consistency is covered for the two implemented categories; omitted PR/attempt scopes and derived coverage accounting prevent a full declared-scope source verdict.",
+      "evidence": [
+        "validate.py:90",
+        "validate_multi.py:134",
+        "source_coverage.py:38",
+        "tests/test_source_coverage.py",
+        ".omo/evidence/req-025/SUMMARY.txt",
+        "probes.missing_file_failure_classification"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-038-AC01",
+      "req": "REQ-038",
+      "status": "pass",
+      "acceptance_text": "提供工件清单、来源、采集时刻/窗口、SHA-256及与冻结快照的关联；缺失项目继续明确标为未验证。",
+      "reason": "Inventory lists current frozen artifact hashes/windows and honestly marks eight missing categories; this satisfies inventory transparency, not source completion.",
+      "evidence": [
+        "scripts/verify_artifacts.py:140",
+        "scripts/verify_artifacts.py:636",
+        "scripts/verify_artifacts.py:750",
+        "source_records.artifact-verification.json"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-038-AC02",
+      "req": "REQ-038",
+      "status": "unverified",
+      "acceptance_text": "原始时间、queue三项、PR身份及attempt历史分别完成独立比对，并给出一致/差异/缺证据数量与身份明细。",
+      "reason": "Independent verified_consistent is zero in all four artifact categories; payload/CSV self-consistency is derived evidence and original timestamp/queue/identity/attempt proof remains missing.",
+      "evidence": [
+        "scripts/verify_artifacts.py:140",
+        "scripts/verify_artifacts.py:636",
+        "scripts/verify_artifacts.py:750",
+        "source_records.artifact-verification.json"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-038-AC03",
+      "req": "REQ-038",
+      "status": "unverified",
+      "acceptance_text": "用同一真实run的多个attempt证据比较原规则和REQ-014/015规则，输出历史受影响批次数及差异；合成300秒例子不能证明历史真实E2E。",
+      "reason": "Seven rerun batches have no same-run multiple-attempt raw records or persisted attempt starts; bounds and a synthetic 300-second example do not establish actual affected batches.",
+      "evidence": [
+        "scripts/verify_artifacts.py:140",
+        "scripts/verify_artifacts.py:636",
+        "scripts/verify_artifacts.py:750",
+        "source_records.artifact-verification.json"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-038-AC04",
+      "req": "REQ-038",
+      "status": "unverified",
+      "acceptance_text": "真实构建、部署工件和公开JSON的对应关系通过REQ-022核验；本地Pages模拟下载或旧站公开源码抓取不能替代此证据。",
+      "reason": "No real controlled merged build/deploy/public JSON correspondence is available; retained report explicitly states unverified.",
+      "evidence": [
+        "scripts/verify_artifacts.py:140",
+        "scripts/verify_artifacts.py:636",
+        "scripts/verify_artifacts.py:750",
+        "source_records.artifact-verification.json"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-039-AC01",
+      "req": "REQ-039",
+      "status": "unverified",
+      "acceptance_text": "运行中每日任务A、随后pending B及C的受控序列中，记录A是否被取消及B/C实际排队/替换结果，并提供隔离工作流运行ID/事件记录。",
+      "reason": "Controlled running A/pending B/C real event sequence and isolated workflow run IDs are absent; only a future protocol exists.",
+      "evidence": [
+        "scripts/verify_concurrency.py:180",
+        "scripts/verify_concurrency.py:208",
+        "source_records.concurrency-evidence.json"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-039-AC02",
+      "req": "REQ-039",
+      "status": "pass",
+      "acceptance_text": "文档明确cancel-in-progress:false保护running，不能声称默认保留所有pending；测试不得以YAML字面值断言queued任务永不取消。",
+      "reason": "README/test naming now distinguish running protection from pending replacement; current static checks agree.",
+      "evidence": [
+        "scripts/verify_concurrency.py:180",
+        "scripts/verify_concurrency.py:208",
+        "source_records.concurrency-evidence.json"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-039-AC03",
+      "req": "REQ-039",
+      "status": "unverified",
+      "acceptance_text": "读取可取得的真实运行历史并记录是否影响每日全量更新；没有历史证据时仍标未验证，不推断已线上发生。",
+      "reason": "Actual workflow history is not read; report honestly remains unverified. Lack of a local remote alone cannot prove a repository was never pushed.",
+      "evidence": [
+        "scripts/verify_concurrency.py:180",
+        "scripts/verify_concurrency.py:208",
+        "source_records.concurrency-evidence.json"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-039-AC04",
+      "req": "REQ-039",
+      "status": "pass",
+      "acceptance_text": "本轮不强制启用queue:max；如果以后要求保留所有排队任务，需形成明确的新运行策略及对应验收。",
+      "reason": "queue:max is explicitly deferred with a documented future decision; the requirement does not force enabling it.",
+      "evidence": [
+        "scripts/verify_concurrency.py:180",
+        "scripts/verify_concurrency.py:208",
+        "source_records.concurrency-evidence.json"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-040-AC01",
+      "req": "REQ-040",
+      "status": "partial",
+      "acceptance_text": "记录精确Python/Node版本、命令、退出码、失败数及完整日志；相关测试全部通过。",
+      "reason": "Retained Python3.12.3/Node22.23.3 logs exist and match tails, but contain 255 Python tests before REQ050/051 additions and no source HEAD binding; they do not certify current HEAD. Fresh scoped tests here run Python3.12.14, bundled Node is24.19.0.",
+      "evidence": [
+        "scripts/verify_runtime.py:153",
+        "scripts/verify_runtime.py:180",
+        "source_records.runtime-evidence.json",
+        "fresh_scoped_tests"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-040-AC02",
+      "req": "REQ-040",
+      "status": "pass",
+      "acceptance_text": "原有Python79/79与Node34/34只作为原环境基线，不替代3.12/22结果；新增测试数量不受原数量限制。",
+      "reason": "Original79/34 baseline is labelled historical rather than used as the target-version result.",
+      "evidence": [
+        "scripts/verify_runtime.py:153",
+        "scripts/verify_runtime.py:180",
+        "source_records.runtime-evidence.json",
+        "fresh_scoped_tests"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-040-AC03",
+      "req": "REQ-040",
+      "status": "pass",
+      "acceptance_text": "有完整工件时原始审计在目标运行时运行；工件缺失不能因wrapper退出0而报审计通过。",
+      "reason": "Raw audit failures due to missing artifacts are recorded as not_passed/failed_missing_artifacts, not converted to passed from gate exit0.",
+      "evidence": [
+        "scripts/verify_runtime.py:153",
+        "scripts/verify_runtime.py:180",
+        "source_records.runtime-evidence.json",
+        "fresh_scoped_tests"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-040-AC04",
+      "req": "REQ-040",
+      "status": "partial",
+      "acceptance_text": "CI工作流声明版本、文档支持版本和交付验证结果一致。",
+      "reason": "Declared/support versions are3.12/22 and historical result matches those versions, but current-head same-version verification is incomplete and no exact code revision is recorded.",
+      "evidence": [
+        "scripts/verify_runtime.py:153",
+        "scripts/verify_runtime.py:180",
+        "source_records.runtime-evidence.json",
+        "fresh_scoped_tests"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-050-AC01",
+      "req": "REQ-050",
+      "status": "fail",
+      "acceptance_text": "每个REQ及AC都有通过/失败/未验证/N/A状态、版本、输入和证据；截图生成或测试进程退出0本身不能替代验收。",
+      "reason": "The ledger derives all AC statuses from commit names and blindly copies each REQ status; hollow evidence, hidden associated tests and a missing delivering commit still produce195 AC passed.",
+      "evidence": [
+        "scripts/verify_acceptance.py:510",
+        "scripts/verify_acceptance.py:535",
+        "scripts/verify_acceptance.py:579",
+        "scripts/verify_acceptance.py:68",
+        "probes.baseline_acceptance",
+        "probes.erase_all_evidence_details_keep_expected_status_only",
+        "probes.remove_selected_test_files_from_inventory_in_memory",
+        "probes.omit_req051_commit_in_memory"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-050-AC02",
+      "req": "REQ-050",
+      "status": "pass",
+      "acceptance_text": "F01–F19和D10/P04等未验证结论全部映射，无源问题遗漏；19组问题拆分为多条需求不被误计成新增审查问题。",
+      "reason": "F01-F19, D10/P04 mapping, fixed counts and source hashes are structurally verified.",
+      "evidence": [
+        "scripts/verify_acceptance.py:510",
+        "scripts/verify_acceptance.py:535",
+        "scripts/verify_acceptance.py:579",
+        "scripts/verify_acceptance.py:68",
+        "probes.baseline_acceptance",
+        "probes.erase_all_evidence_details_keep_expected_status_only",
+        "probes.remove_selected_test_files_from_inventory_in_memory",
+        "probes.omit_req051_commit_in_memory"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-050-AC03",
+      "req": "REQ-050",
+      "status": "partial",
+      "acceptance_text": "修复后的相关失败检查转通过并保持正确能力；不得删除记录、补零或放宽验收使结果通过。",
+      "reason": "Frozen failed checks are preserved, but no per-AC post-fix re-evaluation links every old failure to actual proof; fresh counterexamples remain despite all-commit pass.",
+      "evidence": [
+        "scripts/verify_acceptance.py:510",
+        "scripts/verify_acceptance.py:535",
+        "scripts/verify_acceptance.py:579",
+        "scripts/verify_acceptance.py:68",
+        "probes.baseline_acceptance",
+        "probes.erase_all_evidence_details_keep_expected_status_only",
+        "probes.remove_selected_test_files_from_inventory_in_memory",
+        "probes.omit_req051_commit_in_memory"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-050-AC04",
+      "req": "REQ-050",
+      "status": "fail",
+      "acceptance_text": "真实快照、合成输入、静态规则、真实部署证据分别标注；238项检查不能直接合成来源准确率。",
+      "reason": "Input kinds are hardcoded by REQ/type; REQ040 is labelled real deployment although its records are local target-runtime tests and actual deployment is absent. Hollow evidence is accepted.",
+      "evidence": [
+        "scripts/verify_acceptance.py:510",
+        "scripts/verify_acceptance.py:535",
+        "scripts/verify_acceptance.py:579",
+        "scripts/verify_acceptance.py:68",
+        "probes.baseline_acceptance",
+        "probes.erase_all_evidence_details_keep_expected_status_only",
+        "probes.remove_selected_test_files_from_inventory_in_memory",
+        "probes.omit_req051_commit_in_memory"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-051-AC01",
+      "req": "REQ-051",
+      "status": "pass",
+      "acceptance_text": "文档51个REQ编号连续唯一，每项至少3条带唯一AC编号的可验证验收标准；所有源结论有追踪表。",
+      "reason": "Document has51 unique consecutive requirements and195 uniquely numbered ACs with the required structure and tracking.",
+      "evidence": [
+        "scripts/verify_requirements_doc.py:345",
+        "scripts/verify_requirements_doc.py:372",
+        "source_records.requirements-doc-evidence.json",
+        "probes.truthful_unverified_req038_req039_rejected_by_req051"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-051-AC02",
+      "req": "REQ-051",
+      "status": "pass",
+      "acceptance_text": "明确37条整改、3条补证、9条保持、2条交付的分类；“保持”是已有正确能力，“补证”不是已确认线上故障。",
+      "reason": "37 remediation/3 evidence/9 preservation/2 delivery classifications are explicit and structurally checked.",
+      "evidence": [
+        "scripts/verify_requirements_doc.py:345",
+        "scripts/verify_requirements_doc.py:372",
+        "source_records.requirements-doc-evidence.json",
+        "probes.truthful_unverified_req038_req039_rejected_by_req051"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-051-AC03",
+      "req": "REQ-051",
+      "status": "pass",
+      "acceptance_text": "需求来源文件SHA-256可核验，原审查报告、证据、业务文件未改变；所有本地文档链接有效。",
+      "reason": "Frozen source hashes and document baseline match; existing document validation covers local links and attribution; this audit does not change frozen evidence.",
+      "evidence": [
+        "scripts/verify_requirements_doc.py:345",
+        "scripts/verify_requirements_doc.py:372",
+        "source_records.requirements-doc-evidence.json",
+        "probes.truthful_unverified_req038_req039_rejected_by_req051"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    },
+    {
+      "id": "REQ-051-AC04",
+      "req": "REQ-051",
+      "status": "fail",
+      "acceptance_text": "总体验收结论只有必需目标与证据均完成时才标完成，缺原始证据/真实历史仍保留未验证。",
+      "reason": "check_overall demands51 passed/zero unverified while source evidence is incomplete; truthfully markingREQ038/039 unverified is rejected. Document overall verified is a structural result, not delivery completion.",
+      "evidence": [
+        "scripts/verify_requirements_doc.py:345",
+        "scripts/verify_requirements_doc.py:372",
+        "source_records.requirements-doc-evidence.json",
+        "probes.truthful_unverified_req038_req039_rejected_by_req051"
+      ],
+      "source_revision": "4cfff7d49052734cfb9b3c3c2f03187d01c92108"
+    }
+  ],
+  "status_counts": {
+    "pass": 27,
+    "fail": 10,
+    "partial": 9,
+    "unverified": 6
+  },
+  "delivery_complete": false,
+  "highest_risk_findings": [
+    {
+      "id": "DE01",
+      "priority": "P1",
+      "title": "Commit-based ledger certifies missing and hollow evidence",
+      "reqs": [
+        50,
+        51
+      ],
+      "proof": "probes.erase_all_evidence_details_keep_expected_status_only"
+    },
+    {
+      "id": "DE02",
+      "priority": "P1",
+      "title": "Warm daily refresh fails on the restored old manifest before stamping new bundle",
+      "reqs": [
+        12,
+        13
+      ],
+      "proof": "probes.daily_refresh_existing_manifest"
+    },
+    {
+      "id": "DE03",
+      "priority": "P1",
+      "title": "Manifest file omission suppresses postdeployment snapshot verification",
+      "reqs": [
+        12,
+        22
+      ],
+      "proof": "probes.truncated_manifest_files"
+    },
+    {
+      "id": "DE04",
+      "priority": "P1",
+      "title": "Required real source/multi-attempt/deployment/concurrency evidence still unverified",
+      "reqs": [
+        22,
+        38,
+        39
+      ],
+      "proof": "source_records"
+    },
+    {
+      "id": "DE05",
+      "priority": "P2",
+      "title": "Coverage denominator drops derived-only evidence and mishandles duplicate identities",
+      "reqs": [
+        23,
+        24,
+        25
+      ],
+      "proof": "probes.derived_without_independent_raw"
+    },
+    {
+      "id": "DE06",
+      "priority": "P2",
+      "title": "Invalid raw queue components accepted as numeric values",
+      "reqs": [
+        24
+      ],
+      "proof": "probes.invalid_raw_queue_components"
+    },
+    {
+      "id": "DE07",
+      "priority": "P2",
+      "title": "Missing artifact exception reported failed instead of source-unverified",
+      "reqs": [
+        25
+      ],
+      "proof": "probes.missing_file_failure_classification"
+    }
+  ],
+  "limitations": [
+    "No actual workflow triggered; no collection, deployment or network write occurred.",
+    "Scoped tests and controlled fakes prove local behavior only. Real original artifacts and GitHub run IDs remain absent.",
+    "Existing runtime records are reviewed as historical logs and have no source revision binding.",
+    "No production file or frozen evidence was changed; root handles one audit-only Git commit."
+  ]
+}
