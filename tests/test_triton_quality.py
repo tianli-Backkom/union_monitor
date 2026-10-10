@@ -65,17 +65,17 @@ class WorkflowTimeGateTests(unittest.TestCase):
         bad=self.run_row(id=1,created_at="2026-09-22T00:00:00Z",trigger_at="2026-09-22T02:30:00Z",trigger_exact=True,updated_at="2026-09-22T01:00:00Z")
         aux=self.run_row(id=2,created_at="2026-09-22T00:00:00Z",trigger_at="2026-09-22T00:30:00Z",trigger_exact=True,updated_at="2026-09-22T03:00:00Z",
                          pr_evidence={"method":"m","run_id":2,"pr":7,"resolved_head_sha":"abc"})
-        batches=build_batches([bad,aux],"2026-09-22T04:00:00Z")
-        self.assertEqual(len(batches),1)
-        report=validate([bad,aux],{"batches":batches})
+        p=build_payload([bad,aux],"2026-09-22T00:00:00Z","2026-09-22T04:00:00Z","2026-09-22T04:00:00Z")
+        self.assertEqual(len(p["batches"]),1)
+        report=validate([bad,aux],p)
         self.assertFalse(report["passed"])
         self.assertTrue(any("applicable start" in e for e in report["errors"]))
     def test_legal_auxiliary_workflow_with_exact_triggers_still_passes(self):
         first=self.run_row(id=1,created_at="2026-09-22T00:00:00Z",trigger_at="2026-09-22T00:30:00Z",trigger_exact=True,updated_at="2026-09-22T01:00:00Z")
         aux=self.run_row(id=2,created_at="2026-09-22T00:00:00Z",trigger_at="2026-09-22T00:35:00Z",trigger_exact=True,updated_at="2026-09-22T03:00:00Z",
                          pr_evidence={"method":"m","run_id":2,"pr":7,"resolved_head_sha":"abc"})
-        batches=build_batches([first,aux],"2026-09-22T04:00:00Z")
-        self.assertTrue(validate([first,aux],{"batches":batches})["passed"])
+        p=build_payload([first,aux],"2026-09-22T00:00:00Z","2026-09-22T04:00:00Z","2026-09-22T04:00:00Z")
+        self.assertTrue(validate([first,aux],p)["passed"])
     def test_completed_workflow_with_missing_or_unparseable_timestamps_fails(self):
         self.assertFalse(validate([self.run_row(updated_at=None)],{"batches":[]})["passed"])
         self.assertFalse(validate([self.run_row(updated_at="not-a-timestamp")],{"batches":[]})["passed"])
@@ -105,6 +105,49 @@ class WorkflowTimeGateTests(unittest.TestCase):
         row=self.run_row(created_at="2026-09-28T01:00:00Z",updated_at="2026-09-28T02:00:00Z",jobs=[job,skipped,cancelled])
         p=build_payload([row],"2026-09-27T00:00:00Z","2026-09-29T00:00:00Z","2026-09-29T00:00:00Z")
         self.assertTrue(validate([row],p)["passed"])
+
+
+class PayloadContractTests(unittest.TestCase):
+    def rerun_row(self, **overrides):
+        row={"id":1,"event":"pull_request","head_sha":"abc","created_at":"2026-09-28T00:00:00Z",
+             "run_started_at":"2026-09-28T02:00:00Z","updated_at":"2026-09-28T02:05:00Z","run_attempt":2,
+             "status":"completed","conclusion":"success","jobs":[],"jobs_complete":True,"pr":23,"pr_title":"T",
+             "pr_url":"https://github.com/triton-lang/triton-ascend/pull/23","base_branch":"main",
+             "pr_evidence":{"method":"m","run_id":1,"pr":23,"resolved_head_sha":"abc"}}
+        row.update(overrides); return row
+    def payload(self,rows):
+        return build_payload(rows,"2026-09-27T00:00:00Z","2026-09-29T00:00:00Z","2026-09-29T00:00:00Z")
+    def test_valid_payload_passes(self):
+        rows=[self.rerun_row()]
+        self.assertTrue(validate(rows,self.payload(rows))["passed"])
+    def test_missing_or_unparseable_window_end_fails_when_data_is_present(self):
+        rows=[self.rerun_row()]
+        for bad in (None,"not-a-date"):
+            p=self.payload(rows); p["window_end"]=bad
+            report=validate(rows,p)
+            self.assertFalse(report["passed"],repr(bad))
+            self.assertTrue(any("window_end" in e for e in report["errors"]),repr(bad))
+    def test_illegal_completed_durations_fail(self):
+        rows=[self.rerun_row()]
+        for bad in (-1,None,True,"300",999):
+            p=self.payload(rows); p["batches"][0]["duration_seconds"]=bad
+            report=validate(rows,p)
+            self.assertFalse(report["passed"],repr(bad))
+            self.assertTrue(any("duration" in e for e in report["errors"]),repr(bad))
+    def test_contradictory_summary_fails(self):
+        rows=[self.rerun_row()]
+        p=self.payload(rows); p["summary"]["valid"]=99; p["summary"]["p90"]=999
+        report=validate(rows,p)
+        self.assertFalse(report["passed"])
+        self.assertTrue(any("summary" in e for e in report["errors"]))
+    def test_running_batch_nan_duration_fails(self):
+        row=self.rerun_row(status="in_progress",conclusion=None,updated_at="2026-09-28T02:30:00Z")
+        p=self.payload([row]); p["batches"][0]["duration_seconds"]=float("nan")
+        report=validate([row],p)
+        self.assertFalse(report["passed"])
+        self.assertTrue(any("observed span" in e for e in report["errors"]))
+    def test_legal_zero_payload_stays_valid(self):
+        self.assertTrue(validate([],{"batches":[]})["passed"])
 
 
 class GitHubContractTests(unittest.TestCase):

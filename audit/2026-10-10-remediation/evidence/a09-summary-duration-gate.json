@@ -1,0 +1,307 @@
+{
+  "finding": "A09 · P2 · quality未核对as_of、有效耗时和汇总契约",
+  "requirements": [
+    "REQ-019"
+  ],
+  "generated_at": "2026-10-10T06:03:29.113760+00:00",
+  "head": "8baf314af0f862a6a00fe882fa7a18f117d4fad1",
+  "probes": {
+    "baseline-quality-control": {
+      "expected": {
+        "passed": true
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": 0
+      }
+    },
+    "invalid-as-of-missing": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "payload window_end (as-of reference) missing or unparseable"
+        ],
+        "warnings": 0
+      }
+    },
+    "invalid-as-of-invalid": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "payload window_end (as-of reference) missing or unparseable"
+        ],
+        "warnings": 0
+      }
+    },
+    "quality-duration-negative": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "payload summary contradicts its batches: valid: stored 1 != recomputed 0; median: stored 300.0 != recomputed None; p90: stored 300.0 != recomputed None",
+          "batch 23-abc-rerun-1-2: completed batch duration must be its finite non-negative start-to-end span"
+        ],
+        "warnings": 0,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 0,
+          "median": null,
+          "p90": null,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      }
+    },
+    "quality-duration-null": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "payload summary contradicts its batches: valid: stored 1 != recomputed 0; median: stored 300.0 != recomputed None; p90: stored 300.0 != recomputed None",
+          "batch 23-abc-rerun-1-2: completed batch duration must be its finite non-negative start-to-end span"
+        ],
+        "warnings": 0,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 0,
+          "median": null,
+          "p90": null,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      }
+    },
+    "quality-duration-bool": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "payload summary contradicts its batches: valid: stored 1 != recomputed 0; median: stored 300.0 != recomputed None; p90: stored 300.0 != recomputed None",
+          "batch 23-abc-rerun-1-2: completed batch duration must be its finite non-negative start-to-end span"
+        ],
+        "warnings": 0,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 0,
+          "median": null,
+          "p90": null,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      }
+    },
+    "quality-duration-string": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "payload summary contradicts its batches: valid: stored 1 != recomputed 0; median: stored 300.0 != recomputed None; p90: stored 300.0 != recomputed None",
+          "batch 23-abc-rerun-1-2: completed batch duration must be its finite non-negative start-to-end span"
+        ],
+        "warnings": 0,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 0,
+          "median": null,
+          "p90": null,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      }
+    },
+    "quality-duration-wrong-span": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "payload summary contradicts its batches: median: stored 300.0 != recomputed 999; p90: stored 300.0 != recomputed 999",
+          "batch 23-abc-rerun-1-2: completed batch duration must be its finite non-negative start-to-end span"
+        ],
+        "warnings": 0,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 999,
+          "p90": 999,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      }
+    },
+    "quality-contradictory-summary": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "payload summary contradicts its batches: valid: stored 99 != recomputed 1; p90: stored 999 != recomputed 300.0"
+        ],
+        "warnings": 0,
+        "stored_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 99,
+          "median": 300.0,
+          "p90": 999,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        },
+        "independent_summary": {
+          "prs": 1,
+          "batches": 1,
+          "valid": 1,
+          "median": 300.0,
+          "p90": 300.0,
+          "approximate": 1,
+          "incomplete": 0,
+          "api_calls": 0
+        }
+      }
+    },
+    "running-nan-observed-span": {
+      "expected": {
+        "passed": false
+      },
+      "actual": {
+        "passed": false,
+        "errors": [
+          "batch 23-abc-rerun-1-2: running batch must report only the observed span to as_of"
+        ],
+        "warnings": 0
+      }
+    },
+    "npu-inverted-source-warning": {
+      "expected": {
+        "passed": true,
+        "warnings": 1,
+        "queue": null
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": 1,
+        "queue": null
+      }
+    },
+    "npu-unstarted-skipped": {
+      "expected": {
+        "passed": true
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": 0
+      }
+    },
+    "npu-unstarted-cancelled": {
+      "expected": {
+        "passed": true
+      },
+      "actual": {
+        "passed": true,
+        "errors": [],
+        "warnings": 0
+      }
+    }
+  },
+  "checks": {
+    "baseline-quality-control": true,
+    "invalid-as-of-missing": true,
+    "invalid-as-of-invalid": true,
+    "quality-duration-negative": true,
+    "quality-duration-null": true,
+    "quality-duration-bool": true,
+    "quality-duration-string": true,
+    "quality-duration-wrong-span": true,
+    "quality-contradictory-summary": true,
+    "running-nan-observed-span": true,
+    "npu-inverted-source-warning": true,
+    "npu-unstarted-skipped": true,
+    "npu-unstarted-cancelled": true
+  },
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All inputs are process-memory synthetic rows; no network request, production source, test, frozen audit evidence, or real snapshot was modified.",
+    "Mirrors audit/2026-10-10/scripts/data-adversarial.py quality_cases: the four A09 defect groups (invalid-as-of-*, quality-duration-*, quality-contradictory-summary, running-nan-observed-span) are now rejected; the baseline and REQ-019-AC04 NPU neighbours keep their frozen verdicts.",
+    "Pre-fix frozen evidence recorded passed=true for every A09 case; this probe asserts the fixed gate re-derives the as-of reference, valid durations and the summary instead of trusting the stored copy."
+  ]
+}

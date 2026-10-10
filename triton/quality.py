@@ -12,10 +12,26 @@ def stamp(value):
 
 def validate(runs, payload):
     errors=[]; warnings=[]
+    from .dashboard import summary_of, valid_seconds
     try:
         as_of=stamp(payload.get("window_end"))
     except (ValueError,TypeError,AttributeError):
         as_of=None
+    # REQ-019 (A09): a payload that carries data must name a parseable as-of
+    # reference, and the stored summary must agree with an independent
+    # recomputation from the batches; the gate re-derives both instead of
+    # trusting the stored copy (api_calls is collector telemetry, not
+    # batch-derived, so it is exempt from the comparison).
+    if runs or payload.get("batches"):
+        if as_of is None:
+            errors.append("payload window_end (as-of reference) missing or unparseable")
+        recomputed=summary_of(payload.get("batches") or [])
+        stored=payload.get("summary") or {}
+        mismatches=[f"{k}: stored {stored.get(k)!r} != recomputed {recomputed.get(k)!r}"
+                    for k in ("prs","batches","valid","median","p90","approximate","incomplete")
+                    if stored.get(k)!=recomputed.get(k)]
+        if mismatches:
+            errors.append("payload summary contradicts its batches: "+"; ".join(mismatches))
     represented={j.get("id") for b in payload["batches"] for j in b.get("npu_jobs",[])}
     for run in runs:
         prefix=f"run {run.get('id')}"
@@ -88,12 +104,20 @@ def validate(runs, payload):
             errors.append(f"batch {batch['id']}: invalid timestamp"); b_start=b_end=None
         if b_start and b_end and b_end<b_start:
             errors.append(f"batch {batch['id']}: end before start")
+        if b_start and b_end and b_end>=b_start and batch.get("status") in ("success","failure"):
+            # REQ-019 (A09): a completed sample's duration is its start-to-end
+            # span — finite, non-negative and consistent; nulls, bools, strings,
+            # negatives or invented spans are contract failures, not measurements.
+            span=(b_end-b_start).total_seconds()
+            value=batch.get("duration_seconds")
+            if not valid_seconds(value) or abs(value-span)>1:
+                errors.append(f"batch {batch['id']}: completed batch duration must be its finite non-negative start-to-end span")
         if batch.get("status") in ("success","failure") and b_start and not b_end:
             warnings.append(f"batch {batch['id']}: no valid completion time; excluded from completed statistics")
         if batch.get("status")=="running" and b_start and as_of is not None:
             observed=(as_of-b_start).total_seconds()
             value=batch.get("duration_seconds")
-            if not isinstance(value,(int,float)) or isinstance(value,bool) or abs(value-observed)>1:
+            if not valid_seconds(value) or abs(value-observed)>1:
                 errors.append(f"batch {batch['id']}: running batch must report only the observed span to as_of")
     report={"passed":not errors,"errors":errors,"warnings":warnings,"runs":len(runs),"batches":len(payload['batches']),
             "npu_points":sum(b.get('npu_queue_seconds') is not None for b in payload['batches'])}
