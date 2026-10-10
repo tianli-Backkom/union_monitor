@@ -52,7 +52,15 @@ def section_of(category):
 
 
 def failure_report(error):
-    """Report written when an audit aborts on an unexpected exception (REQ-025 AC03)."""
+    """Report written when an audit aborts on a missing-evidence or unexpected exception (REQ-025 AC02/AC03)."""
+    # REQ-025 (A12): a missing raw artifact or missing permission is a known
+    # missing-evidence condition, so it must read as unverified rather than
+    # failed; a real crash stays failed. checks_passed stays False either way
+    # because unknown must never become a pass.
+    if isinstance(error, (FileNotFoundError, PermissionError)):
+        return {'overall_status': 'unverified', 'checks_passed': False,
+                'error': f'{type(error).__name__}: {error}',
+                'affected_scope': 'audit aborted before completion; raw evidence unavailable so coverage is unverified; no section of this run can be claimed passed'}
     return {'overall_status': 'failed', 'checks_passed': False,
             'error': f'{type(error).__name__}: {error}',
             'affected_scope': 'audit aborted before completion; no section of this run can be claimed passed'}

@@ -15,7 +15,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import validate_multi
-from source_coverage import MISSING_LIMIT, SourceCategory, queue_from_raw, source_report
+from source_coverage import MISSING_LIMIT, SourceCategory, failure_report, queue_from_raw, source_report
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = 'openeuler/ubs-test'
@@ -289,6 +289,20 @@ class SourceCoverageTests(unittest.TestCase):
                 self.assertEqual(queue_from_raw({'actions': [bad]}), (None, None))
         zero = {'waitingTimeMillis': 0, 'blockedTimeMillis': 0, 'buildableTimeMillis': 0}
         self.assertEqual(queue_from_raw({'actions': [zero]}), (0, zero))
+
+    def test_missing_raw_file_reports_unverified_not_failed(self):  # REQ-025 AC02 (A12 frozen probe)
+        missing = failure_report(FileNotFoundError('raw artifact unavailable'))
+        self.assertEqual(missing['overall_status'], 'unverified')
+        self.assertFalse(missing['checks_passed'])
+        self.assertIn('FileNotFoundError', missing['error'])
+        self.assertIn('raw artifact unavailable', missing['error'])
+        self.assertTrue(missing['affected_scope'])
+        denied = failure_report(PermissionError('raw artifact unreadable'))
+        self.assertEqual(denied['overall_status'], 'unverified')
+        self.assertFalse(denied['checks_passed'])
+        crash = failure_report(RuntimeError('unexpected'))
+        self.assertEqual(crash['overall_status'], 'failed')
+        self.assertFalse(crash['checks_passed'])
 
 
 class MultiAuditSourceCoverageTests(unittest.TestCase):

@@ -1,0 +1,47 @@
+{
+  "finding": "A12 · P2 · 缺原始文件被统一记为failed而非unverified",
+  "requirements": [
+    "REQ-025"
+  ],
+  "generated_at": "2026-10-10T06:34:58.656719+00:00",
+  "head": "b3043901942fb2d5b90c87518f83c8bb9c3d6b6c",
+  "probes": {
+    "missing_file_failure_classification": {
+      "overall_status": "unverified",
+      "checks_passed": false,
+      "error": "FileNotFoundError: raw artifact unavailable",
+      "affected_scope": "audit aborted before completion; raw evidence unavailable so coverage is unverified; no section of this run can be claimed passed"
+    },
+    "permission_denied_classification": {
+      "overall_status": "unverified",
+      "checks_passed": false,
+      "error": "PermissionError: raw artifact unreadable",
+      "affected_scope": "audit aborted before completion; raw evidence unavailable so coverage is unverified; no section of this run can be claimed passed"
+    },
+    "runtime_crash_classification": {
+      "overall_status": "failed",
+      "checks_passed": false,
+      "error": "RuntimeError: unexpected collector state",
+      "affected_scope": "audit aborted before completion; no section of this run can be claimed passed"
+    },
+    "assertion_crash_classification": {
+      "overall_status": "failed",
+      "checks_passed": false,
+      "error": "AssertionError: derived identity mismatch",
+      "affected_scope": "audit aborted before completion; no section of this run can be claimed passed"
+    }
+  },
+  "checks": {
+    "missing_file_unverified": true,
+    "permission_denied_unverified": true,
+    "runtime_crash_stays_failed": true,
+    "assertion_crash_stays_failed": true,
+    "unknown_never_becomes_pass": true
+  },
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All inputs are process-memory synthetic exceptions; no network request, production source, test, frozen audit evidence, or real snapshot was modified.",
+    "Mirrors audit/2026-10-10/scripts/delivery-probes.py probes.missing_file_failure_classification with the same input (FileNotFoundError('raw artifact unavailable')); PermissionError and the two crash neighbours cover the REQ-025 AC02/AC03 classification edges.",
+    "Pre-fix frozen evidence recorded overall_status=failed for the missing file; this probe asserts missing file/permission read as unverified while real crashes stay failed, and checks_passed stays False in every classification so unknown never becomes a pass."
+  ]
+}
