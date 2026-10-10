@@ -55,3 +55,28 @@ test('status labels cover task and data modes', () => {
   assert.equal(Workbench.modeLabel('fresh'), '新数据');
   assert.equal(Workbench.modeLabel('fallback'), '回退');
 });
+
+test('P-013: the card keeps the three axes separate (execution/evidence/time)', () => {
+  const status = {
+    task_status: 'failed',
+    data_mode: 'fallback',
+    collected_at: '2026-10-09T23:30:00Z',
+    validation_status: 'passed',
+    snapshot_version: 'rel-1',
+  };
+  const card = Workbench.projectCard(catalog.projects[0], status, {
+    published_at: '2026-10-10T08:00:00Z',
+    schedule_time: '2026-10-10T07:30:00Z',
+  });
+  assert.equal(card.task_status, 'failed');       // execution stays failed
+  assert.equal(card.data_mode, 'fallback');       // evidence/version stays fallback
+  assert.equal(card.collected_at, '2026-10-09T23:30:00Z'); // time stays the OLD collection
+  assert.equal(card.validation_status, 'passed');
+  assert.equal(card.delayed, true);               // publish later than schedule = observation
+});
+
+test('P-013: delayed is null without a schedule, and never re-writes collected_at', () => {
+  const card = Workbench.projectCard(catalog.projects[0], { data_mode: 'fresh', collected_at: '2026-10-10T00:00:00Z' }, { published_at: '2026-10-10T08:00:00Z' });
+  assert.equal(card.delayed, null);
+  assert.equal(card.collected_at, '2026-10-10T00:00:00Z');
+});

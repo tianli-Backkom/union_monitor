@@ -33,13 +33,15 @@
     return ids.size;
   }
 
-  function projectCard(project, status) {
+  function projectCard(project, status, opts) {
     const s = status || {};
+    const o = opts || {};
     const repos = Array.isArray(project.repositories) ? project.repositories : [];
     const available = s.data_mode === 'fresh' || s.data_mode === 'fallback';
     const concernCount = !available
       ? null
       : (typeof s.concern_count === 'number' ? s.concern_count : countConcernsByBatch(s.concerns));
+    const delayed = o.schedule_time && o.published_at ? o.published_at > o.schedule_time : null;
     return {
       project_id: project.project_id,
       display_name: project.display_name || project.project_id,
@@ -53,13 +55,21 @@
       available: available,
       collected_at: s.collected_at || null,
       concern_count: concernCount,
+      // three independent axes stay separate (P-013): execution result above,
+      // evidence integrity and data time below — a fallback never reports a
+      // fresh collection time, and a delayed publish is an observation, not a
+      // re-collection.
+      validation_status: s.validation_status || null,
+      snapshot_version: s.snapshot_version || null,
+      delayed: delayed,
     };
   }
 
-  function projectCards(catalog, statuses) {
+  function projectCards(catalog, statuses, opts) {
     const byProject = statuses || {};
+    const o = opts || {};
     return enabledProjects(catalog).map(function (project) {
-      return projectCard(project, byProject[project.project_id]);
+      return projectCard(project, byProject[project.project_id], o);
     });
   }
 

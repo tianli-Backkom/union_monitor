@@ -10,9 +10,15 @@
   }
 
   /* Pure statuses mapping: the release manifest's per-project entries already
-     carry task_status/data_mode/collected_at for the workbench cards. */
+     carry task_status/data_mode/collected_at; the top-level published_at /
+     schedule_time feed the time axis so a delayed publish is shown as an
+     observation, never as a re-collection. */
   function statusesFromRelease(release) {
-    return (release && release.projects) || {};
+    return {
+      projects: (release && release.projects) || {},
+      published_at: release && release.published_at,
+      schedule_time: release && release.schedule_time,
+    };
   }
 
   async function init(containerId) {
@@ -26,9 +32,11 @@
       } catch (err) {
         release = null; // no release yet: workbench shows explicit unavailable states
       }
+      const statuses = statusesFromRelease(release);
       root.WorkbenchView.mount(container, {
         catalog: catalog,
-        statuses: statusesFromRelease(release),
+        statuses: statuses.projects,
+        time: { published_at: statuses.published_at, schedule_time: statuses.schedule_time },
         concern_rows: [],
       });
       container.setAttribute('data-state', 'ready');

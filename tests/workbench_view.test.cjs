@@ -20,6 +20,16 @@ test('P-001: workbench cards render each enabled project with status, not fake z
   assert.match(html, /1 仓/);
 });
 
+test('P-013: cards render the three axes independently', () => {
+  const html = View.cardsHTML(catalog, {
+    ubs: { data_mode: 'fallback', task_status: 'failed', collected_at: '2026-10-09T23:30:00Z', validation_status: 'passed' },
+  }, { published_at: '2026-10-10T08:00:00Z', schedule_time: '2026-10-10T07:30:00Z' });
+  assert.match(html, /本轮任务<\/dt><dd>失败/);       // execution axis
+  assert.match(html, /回退 · 校验通过/);             // evidence axis: fallback + validation
+  assert.match(html, /采集时间<\/dt><dd>2026-10-09T23:30:00Z/); // time axis keeps old collected_at
+  assert.match(html, /延迟观测/);                    // delayed publish is an observation
+});
+
 test('P-001: concern table dedupes by batch and keeps a source link', () => {
   const rows = [
     { project_id: 'ubs', repository_id: 'gitcode:openeuler/ubs-engine', batch_id: 'run:1:attempt:1', reasons: ['失败', '偏长'], source_url: 'https://ci/x/1' },

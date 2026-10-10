@@ -13,17 +13,21 @@
     });
   }
 
-  function cardsHTML(catalog, statuses) {
-    const cards = root.Workbench.projectCards(catalog, statuses || {});
+  function cardsHTML(catalog, statuses, opts) {
+    const cards = root.Workbench.projectCards(catalog, statuses || {}, opts || {});
     return cards.map(function (card) {
       const concern = card.concern_count == null ? '—' : card.concern_count;
+      const collected = card.collected_at ? esc(card.collected_at) : '—';
+      const delayedBadge = card.delayed ? ' <span class="badge badge-warn">延迟观测</span>' : '';
+      const validation = card.validation_status ? ' · 校验' + (card.validation_status === 'passed' ? '通过' : '未通过') : '';
       return (
         '<article class="project-card" data-project="' + esc(card.project_id) + '">' +
         '<div class="project-card-head"><h3>' + esc(card.display_name) + '</h3>' +
         '<span class="count">' + card.repository_count + ' 仓</span></div>' +
         '<dl>' +
         '<dt>本轮任务</dt><dd>' + esc(card.task_status_label) + '</dd>' +
-        '<dt>数据</dt><dd>' + esc(card.data_mode_label) + '</dd>' +
+        '<dt>数据</dt><dd>' + esc(card.data_mode_label) + validation + '</dd>' +
+        '<dt>采集时间</dt><dd>' + collected + delayedBadge + '</dd>' +
         '<dt>窗口</dt><dd>' + (card.window_hours != null ? card.window_hours + 'h · ' + esc(card.time_basis || '') : '—') + '</dd>' +
         '<dt>关注</dt><dd>' + concern + '</dd>' +
         '</dl>' +
@@ -66,7 +70,7 @@
   function mount(container, model) {
     const m = model || {};
     const catalog = m.catalog || { projects: [] };
-    const cards = cardsHTML(catalog, m.statuses || {});
+    const cards = cardsHTML(catalog, m.statuses || {}, m.time || {});
     const concernHTML = concernTableHTML(m.concern_rows || []);
     const selector = projectSelectorHTML(catalog, m.active_project_id || '');
     container.innerHTML =
