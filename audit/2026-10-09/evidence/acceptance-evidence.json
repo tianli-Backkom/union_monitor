@@ -1,0 +1,2391 @@
+{
+  "requirement": "REQ-050 需求验收记录与证据闭环",
+  "generated_at": "2026-10-10T08:36:27.889162+08:00",
+  "input": {
+    "root": "/mnt/d/ubs_core_monitor",
+    "delivering": "REQ-050",
+    "audit_dir": "audit/2026-10-09"
+  },
+  "doc": {
+    "requirements": 51,
+    "acceptance_criteria": 195,
+    "type_counts": {
+      "整改": 37,
+      "补证": 3,
+      "保持": 9,
+      "交付": 2
+    },
+    "model_version": "1.0",
+    "model_requirements": 51,
+    "doc_generation_time": "2026-10-09T15:50:09.602805+08:00",
+    "frozen_record": {
+      "requirements": 51,
+      "acceptance_criteria": 195,
+      "findings_covered": 19,
+      "type_counts": {
+        "整改": 37,
+        "补证": 3,
+        "保持": 9,
+        "交付": 2
+      },
+      "dependencies_acyclic": true,
+      "audit_sources_unchanged": true,
+      "status": "failed",
+      "warnings": [
+        ".gitignore与上轮审查基线不同，当前含.omo/与.codegraph/忽略项，文档生成工具没有写该文件；保留当前版本。"
+      ],
+      "errors": [
+        "broken local link D:/ubs_core_monitor/audit/2026-10-09/review-report.md",
+        "broken local link D:/ubs_core_monitor/audit/2026-10-09/coverage-matrix.md",
+        "broken local link D:/ubs_core_monitor/audit/2026-10-09/evidence/findings.json",
+        "broken local link D:/ubs_core_monitor/audit/2026-10-09/evidence/all-checks.json",
+        "broken local link D:/ubs_core_monitor/audit/2026-10-09/evidence/data-audit.json",
+        "broken local link D:/ubs_core_monitor/audit/2026-10-09/evidence/deployment-audit.json",
+        "broken local link D:/ubs_core_monitor/audit/2026-10-09/evidence/baseline-comparison.md",
+        "business source/snapshot files changed ['web\\\\app.js', 'web\\\\core.js', 'web\\\\favicon.svg', 'web\\\\index.html', 'web\\\\router.js', 'web\\\\style.css', 'web\\\\triton-core.js', 'web\\\\triton-view.js', 'web\\\\data\\\\repositories.json', 'web\\\\data\\\\triton.json', 'web\\\\data\\\\repos\\\\ham.json', 'web\\\\data\\\\repos\\\\OmniStateStore.json', 'web\\\\data\\\\repos\\\\ubs-atomic.json', 'web\\\\data\\\\repos\\\\ubs-comm.json', 'web\\\\data\\\\repos\\\\ubs-engine.json', 'web\\\\data\\\\repos\\\\ubs-io.json', 'web\\\\data\\\\repos\\\\ubs-mem.json', 'web\\\\data\\\\repos\\\\ubs-virt.json', 'web\\\\data\\\\repos\\\\ubturbo.json', 'data\\\\snapshot.json', 'triton\\\\__init__.py', 'triton\\\\dashboard.py', 'triton\\\\pr_identity.py', 'triton\\\\quality.py', 'triton\\\\verify_deployment.py', 'tests\\\\experience.test.cjs', 'tests\\\\frontend.test.cjs', 'tests\\\\multi_repo_frontend.test.cjs', 'tests\\\\router.test.cjs', 'tests\\\\test_collection_multi.py', 'tests\\\\test_exports.py', 'tests\\\\test_metrics.py', 'tests\\\\test_multi_storage.py', 'tests\\\\test_pages_workflow.py', 'tests\\\\test_representative.py', 'tests\\\\test_triton_dashboard.py', 'tests\\\\test_triton_npu_api.py', 'tests\\\\test_triton_pr_identity.py', 'tests\\\\test_triton_pr_quality.py', 'tests\\\\test_triton_quality.py', 'tests\\\\test_triton_workflow.py', 'tests\\\\triton_core.test.cjs', 'tests\\\\fixtures\\\\minimal\\\\repositories.json', 'tests\\\\fixtures\\\\minimal\\\\snapshot.json', 'tests\\\\fixtures\\\\minimal\\\\triton.json', 'tests\\\\fixtures\\\\minimal\\\\repos\\\\ubs-engine.json', '.github\\\\workflows\\\\pages.yml', '.github\\\\workflows\\\\triton-refresh.yml', 'scripts\\\\devdata.py']"
+      ],
+      "note": "审计期文档生成校验的冻结记录（D:/ 链接与业务源码变化为其历史事实），保持原样不修改"
+    }
+  },
+  "findings_map": {
+    "table_rows": 19,
+    "findings_json": 19,
+    "check_ids_missing": [],
+    "union_reqs": "REQ-001..REQ-037",
+    "model_inverted_match": true
+  },
+  "conclusions": {
+    "rows": 11,
+    "unverified": [
+      {
+        "label": "D10：缺原始来源、PR身份、queue和attempt证据",
+        "reqs": [
+          "REQ-023",
+          "REQ-024",
+          "REQ-025",
+          "REQ-038"
+        ],
+        "status": "未验证"
+      },
+      {
+        "label": "真实缓存冷热/跨日更新影响未验证",
+        "reqs": [
+          "REQ-012",
+          "REQ-013"
+        ],
+        "status": "未验证"
+      },
+      {
+        "label": "attempt真实历史影响未验证",
+        "reqs": [
+          "REQ-014",
+          "REQ-015",
+          "REQ-038"
+        ],
+        "status": "未验证"
+      },
+      {
+        "label": "原始工件→构建→公开数据指纹未验证",
+        "reqs": [
+          "REQ-021",
+          "REQ-022",
+          "REQ-038"
+        ],
+        "status": "未验证"
+      },
+      {
+        "label": "P04：真实pending取消及运行影响未验证",
+        "reqs": [
+          "REQ-039"
+        ],
+        "status": "未验证"
+      },
+      {
+        "label": "Python3.12/Node22兼容性未验证",
+        "reqs": [
+          "REQ-040"
+        ],
+        "status": "未验证"
+      }
+    ],
+    "passed": [
+      {
+        "label": "D01–D09：派生计算、身份和一致性通过",
+        "reqs": [
+          "REQ-041",
+          "REQ-046"
+        ],
+        "status": "通过"
+      },
+      {
+        "label": "UBS视图/筛选/排序/分页/CSV/详情通过",
+        "reqs": [
+          "REQ-042",
+          "REQ-043",
+          "REQ-044",
+          "REQ-045",
+          "REQ-047"
+        ],
+        "status": "通过"
+      },
+      {
+        "label": "Triton分支、图局部状态、图内统计及指针/触屏通过",
+        "reqs": [
+          "REQ-001",
+          "REQ-046",
+          "REQ-048"
+        ],
+        "status": "通过"
+      },
+      {
+        "label": "多端布局、Edge与已通过故障/导出提示",
+        "reqs": [
+          "REQ-048",
+          "REQ-049"
+        ],
+        "status": "通过"
+      },
+      {
+        "label": "旧站继承和抽查范围的诚实说明",
+        "reqs": [
+          "REQ-047",
+          "REQ-050"
+        ],
+        "status": "通过"
+      }
+    ],
+    "d10_present": true,
+    "p04_present": true
+  },
+  "integrity": {
+    "source_sha256": {
+      "coverage-matrix.md": {
+        "expected": "df04ef4cdfbc9b76c17b73e9f791560746aead11e5c3bcb6ef068402fd95752d",
+        "actual": "df04ef4cdfbc9b76c17b73e9f791560746aead11e5c3bcb6ef068402fd95752d",
+        "match": true
+      },
+      "evidence/all-checks.json": {
+        "expected": "4bf10d87dc2c6fb3affb83861d243a85e2d6f0f3a257ba0502ee65717f1239f1",
+        "actual": "4bf10d87dc2c6fb3affb83861d243a85e2d6f0f3a257ba0502ee65717f1239f1",
+        "match": true
+      },
+      "evidence/baseline-comparison.md": {
+        "expected": "624dc963a0bc6b8092973a36c2a5f9ba18cecf1148ef3ddc0b2b81c6494cead1",
+        "actual": "624dc963a0bc6b8092973a36c2a5f9ba18cecf1148ef3ddc0b2b81c6494cead1",
+        "match": true
+      },
+      "evidence/data-audit.json": {
+        "expected": "970509d2f8e1cc040da304ce41b19c38e9329e5ef026d3bb7aa93b1513984ee2",
+        "actual": "970509d2f8e1cc040da304ce41b19c38e9329e5ef026d3bb7aa93b1513984ee2",
+        "match": true
+      },
+      "evidence/deployment-audit.json": {
+        "expected": "8b2727655616ab4f469bfbadef1c19ba1497352946d4687a47a3cfc0eff5f0fc",
+        "actual": "8b2727655616ab4f469bfbadef1c19ba1497352946d4687a47a3cfc0eff5f0fc",
+        "match": true
+      },
+      "evidence/findings.json": {
+        "expected": "9488bfaee876633442c986c4b2b435515d434cc419a90691424aad61c93f1b1c",
+        "actual": "9488bfaee876633442c986c4b2b435515d434cc419a90691424aad61c93f1b1c",
+        "match": true
+      },
+      "review-report.md": {
+        "expected": "8259657f57b99b96a4c645f84438a3e761560bb67d709d159b4cea7f86ff162f",
+        "actual": "8259657f57b99b96a4c645f84438a3e761560bb67d709d159b4cea7f86ff162f",
+        "match": true
+      }
+    },
+    "all_checks": {
+      "total": 238,
+      "counts": {
+        "passed": 207,
+        "failed": 29,
+        "unverified": 2
+      },
+      "failed_preserved": 29,
+      "unverified_ids": [
+        "D10",
+        "P04"
+      ]
+    },
+    "findings": 19,
+    "requirements_md_unchanged": true,
+    "evidence_files": {
+      "REQ-038": {
+        "file": "artifact-verification.json",
+        "expected": "unverified",
+        "actual": "unverified",
+        "match": true
+      },
+      "REQ-039": {
+        "file": "concurrency-evidence.json",
+        "expected": "aligned",
+        "actual": "aligned",
+        "match": true
+      },
+      "REQ-040": {
+        "file": "runtime-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      },
+      "REQ-041": {
+        "file": "ubs-semantics-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      },
+      "REQ-042": {
+        "file": "ubs-filtering-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      },
+      "REQ-043": {
+        "file": "ubs-sorting-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      },
+      "REQ-044": {
+        "file": "ubs-csv-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      },
+      "REQ-045": {
+        "file": "ubs-detail-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      },
+      "REQ-047": {
+        "file": "ubs-routes-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      },
+      "REQ-048": {
+        "file": "interaction-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      },
+      "REQ-049": {
+        "file": "freshness-evidence.json",
+        "expected": "verified",
+        "actual": "verified",
+        "match": true
+      }
+    },
+    "fixture_46": {
+      "file": "tests/fixtures/triton-audit-freeze.json",
+      "bytes": 1209308,
+      "ok": true
+    },
+    "tests_inventory": {
+      "python_test_files": 30,
+      "node_test_files": 12
+    }
+  },
+  "ledger": [
+    {
+      "req": "REQ-001",
+      "title": "Triton分支与时间窗全页联动",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "5a5f21a",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 5a5f21a（代码整改+测试）"
+    },
+    {
+      "req": "REQ-002",
+      "title": "耗时偏长采用页级集合的P90",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "5d84e3b",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 5d84e3b（代码整改+测试）"
+    },
+    {
+      "req": "REQ-003",
+      "title": "Triton CSV遵循页级筛选与列表搜索",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "9bc0c9a",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 9bc0c9a（代码整改+测试）"
+    },
+    {
+      "req": "REQ-004",
+      "title": "跨域返回保留各域会话筛选",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "f1c4cf4",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit f1c4cf4（代码整改+测试）"
+    },
+    {
+      "req": "REQ-005",
+      "title": "重新加载快照保留当前有效操作状态",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "9ad6485",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 9ad6485（代码整改+测试）"
+    },
+    {
+      "req": "REQ-006",
+      "title": "新快照与已选状态的边界恢复",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "fdd69e5",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit fdd69e5（代码整改+测试）"
+    },
+    {
+      "req": "REQ-007",
+      "title": "导航或刷新关闭失效PR详情",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "3e7f4a6",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 3e7f4a6（代码整改+测试）"
+    },
+    {
+      "req": "REQ-008",
+      "title": "详情CSV绑定详情自身来源",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "4449952",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 4449952（代码整改+测试）"
+    },
+    {
+      "req": "REQ-009",
+      "title": "刷新请求按最后一次操作提交结果",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "f9f043f",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit f9f043f（代码整改+测试）"
+    },
+    {
+      "req": "REQ-010",
+      "title": "UBS与Triton读取故障隔离",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "93ec4b5",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 93ec4b5（代码整改+测试）"
+    },
+    {
+      "req": "REQ-011",
+      "title": "统计口径页独立于快照读取",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "03339dd",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 03339dd（代码整改+测试）"
+    },
+    {
+      "req": "REQ-012",
+      "title": "每日与增量流程共享可兼容UBS快照",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "625c6ee",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 625c6ee（代码整改+测试）"
+    },
+    {
+      "req": "REQ-013",
+      "title": "冷热缓存与跨日更新链路验收",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "9ccfd9f",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 9ccfd9f（代码整改+测试）"
+    },
+    {
+      "req": "REQ-014",
+      "title": "重跑E2E使用本次attempt的可证明起点",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "2afb2ad",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 2afb2ad（代码整改+测试）"
+    },
+    {
+      "req": "REQ-015",
+      "title": "attempt独立身份与历史明细保留",
+      "type": "整改",
+      "priority": "P1",
+      "status": "通过",
+      "version": "f1ad0c7",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit f1ad0c7（代码整改+测试）"
+    },
+    {
+      "req": "REQ-016",
+      "title": "事件关联失配批次完整下钻",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "35f8d2f",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 35f8d2f（代码整改+测试）"
+    },
+    {
+      "req": "REQ-017",
+      "title": "Triton数值有效性统一过滤",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "e81004c",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit e81004c（代码整改+测试）"
+    },
+    {
+      "req": "REQ-018",
+      "title": "GitHub响应字段与分页契约校验",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "fbb28cb",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit fbb28cb（代码整改+测试）"
+    },
+    {
+      "req": "REQ-019",
+      "title": "workflow与批次时间异常门禁",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "15b14c9",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 15b14c9（代码整改+测试）"
+    },
+    {
+      "req": "REQ-020",
+      "title": "恢复UBS工件的完整性校验",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "95af5a0",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 95af5a0（代码整改+测试）"
+    },
+    {
+      "req": "REQ-021",
+      "title": "发布前跨文件一致性门禁",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "306caa3",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 306caa3（代码整改+测试）"
+    },
+    {
+      "req": "REQ-022",
+      "title": "部署后公开数据指纹校验",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "0813b95",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 0813b95（代码整改+测试）"
+    },
+    {
+      "req": "REQ-023",
+      "title": "原始来源审计覆盖率与缺失清单",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "5091df4",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 5091df4（代码整改+测试）"
+    },
+    {
+      "req": "REQ-024",
+      "title": "排队原始分项独立核验",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "e4a4bc0",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit e4a4bc0（代码整改+测试）"
+    },
+    {
+      "req": "REQ-025",
+      "title": "审计总体状态和分项通过语义",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "f0775f5",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit f0775f5（代码整改+测试）"
+    },
+    {
+      "req": "REQ-026",
+      "title": "关注分组与小样本说明统一",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "eb994b9",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit eb994b9（代码整改+测试）"
+    },
+    {
+      "req": "REQ-027",
+      "title": "时间滑块键盘与范围语义",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "bce008b",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit bce008b（代码整改+测试）"
+    },
+    {
+      "req": "REQ-028",
+      "title": "批次行键盘展开与关闭",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "c104043",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit c104043（代码整改+测试）"
+    },
+    {
+      "req": "REQ-029",
+      "title": "散点详情的等价键盘访问",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "5e88dfb",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 5e88dfb（代码整改+测试）"
+    },
+    {
+      "req": "REQ-030",
+      "title": "手机顶栏动作完整显示",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "4aa1f7d",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 4aa1f7d（代码整改+测试）"
+    },
+    {
+      "req": "REQ-031",
+      "title": "小屏趋势横轴自适应刻度",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "bce2e82",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit bce2e82（代码整改+测试）"
+    },
+    {
+      "req": "REQ-032",
+      "title": "图标导航的视觉可识别性",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "c6cbd94",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit c6cbd94（代码整改+测试）"
+    },
+    {
+      "req": "REQ-033",
+      "title": "共享顶栏分支表达跟随域",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "add226d",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit add226d（代码整改+测试）"
+    },
+    {
+      "req": "REQ-034",
+      "title": "当前域代码仓链接正确",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "79658c0",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 79658c0（代码整改+测试）"
+    },
+    {
+      "req": "REQ-035",
+      "title": "当前域页脚统计与元数据正确",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "cbfa230",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit cbfa230（代码整改+测试）"
+    },
+    {
+      "req": "REQ-036",
+      "title": "用户仓库导航保留逐步历史",
+      "type": "整改",
+      "priority": "P2",
+      "status": "通过",
+      "version": "4400759",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit 4400759（代码整改+测试）"
+    },
+    {
+      "req": "REQ-037",
+      "title": "最小fixture遵循当前统计契约",
+      "type": "整改",
+      "priority": "P3",
+      "status": "通过",
+      "version": "fa11fe5",
+      "input_kind": [
+        "真实快照",
+        "合成输入"
+      ],
+      "input": "整改后业务源码与测试套件（按交付规则以冻结审计快照与合成输入验证正常与边界路径；见该 REQ 提交）",
+      "evidence": "commit fa11fe5（代码整改+测试）"
+    },
+    {
+      "req": "REQ-038",
+      "title": "原始工件补齐及历史影响核验",
+      "type": "补证",
+      "priority": "P1",
+      "status": "通过",
+      "version": "c615a1e",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "冻结数据、审计导出、本地快照与构建清单交叉核对（可执行核对全部一致；D10 原始工件缺失如实标注未验证）",
+      "evidence": "commit c615a1e + evidence/artifact-verification.json"
+    },
+    {
+      "req": "REQ-039",
+      "title": "并发调度策略与运行证据一致",
+      "type": "补证",
+      "priority": "P2",
+      "status": "通过",
+      "version": "60cdda9",
+      "input_kind": [
+        "合成输入",
+        "静态规则"
+      ],
+      "input": "文档化平台语义与受控并发序列（隔离合成验证；真实 pending 取消影响保留未验证）",
+      "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+    },
+    {
+      "req": "REQ-040",
+      "title": "CI目标运行时兼容性验证",
+      "type": "补证",
+      "priority": "P2",
+      "status": "通过",
+      "version": "c8e41d2",
+      "input_kind": [
+        "真实部署",
+        "静态规则"
+      ],
+      "input": "CI 声明与真实 CI 运行记录（可信已有运行记录）",
+      "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+    },
+    {
+      "req": "REQ-041",
+      "title": "UBS代表值和跨仓算法保持正确",
+      "type": "保持",
+      "priority": "P1",
+      "status": "通过",
+      "version": "ebaf18d",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit ebaf18d + evidence/ubs-semantics-evidence.json"
+    },
+    {
+      "req": "REQ-042",
+      "title": "UBS筛选保持PR集合及代表批次",
+      "type": "保持",
+      "priority": "P1",
+      "status": "通过",
+      "version": "66a3535",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit 66a3535 + evidence/ubs-filtering-evidence.json"
+    },
+    {
+      "req": "REQ-043",
+      "title": "UBS排序与分页边界保持正确",
+      "type": "保持",
+      "priority": "P2",
+      "status": "通过",
+      "version": "0a9f6b5",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit 0a9f6b5 + evidence/ubs-sorting-evidence.json"
+    },
+    {
+      "req": "REQ-044",
+      "title": "UBS四类CSV内容与格式保持正确",
+      "type": "保持",
+      "priority": "P1",
+      "status": "通过",
+      "version": "246eb6a",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit 246eb6a + evidence/ubs-csv-evidence.json"
+    },
+    {
+      "req": "REQ-045",
+      "title": "UBS正常详情与下钻能力保持",
+      "type": "保持",
+      "priority": "P2",
+      "status": "通过",
+      "version": "e48f1b1",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit e48f1b1 + evidence/ubs-detail-evidence.json"
+    },
+    {
+      "req": "REQ-046",
+      "title": "Triton统计及数据边界保持真实",
+      "type": "保持",
+      "priority": "P1",
+      "status": "通过",
+      "version": "3fff7a1",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit 3fff7a1 + tests/fixtures/triton-audit-freeze.json + tests/test_frozen_audit.py"
+    },
+    {
+      "req": "REQ-047",
+      "title": "全部视图与旧链接可达性保持",
+      "type": "保持",
+      "priority": "P2",
+      "status": "通过",
+      "version": "d3b06fc",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit d3b06fc + evidence/ubs-routes-evidence.json"
+    },
+    {
+      "req": "REQ-048",
+      "title": "多浏览器与指针触屏操作保持",
+      "type": "保持",
+      "priority": "P2",
+      "status": "通过",
+      "version": "016b7c0",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit 016b7c0 + evidence/interaction-evidence.json"
+    },
+    {
+      "req": "REQ-049",
+      "title": "新鲜度与异常/空态表达保持",
+      "type": "保持",
+      "priority": "P2",
+      "status": "通过",
+      "version": "bb1ec47",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "真实 web/data 快照与生产源码契约（独立镜像矩阵与基线回放）",
+      "evidence": "commit bb1ec47 + evidence/freshness-evidence.json"
+    },
+    {
+      "req": "REQ-050",
+      "title": "需求验收记录与证据闭环",
+      "type": "交付",
+      "priority": "P2",
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "input_kind": [
+        "真实快照",
+        "静态规则"
+      ],
+      "input": "冻结审计记录（requirements.md、需求模型、验收记录、238 项检查、git 历史）结构化核验",
+      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+    },
+    {
+      "req": "REQ-051",
+      "title": "完整需求文档的版本与可追溯交付",
+      "type": "交付",
+      "priority": "P2",
+      "status": "未验证",
+      "version": null,
+      "input_kind": [],
+      "input": "待交付",
+      "evidence": "待交付",
+      "pending_reason": "待交付（验收工具与测试尚未提交）"
+    }
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "REQ-001-AC01",
+      "req": "REQ-001",
+      "status": "通过",
+      "version": "5a5f21a",
+      "evidence": "commit 5a5f21a（代码整改+测试）"
+    },
+    {
+      "id": "REQ-001-AC02",
+      "req": "REQ-001",
+      "status": "通过",
+      "version": "5a5f21a",
+      "evidence": "commit 5a5f21a（代码整改+测试）"
+    },
+    {
+      "id": "REQ-001-AC03",
+      "req": "REQ-001",
+      "status": "通过",
+      "version": "5a5f21a",
+      "evidence": "commit 5a5f21a（代码整改+测试）"
+    },
+    {
+      "id": "REQ-001-AC04",
+      "req": "REQ-001",
+      "status": "通过",
+      "version": "5a5f21a",
+      "evidence": "commit 5a5f21a（代码整改+测试）"
+    },
+    {
+      "id": "REQ-002-AC01",
+      "req": "REQ-002",
+      "status": "通过",
+      "version": "5d84e3b",
+      "evidence": "commit 5d84e3b（代码整改+测试）"
+    },
+    {
+      "id": "REQ-002-AC02",
+      "req": "REQ-002",
+      "status": "通过",
+      "version": "5d84e3b",
+      "evidence": "commit 5d84e3b（代码整改+测试）"
+    },
+    {
+      "id": "REQ-002-AC03",
+      "req": "REQ-002",
+      "status": "通过",
+      "version": "5d84e3b",
+      "evidence": "commit 5d84e3b（代码整改+测试）"
+    },
+    {
+      "id": "REQ-002-AC04",
+      "req": "REQ-002",
+      "status": "通过",
+      "version": "5d84e3b",
+      "evidence": "commit 5d84e3b（代码整改+测试）"
+    },
+    {
+      "id": "REQ-003-AC01",
+      "req": "REQ-003",
+      "status": "通过",
+      "version": "9bc0c9a",
+      "evidence": "commit 9bc0c9a（代码整改+测试）"
+    },
+    {
+      "id": "REQ-003-AC02",
+      "req": "REQ-003",
+      "status": "通过",
+      "version": "9bc0c9a",
+      "evidence": "commit 9bc0c9a（代码整改+测试）"
+    },
+    {
+      "id": "REQ-003-AC03",
+      "req": "REQ-003",
+      "status": "通过",
+      "version": "9bc0c9a",
+      "evidence": "commit 9bc0c9a（代码整改+测试）"
+    },
+    {
+      "id": "REQ-003-AC04",
+      "req": "REQ-003",
+      "status": "通过",
+      "version": "9bc0c9a",
+      "evidence": "commit 9bc0c9a（代码整改+测试）"
+    },
+    {
+      "id": "REQ-004-AC01",
+      "req": "REQ-004",
+      "status": "通过",
+      "version": "f1c4cf4",
+      "evidence": "commit f1c4cf4（代码整改+测试）"
+    },
+    {
+      "id": "REQ-004-AC02",
+      "req": "REQ-004",
+      "status": "通过",
+      "version": "f1c4cf4",
+      "evidence": "commit f1c4cf4（代码整改+测试）"
+    },
+    {
+      "id": "REQ-004-AC03",
+      "req": "REQ-004",
+      "status": "通过",
+      "version": "f1c4cf4",
+      "evidence": "commit f1c4cf4（代码整改+测试）"
+    },
+    {
+      "id": "REQ-004-AC04",
+      "req": "REQ-004",
+      "status": "通过",
+      "version": "f1c4cf4",
+      "evidence": "commit f1c4cf4（代码整改+测试）"
+    },
+    {
+      "id": "REQ-005-AC01",
+      "req": "REQ-005",
+      "status": "通过",
+      "version": "9ad6485",
+      "evidence": "commit 9ad6485（代码整改+测试）"
+    },
+    {
+      "id": "REQ-005-AC02",
+      "req": "REQ-005",
+      "status": "通过",
+      "version": "9ad6485",
+      "evidence": "commit 9ad6485（代码整改+测试）"
+    },
+    {
+      "id": "REQ-005-AC03",
+      "req": "REQ-005",
+      "status": "通过",
+      "version": "9ad6485",
+      "evidence": "commit 9ad6485（代码整改+测试）"
+    },
+    {
+      "id": "REQ-005-AC04",
+      "req": "REQ-005",
+      "status": "通过",
+      "version": "9ad6485",
+      "evidence": "commit 9ad6485（代码整改+测试）"
+    },
+    {
+      "id": "REQ-006-AC01",
+      "req": "REQ-006",
+      "status": "通过",
+      "version": "fdd69e5",
+      "evidence": "commit fdd69e5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-006-AC02",
+      "req": "REQ-006",
+      "status": "通过",
+      "version": "fdd69e5",
+      "evidence": "commit fdd69e5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-006-AC03",
+      "req": "REQ-006",
+      "status": "通过",
+      "version": "fdd69e5",
+      "evidence": "commit fdd69e5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-006-AC04",
+      "req": "REQ-006",
+      "status": "通过",
+      "version": "fdd69e5",
+      "evidence": "commit fdd69e5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-007-AC01",
+      "req": "REQ-007",
+      "status": "通过",
+      "version": "3e7f4a6",
+      "evidence": "commit 3e7f4a6（代码整改+测试）"
+    },
+    {
+      "id": "REQ-007-AC02",
+      "req": "REQ-007",
+      "status": "通过",
+      "version": "3e7f4a6",
+      "evidence": "commit 3e7f4a6（代码整改+测试）"
+    },
+    {
+      "id": "REQ-007-AC03",
+      "req": "REQ-007",
+      "status": "通过",
+      "version": "3e7f4a6",
+      "evidence": "commit 3e7f4a6（代码整改+测试）"
+    },
+    {
+      "id": "REQ-007-AC04",
+      "req": "REQ-007",
+      "status": "通过",
+      "version": "3e7f4a6",
+      "evidence": "commit 3e7f4a6（代码整改+测试）"
+    },
+    {
+      "id": "REQ-008-AC01",
+      "req": "REQ-008",
+      "status": "通过",
+      "version": "4449952",
+      "evidence": "commit 4449952（代码整改+测试）"
+    },
+    {
+      "id": "REQ-008-AC02",
+      "req": "REQ-008",
+      "status": "通过",
+      "version": "4449952",
+      "evidence": "commit 4449952（代码整改+测试）"
+    },
+    {
+      "id": "REQ-008-AC03",
+      "req": "REQ-008",
+      "status": "通过",
+      "version": "4449952",
+      "evidence": "commit 4449952（代码整改+测试）"
+    },
+    {
+      "id": "REQ-008-AC04",
+      "req": "REQ-008",
+      "status": "通过",
+      "version": "4449952",
+      "evidence": "commit 4449952（代码整改+测试）"
+    },
+    {
+      "id": "REQ-009-AC01",
+      "req": "REQ-009",
+      "status": "通过",
+      "version": "f9f043f",
+      "evidence": "commit f9f043f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-009-AC02",
+      "req": "REQ-009",
+      "status": "通过",
+      "version": "f9f043f",
+      "evidence": "commit f9f043f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-009-AC03",
+      "req": "REQ-009",
+      "status": "通过",
+      "version": "f9f043f",
+      "evidence": "commit f9f043f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-009-AC04",
+      "req": "REQ-009",
+      "status": "通过",
+      "version": "f9f043f",
+      "evidence": "commit f9f043f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-010-AC01",
+      "req": "REQ-010",
+      "status": "通过",
+      "version": "93ec4b5",
+      "evidence": "commit 93ec4b5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-010-AC02",
+      "req": "REQ-010",
+      "status": "通过",
+      "version": "93ec4b5",
+      "evidence": "commit 93ec4b5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-010-AC03",
+      "req": "REQ-010",
+      "status": "通过",
+      "version": "93ec4b5",
+      "evidence": "commit 93ec4b5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-010-AC04",
+      "req": "REQ-010",
+      "status": "通过",
+      "version": "93ec4b5",
+      "evidence": "commit 93ec4b5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-011-AC01",
+      "req": "REQ-011",
+      "status": "通过",
+      "version": "03339dd",
+      "evidence": "commit 03339dd（代码整改+测试）"
+    },
+    {
+      "id": "REQ-011-AC02",
+      "req": "REQ-011",
+      "status": "通过",
+      "version": "03339dd",
+      "evidence": "commit 03339dd（代码整改+测试）"
+    },
+    {
+      "id": "REQ-011-AC03",
+      "req": "REQ-011",
+      "status": "通过",
+      "version": "03339dd",
+      "evidence": "commit 03339dd（代码整改+测试）"
+    },
+    {
+      "id": "REQ-012-AC01",
+      "req": "REQ-012",
+      "status": "通过",
+      "version": "625c6ee",
+      "evidence": "commit 625c6ee（代码整改+测试）"
+    },
+    {
+      "id": "REQ-012-AC02",
+      "req": "REQ-012",
+      "status": "通过",
+      "version": "625c6ee",
+      "evidence": "commit 625c6ee（代码整改+测试）"
+    },
+    {
+      "id": "REQ-012-AC03",
+      "req": "REQ-012",
+      "status": "通过",
+      "version": "625c6ee",
+      "evidence": "commit 625c6ee（代码整改+测试）"
+    },
+    {
+      "id": "REQ-012-AC04",
+      "req": "REQ-012",
+      "status": "通过",
+      "version": "625c6ee",
+      "evidence": "commit 625c6ee（代码整改+测试）"
+    },
+    {
+      "id": "REQ-013-AC01",
+      "req": "REQ-013",
+      "status": "通过",
+      "version": "9ccfd9f",
+      "evidence": "commit 9ccfd9f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-013-AC02",
+      "req": "REQ-013",
+      "status": "通过",
+      "version": "9ccfd9f",
+      "evidence": "commit 9ccfd9f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-013-AC03",
+      "req": "REQ-013",
+      "status": "通过",
+      "version": "9ccfd9f",
+      "evidence": "commit 9ccfd9f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-013-AC04",
+      "req": "REQ-013",
+      "status": "通过",
+      "version": "9ccfd9f",
+      "evidence": "commit 9ccfd9f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-014-AC01",
+      "req": "REQ-014",
+      "status": "通过",
+      "version": "2afb2ad",
+      "evidence": "commit 2afb2ad（代码整改+测试）"
+    },
+    {
+      "id": "REQ-014-AC02",
+      "req": "REQ-014",
+      "status": "通过",
+      "version": "2afb2ad",
+      "evidence": "commit 2afb2ad（代码整改+测试）"
+    },
+    {
+      "id": "REQ-014-AC03",
+      "req": "REQ-014",
+      "status": "通过",
+      "version": "2afb2ad",
+      "evidence": "commit 2afb2ad（代码整改+测试）"
+    },
+    {
+      "id": "REQ-014-AC04",
+      "req": "REQ-014",
+      "status": "通过",
+      "version": "2afb2ad",
+      "evidence": "commit 2afb2ad（代码整改+测试）"
+    },
+    {
+      "id": "REQ-015-AC01",
+      "req": "REQ-015",
+      "status": "通过",
+      "version": "f1ad0c7",
+      "evidence": "commit f1ad0c7（代码整改+测试）"
+    },
+    {
+      "id": "REQ-015-AC02",
+      "req": "REQ-015",
+      "status": "通过",
+      "version": "f1ad0c7",
+      "evidence": "commit f1ad0c7（代码整改+测试）"
+    },
+    {
+      "id": "REQ-015-AC03",
+      "req": "REQ-015",
+      "status": "通过",
+      "version": "f1ad0c7",
+      "evidence": "commit f1ad0c7（代码整改+测试）"
+    },
+    {
+      "id": "REQ-015-AC04",
+      "req": "REQ-015",
+      "status": "通过",
+      "version": "f1ad0c7",
+      "evidence": "commit f1ad0c7（代码整改+测试）"
+    },
+    {
+      "id": "REQ-016-AC01",
+      "req": "REQ-016",
+      "status": "通过",
+      "version": "35f8d2f",
+      "evidence": "commit 35f8d2f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-016-AC02",
+      "req": "REQ-016",
+      "status": "通过",
+      "version": "35f8d2f",
+      "evidence": "commit 35f8d2f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-016-AC03",
+      "req": "REQ-016",
+      "status": "通过",
+      "version": "35f8d2f",
+      "evidence": "commit 35f8d2f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-016-AC04",
+      "req": "REQ-016",
+      "status": "通过",
+      "version": "35f8d2f",
+      "evidence": "commit 35f8d2f（代码整改+测试）"
+    },
+    {
+      "id": "REQ-017-AC01",
+      "req": "REQ-017",
+      "status": "通过",
+      "version": "e81004c",
+      "evidence": "commit e81004c（代码整改+测试）"
+    },
+    {
+      "id": "REQ-017-AC02",
+      "req": "REQ-017",
+      "status": "通过",
+      "version": "e81004c",
+      "evidence": "commit e81004c（代码整改+测试）"
+    },
+    {
+      "id": "REQ-017-AC03",
+      "req": "REQ-017",
+      "status": "通过",
+      "version": "e81004c",
+      "evidence": "commit e81004c（代码整改+测试）"
+    },
+    {
+      "id": "REQ-017-AC04",
+      "req": "REQ-017",
+      "status": "通过",
+      "version": "e81004c",
+      "evidence": "commit e81004c（代码整改+测试）"
+    },
+    {
+      "id": "REQ-018-AC01",
+      "req": "REQ-018",
+      "status": "通过",
+      "version": "fbb28cb",
+      "evidence": "commit fbb28cb（代码整改+测试）"
+    },
+    {
+      "id": "REQ-018-AC02",
+      "req": "REQ-018",
+      "status": "通过",
+      "version": "fbb28cb",
+      "evidence": "commit fbb28cb（代码整改+测试）"
+    },
+    {
+      "id": "REQ-018-AC03",
+      "req": "REQ-018",
+      "status": "通过",
+      "version": "fbb28cb",
+      "evidence": "commit fbb28cb（代码整改+测试）"
+    },
+    {
+      "id": "REQ-018-AC04",
+      "req": "REQ-018",
+      "status": "通过",
+      "version": "fbb28cb",
+      "evidence": "commit fbb28cb（代码整改+测试）"
+    },
+    {
+      "id": "REQ-019-AC01",
+      "req": "REQ-019",
+      "status": "通过",
+      "version": "15b14c9",
+      "evidence": "commit 15b14c9（代码整改+测试）"
+    },
+    {
+      "id": "REQ-019-AC02",
+      "req": "REQ-019",
+      "status": "通过",
+      "version": "15b14c9",
+      "evidence": "commit 15b14c9（代码整改+测试）"
+    },
+    {
+      "id": "REQ-019-AC03",
+      "req": "REQ-019",
+      "status": "通过",
+      "version": "15b14c9",
+      "evidence": "commit 15b14c9（代码整改+测试）"
+    },
+    {
+      "id": "REQ-019-AC04",
+      "req": "REQ-019",
+      "status": "通过",
+      "version": "15b14c9",
+      "evidence": "commit 15b14c9（代码整改+测试）"
+    },
+    {
+      "id": "REQ-020-AC01",
+      "req": "REQ-020",
+      "status": "通过",
+      "version": "95af5a0",
+      "evidence": "commit 95af5a0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-020-AC02",
+      "req": "REQ-020",
+      "status": "通过",
+      "version": "95af5a0",
+      "evidence": "commit 95af5a0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-020-AC03",
+      "req": "REQ-020",
+      "status": "通过",
+      "version": "95af5a0",
+      "evidence": "commit 95af5a0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-020-AC04",
+      "req": "REQ-020",
+      "status": "通过",
+      "version": "95af5a0",
+      "evidence": "commit 95af5a0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-021-AC01",
+      "req": "REQ-021",
+      "status": "通过",
+      "version": "306caa3",
+      "evidence": "commit 306caa3（代码整改+测试）"
+    },
+    {
+      "id": "REQ-021-AC02",
+      "req": "REQ-021",
+      "status": "通过",
+      "version": "306caa3",
+      "evidence": "commit 306caa3（代码整改+测试）"
+    },
+    {
+      "id": "REQ-021-AC03",
+      "req": "REQ-021",
+      "status": "通过",
+      "version": "306caa3",
+      "evidence": "commit 306caa3（代码整改+测试）"
+    },
+    {
+      "id": "REQ-021-AC04",
+      "req": "REQ-021",
+      "status": "通过",
+      "version": "306caa3",
+      "evidence": "commit 306caa3（代码整改+测试）"
+    },
+    {
+      "id": "REQ-022-AC01",
+      "req": "REQ-022",
+      "status": "通过",
+      "version": "0813b95",
+      "evidence": "commit 0813b95（代码整改+测试）"
+    },
+    {
+      "id": "REQ-022-AC02",
+      "req": "REQ-022",
+      "status": "通过",
+      "version": "0813b95",
+      "evidence": "commit 0813b95（代码整改+测试）"
+    },
+    {
+      "id": "REQ-022-AC03",
+      "req": "REQ-022",
+      "status": "通过",
+      "version": "0813b95",
+      "evidence": "commit 0813b95（代码整改+测试）"
+    },
+    {
+      "id": "REQ-022-AC04",
+      "req": "REQ-022",
+      "status": "通过",
+      "version": "0813b95",
+      "evidence": "commit 0813b95（代码整改+测试）"
+    },
+    {
+      "id": "REQ-023-AC01",
+      "req": "REQ-023",
+      "status": "通过",
+      "version": "5091df4",
+      "evidence": "commit 5091df4（代码整改+测试）"
+    },
+    {
+      "id": "REQ-023-AC02",
+      "req": "REQ-023",
+      "status": "通过",
+      "version": "5091df4",
+      "evidence": "commit 5091df4（代码整改+测试）"
+    },
+    {
+      "id": "REQ-023-AC03",
+      "req": "REQ-023",
+      "status": "通过",
+      "version": "5091df4",
+      "evidence": "commit 5091df4（代码整改+测试）"
+    },
+    {
+      "id": "REQ-023-AC04",
+      "req": "REQ-023",
+      "status": "通过",
+      "version": "5091df4",
+      "evidence": "commit 5091df4（代码整改+测试）"
+    },
+    {
+      "id": "REQ-024-AC01",
+      "req": "REQ-024",
+      "status": "通过",
+      "version": "e4a4bc0",
+      "evidence": "commit e4a4bc0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-024-AC02",
+      "req": "REQ-024",
+      "status": "通过",
+      "version": "e4a4bc0",
+      "evidence": "commit e4a4bc0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-024-AC03",
+      "req": "REQ-024",
+      "status": "通过",
+      "version": "e4a4bc0",
+      "evidence": "commit e4a4bc0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-024-AC04",
+      "req": "REQ-024",
+      "status": "通过",
+      "version": "e4a4bc0",
+      "evidence": "commit e4a4bc0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-025-AC01",
+      "req": "REQ-025",
+      "status": "通过",
+      "version": "f0775f5",
+      "evidence": "commit f0775f5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-025-AC02",
+      "req": "REQ-025",
+      "status": "通过",
+      "version": "f0775f5",
+      "evidence": "commit f0775f5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-025-AC03",
+      "req": "REQ-025",
+      "status": "通过",
+      "version": "f0775f5",
+      "evidence": "commit f0775f5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-025-AC04",
+      "req": "REQ-025",
+      "status": "通过",
+      "version": "f0775f5",
+      "evidence": "commit f0775f5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-026-AC01",
+      "req": "REQ-026",
+      "status": "通过",
+      "version": "eb994b9",
+      "evidence": "commit eb994b9（代码整改+测试）"
+    },
+    {
+      "id": "REQ-026-AC02",
+      "req": "REQ-026",
+      "status": "通过",
+      "version": "eb994b9",
+      "evidence": "commit eb994b9（代码整改+测试）"
+    },
+    {
+      "id": "REQ-026-AC03",
+      "req": "REQ-026",
+      "status": "通过",
+      "version": "eb994b9",
+      "evidence": "commit eb994b9（代码整改+测试）"
+    },
+    {
+      "id": "REQ-026-AC04",
+      "req": "REQ-026",
+      "status": "通过",
+      "version": "eb994b9",
+      "evidence": "commit eb994b9（代码整改+测试）"
+    },
+    {
+      "id": "REQ-027-AC01",
+      "req": "REQ-027",
+      "status": "通过",
+      "version": "bce008b",
+      "evidence": "commit bce008b（代码整改+测试）"
+    },
+    {
+      "id": "REQ-027-AC02",
+      "req": "REQ-027",
+      "status": "通过",
+      "version": "bce008b",
+      "evidence": "commit bce008b（代码整改+测试）"
+    },
+    {
+      "id": "REQ-027-AC03",
+      "req": "REQ-027",
+      "status": "通过",
+      "version": "bce008b",
+      "evidence": "commit bce008b（代码整改+测试）"
+    },
+    {
+      "id": "REQ-027-AC04",
+      "req": "REQ-027",
+      "status": "通过",
+      "version": "bce008b",
+      "evidence": "commit bce008b（代码整改+测试）"
+    },
+    {
+      "id": "REQ-028-AC01",
+      "req": "REQ-028",
+      "status": "通过",
+      "version": "c104043",
+      "evidence": "commit c104043（代码整改+测试）"
+    },
+    {
+      "id": "REQ-028-AC02",
+      "req": "REQ-028",
+      "status": "通过",
+      "version": "c104043",
+      "evidence": "commit c104043（代码整改+测试）"
+    },
+    {
+      "id": "REQ-028-AC03",
+      "req": "REQ-028",
+      "status": "通过",
+      "version": "c104043",
+      "evidence": "commit c104043（代码整改+测试）"
+    },
+    {
+      "id": "REQ-028-AC04",
+      "req": "REQ-028",
+      "status": "通过",
+      "version": "c104043",
+      "evidence": "commit c104043（代码整改+测试）"
+    },
+    {
+      "id": "REQ-029-AC01",
+      "req": "REQ-029",
+      "status": "通过",
+      "version": "5e88dfb",
+      "evidence": "commit 5e88dfb（代码整改+测试）"
+    },
+    {
+      "id": "REQ-029-AC02",
+      "req": "REQ-029",
+      "status": "通过",
+      "version": "5e88dfb",
+      "evidence": "commit 5e88dfb（代码整改+测试）"
+    },
+    {
+      "id": "REQ-029-AC03",
+      "req": "REQ-029",
+      "status": "通过",
+      "version": "5e88dfb",
+      "evidence": "commit 5e88dfb（代码整改+测试）"
+    },
+    {
+      "id": "REQ-030-AC01",
+      "req": "REQ-030",
+      "status": "通过",
+      "version": "4aa1f7d",
+      "evidence": "commit 4aa1f7d（代码整改+测试）"
+    },
+    {
+      "id": "REQ-030-AC02",
+      "req": "REQ-030",
+      "status": "通过",
+      "version": "4aa1f7d",
+      "evidence": "commit 4aa1f7d（代码整改+测试）"
+    },
+    {
+      "id": "REQ-030-AC03",
+      "req": "REQ-030",
+      "status": "通过",
+      "version": "4aa1f7d",
+      "evidence": "commit 4aa1f7d（代码整改+测试）"
+    },
+    {
+      "id": "REQ-031-AC01",
+      "req": "REQ-031",
+      "status": "通过",
+      "version": "bce2e82",
+      "evidence": "commit bce2e82（代码整改+测试）"
+    },
+    {
+      "id": "REQ-031-AC02",
+      "req": "REQ-031",
+      "status": "通过",
+      "version": "bce2e82",
+      "evidence": "commit bce2e82（代码整改+测试）"
+    },
+    {
+      "id": "REQ-031-AC03",
+      "req": "REQ-031",
+      "status": "通过",
+      "version": "bce2e82",
+      "evidence": "commit bce2e82（代码整改+测试）"
+    },
+    {
+      "id": "REQ-032-AC01",
+      "req": "REQ-032",
+      "status": "通过",
+      "version": "c6cbd94",
+      "evidence": "commit c6cbd94（代码整改+测试）"
+    },
+    {
+      "id": "REQ-032-AC02",
+      "req": "REQ-032",
+      "status": "通过",
+      "version": "c6cbd94",
+      "evidence": "commit c6cbd94（代码整改+测试）"
+    },
+    {
+      "id": "REQ-032-AC03",
+      "req": "REQ-032",
+      "status": "通过",
+      "version": "c6cbd94",
+      "evidence": "commit c6cbd94（代码整改+测试）"
+    },
+    {
+      "id": "REQ-033-AC01",
+      "req": "REQ-033",
+      "status": "通过",
+      "version": "add226d",
+      "evidence": "commit add226d（代码整改+测试）"
+    },
+    {
+      "id": "REQ-033-AC02",
+      "req": "REQ-033",
+      "status": "通过",
+      "version": "add226d",
+      "evidence": "commit add226d（代码整改+测试）"
+    },
+    {
+      "id": "REQ-033-AC03",
+      "req": "REQ-033",
+      "status": "通过",
+      "version": "add226d",
+      "evidence": "commit add226d（代码整改+测试）"
+    },
+    {
+      "id": "REQ-034-AC01",
+      "req": "REQ-034",
+      "status": "通过",
+      "version": "79658c0",
+      "evidence": "commit 79658c0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-034-AC02",
+      "req": "REQ-034",
+      "status": "通过",
+      "version": "79658c0",
+      "evidence": "commit 79658c0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-034-AC03",
+      "req": "REQ-034",
+      "status": "通过",
+      "version": "79658c0",
+      "evidence": "commit 79658c0（代码整改+测试）"
+    },
+    {
+      "id": "REQ-035-AC01",
+      "req": "REQ-035",
+      "status": "通过",
+      "version": "cbfa230",
+      "evidence": "commit cbfa230（代码整改+测试）"
+    },
+    {
+      "id": "REQ-035-AC02",
+      "req": "REQ-035",
+      "status": "通过",
+      "version": "cbfa230",
+      "evidence": "commit cbfa230（代码整改+测试）"
+    },
+    {
+      "id": "REQ-035-AC03",
+      "req": "REQ-035",
+      "status": "通过",
+      "version": "cbfa230",
+      "evidence": "commit cbfa230（代码整改+测试）"
+    },
+    {
+      "id": "REQ-036-AC01",
+      "req": "REQ-036",
+      "status": "通过",
+      "version": "4400759",
+      "evidence": "commit 4400759（代码整改+测试）"
+    },
+    {
+      "id": "REQ-036-AC02",
+      "req": "REQ-036",
+      "status": "通过",
+      "version": "4400759",
+      "evidence": "commit 4400759（代码整改+测试）"
+    },
+    {
+      "id": "REQ-036-AC03",
+      "req": "REQ-036",
+      "status": "通过",
+      "version": "4400759",
+      "evidence": "commit 4400759（代码整改+测试）"
+    },
+    {
+      "id": "REQ-036-AC04",
+      "req": "REQ-036",
+      "status": "通过",
+      "version": "4400759",
+      "evidence": "commit 4400759（代码整改+测试）"
+    },
+    {
+      "id": "REQ-037-AC01",
+      "req": "REQ-037",
+      "status": "通过",
+      "version": "fa11fe5",
+      "evidence": "commit fa11fe5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-037-AC02",
+      "req": "REQ-037",
+      "status": "通过",
+      "version": "fa11fe5",
+      "evidence": "commit fa11fe5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-037-AC03",
+      "req": "REQ-037",
+      "status": "通过",
+      "version": "fa11fe5",
+      "evidence": "commit fa11fe5（代码整改+测试）"
+    },
+    {
+      "id": "REQ-038-AC01",
+      "req": "REQ-038",
+      "status": "通过",
+      "version": "c615a1e",
+      "evidence": "commit c615a1e + evidence/artifact-verification.json"
+    },
+    {
+      "id": "REQ-038-AC02",
+      "req": "REQ-038",
+      "status": "通过",
+      "version": "c615a1e",
+      "evidence": "commit c615a1e + evidence/artifact-verification.json"
+    },
+    {
+      "id": "REQ-038-AC03",
+      "req": "REQ-038",
+      "status": "通过",
+      "version": "c615a1e",
+      "evidence": "commit c615a1e + evidence/artifact-verification.json"
+    },
+    {
+      "id": "REQ-038-AC04",
+      "req": "REQ-038",
+      "status": "通过",
+      "version": "c615a1e",
+      "evidence": "commit c615a1e + evidence/artifact-verification.json"
+    },
+    {
+      "id": "REQ-039-AC01",
+      "req": "REQ-039",
+      "status": "通过",
+      "version": "60cdda9",
+      "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+    },
+    {
+      "id": "REQ-039-AC02",
+      "req": "REQ-039",
+      "status": "通过",
+      "version": "60cdda9",
+      "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+    },
+    {
+      "id": "REQ-039-AC03",
+      "req": "REQ-039",
+      "status": "通过",
+      "version": "60cdda9",
+      "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+    },
+    {
+      "id": "REQ-039-AC04",
+      "req": "REQ-039",
+      "status": "通过",
+      "version": "60cdda9",
+      "evidence": "commit 60cdda9 + evidence/concurrency-evidence.json"
+    },
+    {
+      "id": "REQ-040-AC01",
+      "req": "REQ-040",
+      "status": "通过",
+      "version": "c8e41d2",
+      "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+    },
+    {
+      "id": "REQ-040-AC02",
+      "req": "REQ-040",
+      "status": "通过",
+      "version": "c8e41d2",
+      "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+    },
+    {
+      "id": "REQ-040-AC03",
+      "req": "REQ-040",
+      "status": "通过",
+      "version": "c8e41d2",
+      "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+    },
+    {
+      "id": "REQ-040-AC04",
+      "req": "REQ-040",
+      "status": "通过",
+      "version": "c8e41d2",
+      "evidence": "commit c8e41d2 + evidence/runtime-evidence.json"
+    },
+    {
+      "id": "REQ-041-AC01",
+      "req": "REQ-041",
+      "status": "通过",
+      "version": "ebaf18d",
+      "evidence": "commit ebaf18d + evidence/ubs-semantics-evidence.json"
+    },
+    {
+      "id": "REQ-041-AC02",
+      "req": "REQ-041",
+      "status": "通过",
+      "version": "ebaf18d",
+      "evidence": "commit ebaf18d + evidence/ubs-semantics-evidence.json"
+    },
+    {
+      "id": "REQ-041-AC03",
+      "req": "REQ-041",
+      "status": "通过",
+      "version": "ebaf18d",
+      "evidence": "commit ebaf18d + evidence/ubs-semantics-evidence.json"
+    },
+    {
+      "id": "REQ-041-AC04",
+      "req": "REQ-041",
+      "status": "通过",
+      "version": "ebaf18d",
+      "evidence": "commit ebaf18d + evidence/ubs-semantics-evidence.json"
+    },
+    {
+      "id": "REQ-042-AC01",
+      "req": "REQ-042",
+      "status": "通过",
+      "version": "66a3535",
+      "evidence": "commit 66a3535 + evidence/ubs-filtering-evidence.json"
+    },
+    {
+      "id": "REQ-042-AC02",
+      "req": "REQ-042",
+      "status": "通过",
+      "version": "66a3535",
+      "evidence": "commit 66a3535 + evidence/ubs-filtering-evidence.json"
+    },
+    {
+      "id": "REQ-042-AC03",
+      "req": "REQ-042",
+      "status": "通过",
+      "version": "66a3535",
+      "evidence": "commit 66a3535 + evidence/ubs-filtering-evidence.json"
+    },
+    {
+      "id": "REQ-042-AC04",
+      "req": "REQ-042",
+      "status": "通过",
+      "version": "66a3535",
+      "evidence": "commit 66a3535 + evidence/ubs-filtering-evidence.json"
+    },
+    {
+      "id": "REQ-043-AC01",
+      "req": "REQ-043",
+      "status": "通过",
+      "version": "0a9f6b5",
+      "evidence": "commit 0a9f6b5 + evidence/ubs-sorting-evidence.json"
+    },
+    {
+      "id": "REQ-043-AC02",
+      "req": "REQ-043",
+      "status": "通过",
+      "version": "0a9f6b5",
+      "evidence": "commit 0a9f6b5 + evidence/ubs-sorting-evidence.json"
+    },
+    {
+      "id": "REQ-043-AC03",
+      "req": "REQ-043",
+      "status": "通过",
+      "version": "0a9f6b5",
+      "evidence": "commit 0a9f6b5 + evidence/ubs-sorting-evidence.json"
+    },
+    {
+      "id": "REQ-043-AC04",
+      "req": "REQ-043",
+      "status": "通过",
+      "version": "0a9f6b5",
+      "evidence": "commit 0a9f6b5 + evidence/ubs-sorting-evidence.json"
+    },
+    {
+      "id": "REQ-044-AC01",
+      "req": "REQ-044",
+      "status": "通过",
+      "version": "246eb6a",
+      "evidence": "commit 246eb6a + evidence/ubs-csv-evidence.json"
+    },
+    {
+      "id": "REQ-044-AC02",
+      "req": "REQ-044",
+      "status": "通过",
+      "version": "246eb6a",
+      "evidence": "commit 246eb6a + evidence/ubs-csv-evidence.json"
+    },
+    {
+      "id": "REQ-044-AC03",
+      "req": "REQ-044",
+      "status": "通过",
+      "version": "246eb6a",
+      "evidence": "commit 246eb6a + evidence/ubs-csv-evidence.json"
+    },
+    {
+      "id": "REQ-044-AC04",
+      "req": "REQ-044",
+      "status": "通过",
+      "version": "246eb6a",
+      "evidence": "commit 246eb6a + evidence/ubs-csv-evidence.json"
+    },
+    {
+      "id": "REQ-045-AC01",
+      "req": "REQ-045",
+      "status": "通过",
+      "version": "e48f1b1",
+      "evidence": "commit e48f1b1 + evidence/ubs-detail-evidence.json"
+    },
+    {
+      "id": "REQ-045-AC02",
+      "req": "REQ-045",
+      "status": "通过",
+      "version": "e48f1b1",
+      "evidence": "commit e48f1b1 + evidence/ubs-detail-evidence.json"
+    },
+    {
+      "id": "REQ-045-AC03",
+      "req": "REQ-045",
+      "status": "通过",
+      "version": "e48f1b1",
+      "evidence": "commit e48f1b1 + evidence/ubs-detail-evidence.json"
+    },
+    {
+      "id": "REQ-045-AC04",
+      "req": "REQ-045",
+      "status": "通过",
+      "version": "e48f1b1",
+      "evidence": "commit e48f1b1 + evidence/ubs-detail-evidence.json"
+    },
+    {
+      "id": "REQ-046-AC01",
+      "req": "REQ-046",
+      "status": "通过",
+      "version": "3fff7a1",
+      "evidence": "commit 3fff7a1 + tests/fixtures/triton-audit-freeze.json + tests/test_frozen_audit.py"
+    },
+    {
+      "id": "REQ-046-AC02",
+      "req": "REQ-046",
+      "status": "通过",
+      "version": "3fff7a1",
+      "evidence": "commit 3fff7a1 + tests/fixtures/triton-audit-freeze.json + tests/test_frozen_audit.py"
+    },
+    {
+      "id": "REQ-046-AC03",
+      "req": "REQ-046",
+      "status": "通过",
+      "version": "3fff7a1",
+      "evidence": "commit 3fff7a1 + tests/fixtures/triton-audit-freeze.json + tests/test_frozen_audit.py"
+    },
+    {
+      "id": "REQ-046-AC04",
+      "req": "REQ-046",
+      "status": "通过",
+      "version": "3fff7a1",
+      "evidence": "commit 3fff7a1 + tests/fixtures/triton-audit-freeze.json + tests/test_frozen_audit.py"
+    },
+    {
+      "id": "REQ-047-AC01",
+      "req": "REQ-047",
+      "status": "通过",
+      "version": "d3b06fc",
+      "evidence": "commit d3b06fc + evidence/ubs-routes-evidence.json"
+    },
+    {
+      "id": "REQ-047-AC02",
+      "req": "REQ-047",
+      "status": "通过",
+      "version": "d3b06fc",
+      "evidence": "commit d3b06fc + evidence/ubs-routes-evidence.json"
+    },
+    {
+      "id": "REQ-047-AC03",
+      "req": "REQ-047",
+      "status": "通过",
+      "version": "d3b06fc",
+      "evidence": "commit d3b06fc + evidence/ubs-routes-evidence.json"
+    },
+    {
+      "id": "REQ-047-AC04",
+      "req": "REQ-047",
+      "status": "通过",
+      "version": "d3b06fc",
+      "evidence": "commit d3b06fc + evidence/ubs-routes-evidence.json"
+    },
+    {
+      "id": "REQ-048-AC01",
+      "req": "REQ-048",
+      "status": "通过",
+      "version": "016b7c0",
+      "evidence": "commit 016b7c0 + evidence/interaction-evidence.json"
+    },
+    {
+      "id": "REQ-048-AC02",
+      "req": "REQ-048",
+      "status": "通过",
+      "version": "016b7c0",
+      "evidence": "commit 016b7c0 + evidence/interaction-evidence.json"
+    },
+    {
+      "id": "REQ-048-AC03",
+      "req": "REQ-048",
+      "status": "通过",
+      "version": "016b7c0",
+      "evidence": "commit 016b7c0 + evidence/interaction-evidence.json"
+    },
+    {
+      "id": "REQ-048-AC04",
+      "req": "REQ-048",
+      "status": "通过",
+      "version": "016b7c0",
+      "evidence": "commit 016b7c0 + evidence/interaction-evidence.json"
+    },
+    {
+      "id": "REQ-049-AC01",
+      "req": "REQ-049",
+      "status": "通过",
+      "version": "bb1ec47",
+      "evidence": "commit bb1ec47 + evidence/freshness-evidence.json"
+    },
+    {
+      "id": "REQ-049-AC02",
+      "req": "REQ-049",
+      "status": "通过",
+      "version": "bb1ec47",
+      "evidence": "commit bb1ec47 + evidence/freshness-evidence.json"
+    },
+    {
+      "id": "REQ-049-AC03",
+      "req": "REQ-049",
+      "status": "通过",
+      "version": "bb1ec47",
+      "evidence": "commit bb1ec47 + evidence/freshness-evidence.json"
+    },
+    {
+      "id": "REQ-049-AC04",
+      "req": "REQ-049",
+      "status": "通过",
+      "version": "bb1ec47",
+      "evidence": "commit bb1ec47 + evidence/freshness-evidence.json"
+    },
+    {
+      "id": "REQ-050-AC01",
+      "req": "REQ-050",
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+    },
+    {
+      "id": "REQ-050-AC02",
+      "req": "REQ-050",
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+    },
+    {
+      "id": "REQ-050-AC03",
+      "req": "REQ-050",
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+    },
+    {
+      "id": "REQ-050-AC04",
+      "req": "REQ-050",
+      "status": "通过",
+      "version": "本提交（紧随本证据生成）",
+      "evidence": "REQ-050 交付物（验收工具、测试与证据文件；见紧随本证据生成的提交）"
+    },
+    {
+      "id": "REQ-051-AC01",
+      "req": "REQ-051",
+      "status": "未验证",
+      "version": null,
+      "evidence": "待交付"
+    },
+    {
+      "id": "REQ-051-AC02",
+      "req": "REQ-051",
+      "status": "未验证",
+      "version": null,
+      "evidence": "待交付"
+    },
+    {
+      "id": "REQ-051-AC03",
+      "req": "REQ-051",
+      "status": "未验证",
+      "version": null,
+      "evidence": "待交付"
+    },
+    {
+      "id": "REQ-051-AC04",
+      "req": "REQ-051",
+      "status": "未验证",
+      "version": null,
+      "evidence": "待交付"
+    }
+  ],
+  "kinds": {
+    "kind_coverage": [
+      "合成输入",
+      "真实快照",
+      "真实部署",
+      "静态规则"
+    ],
+    "accuracy_rate_claimed": false,
+    "no_rate_synthesis_rule_present": true,
+    "rate_claim_lines_in_doc": [],
+    "rate_claim_lines_in_readme": []
+  },
+  "ledger_meta": {
+    "duplicated_req_commits": {}
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}
