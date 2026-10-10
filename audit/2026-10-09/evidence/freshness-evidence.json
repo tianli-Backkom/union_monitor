@@ -1,0 +1,58 @@
+{
+  "schema": "ubs-freshness-evidence/1",
+  "generated_at": "2026-10-10T00:11:38Z",
+  "requirement": "REQ-049",
+  "input": {
+    "root": "/mnt/d/ubs_core_monitor",
+    "triton_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+    "audit_artifact_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+    "matches_audit_frozen_input": true
+  },
+  "freshness_slots": {
+    "cases": {
+      "freshnessSlots": 17
+    },
+    "total": 17,
+    "node_status": "ok",
+    "mismatches": {}
+  },
+  "source_contracts": {
+    "checked": 36,
+    "missing": []
+  },
+  "baseline": {
+    "status": "matched",
+    "triton_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+    "audit_artifact_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+    "checks": {
+      "F02-triton-404": {
+        "label": "Triton 异常提供明确空态",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      "A04": {
+        "label": "Triton 导出失败明确且按钮恢复",
+        "actual": {
+          "error": true,
+          "enabled": true
+        },
+        "expected": {
+          "error": true,
+          "enabled": true
+        },
+        "passed": true
+      },
+      "M04": {
+        "label": "Triton新鲜度延迟提醒",
+        "actual": "继续审查时已经14:39，提醒按实际检查时刻显示；这不是采集失败已证实的结论",
+        "expected": "超过北京时间13:00加90分钟且快照仍08:17时显示延迟",
+        "passed": true
+      }
+    }
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}
