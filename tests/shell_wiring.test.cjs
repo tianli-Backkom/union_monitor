@@ -51,3 +51,14 @@ test('P-009: units.js loads before triton-view and Triton durations unify to min
   assert.ok(idx('triton-view.js') > idx('units.js'), 'triton-view after units');
   assert.match(tritonView, /const dur = value => Units\.minutes\(value == null \? null : value \* 1000\)/);
 });
+
+test('P-007: detail.js loads before app.js and exposes the unified detail model', () => {
+  const scripts = [...html.matchAll(/<script src="([^"]+)" defer>/g)].map(m => m[1]);
+  const idx = name => scripts.indexOf(name);
+  assert.ok(idx('detail.js') > idx('core.js'), 'detail after core');
+  assert.ok(idx('app.js') > idx('detail.js'), 'app.js after detail');
+  const detail = fs.readFileSync(path.join(__dirname, '..', 'web', 'detail.js'), 'utf8');
+  assert.match(detail, /function defaultExpandedBatch/);
+  assert.match(detail, /reason: 'no-representative'/);
+  assert.match(detail, /'未采集'/);
+});
