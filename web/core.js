@@ -14,17 +14,22 @@
   function searchPRs(prs,query=''){const q=String(query||'').toLowerCase().trim();return q?prs.filter(p=>[p.number,p.title,p.author,...p.batches.map(b=>b.sha||'')].join(' ').toLowerCase().includes(q)):prs.slice();}
   function repositoryRows(index,snapshots,state=''){return index.repositories.map(entry=>{const snapshot=snapshots[entry.name];const current=!!snapshot&&snapshot.meta.start_ms===index.start_ms&&snapshot.meta.end_ms===index.end_ms;const included=current&&['success','partial'].includes(entry.status);const prs=included?filterPRs(snapshot.prs,{state}):[];return {...entry,current,included,prs,metrics:aggregate(prs),counts:Object.fromEntries(['open','merged','closed'].map(k=>[k,prs.filter(p=>p.state===k).length]))};});}
   function csv(rows){return '\ufeff'+rows.map(row=>row.map(x=>{let s=x==null?'':String(x);if(/^[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"'}).join(',')).join('\r\n');}
-  async function saveCsv(rows,name,env=root){
+  /* P-010: versioned export metadata + confirmation summary. The versioned
+     fields travel as self-describing metadata (never comment rows at the CSV
+     top, which would break existing parsers). */
+  function exportMetadata(meta){const m=meta||{};return {format:'ubs-core-export',format_version:1,entity:m.entity||'',scope:m.scope||'',list_condition:m.list_condition||'',count:m.count==null?null:m.count,unit:m.unit||'',duration_unit:m.duration_unit||'分钟',profile_version:m.profile_version||'',snapshot_id:m.snapshot_id||'',collected_at:m.collected_at||'',time_basis:m.time_basis||''};}
+  function exportSummary(meta){const m=meta||{};const p=[];if(m.entity)p.push('实体：'+m.entity);if(m.scope)p.push('分析范围：'+m.scope);if(m.list_condition)p.push('列表条件：'+m.list_condition);p.push('条数：'+(m.count==null?'—':m.count));if(m.unit)p.push('单位：'+m.unit);p.push('数据版本：'+(m.snapshot_id||'—'));p.push('口径版本：'+(m.profile_version||'—'));return p.join(' · ');}
+  async function saveCsv(rows,name,env=root,meta=null){
     const content=csv(rows),host=env.location?.hostname||'',local=['localhost','127.0.0.1','::1'].includes(host);
     if(local){
       const response=await env.fetch('/api/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,csv:content})});
       if(!response.ok)throw Error('HTTP '+response.status);
-      return {mode:'saved',...(await response.json())};
+      return {mode:'saved',...(await response.json()),...(meta?{metadata:exportMetadata(meta)}:{})};
     }
     const blob=new env.Blob([content],{type:'text/csv;charset=utf-8'}),url=env.URL.createObjectURL(blob),anchor=env.document.createElement('a');
     anchor.href=url;anchor.download=name;anchor.click();env.URL.revokeObjectURL(url);
-    return {mode:'download',name};
+    return {mode:'download',name,...(meta?{metadata:exportMetadata(meta)}:{})};
   }
   function createReloadGate(){let gen=0;return{begin(){return ++gen;},isCurrent(g){return g===gen;}};}
-  const api={triggerCounts,failedWait,detailGroups,stats,metrics,sortPRs,aggregate,filterPRs,searchPRs,repositoryRows,csv,saveCsv,createReloadGate};if(typeof module!=='undefined')module.exports=api;else root.Metrics=api;
+  const api={triggerCounts,failedWait,detailGroups,stats,metrics,sortPRs,aggregate,filterPRs,searchPRs,repositoryRows,csv,exportMetadata,exportSummary,saveCsv,createReloadGate};if(typeof module!=='undefined')module.exports=api;else root.Metrics=api;
 })(typeof window!=='undefined'?window:globalThis);
