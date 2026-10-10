@@ -50,6 +50,9 @@ class DataModeTests(unittest.TestCase):
     def test_success_with_fresh_bundle_is_fresh(self):
         self.assertEqual(choose_data_mode("success", has_fresh_bundle=True, has_trusted_fallback=False), "fresh")
 
+    def test_partial_with_fresh_bundle_is_still_fresh(self):
+        self.assertEqual(choose_data_mode("partial", has_fresh_bundle=True, has_trusted_fallback=False), "fresh")
+
     def test_failed_with_trusted_fallback_is_fallback(self):
         self.assertEqual(choose_data_mode("failed", has_fresh_bundle=False, has_trusted_fallback=True), "fallback")
 

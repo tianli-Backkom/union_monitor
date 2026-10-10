@@ -61,6 +61,12 @@ class RunContext:
         start = end - timedelta(hours=hours)
         return {"start_at": iso_utc(start), "end_at": iso_utc(end)}
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "RunContext":
+        """Rebuild a context from the JSON emitted by ``as_dict``."""
+        keys = ("run_id", "code_sha", "cutoff_at", "scheduled_for", "started_at", "trigger", "catalog_sha256", "project_ids", "artifact_root", "publish_mode")
+        return cls(**{k: data.get(k) for k in keys})
+
     def window_for(self, project: dict) -> dict:
         """Derive the window for a catalog project from its declared time basis."""
         window = project.get("window") or {}

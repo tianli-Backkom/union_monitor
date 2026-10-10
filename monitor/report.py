@@ -38,7 +38,7 @@ def choose_data_mode(
     """
     if task_status not in TASK_STATUSES:
         raise ValueError(f"invalid task_status {task_status!r}")
-    if task_status == "success" and has_fresh_bundle:
+    if has_fresh_bundle:
         return "fresh"
     if has_trusted_fallback:
         return "fallback"

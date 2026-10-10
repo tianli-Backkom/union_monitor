@@ -14,12 +14,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .catalog import Catalog
-from .context import iso_utc
+from .context import RunContext, iso_utc
 from .plan import plan
+from .report import validate_report
+from .assemble import assemble_release
 
 
 def _write(path: str, value: dict) -> None:
     Path(path).write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _load_json(path: str) -> dict:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def _now_utc() -> str:
@@ -46,6 +52,42 @@ def cmd_plan(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_validate(args: argparse.Namespace) -> int:
+    catalog = Catalog.load(args.catalog)
+    context = RunContext.from_dict(_load_json(args.context))
+    bundle = _load_json(args.bundle)
+    report = bundle.get("report") if isinstance(bundle.get("report"), dict) else bundle
+    errors = validate_report(report, context, catalog)
+    result = {"project_id": report.get("project_id"), "validation_status": "passed" if not errors else "failed", "errors": errors}
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if not errors else 1
+
+
+def cmd_assemble(args: argparse.Namespace) -> int:
+    catalog = Catalog.load(args.catalog)
+    context = RunContext.from_dict(_load_json(args.context))
+    inputs = _load_json(args.inputs)
+    reports = inputs.get("projects") if isinstance(inputs.get("projects"), dict) else inputs
+    baseline = _load_json(args.baseline) if args.baseline else None
+    release = assemble_release(
+        catalog,
+        context,
+        reports,
+        release_id=args.release_id,
+        published_at=args.published_at,
+        baseline=baseline,
+        baseline_release_id=args.baseline_release_id,
+    )
+    release["publishable"] = assemble_release_publishable(release)
+    _write(args.out, release)
+    return 0
+
+
+def assemble_release_publishable(release: dict) -> bool:
+    from .assemble import is_publishable  # local import keeps the CLI surface tight
+    return is_publishable(release)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="python -m monitor", description="Unified dashboard collection pipeline")
     sub = parser.add_subparsers(dest="command")
@@ -62,6 +104,24 @@ def build_parser() -> argparse.ArgumentParser:
     plan_p.add_argument("--context-out", required=True)
     plan_p.add_argument("--matrix-out", required=True)
     plan_p.set_defaults(func=cmd_plan)
+
+    val_p = sub.add_parser("validate", help="validate a project bundle report against context and catalog")
+    val_p.add_argument("--catalog", required=True)
+    val_p.add_argument("--bundle", required=True, help="project bundle JSON (with a `report` field)")
+    val_p.add_argument("--context", required=True, help="run context JSON from `plan`")
+    val_p.set_defaults(func=cmd_validate)
+
+    asm_p = sub.add_parser("assemble", help="compose a candidate release manifest")
+    asm_p.add_argument("--catalog", required=True)
+    asm_p.add_argument("--context", required=True)
+    asm_p.add_argument("--inputs", required=True, help="JSON mapping project_id -> collection report")
+    asm_p.add_argument("--baseline", default=None, help="optional prior verified release manifest")
+    asm_p.add_argument("--baseline-release-id", default=None)
+    asm_p.add_argument("--release-id", required=True)
+    asm_p.add_argument("--published-at", required=True)
+    asm_p.add_argument("--out", required=True)
+    asm_p.set_defaults(func=cmd_assemble)
+
     return parser
 
 
