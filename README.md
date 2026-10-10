@@ -118,7 +118,7 @@ python scripts/devdata.py
 | `data/snapshot.json`、`web/data/snapshot.json` | ubs-engine 兼容快照 |
 | `web/core.js` | 可独立测试的前端筛选与统计 |
 | `validate.py`、`validate_multi.py`、`source_coverage.py` | 原始时间、跨仓隔离、代表值、SQLite 和前端算法独立审计；source_audit 按类别声明原始来源覆盖（适用/已验证一致/派生自洽/差异/缺证据计数与缺失身份清单），queue/total 由原始 waiting/blocked/buildable 分项之和独立核验（分项缺失时 queue 与 total 保持未知不补 0）；sections 分项状态（派生一致性/源时间/排队分项/发布一致性 N/A 及理由）推导 overall_status 并与退出码一致，审计异常先写失败报告（错误与受影响范围）再重抛 |
-| `validate_bundle.py`、`web/data/ubs-manifest.json` | 发布与缓存共享前的 UBS 快照束校验：索引↔快照归属、纳入跨仓的 success/partial 快照时间范围、仓根镜像一致性与工件指纹 |
+| `validate_bundle.py`、`web/data/ubs-manifest.json` | 发布与缓存共享前的 UBS 快照束校验：索引↔快照归属、纳入跨仓的 success/partial 快照时间范围、仓根镜像一致性与工件指纹；清单指纹须与其文件表自洽（截断或篡改的清单在任何模式被阻断），verify/--ensure-manifest 拒绝清单与内容不一致的混版束，每日 --write-manifest 将恢复的自洽旧清单视为新版本信号并重盖 |
 | `scripts/verify_artifacts.py`、`audit/2026-10-09/evidence/artifact-verification.json` | REQ-038 审计期原始工件补齐与历史影响核验：逐工件清单（D10 原始工件本地缺失如实标未验证，不伪造来源）、冻结快照↔审计导出 CSV 四类交叉核对（REQ-023 计数等式）、7 个真实重跑批次新旧规则影响量化与 S01 合成声明（当前代码重算）、本地快照束指纹核验与旧站探测记录（`--probe`） |
 | `scripts/verify_runtime.py`、`audit/2026-10-09/evidence/runtime-evidence.json` | REQ-040 CI 目标运行时兼容性验证：Python 3.12/Node 22 上执行测试、门禁与原始审计的适用部分，记录精确版本、命令、退出码、失败数与完整日志；CI 声明↔README↔交付结果三方一致；工件缺失时审计如实失败，不以 wrapper 退出 0 冒充通过 |
 | `scripts/verify_ubs_semantics.py`、`audit/2026-10-09/evidence/ubs-semantics-evidence.json` | REQ-041 UBS 代表值与跨仓算法保持验证：独立重算每 PR 代表批次（最长可测量终态 E2E、并列取 trigger 编号较大）、事件时间、任务值（仅取代表批次、同类缺失或关联不唯一留空、不从其他批次补取）与批次派生字段、任务算术；跨仓参与规则（success/partial 且快照范围与索引一致）镜像前端并逐仓记录排除原因，合法零 PR 仓库保留；复合 PR 主键与批次完整 URL 唯一、跨仓同号 PR 互不污染；Node 前端算法交叉核对；输入指纹与审计冻结基线一致时额外比对计数、有效样本（x86/ARM/DT 191/203/195）与聚合，输入更新后基线比对记 not_applicable、契约检查照常，不硬编码数量 |
@@ -153,7 +153,7 @@ Jenkins 构建主键为完整任务 URL（含 build number）。从 trigger 控�
 | `triton/dashboard.py` | GitHub Actions 只读采集、按 PR head SHA 聚合批次、生成看板数据 |
 | `triton/quality.py` | 发布前质量校验：Jobs 分页完整性、NPU 识别覆盖、已完成任务时间戳、批次最大排队时长、工件一致性 |
 | `triton/pr_identity.py` | Fork PR 与 workflow run 的可靠关联 |
-| `triton/verify_deployment.py` | 发布后逐一校验公开数据文件（Triton /data/triton.json、UBS 索引与全部引用快照、两份 manifest）与本次构建清单的 SHA-256/JSON 指纹，最多重试 8 次 |
+| `triton/verify_deployment.py` | 发布后逐一校验公开数据文件（Triton /data/triton.json、UBS 索引与全部引用快照、两份 manifest）与本次构建清单的 SHA-256/JSON 指纹，最多重试 8 次；必需文件集由已发布索引推导，清单文件表截断或与索引引用不一致即失败 |
 | `evidence/triton/` | 采集证据：run/job/PR 页面缓存、PR 关联依据、质量报告 |
 | `evidence/triton/pr-associations/` | PR 关联依据 |
 | `evidence/triton/quality-report.json` | 质量校验结果（失败与警告） |
@@ -212,7 +212,7 @@ Fork PR 的 workflow `pull_requests` 和 commit 关联接口可能同时返回�
 ## 自动发布
 
 - **每日全量**（[pages.yml](.github/workflows/pages.yml)，`Collect and deploy dashboard`）：北京时间 07:30（UTC 23:30）依次恢复共享 UBS 快照缓存（`ubs-snapshots-v1`，与增量流程路径、顺序和键完全一致）与每日采集缓存（`ubs-collection-v1`，含原始响应、SQLite 与 Triton 证据）、采集九仓最近 30 天的 master PR、采集 Triton 最近 72 小时门禁数据、运行 Python 和 Node 测试、执行真实数据审计，再上传 `web/` 并部署 Pages，随后以本次构建的两份 manifest 校验公开数据指纹。失败保留上一版。计划任务可能因 GitHub 平台负载延迟启动。
-- **Triton 增量**（[triton-refresh.yml](.github/workflows/triton-refresh.yml)）：北京时间 08:00、13:00、18:00、20:00 仅重新采集 Triton 最近 72 小时数据并发布。UBS 数据从与每日流程完全一致的版本化共享快照缓存（`ubs-snapshots-v1`）恢复；缓存缺失时通过 `SITE_FALLBACK_URL`（默认旧 UBS 线上地址，可修改）逐文件回退拉取并补齐仓根镜像，日志逐文件标记命中、回退或镜像来源；UBS 索引仍缺失则不部署。两流程上传前都运行 `validate_bundle.py`：校验索引与被引用单仓快照归属一致、纳入跨仓的 success/partial 快照时间范围与索引窗口一致（失败仓保留的过期快照合法，改标成功即被阻断）、仓根镜像不混版本，并与 `web/data/ubs-manifest.json` 记录的工件指纹比对，旧索引配新快照（或相反）会被阻断；坏 JSON、空文件、缺失 `repositories` 结构或被引用快照缺失、下载失败同样阻断，不能只凭索引非空上传。pending 与首次失败且无快照的仓库合法，页面显示未获取而非空成功数据；缓存命中与站点回退两条恢复路径共用同一完整性检查，错误报告注明具体缺失引用与恢复来源。恢复或校验失败的工作流不保存共享缓存、不上传部署——重试恢复上一份有效缓存，线上保持上一版有效页面。部署后与每日流程同样运行公开数据指纹校验。两工作流共用 concurrency group `pages` 且 `cancel-in-progress: false`：只保护正在运行的构建不被新触发取消，排队中的运行遵循平台默认替换规则（queue: single——同一并发组仅保留最新一个排队运行，较早排队者被取消替换），因此增量运行不会取消正在进行的每日全量构建，但排队中的每日全量可能被更新的增量排队运行替换、当日全量更新（含九仓 UBS 采集）丢失，等待下一计划（次日 07:30）恢复；不声称默认保留所有排队任务，如需保留需另行制定 `queue: max` 等新运行策略与对应验收（`queue: max` 与 `cancel-in-progress: true` 互斥）。
+- **Triton 增量**（[triton-refresh.yml](.github/workflows/triton-refresh.yml)）：北京时间 08:00、13:00、18:00、20:00 仅重新采集 Triton 最近 72 小时数据并发布。UBS 数据从与每日流程完全一致的版本化共享快照缓存（`ubs-snapshots-v1`）恢复；缓存缺失时通过 `SITE_FALLBACK_URL`（默认旧 UBS 线上地址，可修改）逐文件回退拉取并补齐仓根镜像，日志逐文件标记命中、回退或镜像来源；UBS 索引仍缺失则不部署。两流程上传前都运行 `validate_bundle.py`：校验索引与被引用单仓快照归属一致、纳入跨仓的 success/partial 快照时间范围与索引窗口一致（失败仓保留的过期快照合法，改标成功即被阻断）、仓根镜像不混版本，并与 `web/data/ubs-manifest.json` 记录的完整文件表与工件指纹比对（清单指纹须与其文件表自洽，截断或篡改的清单在任何模式被阻断），旧索引配新快照（或相反）会被阻断；每日 `--write-manifest` 将恢复的自洽旧清单视为新版本信号并重盖（内容结构校验不变），增量复用仍严格逐项比对；坏 JSON、空文件、缺失 `repositories` 结构或被引用快照缺失、下载失败同样阻断，不能只凭索引非空上传。pending 与首次失败且无快照的仓库合法，页面显示未获取而非空成功数据；缓存命中与站点回退两条恢复路径共用同一完整性检查，错误报告注明具体缺失引用与恢复来源。恢复或校验失败的工作流不保存共享缓存、不上传部署——重试恢复上一份有效缓存，线上保持上一版有效页面。部署后与每日流程同样运行公开数据指纹校验。两工作流共用 concurrency group `pages` 且 `cancel-in-progress: false`：只保护正在运行的构建不被新触发取消，排队中的运行遵循平台默认替换规则（queue: single——同一并发组仅保留最新一个排队运行，较早排队者被取消替换），因此增量运行不会取消正在进行的每日全量构建，但排队中的每日全量可能被更新的增量排队运行替换、当日全量更新（含九仓 UBS 采集）丢失，等待下一计划（次日 07:30）恢复；不声称默认保留所有排队任务，如需保留需另行制定 `queue: max` 等新运行策略与对应验收（`queue: max` 与 `cancel-in-progress: true` 互斥）。
 - 两个工作流均支持在 Actions 页面手动运行（`workflow_dispatch`）。
 
 原始 API 缓存、SQLite、历史 CSV 和备份不会包含在 Pages artifact 或 Git 提交中；线上只公开看板所需的派生 JSON 与数据文件。

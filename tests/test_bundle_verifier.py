@@ -147,10 +147,62 @@ class BundleVerifierTests(unittest.TestCase):
         path.write_text(json.dumps(snapshot, ensure_ascii=False), 'utf-8')
         code, out = run_verifier(self.tmp)
         self.assertNotEqual(code, 0)
-        self.assertIn('manifest fingerprint mismatch', out)
+        self.assertIn('manifest mismatch', out)
+        self.assertIn('ubs-comm', out)
         # --ensure-manifest must not silently bless the mixed bundle.
         code, out = run_verifier(self.tmp, '--ensure-manifest')
         self.assertNotEqual(code, 0)
+
+    def test_daily_refresh_restamps_stale_restored_manifest(self):
+        # REQ-012/REQ-013 (A02): the daily workflow restores yesterday's cache
+        # (manifest of bundle A included), collects bundle B into the same
+        # workspace, then runs --write-manifest. A's self-consistent manifest
+        # is the expected signal of a new version — content checks stay strict
+        # and the tool must stamp B's manifest, not exit 1.
+        workspace = self.tmp / 'daily'
+        write_bundle(workspace, generated_at='2026-10-08T03:01:57+00:00')
+        self.assertEqual(run_verifier(workspace, '--write-manifest')[0], 0)
+        fp_a = json.loads((workspace / 'web/data/ubs-manifest.json').read_text('utf-8'))['fingerprint']
+        # 今日采集仅推进 generated_at 并新增 PR：结构合法的新版本 B
+        write_bundle(workspace, generated_at='2026-10-09T03:01:57+00:00', pr_count=2)
+        code, out = run_verifier(workspace, '--write-manifest')
+        self.assertEqual(code, 0, out)
+        self.assertIn('stale manifest from the previous bundle', out)
+        stamped = json.loads((workspace / 'web/data/ubs-manifest.json').read_text('utf-8'))
+        self.assertNotEqual(stamped['fingerprint'], fp_a)
+        code, out = run_verifier(workspace)
+        self.assertEqual(code, 0, out)
+        self.assertIn('manifest=verified', out)
+        self.assertEqual(fingerprint_of(out), 'fingerprint=' + stamped['fingerprint'])
+
+    def test_truncated_manifest_files_fail_in_every_mode(self):
+        # REQ-012 AC03 (A03): a manifest whose files table was truncated while
+        # keeping the original fingerprint is internally inconsistent — it must
+        # fail verify, --ensure-manifest AND --write-manifest.
+        write_bundle(self.tmp)
+        self.assertEqual(run_verifier(self.tmp, '--write-manifest')[0], 0)
+        path = self.tmp / 'web/data/ubs-manifest.json'
+        manifest = json.loads(path.read_text('utf-8'))
+        manifest['files'] = {'repositories.json': manifest['files']['repositories.json']}
+        path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), 'utf-8')
+        for flags in ((), ('--ensure-manifest',), ('--write-manifest',)):
+            code, out = run_verifier(self.tmp, *flags)
+            self.assertNotEqual(code, 0, f'flags={flags}')
+            self.assertIn('internally inconsistent', out)
+            self.assertIn('truncated or tampered', out)
+
+    def test_edited_manifest_digest_is_internally_inconsistent(self):
+        # A single edited digest breaks the fingerprint↔table binding even
+        # when the file set is unchanged.
+        write_bundle(self.tmp)
+        self.assertEqual(run_verifier(self.tmp, '--write-manifest')[0], 0)
+        path = self.tmp / 'web/data/ubs-manifest.json'
+        manifest = json.loads(path.read_text('utf-8'))
+        manifest['files']['repositories.json'] = 'b' * 64
+        path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), 'utf-8')
+        code, out = run_verifier(self.tmp)
+        self.assertNotEqual(code, 0)
+        self.assertIn('internally inconsistent', out)
 
     def test_invalid_index_fails(self):
         write_bundle(self.tmp)

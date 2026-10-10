@@ -2,6 +2,8 @@ import hashlib, json, os, shutil, tempfile, unittest, urllib.error
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
+
+import validate_bundle
 from triton.quality import fingerprint
 from triton.verify_deployment import RETRIES, DeploymentMismatch, main as verify_main, run
 
@@ -19,13 +21,19 @@ class VerifyDeploymentTests(unittest.TestCase):
         self.triton_manifest.write_text(json.dumps(
             {"sha256": fingerprint(self.triton_payload), "collected_at": self.triton_payload["collected_at"]}),
             encoding="utf-8")
-        self.ubs_files = {"repositories.json": b'{"schema_version": 3, "repositories": []}',
+        ubs_index = {"schema_version": 3, "repositories": [
+            {"name": "ubs-engine", "repository": "openeuler/ubs-engine", "status": "success",
+             "snapshot": "repos/ubs-engine.json"}]}
+        self.ubs_files = {"repositories.json": json.dumps(ubs_index).encode("utf-8"),
                           "repos/ubs-engine.json": b'{"meta": {"repository": "openeuler/ubs-engine"}}',
                           "snapshot.json": b'{"compat": true}'}
+        self.ubs_digests = {rel: hashlib.sha256(data).hexdigest()
+                            for rel, data in sorted(self.ubs_files.items())}
+        self.ubs_fingerprint = validate_bundle.recompute_fingerprint(self.ubs_digests)
         self.ubs_manifest = self.tmp / "ubs-manifest.json"
         self.ubs_manifest.write_text(json.dumps(
-            {"schema": 1, "fingerprint": "sha256:" + "a" * 64, "generated_at": "2026-10-09T00:00:00+00:00",
-             "files": {rel: hashlib.sha256(data).hexdigest() for rel, data in sorted(self.ubs_files.items())}}),
+            {"schema": 1, "fingerprint": self.ubs_fingerprint, "generated_at": "2026-10-09T00:00:00+00:00",
+             "files": self.ubs_digests}),
             encoding="utf-8")
 
     def publish(self, transient_failures=0, **overrides):
@@ -74,7 +82,7 @@ class VerifyDeploymentTests(unittest.TestCase):
         self.assertIn("12345", summary_text)
         self.assertIn(SITE + "/data/triton.json", summary_text)
         self.assertIn(fingerprint(self.triton_payload), summary_text)
-        self.assertIn("sha256:" + "a" * 64, summary_text)
+        self.assertIn(self.ubs_fingerprint, summary_text)
 
     def test_stale_triton_data_fails_naming_the_file_without_claiming_rollback(self):
         # REQ-022 AC03: stale published data fails after bounded retries, names the
@@ -122,6 +130,43 @@ class VerifyDeploymentTests(unittest.TestCase):
             with self.assertRaises(DeploymentMismatch) as ctx:
                 run(SITE, self.triton_manifest, self.ubs_manifest)
         self.assertIn("ubs-manifest.json", str(ctx.exception))
+
+    def test_truncated_ubs_manifest_fails_before_any_ubs_fetch(self):
+        # REQ-022 AC01 (A03): given a manifest whose files table was truncated
+        # while keeping the original fingerprint, verification fails on the
+        # fingerprint↔table binding itself, before any UBS file is fetched.
+        manifest = json.loads(self.ubs_manifest.read_text(encoding="utf-8"))
+        manifest["files"] = {"repositories.json": manifest["files"]["repositories.json"]}
+        self.ubs_manifest.write_text(json.dumps(manifest), encoding="utf-8")
+        fake_fetch, calls = self.publish()
+        with patch("triton.verify_deployment.fetch", fake_fetch), \
+             patch("triton.verify_deployment.time.sleep"), \
+             patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(self.tmp / "summary.md")}):
+            with self.assertRaises(DeploymentMismatch) as ctx:
+                run(SITE, self.triton_manifest, self.ubs_manifest)
+        self.assertIn("internally inconsistent", str(ctx.exception))
+        self.assertIn("truncated or tampered", str(ctx.exception))
+        self.assertNotIn(SITE + "/data/repositories.json", calls)
+
+    def test_self_consistent_manifest_dropping_index_referenced_snapshot_fails(self):
+        # REQ-022 AC01 (A03): given a manifest whose files table was truncated
+        # AND re-fingerprinted to stay self-consistent, verification still
+        # fails: the required file set comes from the published index, not the
+        # manifest's own table, so the dropped snapshot is fetched and named.
+        manifest = json.loads(self.ubs_manifest.read_text(encoding="utf-8"))
+        del manifest["files"]["repos/ubs-engine.json"]
+        manifest["fingerprint"] = validate_bundle.recompute_fingerprint(manifest["files"])
+        self.ubs_manifest.write_text(json.dumps(manifest), encoding="utf-8")
+        fake_fetch, calls = self.publish()
+        with patch("triton.verify_deployment.fetch", fake_fetch), \
+             patch("triton.verify_deployment.time.sleep"), \
+             patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(self.tmp / "summary.md")}):
+            with self.assertRaises(DeploymentMismatch) as ctx:
+                run(SITE, self.triton_manifest, self.ubs_manifest)
+        message = str(ctx.exception)
+        self.assertIn("repos/ubs-engine.json", message)
+        self.assertIn("absent from this build's manifest", message)
+        self.assertIn(SITE + "/data/repos/ubs-engine.json", calls)
 
     def test_transient_failures_retry_then_succeed(self):
         # REQ-022 AC03: retries are bounded and deployment propagation delays recover.

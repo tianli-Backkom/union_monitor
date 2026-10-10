@@ -202,7 +202,7 @@ class CacheChainTests(unittest.TestCase):
         self.assertIn('summary: cache=4 fallback=0 mirrored=0 missing=0', log)
         code, out = run_verifier(workspace, '--ensure-manifest')
         self.assertNotEqual(code, 0)          # ...but the manifest gate blocks the deploy
-        self.assertIn('manifest fingerprint mismatch', out)
+        self.assertIn('manifest mismatch', out)
         self.assertIn('repos/ubs-comm.json', out)
         print(f'[chain] AC03 invalid-cache: expected {fp_b} → blocked (mixed ubs-comm vintage)')
 

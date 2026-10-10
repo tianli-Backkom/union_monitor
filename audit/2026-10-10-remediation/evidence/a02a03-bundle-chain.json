@@ -1,0 +1,115 @@
+{
+  "finding": "A02/A03 · P1 · 每日新版本被旧清单阻断；缺文件的清单可通过门禁及发布后验证",
+  "requirements": [
+    "REQ-012",
+    "REQ-013",
+    "REQ-022"
+  ],
+  "generated_at": "2026-10-10T04:28:36.399428+00:00",
+  "head": "6085667d1604f454042efd44dd24141bbd4b196f",
+  "probes": {
+    "daily_refresh_existing_manifest": {
+      "restore_cache_a_exit": 0,
+      "bundle_b_write_manifest_exit": 0,
+      "stale_manifest_reported_as_new_version": true,
+      "manifest_written": true,
+      "restamped_fingerprint": "sha256:f6bd3ca5246bbd91cde55e8bcff1412f6c1f191939472feff9dd13227a93b87f",
+      "fingerprint_advanced": true,
+      "plain_verify_exit": 0,
+      "plain_verify_state": true
+    },
+    "incremental_reuse_verifies_manifest_strictly": {
+      "reuse_a_verify_exit": 0,
+      "reuse_a_ensure_exit": 0,
+      "reuse_a_verified": true,
+      "drift_verify_exit": 1,
+      "drift_ensure_exit": 1,
+      "drift_reports_manifest_mismatch": true
+    },
+    "truncated_manifest_files_blocked_local": {
+      "local_computed_files": 11,
+      "manifest_recorded_files": 1,
+      "modes": {
+        "verify": {
+          "exit": 1,
+          "internally_inconsistent": true
+        },
+        "ensure": {
+          "exit": 1,
+          "internally_inconsistent": true
+        },
+        "write": {
+          "exit": 1,
+          "internally_inconsistent": true
+        }
+      }
+    },
+    "deployment_verification": {
+      "complete_manifest": {
+        "ok": true,
+        "file_count": 11,
+        "fetched_urls": [
+          "https://example.github.io/ubs_core_monitor/data/repos/OmniStateStore.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ham.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-atomic.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-comm.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-io.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-mem.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-virt.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubturbo.json",
+          "https://example.github.io/ubs_core_monitor/data/repositories.json",
+          "https://example.github.io/ubs_core_monitor/data/snapshot.json"
+        ]
+      },
+      "truncated_manifest": {
+        "ok": false,
+        "error": "/tmp/a02a03-probes-1dkld9im/ubs-manifest-truncated.json is internally inconsistent: fingerprint sha256:9fd21dc51a0e8c2463eafd5cd187719f83332127d9cf0d44a8785d52619527f0 does not match its own files table (sha256:c09ca6aab27fe4d18187f86345a8d9623ff59286a9ae78eae0e0d203e6f4b39c) — truncated or tampered manifest",
+        "fetched_urls": []
+      },
+      "recomputed_manifest": {
+        "ok": false,
+        "error": "repos/ubs-atomic.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-atomic.json: required by the published index but absent from this build's manifest; repos/ubs-engine.json at https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json: required by the published index but absent from this build's manifest",
+        "fetched_urls": [
+          "https://example.github.io/ubs_core_monitor/data/repos/OmniStateStore.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ham.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-atomic.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-comm.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-io.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-mem.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubs-virt.json",
+          "https://example.github.io/ubs_core_monitor/data/repos/ubturbo.json",
+          "https://example.github.io/ubs_core_monitor/data/repositories.json",
+          "https://example.github.io/ubs_core_monitor/data/snapshot.json"
+        ]
+      },
+      "expected_snapshot_urls": [
+        "https://example.github.io/ubs_core_monitor/data/repos/OmniStateStore.json",
+        "https://example.github.io/ubs_core_monitor/data/repos/ham.json",
+        "https://example.github.io/ubs_core_monitor/data/repos/ubs-atomic.json",
+        "https://example.github.io/ubs_core_monitor/data/repos/ubs-comm.json",
+        "https://example.github.io/ubs_core_monitor/data/repos/ubs-engine.json",
+        "https://example.github.io/ubs_core_monitor/data/repos/ubs-io.json",
+        "https://example.github.io/ubs_core_monitor/data/repos/ubs-mem.json",
+        "https://example.github.io/ubs_core_monitor/data/repos/ubs-virt.json",
+        "https://example.github.io/ubs_core_monitor/data/repos/ubturbo.json"
+      ]
+    }
+  },
+  "checks": {
+    "daily_refresh_restamps_new_version": true,
+    "incremental_reuse_stays_strict": true,
+    "truncated_table_blocked_in_every_mode": true,
+    "deployment_truncated_manifest_rejected_before_fetch": true,
+    "deployment_recomputed_manifest_cannot_shrink_scope": true,
+    "deployment_complete_manifest_fetches_all": true
+  },
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All tampering applies only to synthetic bundles in a temporary directory; no production source, test, frozen audit evidence, or real snapshot was modified.",
+    "A02 mirrors adversarial-review.md probe daily_refresh_existing_manifest: restore cache A (manifest included), advance only the index generated_at, then run production main(--write-manifest).",
+    "A03 mirrors probe truncated_manifest_files: shrink manifest.files to repositories.json only, then run the local gate in every mode and triton.verify_deployment.verify_ubs against the published site.",
+    "Deployment fetches are intercepted in memory (unittest.mock.patch); the required file set is derived from the published index, so a manifest cannot shrink what gets verified."
+  ]
+}

@@ -18,15 +18,23 @@ Failures (exit 1, must block the deploy and the cache save):
     stale retained snapshot must never ship as current scope (REQ-021)
   * a repo-root mirror (data/...) disagrees with its web/data counterpart
   * data/snapshot.json disagrees with the current ubs-engine snapshot
-  * a present ubs-manifest.json does not match the fingerprint of the files on
-    disk, so an old index can never ship with new snapshots (or the reverse)
+  * a present ubs-manifest.json is internally inconsistent (its fingerprint
+    does not match its own files table — truncated or tampered) in every mode,
+    so a manifest missing files can never pass the gate
+  * in verify/restore mode a present ubs-manifest.json does not match the
+    fingerprint of the files on disk, so an old index can never ship with new
+    snapshots (or the reverse)
 
 Warnings (exit 0): missing compat snapshot, missing mirrors or a missing
 manifest — local dev trees may carry a subset; CI restores or fetches them.
 
 Modes:
-  (default)          verify only
-  --write-manifest   verify, then stamp a fresh manifest (daily workflow)
+  (default)          verify only (strict manifest binding)
+  --write-manifest   verify the bundle content, then stamp a fresh manifest
+                     (daily workflow). A self-consistent stale manifest left
+                     over from the restored previous bundle is the expected
+                      signal of a new version, not an error: the daily refresh
+                     re-stamps it. An internally inconsistent manifest fails.
   --ensure-manifest  verify, then create the manifest only when it is absent
                      (incremental workflow keeps the restored provenance)
 """
@@ -54,6 +62,13 @@ def info(message):
 
 def sha256_file(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def recompute_fingerprint(files):
+    """Bundle fingerprint over a {relpath: sha256} table (sorted 'rel digest\\n' lines)."""
+    return 'sha256:' + hashlib.sha256(
+        ''.join(f'{rel} {digest}\n' for rel, digest in sorted(files.items())).encode('utf-8')
+    ).hexdigest()
 
 
 def load_index(web):
@@ -100,8 +115,13 @@ def bundle_targets(web, index):
     return targets
 
 
-def verify(root):
-    """Return (fingerprint, digests, manifest_state, error_count)."""
+def verify(root, new_version=False):
+    """Return (fingerprint, digests, manifest_state, error_count).
+
+    new_version=True (daily --write-manifest) treats a self-consistent stale
+    manifest from the restored previous bundle as the expected signal of a new
+    version instead of an error; content checks stay strict either way.
+    """
     web = root / 'web' / 'data'
     data = root / 'data'
     try:
@@ -143,11 +163,9 @@ def verify(root):
                 errors += 1
                 continue
         digests.append((rel, sha256_file(path)))
-    fingerprint = 'sha256:' + hashlib.sha256(
-        ''.join(f'{rel} {digest}\n' for rel, digest in sorted(digests)).encode('utf-8')
-    ).hexdigest()
+    fingerprint = recompute_fingerprint({rel: digest for rel, digest in digests})
     errors += check_mirrors(data, web, index)
-    manifest_state = check_manifest(web, digests, fingerprint)
+    manifest_state = check_manifest(web, digests, fingerprint, new_version=new_version)
     if manifest_state in ('mismatch', 'invalid'):
         errors += 1
     return fingerprint, digests, manifest_state, errors
@@ -177,7 +195,16 @@ def check_mirrors(data, web, index):
     return errors
 
 
-def check_manifest(web, digests, fingerprint):
+def check_manifest(web, digests, fingerprint, new_version=False):
+    """Compare the on-disk manifest against the bundle.
+
+    A manifest must be internally consistent (its fingerprint matches its own
+    files table) in every mode — a truncated or tampered table never passes.
+    In strict mode (verify/restore/incremental) the table must also match the
+    bundle exactly; in new-version mode (daily --write-manifest) a
+    self-consistent stale manifest from the restored previous bundle is the
+    expected signal of a new version and gets re-stamped, never shipped as-is.
+    """
     path = web / MANIFEST_NAME
     if not path.exists():
         warn(f'{path} missing (first run or legacy bundle; version binding unavailable)')
@@ -190,11 +217,35 @@ def check_manifest(web, digests, fingerprint):
     if not isinstance(manifest, dict) or not manifest.get('fingerprint'):
         fail(f'{path} has no fingerprint to compare against')
         return 'invalid'
+    recorded = manifest.get('files')
+    if not isinstance(recorded, dict) or not recorded:
+        fail(f'{path} has no files table; a manifest must bind every artifact digest')
+        return 'invalid'
+    table_fingerprint = recompute_fingerprint(recorded)
+    if manifest['fingerprint'] != table_fingerprint:
+        fail(f'{path} is internally inconsistent: fingerprint {manifest["fingerprint"]} does not match '
+             f'its own files table ({table_fingerprint}) — truncated or tampered manifest')
+        return 'invalid'
+    computed = {rel: digest for rel, digest in digests}
+    problems = []
+    if set(recorded) != set(computed):
+        bundle_only = sorted(set(computed) - set(recorded))
+        manifest_only = sorted(set(recorded) - set(computed))
+        problems.append(f'file set differs (bundle-only: {bundle_only or "none"}, '
+                        f'manifest-only: {manifest_only or "none"})')
+    differing = sorted(rel for rel in set(recorded) & set(computed) if recorded[rel] != computed[rel])
+    if differing:
+        problems.append(f'digests differ for {differing}')
+    if problems:
+        detail = '; '.join(problems)
+        if new_version:
+            info(f'stale manifest from the previous bundle ({detail}); '
+                 'new version detected — --write-manifest re-stamps this bundle')
+            return 'stale'
+        fail(f'manifest mismatch: {detail}')
+        return 'mismatch'
     if manifest['fingerprint'] != fingerprint:
-        recorded = manifest.get('files') if isinstance(manifest.get('files'), dict) else {}
-        differing = [rel for rel, digest in sorted(digests) if recorded.get(rel) not in (None, digest)]
-        detail = ('; differs: ' + ', '.join(differing)) if differing else ''
-        fail(f'manifest fingerprint mismatch: expected {manifest["fingerprint"]}, bundle is {fingerprint}{detail}')
+        fail(f'manifest fingerprint mismatch: expected {manifest["fingerprint"]}, bundle is {fingerprint}')
         return 'mismatch'
     info(f'manifest verified: bundle matches the recorded artifact fingerprint {fingerprint}')
     return 'verified'
@@ -217,12 +268,14 @@ def main():
     parser.add_argument('--root', default=str(Path(__file__).resolve().parent),
                         help='repository root (defaults to the directory containing this script)')
     parser.add_argument('--write-manifest', action='store_true',
-                        help='stamp a fresh manifest after verification (daily workflow)')
+                        help='verify the bundle content, then stamp a fresh manifest (daily workflow; '
+                             'a self-consistent stale manifest from the restored previous bundle is '
+                             'expected here and gets re-stamped)')
     parser.add_argument('--ensure-manifest', action='store_true',
                         help='create the manifest only when absent (incremental workflow)')
     args = parser.parse_args()
     root = Path(args.root).resolve()
-    fingerprint, digests, manifest_state, errors = verify(root)
+    fingerprint, digests, manifest_state, errors = verify(root, new_version=args.write_manifest)
     if fingerprint is None:
         return 1
     if errors == 0 and args.write_manifest:

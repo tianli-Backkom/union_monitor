@@ -8,6 +8,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+import validate_bundle
 from .quality import fingerprint
 
 RETRIES = 8
@@ -39,23 +40,61 @@ def verify_triton(site, triton_manifest):
             "collected_at": manifest.get("collected_at")}
 
 
+def _required_files_from_index(index_bytes, url):
+    """Derive the required file set from the published index itself (A03).
+
+    The manifest's declared table must cover everything the index references,
+    so a truncated manifest can never shrink what gets verified. An index that
+    cannot be derived from yields no requirements plus a problem — every
+    manifest-recorded file is still digest-checked by the caller.
+    """
+    try:
+        index = json.loads(index_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as error:
+        return set(), [f"repositories.json at {url} is not valid JSON: {error}"]
+    repositories = index.get("repositories") if isinstance(index, dict) else None
+    if not isinstance(repositories, list) or not repositories:
+        return set(), [f"repositories.json at {url} has no repositories list "
+                       "to derive the required files from"]
+    required = {"repositories.json"}
+    for entry in repositories:
+        snapshot = entry.get("snapshot") if isinstance(entry, dict) else None
+        if snapshot:
+            required.add(snapshot)
+    return required, []
+
+
 def verify_ubs(site, ubs_manifest):
-    """The published index and every manifest-recorded snapshot must match this build (REQ-022 AC01)."""
+    """The published index, every manifest-recorded file and every snapshot the
+    published index references must match this build (REQ-022 AC01)."""
     manifest = json.loads(ubs_manifest.read_text(encoding="utf-8"))
     files = manifest.get("files")
     if not isinstance(files, dict) or not files:
         raise DeploymentMismatch(f"{ubs_manifest} carries no file digests to verify against")
-    checked, problems = [], []
-    for rel, digest in sorted(files.items()):
-        url = site.rstrip("/") + "/data/" + rel
+    recorded_fingerprint = manifest.get("fingerprint")
+    table_fingerprint = validate_bundle.recompute_fingerprint(files)
+    if recorded_fingerprint != table_fingerprint:
+        raise DeploymentMismatch(
+            f"{ubs_manifest} is internally inconsistent: fingerprint {recorded_fingerprint} does not "
+            f"match its own files table ({table_fingerprint}) — truncated or tampered manifest")
+    base = site.rstrip("/") + "/data/"
+    required, problems = _required_files_from_index(fetch(base + "repositories.json"),
+                                                    base + "repositories.json")
+    checked = []
+    for rel in sorted(set(files) | required):
+        url = base + rel
         actual = sha256_bytes(fetch(url))
-        if actual != digest:
+        digest = files.get(rel)
+        if digest is None:
+            problems.append(f"{rel} at {url}: required by the published index "
+                            "but absent from this build's manifest")
+        elif actual != digest:
             problems.append(f"{rel} at {url}: published sha256 {actual}, this build recorded {digest}")
         else:
             checked.append({"file": rel, "url": url, "sha256": digest})
     if problems:
         raise DeploymentMismatch("; ".join(problems))
-    return {"files": checked, "file_count": len(checked), "fingerprint": manifest.get("fingerprint"),
+    return {"files": checked, "file_count": len(checked), "fingerprint": recorded_fingerprint,
             "generated_at": manifest.get("generated_at")}
 
 
