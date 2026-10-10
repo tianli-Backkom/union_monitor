@@ -1,8 +1,8 @@
-"""``python -m monitor`` CLI (T-012).
+"""``python -m monitor`` CLI (T-012/T-013).
 
-Currently implements the ``plan`` prepare step. ``collect``/``validate``/
-``assemble``/``verify-deployment``/``rollback`` are added as their pipeline
-stages land; they are intentionally absent rather than stubbed as fake success.
+Implements the prepare/collect/validate/assemble pipeline plus the
+``verify-deployment`` and ``rollback`` stages. Each command exits non-zero on
+failure; a failed collect keeps its honest report rather than a fake success.
 """
 
 from __future__ import annotations
@@ -19,6 +19,8 @@ from .plan import plan
 from .report import validate_report
 from .assemble import assemble_release
 from .collect import collect_project
+from .verify import verify_deployment, mark_verified
+from .rollback import rollback
 
 
 def _write(path: str, value: dict) -> None:
@@ -27,6 +29,13 @@ def _write(path: str, value: dict) -> None:
 
 def _load_json(path: str) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _fetch_json(url: str) -> dict:
+    import urllib.request
+
+    with urllib.request.urlopen(url, timeout=30) as response:
+        return json.loads(response.read().decode("utf-8"))
 
 
 def _now_utc() -> str:
@@ -97,6 +106,26 @@ def assemble_release_publishable(release: dict) -> bool:
     return is_publishable(release)
 
 
+def cmd_verify_deployment(args: argparse.Namespace) -> int:
+    expected = _load_json(args.manifest)
+    deployed = _fetch_json(args.url) if args.url else _load_json(args.deployed)
+    result = verify_deployment(deployed, expected)
+    if result["verified"] and args.out:
+        _write(args.out, mark_verified(expected))
+        result["verified_manifest"] = args.out
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if result["verified"] else 1
+
+
+def cmd_rollback(args: argparse.Namespace) -> int:
+    baseline = _load_json(args.baseline)
+    record = rollback(args.failed_release, baseline, reason=args.reason)
+    if args.out:
+        _write(args.out, record)
+    print(json.dumps(record, ensure_ascii=False, indent=2))
+    return 0 if record["active_release_id"] else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="python -m monitor", description="Unified dashboard collection pipeline")
     sub = parser.add_subparsers(dest="command")
@@ -138,6 +167,20 @@ def build_parser() -> argparse.ArgumentParser:
     asm_p.add_argument("--published-at", required=True)
     asm_p.add_argument("--out", required=True)
     asm_p.set_defaults(func=cmd_assemble)
+
+    ver_p = sub.add_parser("verify-deployment", help="verify the deployed release manifest matches the candidate")
+    ver_p.add_argument("--manifest", required=True, help="expected candidate release manifest path")
+    ver_p.add_argument("--url", default=None, help="URL of the deployed manifest (fetch)")
+    ver_p.add_argument("--deployed", default=None, help="path to a downloaded deployed manifest (offline)")
+    ver_p.add_argument("--out", default=None, help="write the verified manifest")
+    ver_p.set_defaults(func=cmd_verify_deployment)
+
+    rb_p = sub.add_parser("rollback", help="point the verified-release pointer at the trusted baseline")
+    rb_p.add_argument("--failed-release", required=True, help="release_id whose verification failed")
+    rb_p.add_argument("--baseline", required=True, help="trusted baseline release manifest path")
+    rb_p.add_argument("--reason", default=None)
+    rb_p.add_argument("--out", default=None, help="write the rollback record")
+    rb_p.set_defaults(func=cmd_rollback)
 
     return parser
 
