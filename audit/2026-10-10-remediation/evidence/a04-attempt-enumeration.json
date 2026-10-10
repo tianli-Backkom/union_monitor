@@ -1,0 +1,65 @@
+{
+  "finding": "A04 · P1 · 采集入口只获取最新attempt，遗漏历史attempt的jobs",
+  "requirements": [
+    "REQ-015"
+  ],
+  "generated_at": "2026-10-10T04:49:52.045486+00:00",
+  "head": "a92ef44a11a38e7d9dae3a68f6ff2871da19c389",
+  "probes": {
+    "collector_enumerates_only_current_attempt_fixed": {
+      "attempts": [
+        1,
+        2,
+        3
+      ],
+      "job_calls": [
+        1,
+        2,
+        3
+      ],
+      "batches": 3,
+      "job_ids_per_attempt": {
+        "2": [
+          102
+        ],
+        "1": [
+          101
+        ],
+        "3": [
+          103
+        ]
+      }
+    },
+    "per_attempt_timing_evidence": {
+      "attempts": [
+        1,
+        2,
+        3
+      ],
+      "initial": {
+        "start_at": "2026-10-08T00:00:00Z",
+        "duration_seconds": 300.0,
+        "status": "success"
+      },
+      "rerun_2": {
+        "start_at": "2026-10-08T03:00:05Z",
+        "duration_seconds": 235.0,
+        "status": "failure"
+      },
+      "rerun_3": {
+        "start_at": "2026-10-08T06:00:00Z",
+        "duration_seconds": 600.0,
+        "status": "success"
+      }
+    }
+  },
+  "checks": {
+    "frozen_shape_enumerates_all_attempts": true,
+    "rich_shape_derives_per_attempt_evidence": true
+  },
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All inputs are process-memory synthetic rows; no network request, production source, test, frozen audit evidence, or real snapshot was modified.",
+    "Mirrors audit/2026-10-10/scripts/data-adversarial.py probe collector-still-enumerates-only-current-attempt: discovery returns one run at run_attempt=3, then production collect(72, as_of) runs with all I/O mocked."
+  ]
+}

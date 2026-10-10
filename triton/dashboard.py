@@ -189,6 +189,36 @@ def _is_npu_job(job):
     return bool(re.search(r"linux-(?:aarch64|amd64)-a\d",identity) or "ascend950" in identity)
 
 
+def _historical_attempt_row(base, attempt, jobs):
+    """A historical attempt keeps the run's identity and PR association but only
+    its own evidence (A04): start/end come from this attempt's jobs, and the
+    current attempt's run-level status, timing and URL are never inherited."""
+    rows=[j for j in jobs if isinstance(j,dict)]
+    statuses={j.get("status") for j in rows}
+    conclusions={j.get("conclusion") for j in rows}
+    starts=[x for x in (dt(j.get("created_at")) for j in rows) if x]
+    ends=[x for x in (dt(j.get("completed_at")) for j in rows) if x]
+    status="completed" if rows and statuses<={"completed"} else (
+        "in_progress" if statuses&{"in_progress","queued","waiting","pending"} else None)
+    if status=="completed" and not ends:
+        status=None  # completion without end evidence is not provable
+    conclusion=None
+    if status=="completed":
+        if conclusions&{"failure","timed_out","action_required","startup_failure"}: conclusion="failure"
+        elif conclusions&{"cancelled","stale"}: conclusion="cancelled"
+        elif conclusions<={"success","skipped","neutral",None}: conclusion="success"
+    row={k:v for k,v in base.items()
+         if k not in ("jobs","jobs_complete","jobs_error","focus_jobs","run_attempt",
+                      "status","conclusion","run_started_at","updated_at","html_url")}
+    row.update(run_attempt=attempt,status=status,conclusion=conclusion,
+               run_started_at=iso(min(starts)) if starts else None,
+               updated_at=iso(max(ends)) if ends else None,
+               html_url=base.get("html_url") if attempt==1 else f"{base.get('html_url')}/attempts/{attempt}",
+               jobs=jobs,jobs_complete=True,focus_jobs=focus_from_jobs(jobs),
+               attempt_source="enumerated")
+    return row
+
+
 RERUN_LOOKBACK = timedelta(days=14)
 
 
@@ -485,14 +515,26 @@ def collect(hours=72, as_of=None):
             continue
         row.update(author=(r.get("actor") or {}).get("login"),branch=r.get("head_branch"),
                    trigger_at=None,trigger_exact=False)
+        attempt=int(r.get("run_attempt") or 1)
         try:
-            jobs=api.pages(f"/actions/runs/{r['id']}/attempts/{r.get('run_attempt') or 1}/jobs","jobs")
+            jobs=api.pages(f"/actions/runs/{r['id']}/attempts/{attempt}/jobs","jobs")
             row.update(jobs=jobs,jobs_complete=True)
-            _write_json(EVIDENCE/"jobs"/f"{r['id']}-{r.get('run_attempt') or 1}.json",jobs)
+            _write_json(EVIDENCE/"jobs"/f"{r['id']}-{attempt}.json",jobs)
         except Exception as exc:
             row.update(jobs=[],jobs_complete=False,jobs_error=str(exc))
         row["focus_jobs"]=focus_from_jobs(row["jobs"])
         enriched.append(row)
+        # A rerun's history must reach the aggregator (A04): enumerate every
+        # earlier attempt of this run so each identity and its jobs survive.
+        for earlier in range(1,attempt):
+            try:
+                jobs=api.pages(f"/actions/runs/{r['id']}/attempts/{earlier}/jobs","jobs")
+                _write_json(EVIDENCE/"jobs"/f"{r['id']}-{earlier}.json",jobs)
+                enriched.append(_historical_attempt_row(row,earlier,jobs))
+            except Exception as exc:
+                failed=_historical_attempt_row(row,earlier,[])
+                failed.update(jobs_complete=False,jobs_error=str(exc))
+                enriched.append(failed)
         if index%50==0: print(f"REST jobs {index}/{len(runs)}",flush=True)
     failed_jobs=[r for r in enriched if not r.get("jobs_complete")]
     if failed_jobs:

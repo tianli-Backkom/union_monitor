@@ -1,4 +1,6 @@
 import csv
+import json
+import re
 import shutil
 import tempfile
 import unittest
@@ -24,6 +26,7 @@ from triton.dashboard import (
     run_in_window,
     summary_of,
 )
+from triton.quality import validate as quality_validate
 
 
 def run(run_id, name, sha, created, updated, status="completed", conclusion="success", attempt=1, jobs=None):
@@ -337,6 +340,98 @@ class CollectWindowTests(unittest.TestCase):
         self.assertEqual(range_raw.split("..")[0], "2026-09-11T12:00:00Z")
         self.assertEqual([batch["kind"] for batch in payload["batches"]], ["rerun"])
         self.assertEqual(payload["batches"][0]["start_at"], "2026-09-26T10:00:00Z")
+
+
+class AttemptEnumerationTests(unittest.TestCase):
+    """REQ-015 AC01 (A04): collect() must enumerate every historical attempt."""
+
+    def attempt_run(self, attempt):
+        return {"id": 1, "name": "Integration Tests", "head_sha": "abc", "event": "pull_request",
+                "created_at": "2026-10-08T00:00:00Z", "run_started_at": "2026-10-08T06:00:00Z",
+                "updated_at": "2026-10-08T06:10:00Z", "status": "completed", "conclusion": "success",
+                "run_attempt": attempt, "html_url": "https://github.com/example/actions/runs/1",
+                "actor": {"login": "dev"}, "head_branch": "feature"}
+
+    def collect_with(self, jobs_by_attempt):
+        run = self.attempt_run(3)
+        paths = []
+
+        def fake_get(self_github, url):
+            paths.append(url)
+            if url.endswith("per_page=1"):
+                return {"total_count": 1, "workflow_runs": [run]}, {}
+            if "/jobs" in url:
+                attempt = int(re.search(r"/attempts/(\d+)/jobs", url).group(1))
+                jobs = jobs_by_attempt[attempt]
+                return {"total_count": len(jobs), "jobs": jobs}, {}
+            return {"total_count": 1, "workflow_runs": [run]}, {}
+
+        tmp = Path(tempfile.mkdtemp(prefix="triton-attempts-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        pr_fields = {"pr": 23, "pr_url": "https://github.com/triton-lang/triton-ascend/pull/23",
+                     "pr_title": "Attempts", "base_branch": "main", "head_sha": "abc",
+                     "pr_evidence": {"method": "synthetic", "run_id": 1, "pr": 23,
+                                     "resolved_head_sha": "abc"}}
+        with patch.object(GitHub, "get", fake_get), \
+                patch("triton.pr_identity.PRResolver.resolve", return_value=pr_fields), \
+                patch("triton.dashboard.EVIDENCE", tmp):
+            payload = collect(hours=72, as_of="2026-10-09T00:00:00Z")
+        return payload, paths, tmp
+
+    def test_collect_enumerates_all_attempts_with_their_jobs(self):
+        def job(job_id, created, completed, conclusion="success"):
+            return {"id": job_id, "name": "build", "created_at": created,
+                    "started_at": created, "completed_at": completed,
+                    "status": "completed", "conclusion": conclusion}
+
+        payload, paths, tmp = self.collect_with({
+            1: [job(101, "2026-10-08T00:00:05Z", "2026-10-08T00:05:00Z")],
+            2: [job(102, "2026-10-08T03:00:05Z", "2026-10-08T03:04:00Z", conclusion="failure")],
+            3: [job(103, "2026-10-08T06:00:05Z", "2026-10-08T06:10:00Z")]})
+        attempts = sorted(w["attempt"] for b in payload["batches"] for w in b["workflows"])
+        self.assertEqual(attempts, [1, 2, 3])
+        job_calls = sorted(re.search(r"/attempts/(\d+)/jobs", p).group(1)
+                           for p in paths if "/jobs" in p)
+        self.assertEqual(job_calls, ["1", "2", "3"])
+        by_attempt = {w["attempt"]: w for b in payload["batches"] for w in b["workflows"]}
+        self.assertEqual([j["id"] for j in by_attempt[1]["jobs"]], [101])
+        self.assertEqual([j["id"] for j in by_attempt[2]["jobs"]], [102])
+        self.assertEqual([j["id"] for j in by_attempt[3]["jobs"]], [103])
+        initial = next(b for b in payload["batches"] if b["kind"] == "initial")
+        self.assertEqual(initial["start_at"], "2026-10-08T00:00:00Z")
+        self.assertEqual(initial["duration_seconds"], 300)
+        reruns = {w["attempt"]: b for b in payload["batches"] if b["kind"] == "rerun"
+                  for w in b["workflows"]}
+        self.assertEqual(reruns[2]["start_at"], "2026-10-08T03:00:05Z")
+        self.assertEqual(reruns[2]["duration_seconds"], 235)
+        self.assertEqual(reruns[2]["status"], "failure")
+        self.assertEqual(reruns[3]["start_at"], "2026-10-08T06:00:00Z")
+        self.assertEqual(reruns[3]["duration_seconds"], 600)
+        for attempt in (1, 2, 3):
+            evidence = tmp / "jobs" / f"1-{attempt}.json"
+            self.assertTrue(evidence.exists(), evidence)
+            self.assertEqual([j["id"] for j in json.loads(evidence.read_text("utf-8"))],
+                             [100 + attempt])
+        enriched = json.loads((tmp / "enriched-runs.json").read_text("utf-8"))
+        report = quality_validate(enriched, payload)
+        self.assertTrue(report["passed"], report["errors"])
+
+    def test_collect_keeps_attempt_identity_when_jobs_lack_timing(self):
+        # The frozen adversarial probe's shape: jobs carry only id/name, so the
+        # attempt rows keep their identity while E2E stays empty, never fabricated.
+        payload, _, _ = self.collect_with({
+            1: [{"id": 101, "name": "CPU"}],
+            2: [{"id": 102, "name": "CPU"}],
+            3: [{"id": 103, "name": "CPU"}]})
+        attempts = sorted(w["attempt"] for b in payload["batches"] for w in b["workflows"])
+        self.assertEqual(attempts, [1, 2, 3])
+        by_attempt = {w["attempt"]: w for b in payload["batches"] for w in b["workflows"]}
+        self.assertEqual([j["id"] for j in by_attempt[2]["jobs"]], [102])
+        rerun2 = next(b for b in payload["batches"]
+                      if b["kind"] == "rerun" and b["workflows"][0]["attempt"] == 2)
+        self.assertIsNone(rerun2["start_at"])
+        self.assertIsNone(rerun2["duration_seconds"])
+        self.assertIn("无本次 attempt 起点证据", " ".join(rerun2["missing"]))
 
 
 class SummaryValidityTests(unittest.TestCase):
