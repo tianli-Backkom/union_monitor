@@ -5,6 +5,7 @@ const path = require('node:path');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'web', 'index.html'), 'utf8');
 const shell = fs.readFileSync(path.join(__dirname, '..', 'web', 'shell.js'), 'utf8');
+const app = fs.readFileSync(path.join(__dirname, '..', 'web', 'app.js'), 'utf8');
 
 test('P-002: shell modules load in dependency order before app.js', () => {
   const scripts = [...html.matchAll(/<script src="([^"]+)" defer>/g)].map(m => m[1]);
@@ -22,6 +23,14 @@ test('P-002: shell modules load in dependency order before app.js', () => {
 test('P-001: index.html carries a workbench view container and nav entry', () => {
   assert.match(html, /<section id="workbench-view"/);
   assert.match(html, /<a href="#workbench"[^>]*data-nav="workbench"/);
+});
+
+test('P-011: app.js routes the new workbench/projects scheme into the workbench view', () => {
+  assert.match(app, /function navigate\(hash\)\{const newRoute=Router\.parseRoute\(hash\)/);
+  assert.match(app, /function applyWorkbenchRoute\(route\)/);
+  assert.match(app, /\$\('workbench-view'\)\.hidden=false/);
+  assert.match(app, /for\(const id of \['ubs-view','ubs-repo-view','triton-view','method-view'\]\)\$\(id\)\.hidden=true/);
+  assert.match(app, /a\.dataset\.nav==='workbench'/);
 });
 
 test('P-002: shell declares the fixed seven-task navigation', () => {
