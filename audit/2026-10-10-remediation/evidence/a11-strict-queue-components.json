@@ -1,0 +1,88 @@
+{
+  "finding": "A11 · P2 · 原始排队分项接受bool、负数和非有限数",
+  "requirements": [
+    "REQ-024"
+  ],
+  "generated_at": "2026-10-10T06:27:46.840410+00:00",
+  "head": "9046ed593893593879adda33ee5abe98ef61002b",
+  "probes": {
+    "invalid_raw_queue_components": [
+      {
+        "input_kind": "boolean",
+        "queue_returned": "None",
+        "components_accepted": false
+      },
+      {
+        "input_kind": "negative",
+        "queue_returned": "None",
+        "components_accepted": false
+      },
+      {
+        "input_kind": "nan",
+        "queue_returned": "None",
+        "components_accepted": false
+      },
+      {
+        "input_kind": "infinity",
+        "queue_returned": "None",
+        "components_accepted": false
+      }
+    ],
+    "per_key_gating": {
+      "blockedTimeMillis": {
+        "queue": "None",
+        "components": null
+      },
+      "buildableTimeMillis": {
+        "queue": "None",
+        "components": null
+      }
+    },
+    "baseline_valid_recompute": {
+      "queue": 20,
+      "components": {
+        "waitingTimeMillis": 12,
+        "blockedTimeMillis": 5,
+        "buildableTimeMillis": 3
+      }
+    },
+    "baseline_zero_is_legal": {
+      "queue": 0,
+      "components": {
+        "waitingTimeMillis": 0,
+        "blockedTimeMillis": 0,
+        "buildableTimeMillis": 0
+      }
+    },
+    "baseline_missing_key_unknown": {
+      "queue": null,
+      "components": null
+    },
+    "baseline_string_unknown": {
+      "queue": null,
+      "components": null
+    },
+    "baseline_empty_unknown": {
+      "queue": null,
+      "components": null
+    }
+  },
+  "checks": {
+    "boolean_rejected": true,
+    "negative_rejected": true,
+    "nan_rejected": true,
+    "infinity_rejected": true,
+    "per_key_gating": true,
+    "baseline_valid_recompute": true,
+    "baseline_zero_is_legal": true,
+    "baseline_missing_key_unknown": true,
+    "baseline_string_unknown": true,
+    "baseline_empty_unknown": true
+  },
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All inputs are process-memory synthetic Jenkins records; no network request, production source, test, frozen audit evidence, or real snapshot was modified.",
+    "Mirrors audit/2026-10-10/scripts/delivery-probes.py probes.invalid_raw_queue_components with the same inputs (waitingTimeMillis injected with True/-12/NaN/Infinity, blocked=5, buildable=3); the REQ-024 AC01/AC02 baseline neighbours keep their frozen verdicts.",
+    "Pre-fix frozen evidence recorded a summed queue value and accepted components for every injected input; this probe asserts each illegal component leaves queue unknown, while a real 0 stays a legal value distinct from missing."
+  ]
+}

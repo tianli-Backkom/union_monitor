@@ -278,6 +278,18 @@ class SourceCoverageTests(unittest.TestCase):
         self.assertEqual(queue_from_raw({'actions': [{'waitingTimeMillis': 'x', 'blockedTimeMillis': 5, 'buildableTimeMillis': 3}]}), (None, None))
         self.assertEqual(queue_from_raw({}), (None, None))
 
+    def test_queue_from_raw_rejects_bool_negative_nan_infinity(self):  # REQ-024 AC02 (A11 frozen probe)
+        base = {'blockedTimeMillis': 5, 'buildableTimeMillis': 3}
+        for value in [True, -12, float('nan'), float('inf')]:
+            with self.subTest(value=value):
+                self.assertEqual(queue_from_raw({'actions': [{'waitingTimeMillis': value, **base}]}), (None, None))
+        for key in ('blockedTimeMillis', 'buildableTimeMillis'):
+            bad = {'waitingTimeMillis': 12, 'buildableTimeMillis': 3, key: -1}
+            with self.subTest(key=key):
+                self.assertEqual(queue_from_raw({'actions': [bad]}), (None, None))
+        zero = {'waitingTimeMillis': 0, 'blockedTimeMillis': 0, 'buildableTimeMillis': 0}
+        self.assertEqual(queue_from_raw({'actions': [zero]}), (0, zero))
+
 
 class MultiAuditSourceCoverageTests(unittest.TestCase):
     def setUp(self):

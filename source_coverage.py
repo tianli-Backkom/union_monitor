@@ -6,19 +6,35 @@ verified against raw evidence, how many are only derived-self-consistent, how
 many differ and how many lack evidence, with traceable identities and an
 explicit status per category.
 """
+import math
+
 MISSING_LIMIT = 50
 QUEUE_KEYS = ('waitingTimeMillis', 'blockedTimeMillis', 'buildableTimeMillis')
 
 
+def _valid_component(value):
+    # REQ-024 (A11): True is an int in Python, so a bare isinstance check
+    # accepts booleans; NaN and Infinity pass float checks but cannot be
+    # queue milliseconds; negative queue time is physically impossible.
+    # Any of these must leave queue unknown instead of "verified against raw".
+    return (isinstance(value, (int, float)) and not isinstance(value, bool)
+            and math.isfinite(value) and value >= 0)
+
+
 def queue_from_raw(raw):
-    """Recompute queue_ms from a raw Jenkins record exactly as metrics.normalize_job does (REQ-024).
+    """Recompute queue_ms from a raw Jenkins record under the REQ-024 contract.
+
+    Mirrors the metrics.normalize_job arithmetic (sum of the three raw queue
+    fields), but every component must be a finite non-negative number with
+    bools rejected: any missing or illegal component leaves queue unknown
+    (REQ-024 AC02) instead of being summed into a "verified" value.
 
     Returns (queue_ms, components): components is a dict of the three raw
-    queue fields when all are numeric, else None.
+    queue fields when all are valid, else None.
     """
     actions = raw.get('actions', [])
     q = next((a for a in actions if 'waitingTimeMillis' in a), {})
-    if all(isinstance(q.get(k), (int, float)) for k in QUEUE_KEYS):
+    if all(_valid_component(q.get(k)) for k in QUEUE_KEYS):
         return sum(q[k] for k in QUEUE_KEYS), {k: q[k] for k in QUEUE_KEYS}
     return None, None
 
