@@ -62,3 +62,14 @@ test('P-007: detail.js loads before app.js and exposes the unified detail model'
   assert.match(detail, /reason: 'no-representative'/);
   assert.match(detail, /'未采集'/);
 });
+
+test('P-008: eligibility.js loads before app.js and models the three independent axes', () => {
+  const scripts = [...html.matchAll(/<script src="([^"]+)" defer>/g)].map(m => m[1]);
+  const idx = name => scripts.indexOf(name);
+  assert.ok(idx('eligibility.js') > idx('core.js'), 'eligibility after core');
+  assert.ok(idx('app.js') > idx('eligibility.js'), 'app.js after eligibility');
+  const axes = fs.readFileSync(path.join(__dirname, '..', 'web', 'eligibility.js'), 'utf8');
+  assert.match(axes, /function normalizeExecutionResult/);
+  assert.match(axes, /function eligibilityFor/);
+  assert.match(axes, /'cancelled'/);
+});
