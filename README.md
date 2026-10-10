@@ -1,227 +1,103 @@
 # 统一工程监控看板（openEuler UBS × Triton-Ascend）
 
-双域统一工程监控看板：openEuler UBS 域覆盖 ubs-engine、ubs-comm、ubs-virt、ubs-io、ubs-mem、OmniStateStore、ham、ubturbo、ubs-atomic 九个仓库的 PR 工程效率；Triton-Ascend 域采集 [triton-lang/triton-ascend](https://github.com/triton-lang/triton-ascend) 最近 72 小时的 PR 门禁任务，监控门禁效率。两域共用一个明亮风格的侧边栏界面（openEuler UBS 与 Triton-Ascend 两组导航），Python 标准库采集程序 + SQLite + 无外部依赖的网页，由 GitHub Actions 每日自动采集、验证并发布。
+双域统一工程监控看板：
+
+- **openEuler UBS**：覆盖 ubs-engine、ubs-comm、ubs-virt、ubs-io、ubs-mem、OmniStateStore、ham、ubturbo、ubs-atomic 九个仓库的 PR 工程效率（E2E、x86、ARM、DT 耗时与排队、门禁）。
+- **Triton-Ascend**：采集 [triton-lang/triton-ascend](https://github.com/triton-lang/triton-ascend) 最近 72 小时的 PR 门禁任务，监控门禁效率。
+
+两域共用一个侧边栏界面。纯 Python 标准库采集 + SQLite + 无外部依赖网页，由 GitHub Actions 每日自动采集、验证并发布到 GitHub Pages。
 
 ## 在线地址
 
 合并看板 Pages 地址（待部署后填写）：`https://<user>.github.io/<repo>/`
 
-## 看板内容与操作
+## 看板功能
 
-侧边栏分两组导航：openEuler UBS（九仓效率总览 `#ubs`、单仓页 `#ubs/repo/NAME`、数据质量、统计口径）与 Triton-Ascend（门禁效率趋势 `#triton`）。
+侧边栏分两组导航：openEuler UBS 与 Triton-Ascend。
 
-### openEuler UBS 组
+### openEuler UBS
 
-- **跨仓总览**：默认首页展示九仓对比、跨仓指标、PR 状态筛选、采集时间与状态；点击仓库进入单仓页。跨仓指标直接汇聚入选 PR 的代表值，不平均各仓均值或 P90。无匹配 PR 的仓库仍保留，未知耗时不补零。首页同时展示「等待后失败的 PR」与最长 E2E 等跨仓事实列表（口径见「计算规则」）。
-- **PR 工程效率**：合并总览与明细，顶部按 PR 代表值展示 E2E、x86、ARM、DT 平均/P90及有效 PR 样本数，下方展示单值耗时和代表 trigger。仓库切换器与返回总览支持跨仓浏览。旧 `#overview`、`#prs` 链接自动进入 ubs-engine 单仓页；`#repositories` 自动进入跨仓首页。
-- **筛选与排序**：按状态、搜索、完整性选择 PR，代表批次保持固定；支持最新创建、代表 E2E 降序、批次数降序及任务排队/执行/总耗时切换。
-- **PR 下钻**：始终显示全部提交、重跑、批次与任务，代表批次标注“用于 PR 效率汇总”并默认展开（位于失配组时同样标注），不展示 PR 平均/P90。未能归入已知事件的批次进入“关联未知/失配”组并注明原因（event_id 为空或不在事件列表），不伪造事件；批次 CSV 始终包含同一完整集合，不因分组丢行。
-- **数据质量**：未匹配事件、无门禁 PR、未完成或关联不完整批次及采集异常。取消但已结束的批次属于失败体验数据，不是数据质量问题。耗时未知显示空值，不补零。
-- **统计口径**：完整定义与本地更新命令。
+- 跨仓总览（默认首页，九仓对比与跨仓指标）、单仓页、数据质量、统计口径。
+- PR 工程效率：E2E/x86/ARM/DT 平均与 P90、代表批次，支持下钻全部提交、重跑、批次与任务。
+- 筛选与排序：状态/搜索/完整性，按创建时间、E2E、批次数或排队/执行/总耗时排序。
+- 数据质量：未匹配事件、无门禁 PR、不完整批次、采集异常。
+- 旧链接自动跳转：`#overview`/`#prs` → ubs-engine 单仓页，`#repositories` → 跨仓首页。
 
-统计基于原始毫秒；页面主单位是分钟，悬浮可查看秒或毫秒。仓库汇总 CSV 包含仓库采集状态、覆盖率和各项汇总；PR 与批次 CSV 均包含仓库标识。PR 导出包含代表 trigger 编号、链接及 E2E、三类任务全部三种耗时单值，单位毫秒；批次导出保留全部明细并标记代表批次。CSV 对公式前缀转义。本地服务将文件保存至 `web/exports/`，GitHub Pages 使用浏览器直接下载。
+### Triton-Ascend
 
-### Triton-Ascend 组
-
-- **E2E 时长趋势**：每个点代表一次 PR 提交或手动重跑触发的 E2E，可按全部、耗时偏长、失败、执行中筛选。
-- **NPU Job 最长排队时长趋势**：每个点代表一次包含 NPU Job 的 E2E，纵轴取其子 NPU Job 中最长排队时长。
-- **所选时间范围的平均值、P50、P90 和有效样本数**，随筛选实时更新。
-- **合入分支、状态和时间范围联动筛选**：全局筛选同步更新全部指标、图表和列表。
-- **时间范围联动**：两张趋势图共用一个时间导航器，可拖拽整体窗口或左右边界，也可键盘操作：Tab 依次聚焦整体窗口/起点/终点滑块，方向键移动窗口或调整对应边界，Home/End 到达允许边界；三个滑块带名称与 aria 最小/最大/当前值及可读时间描述并随操作同步，指针、触屏与键盘采用同一时间约束（不越过采集窗、至少保留 30 分钟选区，采集窗更短时以可用窗为限），重绘不丢失可见焦点；并提供 6/12/24/48/72 小时快捷档。横轴刻度随绘图区宽度自适应：窄屏自动收敛为窗口两端点等少量刻度，首末标签锚定绘图区两端不裁切；压缩刻度只减少标签，不改变散点的时间映射或统计。
-- **PR、GitHub Actions、重点 NPU Job 的直达链接**，由散点悬浮/固定卡片承载；散点可键盘访问：Tab 聚焦散点并以 aria 标签报出批次身份，Enter/Space 固定详情卡片，卡内链接可继续 Tab 访问，Esc 或关闭按钮退出并把焦点返回原散点；固定卡片不遮住发起散点（空间不足时上翻/左移并限制卡片高度，卡内滚动），悬停与点击固定交互保留。
-- **关注列表**：需要关注的 PR 按耗时偏长、执行中、失败归类，支持按 PR 编号或标题搜索及查看全部批次。每个批次行可键盘展开与收起：Tab 到达展开按钮，Enter/Space 切换，aria-expanded 与明细可见性同步，重叠分组中同一批次的行互不影响；展开后 PR/Actions/job 链接可继续键盘访问，收起的明细不进入 Tab 序；筛选或重绘移除当前行时焦点回到同行的展开按钮或搜索框。分组策略由当前页级范围 G 的有效完成样本数决定：少于 10 个展示「耗时最长」前 5，否则使用 G 的 P90 偏长组；搜索只在各组内过滤记录，不改变策略、阈值与组名，提示标明同一分母；三组之间可能有批次重叠，组计数之和不是唯一批次数。数据边界（使用近似起点的批次数、存在明细或关联缺口的批次数）在页面明示。
+- E2E 时长趋势与 NPU Job 最长排队时长趋势，按分支、状态、时间范围（6/12/24/48/72 小时）联动，两图共用时间导航器（拖拽 / 键盘可操作）。
+- 平均值、P50、P90 与样本数随筛选实时更新。
+- PR、GitHub Actions、重点 NPU Job 的直达链接；关注列表按耗时偏长 / 执行中 / 失败归类并支持搜索。
 
 ### 统一交互
 
-- 旧链接哈希自动重定向：`#repositories` 进入跨仓首页 `#ubs`，`#overview`、`#prs` 进入 ubs-engine 单仓页。
-- 统一 CSV 导出：UBS 的仓库汇总、PR、批次导出与 Triton 的批次明细导出使用一致的导出入口，语义见上文各组说明。
-- 「重新加载快照」一次刷新两域数据，两域按各自读取结果独立提交：任一域读取挂起或超时不阻塞另一域提交，每个数据文件读取设 30 秒超时，超时按读取失败明确提示（不以零值冒充），迟到的上一代次响应被代次保护丢弃。窄屏（含 390px 手机）下顶栏自动换行增高：面包屑与采集时间可换行，动作按钮保持单行完整、不裁切、不与时间文字重叠。收窄侧栏（≤800px 图标轨）保留每个入口的可见微标签与分组标题，悬浮或键盘聚焦可通过 title 获得入口名称，当前入口保持高亮。共享顶栏分支徽标跟随当前域：UBS 显示快照 meta.branch（跨仓出现多个分支时显示“多分支”），Triton 显示当前分支选择（全部目标分支、单个分支或多选数量，悬浮列出所选分支），重新加载与切域后与当前数据集合保持一致，统计口径页隐藏徽标。侧栏「查看代码仓」链接跟随当前域：UBS 单仓指向当前 GitCode 仓库（悬浮提示仓库名），Triton 指向 triton-lang/triton-ascend 的 GitHub 仓库，跨仓总览显示「openEuler 仓库组」组织目录参考链接（提示注明非单仓对象），统计口径页隐藏该链接。页脚统计跟随当前域：UBS 按当前仓库或跨仓范围显示 PR/批次与采集时间；Triton 显示当前筛选范围（分支×时间窗）的批次与 PR 数、与顶部摘要同源一致（未挂载时显示标注「快照范围」的整快照统计，读取失败明确提示）；统计口径页不显示数据统计。选择器切仓、返回总览与列表下钻均推进浏览器历史，与侧栏及仓库链接同一规则，后退逐步回退、前进恢复；旧链接与未知路由的规范化只替换当前条目，不产生中间历史。
+- 统一 CSV 导出；「重新加载快照」一次刷新两域数据并各自独立提交。
+- 窄屏（含 390px 手机）自适应，键盘可访问，旧链接哈希自动规范化。
 
-## 本地运行与更新
-
-在 PowerShell 中运行：
+## 本地运行与采集
 
 ```powershell
 cd D:\ubs_core_monitor
 python serve.py --port 8765
 ```
 
-打开 http://127.0.0.1:8765 。服务仅监听本机，按 Ctrl+C 停止。如果服务已启动，直接打开地址即可。
+打开 http://127.0.0.1:8765 ，服务仅监听本机，Ctrl+C 停止。
 
-### openEuler UBS 采集
-
-统一截止时间刷新全部九仓最近 30 天数据：
+### openEuler UBS
 
 ```powershell
-python -X utf8 collect.py --all --days 30
+python -X utf8 collect.py --all --days 30              # 刷新全部九仓最近 30 天
+python -X utf8 collect.py --repo ubs-comm --days 30    # 单仓更新
+python -X utf8 collect.py --days 30 --until "2026-09-09T21:58:38.753+08:00"   # 指定滚动截止
 ```
 
-单独更新使用 `python -X utf8 collect.py --repo ubs-comm --days 30`；不指定 `--repo` 或 `--all` 时保持只更新 ubs-engine。单仓更新不会覆盖其他仓库。
+`--offline` 仅从缓存重算（验证幂等性）；`--limit N` 诊断抽样。本地手动更新，线上由 GitHub Actions 定时更新。
 
-采集完成后，在看板点击“重新加载快照”。默认 4 个并发请求，共享约 10 次/秒的限速；失败最多重试 3 次。PR 列表、评论、操作日志和 Jenkins 构建索引重新查询；已结束构建的日志和事件元数据复用缓存。`--refresh` 强制更新历史缓存。本地仍由用户手动更新，线上由 GitHub Actions 定时更新。
-
-指定滚动区间截止点：
+### Triton-Ascend
 
 ```powershell
-python -X utf8 collect.py --days 30 --until "2026-09-09T21:58:38.753+08:00"
-```
-
-截止点控制 PR 创建时间及门禁事件时间；PR 状态仍为本次从平台读取的状态，不是历史状态重建。无时区的截止时间按上海时间解释。
-
-使用同一截止点和 `--offline` 可仅从缓存重算，验证幂等性或调整计算逻辑。`--limit N` 仅用于诊断抽样，会在看板显示显著的非全量提示。
-
-离线重算当前已交付快照：
-
-```powershell
-$snapshotIndex = Get-Content data/repositories.json -Raw | ConvertFrom-Json
-$cutoff = [DateTimeOffset]::FromUnixTimeMilliseconds($snapshotIndex.end_ms).ToString("o")
-python -X utf8 collect.py --all --days 30 --until $cutoff --offline
-```
-
-### Triton-Ascend 采集
-
-```powershell
-$env:GH_TOKEN = '<GitHub Token>' # 可选；建议设置以提高 API 配额
+$env:GH_TOKEN = '<GitHub Token>'      # 可选，提高 API 配额
 python -X utf8 -m triton.dashboard --hours 72
+python -X utf8 -m triton.dashboard --from-evidence   # 仅用已存证据重生成
 ```
-
-仅使用已保存证据重新生成：
-
-```powershell
-python -X utf8 -m triton.dashboard --from-evidence
-```
-
-`--as-of` 指定采集窗口截止时间（默认当前时刻），并作为执行中批次已观测时长的参照；`--refresh-focus` 从已保存的 run 页面抓取重点 A3/A5 任务耗时。采集证据保存在 `evidence/triton/`，看板数据输出到 `web/data/triton.json`、`web/data/triton-batches.csv` 与 `web/data/triton-manifest.json`。
 
 ### 开发数据引导
 
 ```powershell
-python scripts/devdata.py
+python scripts/devdata.py   # 从线上站点拉取真实数据；--offline 用最小 fixtures
 ```
 
-从两个线上站点拉取真实已发布数据填充本地 `web/data/`；`--offline` 改用 `tests/fixtures/minimal/` 中的最小 fixtures。最小 fixtures 遵循当前统计契约：Triton 批次 kind 为 initial/rerun，summary 由同一输入可独立重算（[600,600,900] 线性插值 P90=840 秒），缺值与运行中批次不进完成样本统计；另附合法零数据与单样本 fixture，由 tests/test_minimal_fixtures.py 与 tests/triton_fixtures.test.cjs 直接核对派生结果锁定。
-
-## 数据与接口
-
-### openEuler UBS
+## 目录结构
 
 | 位置 | 用途 |
 |---|---|
-| `collect.py` | GitCode/Jenkins 只读采集、关联、快照生成 |
-| `metrics.py` | 不依赖网络的统计与状态计算 |
-| `data/efficiency.sqlite` | PR、事件、批次、子任务、元数据表 |
-| `data/raw/*.json` | 按来源 URL 哈希缓存的响应，带抓取时间 |
-| `repositories.json` | 九仓标识与 master 分支配置 |
-| `repository_store.py` | 仓库隔离持久化、历史迁移、原子发布 |
-| `data/repos/NAME.json`、`web/data/repos/NAME.json` | 各仓相同的完整派生快照 |
-| `data/repositories.json`、`web/data/repositories.json` | 仓库索引、统一范围、采集状态与快照路径 |
-| `data/snapshot.json`、`web/data/snapshot.json` | ubs-engine 兼容快照 |
-| `web/core.js` | 可独立测试的前端筛选与统计 |
-| `validate.py`、`validate_multi.py`、`source_coverage.py` | 原始时间、跨仓隔离、代表值、SQLite 和前端算法独立审计；source_audit 按类别以唯一适用身份声明原始来源覆盖（已验证一致+差异+缺证据=适用总数、派生自洽为缺证据的附加属性、附缺失身份清单），queue/total 由原始 waiting/blocked/buildable 分项之和独立核验（分项缺失或非法时 queue 与 total 保持未知不补 0）；sections 分项状态（派生一致性/源时间/排队分项/发布一致性 N/A 及理由）推导 overall_status 并与退出码一致，审计异常先写失败报告（缺文件或缺权限按未验证分类，附错误与受影响范围）再重抛 |
-| `validate_bundle.py`、`web/data/ubs-manifest.json` | 发布与缓存共享前的 UBS 快照束校验：索引↔快照归属、纳入跨仓的 success/partial 快照时间范围、仓根镜像一致性与工件指纹；清单指纹须与其文件表自洽（截断或篡改的清单在任何模式被阻断），verify/--ensure-manifest 拒绝清单与内容不一致的混版束，每日 --write-manifest 将恢复的自洽旧清单视为新版本信号并重盖 |
-| `scripts/verify_artifacts.py`、`audit/2026-10-09/evidence/artifact-verification.json` | REQ-038 审计期原始工件补齐与历史影响核验：逐工件清单（D10 原始工件本地缺失如实标未验证，不伪造来源）、冻结快照↔审计导出 CSV 四类交叉核对（REQ-023 计数等式）、7 个真实重跑批次新旧规则影响量化与 S01 合成声明（当前代码重算）、本地快照束指纹核验与旧站探测记录（`--probe`） |
-| `scripts/verify_runtime.py`、`audit/2026-10-09/evidence/runtime-evidence.json` | REQ-040 CI 目标运行时兼容性验证：Python 3.12/Node 22 上执行测试、门禁与原始审计的适用部分，记录精确版本、命令、退出码、失败数与完整日志；CI 声明↔README↔交付结果三方一致；工件缺失时审计如实失败，不以 wrapper 退出 0 冒充通过 |
-| `scripts/verify_ubs_semantics.py`、`audit/2026-10-09/evidence/ubs-semantics-evidence.json` | REQ-041 UBS 代表值与跨仓算法保持验证：独立重算每 PR 代表批次（最长可测量终态 E2E、并列取 trigger 编号较大）、事件时间、任务值（仅取代表批次、同类缺失或关联不唯一留空、不从其他批次补取）与批次派生字段、任务算术；跨仓参与规则（success/partial 且快照范围与索引一致）镜像前端并逐仓记录排除原因，合法零 PR 仓库保留；复合 PR 主键与批次完整 URL 唯一、跨仓同号 PR 互不污染；Node 前端算法交叉核对；输入指纹与审计冻结基线一致时额外比对计数、有效样本（x86/ARM/DT 191/203/195）与聚合，输入更新后基线比对记 not_applicable、契约检查照常，不硬编码数量 |
-| `scripts/verify_ubs_filtering.py`、`audit/2026-10-09/evidence/ubs-filtering-evidence.json` | REQ-042 UBS 筛选保持验证：独立谓词与 `web/core.js` filterPRs 逐仓逐组合核对 PR 身份集合（状态 × 编号/标题/作者/SHA 搜索 × 完整性 × push/retest 触发；搜索大小写不敏感、首尾空格剥离）；触发请求按事件 id 去重并独立重算 create/push/retest/other 计数、无关联事件与未知来源批次（此类 PR 保留在默认集合、任何筛选不截批次）；同一 PR 在全部组合中的代表批次 URL 与 E2E/x86 排队及总耗时（含空值）不变、空值不补 0；无结果返回空集、默认参数（重置语义）返回完整 PR 集合；跨仓按状态汇聚计数与 repositoryRows 一致；指纹匹配审计冻结输入时回放 U12 组合计数与 U19 首行代表批次（含 4.125s+127ms=4.252s 算术），输入更新后基线比对记 not_applicable、契约检查照常 |
-| `scripts/verify_ubs_sorting.py`、`audit/2026-10-09/evidence/ubs-sorting-evidence.json` | REQ-043 UBS 排序与分页保持验证：PR 三种排序（代表 E2E 降序 / 批次数降序 / 创建时间降序，前两者并列按创建时间从新到旧、创建并列保持原序）完整序列与 `web/core.js` sortPRs 逐仓核对；仓库排序 P90 降序（空→-1）用独立重算 P90 值逐仓核对，PR 数降序与名称升序一致；分页数学（15 条/页，0/1/15/16/30/31 边界、0 条时 1/1 无记录、页码越界约束到合法页、全部页切片恰好划分序列无重复遗漏）独立模型核对，并锁定 app.js 源码契约（PAGE_SIZE=15、ceil/min/slice 公式、上一/下一页禁用条件、空态提示、筛选/排序/耗时类型切换回第一页、三种排序说明文案）；指纹匹配审计冻结输入时回放 U14–U18 分页与排序、A08 六个边界与 A14 仓库 P90 顺序，输入更新后基线比对记 not_applicable、契约检查照常 |
-| `scripts/verify_ubs_csv.py`、`audit/2026-10-09/evidence/ubs-csv-evidence.json` | REQ-044 UBS 四类 CSV 内容与格式保持验证：独立重算仓库汇总（22 列，含采集状态/纳入/覆盖率）、PR（24 列完整筛选集，不受 15 行分页限制，毫秒单位）、批次（17 列全部批次 × 全部子任务，无子任务占位一行，代表批次标志）与质量（当前筛选质量记录）四类导出行；文本序列化（BOM、公式前缀 =+-@ 制表 回车转义、引号倍增、CRLF、空值/布尔/整值浮点的 JS String 语义）与 `web/core.js` csv() 单次 node 调用逐字节核对（21 个真实行集 + 合成 nasty 矩阵往返）；仓库汇总值与 repositoryRows、PR 导出排序与 filterPRs/sortPRs、日期格式与 sv-SE 上海时区交叉核对；批次 eligible 字段与独立重算互证；本地保存与 Pages Blob 下载共用同一 content（源码契约）；指纹匹配审计冻结输入时回放 U21（merged 筛选 50 行）/U23（首行代表字段）/U26（PR1600 5 批次 23 任务行）/U29（质量 17 条）/U31（九仓）/U38（中文逗号引号换行公式前缀往返）/A11（Blob 文件名），输入更新后基线比对记 not_applicable、契约检查照常 |
-| `scripts/verify_ubs_detail.py`、`audit/2026-10-09/evidence/ubs-detail-evidence.json` | REQ-045 UBS 正常详情与下钻能力保持验证：独立重算每 PR 事件分组（批次按 event_id 分组、事件按 id 去重保留首插位置、失配批次入「关联未知/失配」组并注明 event_id 为空/不在事件列表原因、全部批次恰好覆盖一次不丢行）、失败等待选择（status=failure 且 E2E 有限非负，E2E 降序并列 trigger 编号升序，取消终态纳入失败等待语义）与「后续批次有成功」标志（成功请求晚于失败批次，JS null 按 0 比较，不抹去历史失败）、跨仓失败等待与最长 E2E 完整序列（E2E 降序、并列创建时间降序）及单仓/跨仓最长 E2E；分钟与精确值公式（zh-CN 千分位、(0,600)ms 显示 <0.01、ms/s 单位切换）与 `web/app.js` num/minute/exact 源码提取执行交叉核对（24 样本零失配）；锁定详情全量重渲染、代表批次默认展开、三类下钻入口（质量记录/最长 E2E/失败等待展开滚动定位）、Esc/关闭按钮/外部点击关闭与切仓清理共 40 条源码契约；指纹匹配审计冻结输入时回放 U24（PR1600 5 批次 5 组全量）/U25（代表 #7469 默认展开）/U27/U28/A07（关闭路径契约锁定）/U30（质量下钻目标存在）/U32（top1 ubturbo#442）/U33（top1 ubs-engine#1600#7469），输入更新后基线比对记 not_applicable、交叉核对与契约检查照常 |
-| `scripts/verify_ubs_routes.py`、`audit/2026-10-09/evidence/ubs-routes-evidence.json` | REQ-047 UBS 全部视图与旧链接可达性保持验证：独立镜像 `web/router.js`（DEFAULT_HASH/LEGACY 别名表、partsOf 安全解码、parseHash/toHash/resolve/keepPRPage）并枚举主要视图（九单仓+九质量页+跨仓总览+Triton+口径=2N+3=21）；对旧链接规范化（#repositories→#ubs、#overview/#prs→ubs-engine 单仓、#quality→ubs-engine 质量、#method）、既有 #repo/NAME 与 method 别名、未知路由默认回总览与编码边界（中文/坏百分号/截断序列/双井号/空段）构造 55 案例哈希矩阵与 router.js 单次 node 调用逐项核对 resolve/parseHash/toHash/keepPRPage；锁定 app.js 视图接线契约（路由回退、视图名/导航高亮/标题/面包屑派生、视图容器与主区切换、快照按仓隔离、未知仓库「未找到仓库」提示与主区隐藏、hashchange 启动链）共 34 条；逐仓核验单仓与质量深链接规范哈希恒等（直接打开走 pushState 不替换）、往返一致与数据归属（快照 meta.repository 与索引一致）；指纹匹配审计冻结输入时回放 U01（九仓 9 快照 21 视图）/U10-repositories/U10-overview/U10-prs（旧链接目标）/U11（未知仓库提示，契约锁定），输入更新后基线比对记 not_applicable、矩阵与契约检查照常 |
-| `scripts/verify_interactions.py`、`audit/2026-10-09/evidence/interaction-evidence.json` | REQ-048 多浏览器与指针触屏操作保持验证：独立镜像 `web/triton-core.js` 共享时间规则（minWindowSpan 30 分钟或整窗、windowForHours 五档快捷锚定末端、moveWindow 整体拖拽/空白跳转平移夹界、clampBoundary 边界拖拽保最小选区、keyWindow 键盘 12 动作同约束、navSliderSemantics JS 半值进位舍入、recoverWindow 快照更新选区恢复、placeTipBox 固定卡片级联放置不遮散点、axisTicks 窄屏刻度收敛），145 案例与真实 triton-core.js 单次 node 调用逐项核对；锁定 triton-view.js 指针路径（preventDefault、指针捕获、空白 jump 回退、整体/左/右三模式拖拽、pointercancel 复位）、键盘路径（方向键+Home/End 共用 keyWindow）、悬浮与固定（Enter/Space/点击固定、Esc/✕/外部点击三路关闭、焦点返还发起散点）、关注批次行展开（aria-expanded 同步、链接点击不触发展开）与销毁清理接线，triton-core.js 约束公式，style.css 契约（.nav-svg touch-action:none 触屏拖动不被页面滚动抢占、.tooltip 视口宽度与高度上限+卡内滚动、.table-scroll/.batch-content 宽表自身滚动容器、5 档响应式断点），app.js Triton 挂载/跨域渲染与 index.html 脚本加载共 52 条；结构化核验 2N+3=21 主要视图可达（复用 REQ-047 枚举器）；web/data/triton.json 指纹与审计冻结 artifact_sha256 一致时回放 T22/T23/T24/T25/T28（拖拽/边界/空白跳转/批次展开）、A09（触屏共享导航器）、E01/E02/E03（Edge 两图挂载/时间窗/跨域导航）与 consoleErrors=0，输入更新后基线记 not_applicable、矩阵与契约检查照常 |
-| `scripts/verify_freshness.py`、`audit/2026-10-09/evidence/freshness-evidence.json` | REQ-049 新鲜度与异常/空态表达保持验证：独立镜像 `web/triton-core.js` freshnessSlots（上海时间、北京时间 08:00/13:00/18:00/20:00 计划槽位含前夜 20:00、90 分钟采集宽限、严格小于判定延迟），构造含 AC01 精确案例（旧 08:17 快照在 13:00 槽位宽限结束的 14:30 显示延迟、14:29 尚未越界不提醒）在内的 17 案例矩阵（另覆盖 09:30/21:30 宽限边界、凌晨前夜槽位、北京时间零点翻转、次日 08:00 槽位、采集恰等于最新槽位、采集时间缺失）与真实 triton-core.js 单次 node 调用逐项核对；锁定 triton-view.js 提醒文案（表达最后一次成功采集结果与应检查 GitHub Actions、不说成已证实的采集失败）、60 秒定时器与销毁清理、各类空态（暂无 Triton 门禁数据、当前分支与时间范围内没有批次、选区暂无已完成有效样本/NPU 排队样本、NPU 明细缺失不计入统计且不代表没有排队）、导出失败具体提示与 finally 恢复按钮、采集时间与数据窗口分别显示、sameSessionMount 跨域返回不重挂载，app.js 加载/读取失败/格式无效/HTTP 状态错误空态（UBS 数据不受影响）与 reloadGate 旧响应防护，triton-core.js 槽位/宽限/严格比较公式与 index.html 挂载点共 36 条源码契约；web/data/triton.json 指纹与审计冻结 artifact_sha256 一致时回放 M04（新鲜度延迟提醒按实际检查时刻显示且非已证实采集失败结论）/A04（导出失败明确且按钮恢复 error/enabled）/F02-triton-404（异常提供明确空态），输入更新后基线记 not_applicable、矩阵与契约检查照常 |
-| `scripts/verify_acceptance.py`、`audit/2026-10-09/evidence/acceptance-evidence.json` | REQ-050 需求验收记录与证据闭环验证：解析需求文档 51 条需求/195 条验收标准（优先级、类型、AC 前缀与编号连续唯一）并与冻结需求模型（版本 1.0、51 条逐条 kind/优先级/标题、文档生成时间一致）及审计期验收记录（51/195/19、类型计数、依赖无环、审计来源未改，原 status/errors 冻结保留）交叉核对；F01–F19 与 5.1 追踪表、findings.json、模型 source_findings 三方一致，映射并集恰为 REQ-001..REQ-037（19 组问题拆分不被误计成新增审查问题），每条问题的检查 ID 仍存在于 238 项检查宇宙；5.2 结论 11 行中 6 行未验证（D10、真实缓存冷热/跨日、attempt 历史、工件→构建→公开指纹、P04、Python3.12/Node22 兼容性）原因保留且全部映射既有需求；7 个来源文件 SHA-256 与第 7 节冻结表逐项核验，all-checks 238 项计数 {207 通过/29 失败/2 未验证}、失败与未验证（D10、P04）记录不删除不改写、findings.json 保持 19 条，requirements.md 与审计基线提交单一历史且内容一致（git 语义比对，CRLF 行尾归一化不误报）；REQ-038/039/040/041–045/047–049 共 11 个证据文件状态与冻结期望逐项一致（REQ-038 如实未验证不被放宽为通过、REQ-039 aligned、其余 verified），REQ-046 冻结审计 fixture 在库；生成 51 条需求 + 195 条 AC 的验收台账：状态由证据链逐项推导（fail-closed），已交付需求须有交付提交、其提交触及的关联测试仍在 tests/、证据文件含实质核验内容而非仅顶层状态的空壳，缺任一证据保持未验证；证据状态非 verified（REQ-038 unverified、REQ-039 aligned）与交付需求提交落地前均如实保留未验证，不因提交名称或测试进程退出码推断通过；台账同时输出文档结构核验（structural_verification）与业务交付完成度（passed/unverified/failed 与未验证清单）两类结果；四类输入（真实快照、合成输入、静态规则、真实部署）如实分别标注，未在通过条目出现的类别列为未获证据（当前为真实部署，与未验证结论对应），不以硬凑覆盖冒充证据存在；核验文档含“不得以检查项通过比例声明来源准确率”规则且需求文档与 README 均无百分比准确率/通过率声明；`--delivering` 指定本次交付需求（默认 REQ-050），交付范围外需求如实记未验证 |
-| `scripts/verify_requirements_doc.py`、`audit/2026-10-09/evidence/requirements-doc-evidence.json` | REQ-051 完整需求文档的版本与可追溯交付验证：结构核验（51 条需求编号连续唯一、每项至少 3 条带唯一编号的可验证验收标准、共 195 条、5.1/5.2 追踪表并集恰为 REQ-001..REQ-050、REQ-051 为文档交付自身不入表）；分类核验（整改 37/补证 3/保持 9/交付 2，整改全部挂接 F01–F19 来源、补证与保持不来自任何 F 问题，补证仅映射 5.2 未验证结论且不出现在 5.1（补证不是已确认线上故障）、保持均出现在 5.2，文档「依赖：」行与冻结需求模型逐条一致、依赖引用存在且无环）；来源与不变性核验（7 个来源文件 SHA-256 与第 7 节冻结表一致，requirements.md 与 final-delivery-verification.json 保持审计基线单一历史且内容一致（git 语义比对，CRLF 行尾归一化不误报），业务源码（web/、data/、triton/、.github/ 与根级业务脚本）的全部基线后提交均归属 REQ-XXX、需求生成不改业务源码，本地 D:/ 文档链接全部有效）；总体验收核验（需先以 `verify_acceptance.py --delivering REQ-051` 刷新验收台账：结构核验通过、51 条需求/195 条 AC、无失败条目；冻结证据状态非 verified 的 REQ-038/039 必须保留未验证、不得放宽为通过，交付需求自身允许「本提交待落地」未验证，其余未验证条目即拒绝；6 条未验证结论及 D10/P04 标签保留，缺原始证据/真实历史不得记为完成） |
+| `collect.py`、`metrics.py`、`repository_store.py` | GitCode/Jenkins 采集、统计与多仓隔离发布 |
+| `triton/dashboard.py`、`quality.py` | GitHub Actions 采集与发布前质量校验 |
+| `data/` | SQLite、原始缓存、各仓快照（不入库） |
+| `web/` | 无依赖前端（`app.js`、`core.js`、`triton-core.js` 等） |
+| `validate*.py`、`source_coverage.py` | 数据一致性、跨仓隔离与来源覆盖独立审计 |
+| `scripts/verify_*.py` | 各需求的独立保持性审计 |
+| `tests/` | Python 与 Node 测试 |
 
-SQLite 的 PR 与事件主键包含仓库标识，批次按完整 Jenkins URL 唯一；任务记录复用完整 URL。首次迁移会在 `data/` 自动保留 `*-before-multi-*.sqlite` 备份，将旧数据归入 ubs-engine。
+原始缓存、SQLite、历史 CSV 与备份不进入 Git 提交或 Pages 工件；Pages 只公开看板所需的派生 JSON。
 
-各仓 trigger 与任务映射从该仓 PR 门禁报告发现，并经 Jenkins 只读接口核验；核验依据保存在快照 `meta.job_mapping`。无法发现或确认的任务明确记录为缺失或异常，不借用别仓映射。
+## 计算口径（要点）
 
-批量采集统一截止时间并隔离失败。失败仓保留上次成功快照，首次失败显示未获取数据；旧快照范围与索引当前范围不一致时不纳入跨仓汇总。采集失败与成功采集零 PR 明确区分。单仓更新时间范围变化后，其他仓库可能因范围不同被排除；使用同一 `--until` 更新或重新 `--all` 恢复统一范围。
-
-使用 GitCode 官方 API v5 的 `pulls`、`comments` 和 `operate_logs`。PR 列表遍历全部分页，再按创建时间和 master 过滤；评论和操作日志完整分页。门禁来源取机器人报告与 Jenkins trigger 历史索引的并集，避免仅依赖最后一次检查。
-
-Jenkins 构建主键为完整任务 URL（含 build number）。从 trigger 控制台发现下游，结合 PR 报告交叉检查，再以子任务 `upstreamBuild`、`upstreamProject` 验证父子关系。GitCode 和 Jenkins 当前公开接口可直接读取；无需复制浏览器 Cookie 或登录凭证。若未来接口需要认证，采集失败会明确标记，不生成虚构结果。
-
-环境信息接口在内存中提取允许的事件字段后才写入缓存：事件类型、请求时间、PR ID、目标分支、重跑评论 ID。其他环境变量不落盘、不进入网页。
-
-多仓索引 schema_version=3；每仓派生快照保留单仓结构，PR 的 `metrics` 保存代表批次 URL、编号、E2E 毫秒和三类任务的单值耗时；SQLite PR payload 保存同一结构。
-
-### Triton-Ascend
-
-| 位置 | 用途 |
-|---|---|
-| `triton/dashboard.py` | GitHub Actions 只读采集、按 PR head SHA 聚合批次、生成看板数据 |
-| `triton/quality.py` | 发布前质量校验：Jobs 分页完整性、NPU 识别覆盖、已完成任务时间戳、批次最大排队时长、工件一致性 |
-| `triton/pr_identity.py` | Fork PR 与 workflow run 的可靠关联 |
-| `triton/verify_deployment.py` | 发布后逐一校验公开数据文件（Triton /data/triton.json、UBS 索引与全部引用快照、两份 manifest）与本次构建清单的 SHA-256/JSON 指纹，最多重试 8 次；必需文件集由已发布索引推导，清单文件表截断或与索引引用不一致即失败 |
-| `evidence/triton/` | 采集证据：run/job/PR 页面缓存、PR 关联依据、质量报告 |
-| `evidence/triton/pr-associations/` | PR 关联依据 |
-| `evidence/triton/quality-report.json` | 质量校验结果（失败与警告） |
-| `web/data/triton.json` | 看板所需派生数据 |
-| `web/data/triton-batches.csv` | 批次明细 CSV |
-| `web/data/triton-manifest.json` | 构建清单与 SHA-256 校验值 |
-
-## 计算规则
-
-### openEuler UBS
-
-- 每个 trigger 是一个独立批次；提交次数为创建 PR 加推送事件次数，重跑另列。强制推送不会覆盖先前批次。
-- 创建 PR 起点取 `created_at`；重跑以评论 ID 精确关联；推送须 PR ID、事件类型与唯一平台推送日志共同匹配，日志时间与 webhook 时间差不超过 5 秒。无法唯一匹配时 E2E 留空，保留独立 Jenkins 跨度。
-- SHA 来自平台操作日志。一次推送包含多个 commit 时保留 `shas` 列表，不猜测 head SHA；未确认的 SHA 不影响已经核验的请求时间。
-- 全批结束时间取 trigger 与全部子任务结束时间的最大值。成功必须子任务全部成功，不能依据 trigger 自身 SUCCESS。
-- 已结束且可确认起止时间的成功、失败和取消批次均纳入 E2E，反映开发者从提交到门禁停止的真实等待；执行中、数据不完整和缺失请求时间的批次不纳入。每个 PR 选择 E2E 最长的可测量终态批次；并列取 trigger 编号较大者。任务耗时全部取自该代表批次，不从其他批次补取。缺少任务或同类任务关联不唯一时留空。无有效代表批次的 PR 仍计入 PR 数。
-- 排队 = `waitingTimeMillis + blockedTimeMillis + buildableTimeMillis`；执行 = `duration`；总计 = 排队 + 执行；缺少任何排队分项时排队和总计为空。
-- P90 使用 `(n−1)×0.9` 位置的线性插值，与 Excel `PERCENTILE.INC` 一致。单仓与跨仓指标均使用每个 PR 的代表值，每项最多一个样本。趋势按 PR 创建日期聚合，覆盖率为有代表批次的 PR 数 / 当前 PR 数。筛选只选择 PR，不改变代表批次。
-
-#### 开发者等待与触发方式（UBS）
-
-首页“等待后失败的 PR”取每个 PR 有明确 E2E 的最长失败批次（含中止），按时长降序展示前 8 条；后续成功不抹去历史失败。此事实列表不改变效率汇总使用的代表批次，也不推断失败原因。执行中或缺失起止时间不伪造终态耗时。
-
-PR 列表、详情和 CSV 区分创建、推送和重跑的平台请求次数，另列门禁执行批次数。请求按事件 ID 去重；未关联门禁的请求和来源未知的批次明确提示，采集不完整时次数可能低估。单仓可筛选有重跑请求或推送提交的 PR，详情保留其全部批次。重跑次数不用于判断偶现失败或开发习惯；原因需要结合 SHA、任务结果和日志核验。
-
-### Triton-Ascend
-
-- 批次按 PR head SHA 聚合：一次推送的提交是 E2E 的身份单位，辅助 workflow 即使更晚启动也归入同一 head SHA，不产生额外数据点；手动重跑单独成批。
-- 重跑按 run 与 attempt 编号独立成批并保留历史：同一 run 的 attempt 1 归入初次提交批次，attempt 2 起各自独立，重复采集同一 attempt 不重复计数；采集入口按当前 attempt 编号枚举同一 run 的全部历史 attempt 并逐一抓取各自 jobs，历史 attempt 的起点与完成证据取自该 attempt 自身的 jobs，不继承当前 attempt 的运行字段；采集发现窗口向前回溯 14 天，只要本次 attempt 起点落在展示窗口内即被识别（原 run 创建在窗口外的重跑不遗漏），完全在窗口外的运行仅作关联证据，不计入当前窗口批次。重跑 E2E 从本次 attempt 起点计算，不沿用原 run 创建时间。
-- **E2E 口径**：E2E 从提交事件到该批次最后一项自动检查结束，包含排队与依赖等待；并行任务不相加。
-- **起点来源**：优先使用本次触发事件；无法恢复精确触发时，重跑使用本次 attempt 开始时间、初次提交使用最早 workflow 创建时间，一律标记 approximate 并以 start_source 注明来源，悬浮卡片、批次详情与 CSV 使用同一口径；无本次起点证据时 E2E 留空并在缺口中明示，不从原 run 创建时间或时间接近猜测。页面数据边界显示使用近似起点的批次数。
-- **展示规则**：成功和失败批次参与趋势；取消与运行中仅展示已观测耗时。
-- **有效耗时口径**：纳入计数、平均、分位数、耗时阈值与小样本策略的耗时必须是有限且非负的原始数值；缺失、空串、数字字符串、NaN、无穷或负值不按 0 计入。真实 0 是合法值，与无值在展示、图表和 CSV 中可区分；无有效耗时的点不绘制在 0 位置。
-- **关注分组与小样本策略**：关注列表先按当前页级范围 G 及其有效完成样本数确定分组，再以搜索过滤各组：G 有效完成样本少于 10 个时展示「耗时最长」前 5 批次，否则使用 G 的 P90 偏长组；搜索不改变策略或阈值，组名与提示依据同一 G 样本分母。失败与偏长组可有批次重叠，组计数之和不是唯一批次数；「查看全部批次」与 CSV 导出均为 G 经搜索后的完整记录集合，不受前 5 或关注分组约束。
-
-#### 数据质量保护（Triton）
-
-每次生成页面前，`triton/quality.py` 校验 Jobs 分页完整性、NPU 识别覆盖、已完成任务时间戳及批次最大排队时长，并独立重推观测参照与汇总：携带数据的 payload 必须给出可解析的 window_end（as_of 参照），summary 的计数与分位数须与按批次独立重算一致，完成样本的 duration 必须是有限非负数且等于起止跨度（null、布尔、字符串、负数或虚构跨度被拒绝），运行中批次只接受有限非负的已观测跨度（NaN/无穷被拒绝）。校验失败写入 `evidence/triton/quality-report.json` 并终止发布，保留上一份已发布页面。合法的零 NPU 样本不会被误判为失败。
-
-workflow 与批次时间过同一门禁：已完成 workflow 的起止缺失、不可解析、倒置（结束早于起点——按每条 workflow 自身的适用起点逐条判定，有可信精确触发时以触发时间为准，同 SHA 的辅助 workflow 不能用更早的合法起点掩盖另一条的倒置）或完成时间超出采集参照（as_of）都会明确报错并阻断发布；倒置跨度不会截成 0 秒，无合法完成时间的批次不作为完成样本（记录警告并排除），运行中批次只报告起点到 as_of 的已观测跨度，起点与参照可追溯。
-
-GitHub 响应契约同样过门禁：workflow_runs、jobs 等列表字段缺失、为 null 或非数组，分页间重复记录，或声明的 total_count 与实得记录数不符时，采集立即失败并在错误中注明来源接口，不会被当作合法零数据发布；真正为空的列表仍表示零数据。total_count 以首页声明为准，后续分页声明漂移即失败，不允许以缩小的声明数掩盖截断；每条列表记录必须有身份：信封列表记录须携带 id，无 id 的 bare-array 记录（如 PR 提交列表）以完整内容为身份，重复页与身份缺失都被拒绝。契约失败本次不发布，上一份有效页面保持，错误信息不含任何凭证。
-
-GitHub 源时间戳倒置的任务显式标记异常，相关批次不参与排队统计，并写入质量报告 warnings；不再将负值截成零。仍排队、跳过及取消前未启动的任务允许没有最终排队值。
-
-每次构建在写出 `triton.json`、`triton-batches.csv`、manifest 与证据副本后立即运行跨文件一致性门禁：`triton.quality.verify_artifacts` 交叉校验四者的批次身份、统计范围与采集时间，不一致则本次运行失败、不上传当前工件。部署后两个发布流程的 verify job 运行 `python -X utf8 -m triton.verify_deployment <site-url>`，以本次构建的两份 manifest 为基准逐一校验公开的 Triton /data/triton.json、UBS 索引与全部引用快照及两份 manifest 本身（SHA-256/稳定 JSON 指纹），最多重试 8 次。成功在运行摘要记录运行 ID、URL、校验时刻与指纹；公开 URL 仍返回旧数据或篡改数据时，重试耗尽后运行失败并在摘要指出不一致文件；此检查发生在部署后，不自动回滚。
-
-页面每分钟检查数据新鲜度。按北京时间 08:00、13:00、18:00、20:00 的计划及 90 分钟采集发布宽限期显示更新延迟提醒。Actions 失败的外部邮件通知由仓库订阅者的 GitHub 通知设置控制，本项目不配置邮件收件人。
-
-#### PR 关联证据（Triton）
-
-Fork PR 的 workflow `pull_requests` 和 commit 关联接口可能同时返回空数组。采集器优先使用 run 显式 PR 关联；回退以来源仓库、分支、真实 head SHA 或 PR 提交历史校验候选，查询包括已关闭 PR，并完整分页和缓存。PR 编号、标题、链接及目标分支均从 PR 元数据获取，不以运行标题或时间接近猜测关联，也不再按最近 run 覆盖 `pull_request_target` 的 SHA。
-
-关联依据写入 `evidence/triton/pr-associations/`。无法唯一关联或 API 查询失败会保存 `pr-association-errors.json`，阻止本次发布；质量检查同时验证关联证据及聚合前后 PR/SHA 一致性。未知运行按 run ID 与 attempt 隔离，避免相同 SHA 被误并。
+- 每个 trigger 是一个独立批次。E2E = 提交/重跑起点到全部子任务结束的最长可测终态耗时；每 PR 选 E2E 最长的可测终态批次作代表批次（并列取 trigger 编号较大者），任务耗时全部取自代表批次。
+- 排队 = `waiting + blocked + buildable`，执行 = `duration`，总计 = 排队 + 执行；缺任一分项时排队/总计留空。
+- 成功、失败、取消（已结束）批次纳入 E2E；执行中、不完整、缺起点的不纳入。
+- P90 用 `(n−1)×0.9` 线性插值（同 Excel `PERCENTILE.INC`）。
+- Triton：批次按 PR head SHA 聚合，手动重跑按 run+attempt 独立成批；有效耗时必须是有限非负数值，缺失、NaN、无穷不补 0。
 
 ## 自动发布
 
-- **每日全量**（[pages.yml](.github/workflows/pages.yml)，`Collect and deploy dashboard`）：北京时间 07:30（UTC 23:30）依次恢复共享 UBS 快照缓存（`ubs-snapshots-v1`，与增量流程路径、顺序和键完全一致）与每日采集缓存（`ubs-collection-v1`，含原始响应、SQLite 与 Triton 证据）、采集九仓最近 30 天的 master PR、采集 Triton 最近 72 小时门禁数据、运行 Python 和 Node 测试、执行真实数据审计，再上传 `web/` 并部署 Pages，随后以本次构建的两份 manifest 校验公开数据指纹。失败保留上一版。计划任务可能因 GitHub 平台负载延迟启动。
-- **Triton 增量**（[triton-refresh.yml](.github/workflows/triton-refresh.yml)）：北京时间 08:00、13:00、18:00、20:00 仅重新采集 Triton 最近 72 小时数据并发布。UBS 数据从与每日流程完全一致的版本化共享快照缓存（`ubs-snapshots-v1`）恢复；缓存缺失时通过 `SITE_FALLBACK_URL`（默认旧 UBS 线上地址，可修改）逐文件回退拉取并补齐仓根镜像，日志逐文件标记命中、回退或镜像来源；UBS 索引仍缺失则不部署。两流程上传前都运行 `validate_bundle.py`：校验索引与被引用单仓快照归属一致、纳入跨仓的 success/partial 快照时间范围与索引窗口一致（失败仓保留的过期快照合法，改标成功即被阻断）、仓根镜像不混版本，并与 `web/data/ubs-manifest.json` 记录的完整文件表与工件指纹比对（清单指纹须与其文件表自洽，截断或篡改的清单在任何模式被阻断），旧索引配新快照（或相反）会被阻断；每日 `--write-manifest` 将恢复的自洽旧清单视为新版本信号并重盖（内容结构校验不变），增量复用仍严格逐项比对；坏 JSON、空文件、缺失 `repositories` 结构或被引用快照缺失、下载失败同样阻断，不能只凭索引非空上传。pending 与首次失败且无快照的仓库合法，页面显示未获取而非空成功数据；缓存命中与站点回退两条恢复路径共用同一完整性检查，错误报告注明具体缺失引用与恢复来源。恢复或校验失败的工作流不保存共享缓存、不上传部署——重试恢复上一份有效缓存，线上保持上一版有效页面。部署后与每日流程同样运行公开数据指纹校验。两工作流共用 concurrency group `pages` 且 `cancel-in-progress: false`：只保护正在运行的构建不被新触发取消，排队中的运行遵循平台默认替换规则（queue: single——同一并发组仅保留最新一个排队运行，较早排队者被取消替换），因此增量运行不会取消正在进行的每日全量构建，但排队中的每日全量可能被更新的增量排队运行替换、当日全量更新（含九仓 UBS 采集）丢失，等待下一计划（次日 07:30）恢复；不声称默认保留所有排队任务，如需保留需另行制定 `queue: max` 等新运行策略与对应验收（`queue: max` 与 `cancel-in-progress: true` 互斥）。
-- 两个工作流均支持在 Actions 页面手动运行（`workflow_dispatch`）。
-
-原始 API 缓存、SQLite、历史 CSV 和备份不会包含在 Pages artifact 或 Git 提交中；线上只公开看板所需的派生 JSON 与数据文件。
-
-若 GitHub-hosted runner 无法访问 GitCode、Jenkins 或 GitHub API，先在 Actions 日志确认是 401/403、网络超时还是任务路径变化。UBS 单仓失败会显示采集失败或过期快照；采集进程、测试、审计或 Triton 质量校验整体失败时不会部署并覆盖上一版 Pages。可在网络恢复后通过 `workflow_dispatch` 重跑。
+- **每日全量**（`.github/workflows/pages.yml`）：北京时间 07:30 采集九仓（30 天）+ Triton（72 小时）、跑测试与审计、部署 Pages，并校验公开数据指纹；失败保留上一版。
+- **Triton 增量**（`.github/workflows/triton-refresh.yml`）：北京时间 08:00/13:00/18:00/20:00 仅重采 Triton 并发布。
+- 两流程共用 concurrency group `pages` 且 `cancel-in-progress: false`：正在运行的构建不被新触发取消，排队中的运行遵循平台默认替换规则（queue: single，同一并发组仅保留最新一个排队运行）。均支持 `workflow_dispatch` 手动运行。
 
 ## 验证
 
-测试与验证使用 CI 声明并受支持的运行时：Python 3.12 与 Node 22（`scripts/verify_runtime.py` 在目标运行时执行测试套件、数据门禁与原始审计的适用部分，记录精确版本、命令、退出码、失败数与完整日志；审计期基线 Python 79/79、Node 34/34 仅为原环境记录，不替代目标运行时结果，新增测试数量不受原数量限制；工件缺失时原始审计如实失败，不因 wrapper 退出 0 报审计通过）。
+CI 目标运行时：Python 3.12 / Node 22。
 
 ```
 python -m unittest discover -s tests -v
@@ -242,9 +118,7 @@ python -X utf8 scripts/verify_requirements_doc.py
 python -X utf8 -m triton.verify_deployment <site-url> --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
 ```
 
-浏览器已人工验证：PR 状态筛选、搜索、多次提交和重跑下钻、任务时间线；Triton 时间导航器键盘路径（Tab 依次聚焦三个滑块、方向键与 Home/End、aria 值随操作同步、重绘后焦点保持、指针与键盘同一约束）、批次行键盘展开（Tab 到达展开按钮、Enter/Space 切换、aria-expanded 与可见性同步、展开后明细链接可键盘访问且收起时不入 Tab 序、筛选移除当前行时焦点回落）与趋势散点键盘固定（Tab 聚焦散点并报出批次身份、Enter/Space 固定详情卡片、卡内链接可 Tab 访问、Esc 或关闭按钮退出且焦点返回原散点、固定卡片不遮住发起散点、悬停与点击固定保留）与手机顶栏完整显示（390×844 五页：重新加载动作完整位于顶栏边界内、单行不折叠、与采集时间不重叠、无整页横向溢出，点击仍触发同一重载）、小屏趋势横轴自适应刻度（390×844 下 6/12/24/48/72 小时两图横轴相邻标签零重叠、首末标签不裁切；1024/1440 保留 7 档刻度且首末标签与选区文字一致；页内缩放后刻度重排而散点时间映射与固定详情逐字不变）、图标导航可识别性（390×844 图标轨下九仓总览、单仓、质量、Triton 与口径入口均有可见微标签与分组标题，悬浮/焦点经 title 获得名称且不遮点击目标，当前入口高亮，可访问名称来自可见 DOM 文本）、分支徽标跟随域（Triton 全选、单选 main、多选 main+main-dev 分别显示“全部目标分支”“main”“已选 2 个分支”且悬浮列出所选分支；选中 main 后点击重新加载，徽标、分支摘要与勾选三方一致保持 main；从 UBS 进入 Triton 无 master 遗留，UBS 总览与单仓按 meta.branch 显示 master；统计口径页隐藏徽标；hash 切回与深链接打开均与当前选择一致）、代码仓链接跟随域（从 UBS 单仓经侧栏进入 Triton 后「查看代码仓」指向 github.com/triton-lang/triton-ascend，不再残留 gitcode.com；UBS 路由与下拉切仓后链接仓库标识与页面一致（ubs-comm/ubs-virt/ubs-io 逐一核对，悬浮提示仓库名）；跨仓总览显示「openEuler 仓库组」组织目录参考链接并注明非单仓对象，与单仓来源可区分；统计口径页隐藏链接；浏览器后退/前进与 Triton 深链接打开后链接仍正确）、页脚统计跟随域（UBS 总览进入 Triton 后页脚显示 66 批/38 PR 的当前筛选统计与 Triton 采集时间，不再遗留 9 REPOSITORIES/203 PR 等 UBS 数值；勾选 main 与切换 6 小时时间窗后页脚随 G 更新为 21 批/11 PR 与 1 批/1 PR，与顶部摘要逐项一致并标注当前筛选范围；统计口径页清空；从 UBS 单仓切回与重新加载后均为 Triton 统计，无跨域遗留；深链接打开显示默认范围统计）、逐步导航历史（总览→ubs-engine→选择器切 ubs-comm 后，后退依次回到 ubs-engine 与总览、前进恢复 ubs-comm；「返回总览」与侧栏、仓库链接同规则，每个用户动作恰好新增一条历史记录；旧链接规范化与未知路由回默认只替换当前条目、不产生中间历史且不循环；打开 PR 详情后后退，对话框自动关闭，视图、标题与侧栏高亮与当前路由一致）、最小 fixture 统计契约（最小 5 批次数据 P90 线性插值 840 秒并在页面显示 14m、重跑批次显示「重跑」徽标与「本次重跑开始」起点、缺值批次不绘点并计入证据缺口、运行中显示观测时长；合法零数据渲染空态且无 NaN；单样本 P50=P90 自表达；devdata --offline 产出与 fixture 逐字节一致）经真实浏览器核验。多仓审计结果见 `data/validation-multi.json`，包含每仓采集状态、PR 数及跨仓有效样本；`source_audit` 段按类别以唯一适用身份声明原始来源覆盖率（已验证一致 + 已发现差异 + 缺证据 = 适用唯一身份总数，派生自洽是缺证据的附加属性、重复登记不重复计数，附缺失与差异身份清单及任务 URL 与字段），raw 为空即未验证、部分补齐保持缺失清单、无适用对象记 N/A 及原因；queue/total 由原始 waiting/blocked/buildable 分项独立重算核验，分项缺失或非法（布尔、负数、NaN、无穷）时 queue 与 total 保持未知且不补 0（已知 duration 保留），篡改分项即使派生总和自洽也会被点名；来源覆盖不足或发现差异时审计以非零退出，不以派生一致性冒充来源准确性。报告 `sections` 按分项给出状态与理由：派生一致性（报告存在即全部派生断言通过）、源时间、排队分项（已验证/未验证/部分/差异/N/A）与发布一致性（N/A，注明归属 validate_bundle 与 verify_deployment，本审计不重复校验）；`overall_status` 从分项推导，verified/not_applicable 才退出 0，与 checks_passed 和 CI 结果一致；审计中途异常先写入失败报告（缺文件或缺权限按 unverified 分类、真实异常按 failed，附错误与受影响范围）再原样重抛，不残留上一轮的通过声明。Triton 审计冻结快照（`tests/fixtures/triton-audit-freeze.json`：38 PR/66 批/65 完成样本/48 NPU 排队点/9 条 NPU 时间倒置）由测试独立重算 summary、逐批 NPU 派生与两图选区统计并锁定，统计契约不随新数据漂移。REQ-038 补证工具 `scripts/verify_artifacts.py` 生成 `audit/2026-10-09/evidence/artifact-verification.json`（`--probe` 附带旧站探测 `site-probe.json`）：逐工件清单如实标注审计期原始工件（data/raw、SQLite、evidence/triton、Triton manifest 与批次 CSV、web/data/snapshot.json）本地缺失为未验证，不伪造来源；四类交叉核对（原始时间、排队分项、PR 身份、attempt 历史）沿用「适用 = 已验证一致 + 派生自洽 + 差异 + 缺证据」计数等式；7 个真实重跑批次记录值与旧规则一致、新规则以区间表达（旧规则高估上限最大 60 秒、中位 10 秒），S01 合成输入（旧规则 7500 秒）单独声明并由当前代码重算 300 秒佐证，不混入真实统计；本地快照束指纹经 ubs-manifest 核验，合并看板无部署、旧站与本地审计快照逐文件比对并明确当前站点状态不可冒充审计截止点历史事实；overall 从分项推导，交叉核对零差异退出 0，缺原始证据如实记未验证。
+## 接口依据
 
-## 接口依据与致谢
-
-- openEuler UBS：门禁与 PR 数据来自 GitCode 官方 API v5 的 `pulls`、`comments`、`operate_logs` 及 Jenkins 只读接口。接口依据：[GitCode PR API 文档](https://docs.gitcode.com/v1-docs/docs/openapi/repos/pulls/)。
-- Triton-Ascend：门禁数据来自 GitHub Actions API 的 workflow runs、jobs 与 PR 关联只读接口；`GH_TOKEN` 可选，建议设置以提高 API 配额。
+- openEuler UBS：GitCode 官方 API v5 的 `pulls`、`comments`、`operate_logs` 及 Jenkins 只读接口。参考 [GitCode PR API 文档](https://docs.gitcode.com/v1-docs/docs/openapi/repos/pulls/)。
+- Triton-Ascend：GitHub Actions API 的 workflow runs、jobs 与 PR 关联只读接口；`GH_TOKEN` 可选。
