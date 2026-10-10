@@ -7,4 +7,5 @@ web/exports/
 .superpowers/
 .omo/
 .codegraph/
+.playwright-mcp/
 /evidence/
