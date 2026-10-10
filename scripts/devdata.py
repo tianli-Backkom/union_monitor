@@ -102,6 +102,25 @@ def report(written: list, mode: str) -> None:
     print(f"{mode}: {len(written)} file(s), {total} bytes total")
 
 
+def publish_catalog(source=None, target=None, written: list | None = None) -> Path:
+    """Copy the versioned catalog.json into the served web tree.
+
+    The catalog is the single source of truth for projects/repositories and
+    capabilities; the site publishes an identical copy under ``web/data`` so the
+    shell and the collection pipeline never drift apart.
+    """
+    source = Path(source) if source else REPO_ROOT / "catalog.json"
+    target = Path(target) if target else WEB_DATA_DIR / "catalog.json"
+    if not source.is_file():
+        raise DevDataError(f"catalog.json missing at {source}")
+    data = source.read_text(encoding="utf-8")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(data, encoding="utf-8")
+    if written is not None:
+        written.append((target, source.stat().st_size))
+    return target
+
+
 def run_online(ubs_base: str, triton_url: str, written: list) -> None:
     ubs_base = ubs_base.rstrip("/")
 
@@ -134,6 +153,8 @@ def run_online(ubs_base: str, triton_url: str, written: list) -> None:
     require_keys(compat, ["meta", "prs"], "snapshot.json")
     write_file(ROOT_DATA_DIR / "snapshot.json",
                json.dumps(compat, ensure_ascii=False, indent=2).encode("utf-8") + b"\n", written)
+
+    publish_catalog(written=written)
 
     html = fetch(triton_url).decode("utf-8")
     match = TRITON_DATA_RE.search(html)
@@ -177,6 +198,8 @@ def run_offline(written: list) -> None:
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
         written.append((target, source.stat().st_size))
+
+    publish_catalog(written=written)
 
 
 def main() -> int:

@@ -102,6 +102,9 @@ jobs:
             evidence/triton
           key: ubs-collection-v1-${{ runner.os }}-${{ github.run_id }}
 
+      - name: Publish catalog
+        run: python -c "import pathlib,shutil; pathlib.Path('web/data').mkdir(parents=True,exist_ok=True); shutil.copy('catalog.json','web/data/catalog.json')"
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 

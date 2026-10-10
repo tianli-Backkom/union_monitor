@@ -58,6 +58,13 @@ class PagesWorkflowTests(unittest.TestCase):
         self.assertIn("name: github-pages", self.workflow)
         self.assertIn("uses: actions/deploy-pages@v4", self.workflow)
 
+    def test_catalog_is_published_into_the_site(self):
+        self.assertIn("name: Publish catalog", self.workflow)
+        self.assertRegex(
+            self.workflow,
+            r"shutil\.copy\('catalog\.json','web/data/catalog\.json'\)",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
