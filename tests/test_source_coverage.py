@@ -210,7 +210,7 @@ class SourceCoverageTests(unittest.TestCase):
         self.assertEqual(len(result['missing']), MISSING_LIMIT)
         self.assertTrue(result['missing_truncated'])
 
-    def test_derived_bucket_keeps_equation_and_partial_status(self):  # REQ-024 AC04
+    def test_derived_counts_as_missing_evidence_with_attribute(self):  # REQ-023 AC02, REQ-024 AC04
         category = SourceCategory('queue_components')
         for url in ['job/1/', 'job/2/', 'job/3/', 'job/4/']:
             category.record_applicable(url)
@@ -220,8 +220,36 @@ class SourceCoverageTests(unittest.TestCase):
         self.assertEqual(result['status'], 'partial')
         self.assertEqual(result['derived_consistent'], 1)
         self.assertEqual(result['applicable'],
-                         result['verified_consistent'] + result['derived_consistent'] + result['differences'] + result['missing_evidence'])
-        self.assertEqual(result['missing'], ['job/3/', 'job/4/'])
+                         result['verified_consistent'] + result['differences'] + result['missing_evidence'])
+        self.assertEqual(result['missing'], ['job/2/', 'job/3/', 'job/4/'])
+        self.assertLessEqual(result['derived_consistent'], result['missing_evidence'])
+
+    def test_derived_without_independent_raw_keeps_ac02_equation(self):  # REQ-023 AC02 (A10 frozen probe)
+        category = SourceCategory('queue_components')
+        category.record_applicable('https://ci.example/job/x/1/')
+        category.record_derived('https://ci.example/job/x/1/')
+        result = category.result()
+        self.assertEqual(result['applicable'], 1)
+        self.assertEqual(result['verified_consistent'] + result['differences'] + result['missing_evidence'], 1)
+        self.assertEqual((result['missing_evidence'], result['derived_consistent']), (1, 1))
+        self.assertEqual(result['status'], 'unverified')
+
+    def test_duplicate_identities_never_inflate_the_denominator(self):  # REQ-023 AC02 (A10 frozen probe)
+        category = SourceCategory('job_timing')
+        category.record_applicable('job/1')
+        category.record_applicable('job/1')
+        category.record_verified('job/1')
+        result = category.result()
+        self.assertEqual(result['applicable'], 1)
+        self.assertEqual(result['verified_consistent'] + result['differences'] + result['missing_evidence'], 1)
+        self.assertEqual((result['verified_consistent'], result['missing_evidence']), (1, 0))
+        self.assertEqual(result['status'], 'verified')
+        unverified = SourceCategory('job_timing')
+        unverified.record_applicable('job/1')
+        unverified.record_applicable('job/1')
+        plain = unverified.result()
+        self.assertEqual((plain['applicable'], plain['missing_evidence']), (1, 1))
+        self.assertEqual(plain['missing'], ['job/1'])
 
     def test_all_derived_without_raw_verification_is_unverified(self):  # REQ-024 AC04
         category = SourceCategory('queue_components')
@@ -230,7 +258,8 @@ class SourceCoverageTests(unittest.TestCase):
             category.record_derived(url)
         report = source_report({'queue_components': category})
         self.assertEqual(report['status'], 'unverified')
-        self.assertEqual(report['categories']['queue_components']['derived_consistent'], 2)
+        queue = report['categories']['queue_components']
+        self.assertEqual((queue['derived_consistent'], queue['missing_evidence']), (2, 2))
 
     def test_verified_absence_counts_as_verified_with_subcount(self):  # REQ-024 AC02
         category = SourceCategory('queue_components')
@@ -391,10 +420,10 @@ class QueueComponentAuditTests(unittest.TestCase):
         report = json.loads((self.tmp / 'data/validation-multi.json').read_text('utf-8'))
         queue = report['source_audit']['categories']['queue_components']
         self.assertEqual(queue['applicable'],
-                         queue['verified_consistent'] + queue['derived_consistent'] + queue['differences'] + queue['missing_evidence'])
-        self.assertEqual((queue['verified_consistent'], queue['derived_consistent'], queue['missing_evidence']), (1, 1, 1))
+                         queue['verified_consistent'] + queue['differences'] + queue['missing_evidence'])
+        self.assertEqual((queue['verified_consistent'], queue['derived_consistent'], queue['missing_evidence']), (1, 1, 2))
         self.assertEqual(queue['status'], 'partial')
-        self.assertEqual(queue['missing'], [child_missing['url']])
+        self.assertEqual(queue['missing'], [child_derived['url'], child_missing['url']])
 
 
 class AuditStatusSemanticsTests(unittest.TestCase):

@@ -1,0 +1,153 @@
+{
+  "finding": "A10 · P2 · 来源覆盖分母不满足要求，重复身份可误判verified",
+  "requirements": [
+    "REQ-023",
+    "REQ-024"
+  ],
+  "generated_at": "2026-10-10T06:20:02.148602+00:00",
+  "head": "e9bb44a9daee197cb36d52c6423ff723feee43a4",
+  "probes": {
+    "derived_without_independent_raw": {
+      "result": {
+        "category": "queue_components",
+        "applicable": 1,
+        "verified_consistent": 0,
+        "verified_absent": 0,
+        "derived_consistent": 1,
+        "differences": 0,
+        "missing_evidence": 1,
+        "missing": [
+          "https://ci.example/job/x/1/"
+        ],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "unverified"
+      },
+      "required_ac02_sum": 1,
+      "denominator": 1
+    },
+    "duplicate_source_identity": {
+      "result": {
+        "category": "job_timing",
+        "applicable": 1,
+        "verified_consistent": 1,
+        "verified_absent": 0,
+        "derived_consistent": 0,
+        "differences": 0,
+        "missing_evidence": 0,
+        "missing": [],
+        "missing_truncated": false,
+        "difference_details": [],
+        "status": "verified"
+      },
+      "required_ac02_sum": 1,
+      "denominator": 1
+    },
+    "duplicate_unverified_identity": {
+      "category": "job_timing",
+      "applicable": 1,
+      "verified_consistent": 0,
+      "verified_absent": 0,
+      "derived_consistent": 0,
+      "differences": 0,
+      "missing_evidence": 1,
+      "missing": [
+        "job/1"
+      ],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "unverified"
+    },
+    "baseline_zero_coverage": {
+      "category": "job_timing",
+      "applicable": 2,
+      "verified_consistent": 0,
+      "verified_absent": 0,
+      "derived_consistent": 0,
+      "differences": 0,
+      "missing_evidence": 2,
+      "missing": [
+        "job/1/",
+        "job/2/"
+      ],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "unverified"
+    },
+    "baseline_counts_add_up": {
+      "category": "job_timing",
+      "applicable": 5,
+      "verified_consistent": 3,
+      "verified_absent": 0,
+      "derived_consistent": 0,
+      "differences": 1,
+      "missing_evidence": 1,
+      "missing": [
+        "job/5/"
+      ],
+      "missing_truncated": false,
+      "difference_details": [
+        "job/4/: raw waiting=9 != snapshot queue=1"
+      ],
+      "status": "differences_found"
+    },
+    "baseline_all_derived": {
+      "category": "queue_components",
+      "applicable": 2,
+      "verified_consistent": 0,
+      "verified_absent": 0,
+      "derived_consistent": 2,
+      "differences": 0,
+      "missing_evidence": 2,
+      "missing": [
+        "job/1/",
+        "job/2/"
+      ],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "unverified"
+    },
+    "baseline_full_coverage": {
+      "category": "job_timing",
+      "applicable": 1,
+      "verified_consistent": 1,
+      "verified_absent": 0,
+      "derived_consistent": 0,
+      "differences": 0,
+      "missing_evidence": 0,
+      "missing": [],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "verified"
+    },
+    "baseline_verified_absence": {
+      "category": "queue_components",
+      "applicable": 1,
+      "verified_consistent": 1,
+      "verified_absent": 1,
+      "derived_consistent": 0,
+      "differences": 0,
+      "missing_evidence": 0,
+      "missing": [],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "verified"
+    }
+  },
+  "checks": {
+    "derived_without_independent_raw": true,
+    "duplicate_source_identity": true,
+    "duplicate_unverified_identity": true,
+    "baseline_zero_coverage_unverified": true,
+    "baseline_counts_add_up": true,
+    "baseline_all_derived_unverified": true,
+    "baseline_full_coverage_verified": true,
+    "baseline_verified_absence_subcount": true
+  },
+  "all_counterexamples_defeated": true,
+  "notes": [
+    "All inputs are process-memory synthetic registrations; no network request, production source, test, frozen audit evidence, or real snapshot was modified.",
+    "Mirrors audit/2026-10-10/scripts/delivery-probes.py probes.derived_without_independent_raw and probes.duplicate_source_identity with the same inputs; the REQ-023/REQ-024 baseline neighbours keep their frozen verdicts.",
+    "Pre-fix frozen evidence recorded the derived case as denominator 1 with the AC02 three-term sum 0, and the duplicate case as denominator 2 with verified 1 / missing 0 while still status=verified; this probe asserts unique-identity accounting where derived-consistent counts as missing evidence with derived_consistent kept as an attribute."
+  ]
+}

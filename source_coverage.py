@@ -73,30 +73,37 @@ class SourceCategory:
         self._differences.append((identity, detail))
 
     def result(self):
-        applicable = len(self._applicable)
-        verified = len(self._verified)
-        derived = len(self._derived)
-        differences = len(self._differences)
-        difference_ids = {identity for identity, _ in self._differences}
-        missing = [identity for identity in self._applicable
-                   if identity not in self._verified and identity not in difference_ids and identity not in self._derived]
-        if applicable == 0:
+        # REQ-023 (A10): every count is accounted per unique applicable identity —
+        # duplicate registrations can neither inflate the denominator nor
+        # duplicate a missing entry, and a derived-consistent object still
+        # lacks raw evidence, so it counts as missing evidence;
+        # derived_consistent stays an attribute of that missing population
+        # (REQ-024 AC04).
+        applicable_ids = list(dict.fromkeys(self._applicable))
+        applicable = set(applicable_ids)
+        verified = len(self._verified & applicable)
+        difference_ids = {identity for identity, _ in self._differences} & applicable
+        differences = len(difference_ids)
+        missing = [identity for identity in applicable_ids
+                   if identity not in self._verified and identity not in difference_ids]
+        derived = len(self._derived & set(missing))
+        if not applicable_ids:
             status = 'not_applicable'
         elif differences:
             status = 'differences_found'
-        elif not missing and not derived:
+        elif not missing:
             status = 'verified'
         elif verified == 0:
             status = 'unverified'
         else:
             status = 'partial'
-        result = {'category': self.name, 'applicable': applicable, 'verified_consistent': verified,
-                  'verified_absent': len(self._verified_absent), 'derived_consistent': derived,
+        result = {'category': self.name, 'applicable': len(applicable_ids), 'verified_consistent': verified,
+                  'verified_absent': len(self._verified_absent & applicable), 'derived_consistent': derived,
                   'differences': differences, 'missing_evidence': len(missing),
                   'missing': missing[:MISSING_LIMIT], 'missing_truncated': len(missing) > MISSING_LIMIT,
                   'difference_details': [f'{identity}: {detail}' for identity, detail in self._differences[:MISSING_LIMIT]],
                   'status': status}
-        if applicable == 0:
+        if not applicable_ids:
             result['reason'] = self.not_applicable_reason
         return result
 
