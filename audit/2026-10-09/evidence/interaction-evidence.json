@@ -1,0 +1,130 @@
+{
+  "schema": "ubs-interaction-evidence/1",
+  "generated_at": "2026-10-10T00:01:21Z",
+  "requirement": "REQ-048",
+  "input": {
+    "root": "/mnt/d/ubs_core_monitor",
+    "triton_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+    "audit_artifact_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+    "matches_audit_frozen_input": true
+  },
+  "time_rules": {
+    "cases": {
+      "moveWindow": 14,
+      "clampBoundary": 16,
+      "keyWindow": 60,
+      "windowForHours": 10,
+      "minWindowSpan": 5,
+      "navSlider": 8,
+      "recoverWindow": 11,
+      "placeTip": 10,
+      "axisTicks": 11
+    },
+    "total": 145,
+    "node_status": "ok",
+    "mismatches": {}
+  },
+  "source_contracts": {
+    "checked": 52,
+    "missing": []
+  },
+  "views": {
+    "status": "ok",
+    "total": 21,
+    "expected_total": 21,
+    "repos": 9,
+    "per_repo_views": 18,
+    "global_views": 3,
+    "per_repo_checks_ok": true,
+    "global_checks_ok": true
+  },
+  "baseline": {
+    "status": "matched",
+    "triton_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+    "audit_artifact_sha256": "bc3d2d67d3b479eea71f5ec286e27f8e2ac2f2d3d4d002c7c5b40d71d2642ceb",
+    "checks": {
+      "T22": {
+        "label": "拖动时间窗口改变时间范围",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      "T23": {
+        "label": "拖动左边界改变范围",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      "T24": {
+        "label": "拖动右边界改变范围",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      "T25": {
+        "label": "点击导航空白跳转窗口",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      "T28": {
+        "label": "关注批次点击展开",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      "E01": {
+        "label": "Edge 可挂载 Triton 两图",
+        "actual": 2,
+        "expected": 2,
+        "passed": true
+      },
+      "E02": {
+        "label": "Edge 时间窗图表",
+        "actual": [
+          65
+        ],
+        "expected": [
+          65
+        ],
+        "passed": true
+      },
+      "E03": {
+        "label": "Edge 跨域导航",
+        "actual": 9,
+        "expected": 9,
+        "passed": true
+      },
+      "A09": {
+        "label": "触屏拖动共享时间导航器",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      }
+    },
+    "supporting": {
+      "T21": {
+        "label": "点击外部关闭卡片",
+        "actual": false,
+        "expected": false,
+        "passed": true
+      },
+      "V-mobile-tip": {
+        "label": "触屏散点显示详情",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      }
+    },
+    "console_errors": [],
+    "audit_counts": {
+      "passed": 54,
+      "failed": 10,
+      "unverified": 1
+    }
+  },
+  "overall": {
+    "status": "verified",
+    "problems": []
+  }
+}
