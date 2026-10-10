@@ -33,7 +33,7 @@
       });
       container.setAttribute('data-state', 'ready');
     } catch (err) {
-      container.innerHTML = '<div class="empty">工作台目录读取失败：请确认已发布目录，或运行 python scripts/devdata.py 后重载。</div>';
+      container.innerHTML = '<div class="empty" role="status">工作台目录读取失败：请确认已发布目录，或运行 python scripts/devdata.py 后重载。</div>';
       container.setAttribute('data-state', 'error');
     }
   }

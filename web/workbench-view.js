@@ -35,8 +35,8 @@
 
   function concernTableHTML(rows) {
     const list = rows || [];
-    if (!list.length) return '<div class="empty">当前没有需要关注的记录</div>';
-    const head = '<tr><th>项目</th><th>仓库</th><th>批次</th><th>原因</th><th>来源</th></tr>';
+    if (!list.length) return '<div class="empty" role="status">当前没有需要关注的记录</div>';
+    const head = '<tr><th scope="col">项目</th><th scope="col">仓库</th><th scope="col">批次</th><th scope="col">原因</th><th scope="col">来源</th></tr>';
     const body = list.map(function (row) {
       const link = row.source_url
         ? '<a href="' + esc(row.source_url) + '" target="_blank" rel="noreferrer">查看</a>'
@@ -71,7 +71,7 @@
     const selector = projectSelectorHTML(catalog, m.active_project_id || '');
     container.innerHTML =
       '<div class="workbench-bar">' + selector + '</div>' +
-      '<div class="workbench-cards">' + (cards || '<div class="empty">没有启用的项目</div>') + '</div>' +
+      '<div class="workbench-cards">' + (cards || '<div class="empty" role="status">没有启用的项目</div>') + '</div>' +
       '<section class="panel"><div class="panel-head"><h2>需要关注</h2>' +
       '<p>按稳定批次身份计数，同一批次多原因合并为一行。</p></div>' + concernHTML + '</section>';
   }
