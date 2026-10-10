@@ -14,7 +14,14 @@ test('P-002: shell modules load in dependency order before app.js', () => {
   assert.ok(idx('workbench.js') > idx('query-state.js'), 'workbench after query-state');
   assert.ok(idx('status-view.js') > idx('workbench.js'), 'status-view after workbench');
   assert.ok(idx('shell.js') > idx('status-view.js'), 'shell after status-view');
-  assert.ok(idx('app.js') > idx('shell.js'), 'app.js loads last');
+  assert.ok(idx('workbench-view.js') > idx('shell.js'), 'workbench-view after shell');
+  assert.ok(idx('shell-init.js') > idx('workbench-view.js'), 'shell-init after workbench-view');
+  assert.ok(idx('app.js') > idx('shell-init.js'), 'app.js loads last');
+});
+
+test('P-001: index.html carries a workbench view container and nav entry', () => {
+  assert.match(html, /<section id="workbench-view"/);
+  assert.match(html, /<a href="#workbench"[^>]*data-nav="workbench"/);
 });
 
 test('P-002: shell declares the fixed seven-task navigation', () => {
