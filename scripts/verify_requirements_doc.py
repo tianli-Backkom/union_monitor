@@ -11,8 +11,10 @@
 3. 来源与不变性：7 个来源文件 SHA-256 与第 7 节冻结表一致；requirements.md 与
    final-delivery-verification.json 保持审计基线单一历史且结论不变；业务源码的
    全部基线后提交均归属 REQ-XXX（需求生成不改业务源码）；本地文档链接全部有效；
-4. 总体验收：--delivering REQ-051 刷新后的验收台账 51/51 通过、195 条 AC、
-   6 条未验证结论保留（缺原始证据/真实历史不得记为完成）。
+4. 总体验收：--delivering REQ-051 刷新后的验收台账如实反映交付完成度——
+   结构核验通过、51 条需求/195 条 AC、无失败条目；冻结证据状态非 verified 的
+   需求（缺原始证据/真实历史）保留未验证、不得放宽为通过；6 条未验证结论及
+   D10/P04 标签保留。
 
 用法（先刷新验收台账，再运行本工具）：
     python3 -X utf8 scripts/verify_acceptance.py --delivering REQ-051
@@ -343,8 +345,16 @@ def check_sources(root, audit_dir, md_text, problems):
 
 
 def check_overall(root, audit_dir, problems):
-    """AC04：--delivering REQ-051 刷新后的验收台账 51/51 通过、未验证结论保留。"""
-    section = {"acceptance": None}
+    """AC04：验收台账如实反映交付完成度——通过须有证据链，未验证如实保留。
+
+    台账须由 verify_acceptance --delivering REQ-051 刷新：结构核验通过
+    （overall verified）、51 条需求/195 条 AC、无失败条目；冻结证据状态非
+    verified 的需求（REQ-038 unverified、REQ-039 aligned 等）必须保留未验证，
+    不得放宽为通过；除该冻结未验证集合与「本提交待落地」的交付需求自身外，
+    不允许其他未验证条目；6 条未验证结论及 D10/P04 标签保留
+    （缺原始证据/真实历史不得记为完成）。
+    """
+    section = {"acceptance": None, "allowed_unverified": [], "extra_unverified": [], "relaxed_unverified": []}
     path = os.path.join(audit_dir, ACCEPTANCE_EVIDENCE)
     if not os.path.isfile(path):
         problems.append(
@@ -354,25 +364,60 @@ def check_overall(root, audit_dir, problems):
     acc = vfa._load_json(path)
     ledger = acc.get("ledger", [])
     statuses = [e.get("status") for e in ledger]
+    by_req = {e.get("req"): e for e in ledger}
     conclusions = acc.get("conclusions", {})
+    allowed = sorted(
+        f"REQ-{n:03d}" for n, (_f, _k, want) in vfa.EVIDENCE_FILES.items() if want != "verified"
+    )
+    unverified = [e.get("req") for e in ledger if e.get("status") == "未验证"]
+    failed = [e.get("req") for e in ledger if e.get("status") == "失败"]
+    section["allowed_unverified"] = allowed
     section["acceptance"] = {
         "delivering": acc.get("input", {}).get("delivering"),
         "overall_status": acc.get("overall", {}).get("status"),
         "ledger": len(ledger),
         "passed": statuses.count("通过"),
         "unverified": statuses.count("未验证"),
+        "failed": statuses.count("失败"),
         "acs": len(acc.get("acceptance_criteria", [])),
         "unverified_conclusions": len(conclusions.get("unverified", [])),
+        "delivery": acc.get("delivery"),
     }
     a = section["acceptance"]
     if a["delivering"] != "REQ-051":
         problems.append(f"验收台账 delivering={a['delivering']} ≠ REQ-051（需先刷新）")
     if a["overall_status"] != "verified":
         problems.append(f"验收台账 overall_status={a['overall_status']} 不是 verified")
-    if a["ledger"] != vfa.EXPECTED["requirements"] or a["passed"] != 51 or a["unverified"] != 0:
-        problems.append(f"验收台账未达 51/51 通过（通过 {a['passed']}/51，未验证 {a['unverified']}）")
-    if a["acs"] != vfa.EXPECTED["acceptance_criteria"]:
-        problems.append(f"验收台账 AC 数 {a['acs']} ≠ {vfa.EXPECTED['acceptance_criteria']}")
+    if a["ledger"] != vfa.EXPECTED["requirements"] or a["acs"] != vfa.EXPECTED["acceptance_criteria"]:
+        problems.append(
+            f"验收台账规模 {a['ledger']}/{a['acs']} ≠ 51/195"
+        )
+    if failed:
+        problems.append(f"验收台账存在失败条目：{failed}")
+    if a["passed"] + a["unverified"] + a["failed"] != vfa.EXPECTED["requirements"]:
+        problems.append("验收台账 通过/未验证/失败 计数与需求总数不一致")
+    section["relaxed_unverified"] = [r for r in allowed if r not in unverified]
+    if section["relaxed_unverified"]:
+        problems.append(
+            f"冻结证据未验证的需求被放宽为通过：{section['relaxed_unverified']}（缺原始证据/真实历史不得记为完成）"
+        )
+    delivering_req = "REQ-051"
+    extra = [r for r in unverified if r not in allowed]
+    pending_ok = False
+    if delivering_req in extra:
+        e = by_req.get(delivering_req)
+        if e and e.get("pending_commit"):
+            pending_ok = True
+    section["extra_unverified"] = [r for r in extra if not (r == delivering_req and pending_ok)]
+    if section["extra_unverified"]:
+        problems.append(
+            f"允许范围之外的未验证条目：{section['extra_unverified']}（已交付需求须有完整证据链）"
+        )
+    for e in ledger:
+        if e.get("status") == "通过" and not e.get("version"):
+            problems.append(f"{e.get('req')} 标记通过但缺少版本（交付提交）")
+        if e.get("status") == "未验证" and not e.get("unverified_reason"):
+            problems.append(f"{e.get('req')} 未验证但缺少原因（如实状态须可追溯）")
     if a["unverified_conclusions"] != vfa.EXPECTED["unverified_conclusion_rows"]:
         problems.append(
             f"未验证结论保留数 {a['unverified_conclusions']} ≠ "

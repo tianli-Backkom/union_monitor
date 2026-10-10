@@ -1,6 +1,6 @@
 {
   "requirement": "REQ-051 完整需求文档的版本与可追溯交付",
-  "generated_at": "2026-10-10T08:53:25.951800+08:00",
+  "generated_at": "2026-10-10T11:50:17.292670+08:00",
   "input": {
     "root": "/mnt/d/ubs_core_monitor",
     "audit_dir": "audit/2026-10-09"
@@ -194,11 +194,35 @@
       "delivering": "REQ-051",
       "overall_status": "verified",
       "ledger": 51,
-      "passed": 51,
-      "unverified": 0,
+      "passed": 49,
+      "unverified": 2,
+      "failed": 0,
       "acs": 195,
-      "unverified_conclusions": 6
-    }
+      "unverified_conclusions": 6,
+      "delivery": {
+        "structural_verification": "verified",
+        "requirements": 51,
+        "acceptance_criteria": 195,
+        "passed": 49,
+        "unverified": 2,
+        "failed": 0,
+        "unverified_reqs": [
+          "REQ-038",
+          "REQ-039"
+        ],
+        "failed_reqs": [],
+        "kinds_not_evidenced": [
+          "真实部署"
+        ],
+        "note": "structural_verification 表示台账与证据链核验本身的结果；passed/unverified 表达业务交付完成度，未验证为如实保留的状态而非核验失败"
+      }
+    },
+    "allowed_unverified": [
+      "REQ-038",
+      "REQ-039"
+    ],
+    "extra_unverified": [],
+    "relaxed_unverified": []
   },
   "overall": {
     "status": "verified",

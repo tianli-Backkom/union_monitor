@@ -6,7 +6,9 @@
 1. 单元测试：Markdown 链接/REQ 提交主题/依赖行解析、依赖规则
    （不存在/自依赖/环/文档与模型不一致）；
 2. 合成 git 树测试：先以 --delivering REQ-051 刷新验收台账，文档工具
-   exit 0；非 REQ 业务提交、REQ-011 删 AC（最少 3 条不满足）、台账过期
+   exit 0（如实台账：冻结未验证需求与交付需求自身待落地均被接受）；
+   提交落地后的完整状态 exit 0；把 REQ-038 放宽为通过、编造额外未验证、
+   非 REQ 业务提交、REQ-011 删 AC（最少 3 条不满足）、台账过期
    （delivering=REQ-050）、链接目标失效、保持需求挂接 F 来源均 exit 1；
 3. 已提交证据冻结值测试：结构/分类/来源/总体验收与交付证据逐项一致。
 """
@@ -62,36 +64,7 @@ def run_vrd(tree: Path, out: Path = None) -> int:
 
 def build_tree(base: Path, name: str, req_commits: int = 50) -> Path:
     """合成树：REQ-050 测试树基础上补冻结 final-delivery-verification.json。"""
-    tree = base / name
-    evidence = tree / "audit" / "2026-10-09" / "evidence"
-    evidence.mkdir(parents=True)
-    shutil.copy2(AUDIT / "requirements.md", evidence.parent / "requirements.md")
-    for f in ("review-report.md", "coverage-matrix.md"):
-        shutil.copy2(AUDIT / f, evidence.parent / f)
-    shutil.copy2(AUDIT / "evidence" / "baseline-comparison.md", evidence / "baseline-comparison.md")
-    for f in ta.EVIDENCE_JSONS:
-        shutil.copy2(AUDIT / "evidence" / f, evidence / f)
-    shutil.copy2(
-        AUDIT / "evidence" / "final-delivery-verification.json",
-        evidence / "final-delivery-verification.json",
-    )
-    fixtures = tree / "tests" / "fixtures"
-    fixtures.mkdir(parents=True)
-    shutil.copy2(
-        REPO / "tests" / "fixtures" / "triton-audit-freeze.json",
-        fixtures / "triton-audit-freeze.json",
-    )
-    (tree / "tests" / "test_dummy.py").write_text("def test_ok():\n    pass\n", encoding="utf-8")
-    (tree / "tests" / "dummy.test.cjs").write_text("require('node:test');\n", encoding="utf-8")
-    ta._git_ok(tree, "init", "-q")
-    ta._git_ok(tree, "config", "user.email", "t@example.com")
-    ta._git_ok(tree, "config", "user.name", "tester")
-    ta._git_ok(tree, "config", "commit.gpgsign", "false")
-    ta._git_ok(tree, "add", "-A")
-    ta._git_ok(tree, "commit", "-q", "-m", "审计基线：合成树")
-    for i in range(1, req_commits + 1):
-        ta._git_ok(tree, "commit", "-q", "--allow-empty", "-m", f"REQ-{i:03d}：测试主题")
-    return tree
+    return ta.build_tree(base, name, req_commits, final_delivery=True)
 
 
 class UnitTests(unittest.TestCase):
@@ -186,7 +159,57 @@ class SyntheticTreeTests(unittest.TestCase):
         self.assertEqual(report["structure"]["requirements"], 51)
         self.assertEqual(report["structure"]["acceptance_criteria"], 195)
         acc = report["overall_acceptance"]["acceptance"]
-        self.assertEqual((acc["delivering"], acc["passed"], acc["unverified"]), ("REQ-051", 51, 0))
+        # 50 个 REQ 提交：REQ-051 为交付需求自身（本提交待落地），如实未验证
+        self.assertEqual(
+            (acc["delivering"], acc["passed"], acc["unverified"], acc["failed"]),
+            ("REQ-051", 48, 3, 0),
+        )
+        self.assertEqual(report["overall_acceptance"]["allowed_unverified"], ["REQ-038", "REQ-039"])
+
+    def test_post_commit_state_exit_zero(self):
+        done = self.tmp / "done"
+        build_tree(self.tmp, "done", req_commits=51)
+        try:
+            self.assertEqual(run_vfa(done, "REQ-051"), 0)
+            out = self.tmp / "done.json"
+            self.assertEqual(run_vrd(done, out), 0)
+            report = json.loads(out.read_text(encoding="utf-8"))
+            acc = report["overall_acceptance"]["acceptance"]
+            self.assertEqual(
+                (acc["passed"], acc["unverified"], acc["failed"]), (49, 2, 0)
+            )
+        finally:
+            shutil.rmtree(done, ignore_errors=True)
+
+    def test_relaxed_unverified_rejected(self):
+        relaxed = self.tmp / "relaxed"
+        shutil.copytree(self.tree, relaxed, symlinks=True)
+        try:
+            path = relaxed / "audit" / "2026-10-09" / "evidence" / "acceptance-evidence.json"
+            data = json.loads(path.read_text(encoding="utf-8"))
+            for entry in data["ledger"]:
+                if entry["req"] == "REQ-038":
+                    entry["status"] = "通过"
+                    entry["unverified_reason"] = None
+            path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            self.assertEqual(run_vrd(relaxed), 1)
+        finally:
+            shutil.rmtree(relaxed, ignore_errors=True)
+
+    def test_extra_unverified_rejected(self):
+        extra = self.tmp / "extra"
+        shutil.copytree(self.tree, extra, symlinks=True)
+        try:
+            path = extra / "audit" / "2026-10-09" / "evidence" / "acceptance-evidence.json"
+            data = json.loads(path.read_text(encoding="utf-8"))
+            for entry in data["ledger"]:
+                if entry["req"] == "REQ-007":
+                    entry["status"] = "未验证"
+                    entry["unverified_reason"] = "测试改写：证据链不完整"
+            path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            self.assertEqual(run_vrd(extra), 1)
+        finally:
+            shutil.rmtree(extra, ignore_errors=True)
 
     def test_tamper_business_commit(self):
         stale = self.tmp / "biz"
@@ -301,9 +324,10 @@ class CommittedEvidenceTests(unittest.TestCase):
                 "production_changed": [],
             },
         )
-        self.assertEqual(
-            s["business_attribution"], {"root_commit": "db0d98f", "commits": 35, "non_req": []}
-        )
+        biz = s["business_attribution"]
+        self.assertEqual(biz["root_commit"], "db0d98f")
+        self.assertGreaterEqual(biz["commits"], 35)
+        self.assertEqual(biz["non_req"], [])
         links = s["links"]
         self.assertEqual(len(links["local_links"]), 7)
         self.assertTrue(all(v["ok"] for v in links["local_links"].values()))
@@ -318,12 +342,34 @@ class CommittedEvidenceTests(unittest.TestCase):
                 "delivering": "REQ-051",
                 "overall_status": "verified",
                 "ledger": 51,
-                "passed": 51,
-                "unverified": 0,
+                "passed": 49,
+                "unverified": 2,
+                "failed": 0,
                 "acs": 195,
                 "unverified_conclusions": 6,
+                "delivery": {
+                    "structural_verification": "verified",
+                    "requirements": 51,
+                    "acceptance_criteria": 195,
+                    "passed": 49,
+                    "unverified": 2,
+                    "failed": 0,
+                    "unverified_reqs": ["REQ-038", "REQ-039"],
+                    "failed_reqs": [],
+                    "kinds_not_evidenced": ["真实部署"],
+                    "note": (
+                        "structural_verification 表示台账与证据链核验本身的结果；"
+                        "passed/unverified 表达业务交付完成度，"
+                        "未验证为如实保留的状态而非核验失败"
+                    ),
+                },
             },
         )
+        self.assertEqual(
+            self.report["overall_acceptance"]["allowed_unverified"], ["REQ-038", "REQ-039"]
+        )
+        self.assertEqual(self.report["overall_acceptance"]["extra_unverified"], [])
+        self.assertEqual(self.report["overall_acceptance"]["relaxed_unverified"], [])
 
     def test_readme_command_block_contract(self):
         """README 验证命令块：verify_acceptance 需带 --delivering REQ-051 再跑文档工具。"""
