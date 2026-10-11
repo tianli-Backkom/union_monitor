@@ -6,6 +6,7 @@ import argparse
 import csv
 import html
 import json
+import hashlib
 import math
 import os
 import time
@@ -341,8 +342,13 @@ def build_batches(runs, as_of, window_start=None):
         # start falls before the display window are never counted into it.
         boundary = dt(window_start)
         batches = [b for b in batches if not b["start_at"] or dt(b["start_at"]) >= boundary]
+    for batch in batches:
+        batch["e2e_sample_eligible"], batch["e2e_exclusion_reason"] = e2e_qualification(batch)
     by_pr=defaultdict(list)
-    for batch in batches: by_pr[batch.get("pr")].append(batch)
+    for batch in batches:
+        # Missing PRs are independent run/attempt records, not one fictional PR.
+        key = batch["pr"] if batch.get("pr") is not None else ("unresolved", batch["id"])
+        by_pr[key].append(batch)
     for rows in by_pr.values():
         for index,batch in enumerate(rows,1):
             batch["e2e_index"]=index;batch["e2e_total"]=len(rows)
@@ -570,11 +576,40 @@ def valid_seconds(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and value >= 0
 
 
+def e2e_qualification(batch):
+    """Separate measurable observations from confirmed commit/attempt samples.
+
+    Old snapshots without qualification fields keep their established rules,
+    except an explicitly unresolved identity can never establish a PR batch.
+    This does not govern NPU measurements or rewrite execution results.
+    """
+    if "pr" in batch and batch.get("pr") is None:
+        return False, "unresolved_pr_batch_identity"
+    if batch.get("e2e_sample_eligible") is False:
+        return False, batch.get("e2e_exclusion_reason") or "explicit_metric_exclusion"
+    if batch.get("status") not in ("success", "failure"):
+        return False, "running_observation" if batch.get("status") == "running" else "non_sample_result"
+    if not valid_seconds(batch.get("duration_seconds")):
+        return False, "invalid_or_missing_duration"
+    return True, None
+
+
+def qualification_manifest(payload):
+    """Versioned metadata accompanies, rather than changes, the legacy CSV."""
+    return {"schema_version": 1, "metric": "triton_commit_attempt_e2e",
+            "collected_at": payload.get("collected_at"),
+            "window_start": payload.get("window_start"), "window_end": payload.get("window_end"),
+            "batches": [{"id": b["id"], "pr": b.get("pr"),
+                         "workflow_attempts": [{"run_id": w.get("id"), "attempt": w.get("attempt", 1)} for w in b.get("workflows", [])],
+                         "e2e_sample_eligible": e2e_qualification(b)[0],
+                         "e2e_exclusion_reason": e2e_qualification(b)[1]} for b in payload["batches"]]}
+
+
 def summary_of(batches, calls=0):
     """Summary statistics count only success/failure batches with valid durations
     (REQ-017); running and cancelled batches keep observed values but never
     join the completed-sample statistics."""
-    complete = [b for b in batches if b["status"] in ("success", "failure") and valid_seconds(b["duration_seconds"])]
+    complete = [b for b in batches if e2e_qualification(b)[0]]
     values = [b["duration_seconds"] for b in complete]
     return {"prs": len({b["pr"] for b in batches if b["pr"]}), "batches": len(batches),
             "valid": len(complete), "median": percentile(values, .5), "p90": percentile(values, .9),
@@ -601,6 +636,7 @@ def write_payload(payload):
     data_dir=REPO_ROOT/"web"/"data"
     data_dir.mkdir(parents=True,exist_ok=True)
     (data_dir/"triton.json").write_text(json.dumps(payload,ensure_ascii=False)+"\n",encoding="utf-8")
+    _write_json(data_dir/"triton-qualifications-v1.json", qualification_manifest(payload))
     export_csv(payload); _write_json(EVIDENCE/"dashboard-data.json",payload)
 
 
@@ -622,7 +658,9 @@ def main():
     if not report["passed"]:
         raise RuntimeError("Data quality gate failed: "+"; ".join(report["errors"][:10]))
     write_payload(payload)
-    _write_json(REPO_ROOT/"web"/"data"/"triton-manifest.json",{"sha256":fingerprint(payload),"collected_at":payload["collected_at"],**report})
+    qualifications=REPO_ROOT/"web"/"data"/"triton-qualifications-v1.json"
+    _write_json(REPO_ROOT/"web"/"data"/"triton-manifest.json",{"sha256":fingerprint(payload),"collected_at":payload["collected_at"],
+               "qualifications_file":qualifications.name,"qualifications_sha256":hashlib.sha256(qualifications.read_bytes()).hexdigest(),**report})
     problems=verify_artifacts(REPO_ROOT/"web"/"data",EVIDENCE)
     if problems: raise RuntimeError("Artifact consistency gate failed: "+"; ".join(problems[:10]))
     print(f"Generated web/data/triton.json with {len(payload['batches'])} batches")

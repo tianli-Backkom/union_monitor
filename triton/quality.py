@@ -33,11 +33,38 @@ def validate(runs, payload):
         if mismatches:
             errors.append("payload summary contradicts its batches: "+"; ".join(mismatches))
     represented={j.get("id") for b in payload["batches"] for j in b.get("npu_jobs",[])}
-    # Runs whose batch is excluded by the display window are association evidence
-    # only (build_batches drops batches that start before the window). Their NPU
-    # jobs are therefore legitimately absent from `represented`, so the job-level
-    # aggregation check below must only apply to runs actually in the payload.
+    # Expected membership comes from source identities and attempt evidence,
+    # never from the output being checked. A removed in-window batch cannot
+    # turn itself into an out-of-window exemption.
     batched={(w.get("id"), int(w.get("attempt") or 1)) for b in payload["batches"] for w in b.get("workflows",[])}
+    source_groups={}
+    source_keys={}
+    for run in runs:
+        pair=(run.get("id"), int(run.get("run_attempt") or 1))
+        attempt=pair[1]
+        key=("rerun", *pair) if attempt>1 else (("initial", run.get("pr"), run.get("head_sha")) if run.get("pr") else ("unresolved", *pair))
+        source_keys[pair]=key
+        try:
+            start=stamp(run.get("trigger_at")) if run.get("trigger_exact") else stamp(run.get("run_started_at") if attempt>1 else run.get("created_at"))
+        except (ValueError,TypeError,AttributeError):
+            start=None
+        group=source_groups.setdefault(key, {"exact": [], "derived": []})
+        if start is not None:
+            group["exact" if run.get("trigger_exact") else "derived"].append(start)
+    try:
+        window_start=stamp(payload.get("window_start"))
+    except (ValueError,TypeError,AttributeError):
+        window_start=None
+    expected=set()
+    for pair,key in source_keys.items():
+        group=source_groups[key]
+        starts=group["exact"] or group["derived"]
+        start=min(starts) if starts else None
+        # Unknown start evidence cannot justify silently dropping a record.
+        if start is None or ((window_start is None or start>=window_start) and (as_of is None or start<=as_of)):
+            expected.add(pair)
+    for pair in expected-batched:
+        errors.append(f"run {pair[0]} attempt {pair[1]}: in-window workflow absent from aggregated data")
     for run in runs:
         prefix=f"run {run.get('id')}"
         if run.get("event") in ("pull_request","pull_request_target"):
@@ -77,7 +104,7 @@ def validate(runs, payload):
             # Independent of the collector's runner-name matcher.
             candidate="integration-tests-ascend (" in name or bool(re.search(r"linux-(?:amd64|aarch64)-a[0-9]",name))
             if not candidate: continue
-            if (run.get("id"), int(run.get("run_attempt") or 1)) in batched and job.get("id") not in represented:
+            if (run.get("id"), int(run.get("run_attempt") or 1)) in expected and job.get("id") not in represented:
                 errors.append(prefix+": NPU job absent from aggregated data")
             key=prefix+f" job {job.get('id')}: "
             from .dashboard import _is_npu_job, focus_from_jobs
@@ -183,6 +210,19 @@ def verify_artifacts(data_dir,evidence_dir=None):
             if (row.get(field) or "")!=expected:
                 errors.append(f"CSV row {position} (PR {batch.get('pr')}/{batch.get('sha')}) field {field}: {row.get(field)!r} differs from {expected!r}")
                 break
+    qualification_file=data_dir/"triton-qualifications-v1.json"
+    if qualification_file.exists() or any("e2e_sample_eligible" in b for b in batches) or "qualifications_sha256" in manifest:
+        try:
+            from .dashboard import qualification_manifest
+            raw=qualification_file.read_bytes()
+            if json.loads(raw)!=qualification_manifest(payload):
+                errors.append("qualification metadata differs from the payload identities or E2E sample contract")
+            if manifest.get("qualifications_file", qualification_file.name)!=qualification_file.name:
+                errors.append("qualification filename differs from the versioned contract")
+            if manifest.get("qualifications_sha256") and hashlib.sha256(raw).hexdigest()!=manifest["qualifications_sha256"]:
+                errors.append("qualification metadata sha256 differs from the build manifest")
+        except (OSError,ValueError,TypeError) as exc:
+            errors.append("qualification metadata missing or invalid: "+str(exc))
     if evidence_dir is not None:
         evidence=evidence_dir/"dashboard-data.json"
         if not evidence.exists():
