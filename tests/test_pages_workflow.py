@@ -68,6 +68,12 @@ class PagesWorkflowTests(unittest.TestCase):
     def test_triton_collection_uses_the_repo_secret_for_rate_limit(self):
         self.assertRegex(self.workflow, r"(?ms)Collect Triton gating data\s*\n\s+env:\s*\n\s+GH_TOKEN: \$\{\{ secrets\.GH_TOKEN \}\}")
 
+    def test_checkout_uses_full_history_for_commit_mapping_tests(self):
+        # Acceptance tests map commit messages to requirement numbers, so the CI
+        # checkout must not be shallow (source coverage audit needs full history).
+        self.assertEqual(self.workflow.count("uses: actions/checkout@v4"), self.workflow.count("fetch-depth: 0"))
+        self.assertRegex(self.workflow, r"(?ms)uses: actions/checkout@v4\s+with:\s+fetch-depth: 0")
+
 
 if __name__ == "__main__":
     unittest.main()

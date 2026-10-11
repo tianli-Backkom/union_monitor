@@ -79,6 +79,10 @@ class TritonWorkflowTests(unittest.TestCase):
         self.assertIn("cp web/data/repositories.json data/repositories.json", self.workflow)
         self.assertIn("[ensure-UBS-data] summary: cache=", self.workflow)
 
+    def test_checkout_uses_full_history_for_commit_mapping_tests(self):
+        for text in (self.workflow, self.pages):
+            self.assertEqual(text.count("uses: actions/checkout@v4"), text.count("fetch-depth: 0"))
+            self.assertRegex(text, r"(?ms)uses: actions/checkout@v4\s+with:\s+fetch-depth: 0")
     def test_shares_versioned_snapshot_cache_with_daily_build(self):
         for path in (
             "web/data/repositories.json",
