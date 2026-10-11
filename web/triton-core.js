@@ -3,6 +3,14 @@
    never coerced into an implicit 0. Top-level so both module blocks below
    share this one definition. */
 const validDuration = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
+// E2E identity and measurement qualification are independent of NPU evidence.
+// Explicitly unresolved old records must also be excluded; old records without
+// identity/qualification fields retain the established numerical rules.
+const e2eIdentityKnown = row => !(row && Object.prototype.hasOwnProperty.call(row, 'pr') && row.pr == null)
+  && !(row && row.e2e_sample_eligible === false);
+const sampleEligible = (row, metric = 'e2e') => !!row
+  && (row.status === 'success' || row.status === 'failure') && validDuration(row.duration_seconds)
+  && (metric === 'npu' ? !row.npu_data_missing : e2eIdentityKnown(row));
 
 (function (root, factory) {
   const api = factory();
@@ -57,9 +65,9 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
   }
 
   /* REQ-017: chart/summary statistics count only valid durations. */
-  function chartStats(rows) {
+  function chartStats(rows, metric = 'e2e') {
     const observed = rows.map(row => row.duration_seconds).filter(validDuration);
-    const completed = rows.filter(row => (row.status === 'success' || row.status === 'failure') && validDuration(row.duration_seconds))
+    const completed = rows.filter(row => sampleEligible(row, metric))
       .map(row => row.duration_seconds);
     return {
       max: observed.length ? Math.max(...observed) : 300,
@@ -75,7 +83,7 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
   }
 
   function dashboardStats(rows) {
-    const completed = rows.filter(row => (row.status === 'success' || row.status === 'failure') && validDuration(row.duration_seconds));
+    const completed = rows.filter(row => sampleEligible(row));
     const values = completed.map(row => row.duration_seconds);
     return {
       prs: new Set(rows.map(row => row.pr).filter(Boolean)).size,
@@ -99,6 +107,11 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
   /* REQ-029: stable identity label for a chart mark so keyboard users can
      locate a batch before opening its pinned detail card. */
   function markLabel(batch, kind) {
+    if (batch && batch.pr == null) {
+      const workflow = (batch.workflows || [])[0] || {};
+      return (kind === 'npu' ? 'NPU 排队详情：' : '观测详情：') + '未关联 PR · Run #' + (workflow.id || batch.id || '?')
+        + ' · attempt ' + (workflow.attempt || 1) + ' · ' + String(batch.sha || '未知').slice(0, 7);
+    }
     const pr = batch && batch.pr != null ? batch.pr : '?';
     const attempt = `第 ${(batch && batch.e2e_index) || 1}/${(batch && batch.e2e_total) || 1} 次 E2E`;
     const sha = String((batch && batch.sha) || '未知').slice(0, 7);
@@ -110,7 +123,7 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     return `<g class="mark-hit" data-i="${index}" data-kind="${kind || 'e2e'}" role="button" tabindex="0" aria-label="${markLabel(batch, kind)}" transform="translate(${cx} ${cy})"><circle class="hit-area" r="8"/><circle class="dot" r="${radius}" fill="${color}"/></g>`;
   }
 
-  return { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, markLabel, validDuration, startSourceLabel };
+  return { selectWindow, windowForHours, moveWindow, spreadPoints, chartStats, filterBranches, dashboardStats, circleMark, markLabel, validDuration, sampleEligible, e2eIdentityKnown, startSourceLabel };
 });
 
 /* ---- T8 additions (appended; the prefix above is the original module plus
@@ -124,7 +137,7 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
   else Object.assign(root, api);
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   function isSlow(batch, p90) {
-    return validDuration(batch && batch.duration_seconds) && p90 != null && batch.status !== 'running' && batch.duration_seconds >= p90;
+    return e2eIdentityKnown(batch) && validDuration(batch && batch.duration_seconds) && p90 != null && batch.status !== 'running' && batch.duration_seconds >= p90;
   }
 
   /* REQ-026: the strategy (P90 slow group vs top-5 longest), the threshold
@@ -133,7 +146,7 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
      narrows the rows shown inside each already-decided group. */
   function attentionGroups(rows, p90, query) {
     const list = Array.isArray(rows) ? rows : [];
-    const completed = list.filter(row => row.status === 'success' || row.status === 'failure');
+    const completed = list.filter(row => sampleEligible(row));
     const valid = completed.filter(row => validDuration(row.duration_seconds)).length;
     let slow = list.filter(row => isSlow(row, p90))
       .sort((a, b) => (b.duration_seconds || 0) - (a.duration_seconds || 0));
@@ -159,8 +172,8 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
   function attentionNote(valid) {
     const n = Number.isFinite(valid) ? valid : 0;
     return n < 10
-      ? '有效完成样本少于 10 个（页级范围 ' + n + ' 个），展示耗时最长批次；三组之间可能有批次重叠，组计数之和不是唯一批次数。'
-      : '优先显示超过 P90（按页级范围 ' + n + ' 个有效完成样本计算）、执行中和失败的批次；三组之间可能有批次重叠，组计数之和不是唯一批次数。';
+      ? '有效完成样本少于 10 个（页级范围 ' + n + ' 个），展示耗时最长批次；理由计数可重叠，列表按稳定批次去重、每批次一行多标签。'
+      : '优先显示超过 P90（按页级范围 ' + n + ' 个有效完成样本计算）、执行中和失败的批次；理由计数可重叠，列表按稳定批次去重、每批次一行多标签。';
   }
 
   /* REQ-028: stable DOM ids for one batch row. The attention groups may
@@ -238,7 +251,7 @@ const validDuration = value => typeof value === 'number' && Number.isFinite(valu
     const collected = collectedAt == null ? null : +new Date(collectedAt);
     const bj = new Date(t + 8 * 3600000);
     const day = Date.UTC(bj.getUTCFullYear(), bj.getUTCMonth(), bj.getUTCDate());
-    const slots = [-4, 8, 13, 18, 20]
+    const slots = [-4, 8, 12, 16, 18, 20]
       .map(hours => day + (hours - 8) * 3600000)
       .filter(slot => slot + 90 * 60000 <= t);
     const latest = slots.length ? Math.max(...slots) : null;

@@ -398,7 +398,7 @@ td.num,th.num{text-align:right}
 /* ---------- 22. Triton watchlist rows ---------- */
 .tools{padding:13px 20px;display:flex;gap:9px;border-bottom:1px solid var(--line)}
 .group-title{display:flex;align-items:center;gap:10px;margin:20px 0 9px;font-size:13px;font-weight:700}
-.rows{border-top:1px solid var(--line)}
+.rows{border-top:1px solid var(--line);max-width:100%;overflow-x:auto}
 .row{border-bottom:1px solid var(--line)}
 .row-main{display:grid;grid-template-columns:26px 92px minmax(220px,1.8fr) 95px 105px 105px minmax(120px,1fr);gap:14px;align-items:center;padding:13px 8px;cursor:pointer}
 .row-main:hover{background:var(--surface-hover)}
@@ -567,8 +567,7 @@ footer{display:flex;color:var(--text-3);font-family:var(--font-num);font-size:12
   .stamp{text-align:left;border-left:0;padding:0}
   .section-head{align-items:flex-start;flex-direction:column}
   .chart-wrap{padding-left:4px;padding-right:4px}
-  .row-main{grid-template-columns:70px 1fr 80px}
-  .row-main>:nth-child(4),.row-main>:nth-child(6){display:none}
+  .row-main{grid-template-columns:26px 88px minmax(160px,1fr) 66px 105px 105px 130px;min-width:820px}
   .workflow{grid-template-columns:105px 1fr 62px}
   .jobs{margin-left:0}
   .selection-stats{align-items:stretch}
@@ -590,3 +589,12 @@ footer{display:flex;color:var(--text-3);font-family:var(--font-num);font-size:12
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* The workbench presents only loaded snapshots until task/release metadata is
+   connected. Long repository identities wrap inside cards, never the page. */
+.workbench-note{font-size:13px;line-height:1.8;color:var(--text-2);margin:var(--sp-4) 0}
+.workbench-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--sp-4);margin-bottom:var(--sp-6)}
+.project-card,.unavailable-task{padding:var(--sp-5);border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface);min-width:0;overflow-wrap:anywhere}
+.project-card h3{margin:0 0 var(--sp-3);font-size:17px}
+.project-card p,.unavailable-task p{margin:var(--sp-3) 0;font-size:13px;line-height:1.7}
+.workbench-error{color:var(--danger)}

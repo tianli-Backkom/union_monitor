@@ -71,6 +71,22 @@ class UnifiedShadowWorkflowTests(unittest.TestCase):
         self.assertRegex(self.workflow, r"(?ms)- name: Upload candidate release\s*\n\s+if: always\(\)")
         self.assertNotIn("continue-on-error", self.workflow)
 
+    def test_download_keeps_project_directories_and_checks_real_artifacts(self):
+        self.assertNotIn('merge-multiple: true', self.workflow)
+        self.assertIn('load_project_reports', self.workflow)
+        self.assertNotIn("reports[rep.get('project_id')] = rep", self.workflow)
+
+    def test_manual_shadow_declares_authenticated_collector_with_fallback(self):
+        self.assertIn('GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}', self.workflow)
+
+    def test_artifacts_are_scoped_to_attempt_for_safe_reruns(self):
+        artifact_lines = [line for line in self.workflow.splitlines()
+                          if ('name:' in line or 'pattern:' in line)
+                          and any(prefix in line for prefix in ('shadow-context-', 'project-bundle-', 'shadow-candidate-'))]
+        self.assertTrue(artifact_lines)
+        for line in artifact_lines:
+            self.assertIn('${{ github.run_attempt }}', line, 'reruns must not collide with or download earlier-attempt artifacts')
+
 
 if __name__ == "__main__":
     unittest.main()

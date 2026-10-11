@@ -60,6 +60,7 @@ class TritonWorkflowTests(unittest.TestCase):
         self.assertIn(f"SITE_FALLBACK_URL: {FALLBACK_URL}", self.workflow)
         self.assertIn('"${SITE_FALLBACK_URL:-' + FALLBACK_URL + '}"', self.workflow)
         self.assertIn("curl -fsSL --retry 3 --retry-delay 5 --retry-all-errors", self.workflow)
+        self.assertIn('$(echo "$missing" | wc -w)', self.workflow)
         # No-deploy guard: a still-missing UBS index must fail the build.
         self.assertRegex(
             self.workflow,

@@ -17,8 +17,7 @@ test('P-002: shell modules load in dependency order before app.js', () => {
   assert.ok(idx('status-view.js') > idx('workbench.js'), 'status-view after workbench');
   assert.ok(idx('shell.js') > idx('status-view.js'), 'shell after status-view');
   assert.ok(idx('workbench-view.js') > idx('shell.js'), 'workbench-view after shell');
-  assert.ok(idx('shell-init.js') > idx('workbench-view.js'), 'shell-init after workbench-view');
-  assert.ok(idx('app.js') > idx('shell-init.js'), 'app.js loads last');
+  assert.ok(idx('app.js') > idx('workbench-view.js'), 'app owns the published snapshot read and mounts the workbench');
 });
 
 test('P-001: index.html carries a workbench view container and nav entry', () => {
@@ -26,12 +25,12 @@ test('P-001: index.html carries a workbench view container and nav entry', () =>
   assert.match(html, /<a href="#workbench"[^>]*data-nav="workbench"/);
 });
 
-test('P-011: app.js routes the new workbench/projects scheme into the workbench view', () => {
-  assert.match(app, /function navigate\(hash\)\{const newRoute=Router\.parseRoute\(hash\)/);
-  assert.match(app, /function applyWorkbenchRoute\(route\)/);
-  assert.match(app, /\$\('workbench-view'\)\.hidden=false/);
-  assert.match(app, /for\(const id of \['ubs-view','ubs-repo-view','triton-view','method-view'\]\)\$\(id\)\.hidden=true/);
-  assert.match(app, /a\.dataset\.nav==='workbench'/);
+test('P-011: a project route opens its project view instead of the workbench', () => {
+  const { createApp } = require('./helpers/app-harness.cjs');
+  const runtime = createApp();
+  runtime.run("navigate('#projects/triton/trends')");
+  assert.equal(runtime.element('workbench-view').hidden, true);
+  assert.equal(runtime.element('triton-view').hidden, false);
 });
 
 test('P-002: shell declares the fixed seven-task navigation', () => {

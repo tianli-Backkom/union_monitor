@@ -38,6 +38,29 @@
 
   let active = null;
   let mounted = null;
+  let savedState = null;
+
+  function deactivate() {
+    if (active) {
+      savedState = active.state();
+      active.destroy();
+    }
+    active = null;
+    mounted = null;
+  }
+
+  function identityHtml(batch) {
+    if (batch.pr != null && batch.pr_url) return `<a class="pr link" href="${esc(batch.pr_url)}" target="_blank" rel="noopener">PR #${esc(batch.pr)}</a>`;
+    const workflow = (batch.workflows || [])[0] || {};
+    return `<span class="pr">未关联 PR · Run #${esc(workflow.id || batch.id)} · attempt ${esc(workflow.attempt || 1)}</span>`;
+  }
+
+  function qualificationHtml(batch) {
+    if (core.sampleEligible(batch)) return '';
+    const reasons = { unresolved_pr_batch_identity: 'PR 与提交批次身份未确认', running_observation: '执行中观测', non_sample_result: '当前结果不属完成样本', invalid_or_missing_duration: '时长证据无效或缺失' };
+    const reason = batch.e2e_exclusion_reason || (batch.pr == null ? 'unresolved_pr_batch_identity' : 'non_sample_result');
+    return `<small class="sub">E2E 排除：${esc(reasons[reason] || reason)}</small>`;
+  }
 
   /* REQ-033 AC01/AC02: 顶栏分支徽标跟随 Triton 分支选择（全部/单选/多选），不遗留 UBS 的 master 表达。 */
   function syncBranchBadge(branches) {
@@ -58,7 +81,7 @@
       if (fm && active) fm.textContent = active.footerText();
       return;
     }
-    const prevState = active ? active.state() : null;
+    const prevState = active ? active.state() : savedState;
     if (active) { active.destroy(); active = null; }
     mounted = null;
     if (!container) return;
@@ -263,7 +286,7 @@
       if (stats.p90 != null) out += `<line class="p90-line" x1="${m.l}" x2="${W - m.r}" y1="${y(stats.p90)}" y2="${y(stats.p90)}"/>`;
       const bins = [];
       for (let a = viewStart; a < viewEnd; a += 6 * HOUR) {
-        const vals = rows.filter(b => +new Date(b.start_at) >= a && +new Date(b.start_at) < a + 6 * HOUR && ['success', 'failure'].includes(b.status) && core.validDuration(b.duration_seconds))
+        const vals = rows.filter(b => +new Date(b.start_at) >= a && +new Date(b.start_at) < a + 6 * HOUR && core.sampleEligible(b))
           .map(b => b.duration_seconds).sort((p, q) => p - q);
         if (vals.length) {
           const mid = vals.length % 2 ? vals[(vals.length - 1) / 2] : (vals[vals.length / 2 - 1] + vals[vals.length / 2]) / 2;
@@ -295,7 +318,7 @@
       const W = npuChartSvg.clientWidth || 900, H = 370, m = { l: 50, r: 22, t: 18, b: 42 };
       npuChartSvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       const range = Math.max(viewEnd - viewStart, 1);
-      const stats = core.chartStats(rows.map(b => ({ ...b, duration_seconds: b.npu_queue_seconds })));
+      const stats = core.chartStats(rows.map(b => ({ ...b, duration_seconds: b.npu_queue_seconds })), 'npu');
       const max = Math.max(stats.max * 1.12, 60);
       const x = t => m.l + (+new Date(t) - viewStart) / range * (W - m.l - m.r);
       const y = v => H - m.b - v / max * (H - m.t - m.b);
@@ -426,13 +449,13 @@
           ? `<div class="tip-job"><a href="${esc(j.url)}" target="_blank" rel="noopener">${label} ↗</a><span>${j.status === 'completed' ? (j.conclusion === 'success' ? '完成' : '异常') : esc(j.status)}</span><span>排队 ${dur(j.wait_seconds)} · 执行 ${dur(j.run_seconds)}</span></div>`
           : `<div class="tip-job"><b>${label}</b><span class="missing">未触发或未发现该任务</span></div>`;
       }).join('');
-      return `<div class="tip-head"><a href="${esc(b.action_url || (b.workflows && b.workflows[0] && b.workflows[0].url) || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>${statusLabels[b.status] || esc(b.status)} · ${dur(b.duration_seconds)}</span><button type="button" class="tip-close" aria-label="关闭详情"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><div class="tip-title">PR #${b.pr || '?'} · 第 ${b.e2e_index || 1}/${b.e2e_total || 1} 次 E2E · ${esc((b.sha || '未知').slice(0, 7))}</div><div class="tip-summary"><a href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">查看 PR</a> · ${b.start_at ? fmtDate(b.start_at) + ' · ' + core.startSourceLabel(b) : core.startSourceLabel(b)}</div><div class="tip-actions"><div class="tip-label">本次 E2E 的 GitHub Actions</div>${actions}</div><div class="tip-jobs"><div class="tip-label">重点任务</div>${jobs}</div><div class="tip-hint">点击任一链接进入对应 GitHub Actions；点击散点可固定卡片。</div>`;
+      return `<div class="tip-head"><a href="${esc(b.action_url || (b.workflows && b.workflows[0] && b.workflows[0].url) || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>${statusLabels[b.status] || esc(b.status)} · ${dur(b.duration_seconds)}</span><button type="button" class="tip-close" aria-label="关闭详情"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><div class="tip-title">${esc(core.markLabel(b, 'e2e'))}</div><div class="tip-summary">${identityHtml(b)} · ${b.start_at ? fmtDate(b.start_at) + ' · ' + core.startSourceLabel(b) : core.startSourceLabel(b)}</div><div class="tip-actions"><div class="tip-label">本次 E2E 的 GitHub Actions</div>${actions}</div><div class="tip-jobs"><div class="tip-label">重点任务</div>${jobs}</div><div class="tip-hint">点击任一链接进入对应 GitHub Actions；点击散点可固定卡片。</div>`;
     }
 
     function npuTipHtml(b) {
       const jobs = (b.npu_jobs || []).slice().sort((a, c) => (c.wait_seconds || -1) - (a.wait_seconds || -1)).map(j =>
         `<div class="tip-job"><a href="${esc(j.url || b.action_url)}" target="_blank" rel="noopener">${esc(j.name)} ↗</a><span>${statusLabels[j.conclusion] || statusLabels[j.status] || esc(j.status)}</span><span>排队 ${dur(j.wait_seconds)}${j.measurement_error ? ' · ' + esc(j.measurement_error) : ''}</span></div>`).join('');
-      return `<div class="tip-head"><a href="${esc(b.action_url || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>最长排队 ${dur(b.npu_queue_seconds)}</span><button type="button" class="tip-close" aria-label="关闭详情"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><div class="tip-title">PR #${b.pr || '?'} · 第 ${b.e2e_index || 1}/${b.e2e_total || 1} 次 E2E · ${esc((b.sha || '未知').slice(0, 7))}</div><div class="tip-summary"><a href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">查看 PR</a> · ${fmtDate(b.start_at)}</div><div class="tip-jobs"><div class="tip-label">本次 E2E 的 NPU Jobs</div>${jobs}</div><div class="tip-hint">圆点取上述子任务中的最长排队时长。</div>`;
+      return `<div class="tip-head"><a href="${esc(b.action_url || '#')}" target="_blank" rel="noopener">打开本次 GitHub Actions ↗</a><span>最长排队 ${dur(b.npu_queue_seconds)}</span><button type="button" class="tip-close" aria-label="关闭详情"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div><div class="tip-title">${esc(core.markLabel(b, 'e2e'))}</div><div class="tip-summary">${identityHtml(b)} · ${fmtDate(b.start_at)}</div><div class="tip-jobs"><div class="tip-label">本次 E2E 的 NPU Jobs</div>${jobs}</div><div class="tip-hint">圆点取上述子任务中的最长排队时长。</div>`;
     }
 
     function placeTip(e, b, renderer) {
@@ -509,12 +532,12 @@
       return `<div class="workflow"><div class="wf-name"><a class="link" href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.name)}</a> · #${w.attempt}</div><div class="track"><i class="bar ${w.conclusion || w.status}" style="left:${left}%;width:${Math.min(100 - left, width)}%"></i></div><div class="wf-time">${dur((we - ws) / 1000)}</div></div><div class="jobs">${jobs}</div>`;
     }
 
-    function rowHtml(b, groupKey) {
+    function rowHtml(b, groupKey, reasons = []) {
       /* REQ-028 AC01: the expansion entry is a named button that declares its
          expanded state and controlled region; the row surface keeps working
          as a mouse shortcut through the row-main click handler. */
       const ids = core.rowDomIds(esc(b.id), groupKey);
-      return `<article class="row" id="${ids.rowId}"><div class="row-main"><button type="button" class="row-toggle" aria-expanded="false" aria-controls="${ids.detailId}" aria-label="PR #${esc(b.pr || '?')} 批次明细"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button><div><a class="pr link" href="${esc(b.pr_url || '#')}" target="_blank" rel="noopener">PR #${b.pr || '?'}</a><div class="sub">${esc((b.sha || '未知').slice(0, 7))}${b.kind === 'rerun' ? ' · 重跑' : ''}</div></div><div class="title">${esc(b.title)}<div class="sub">${esc(b.author || '未知作者')} · ${esc(b.branch || '未知来源')} → ${esc(b.base_branch)}</div></div><div class="status ${esc(b.status)}">${statusLabels[b.status] || esc(b.status)}</div><div class="sub">${b.start_at ? fmtDate(b.start_at) : '起点未知'}</div><div class="duration">${dur(b.duration_seconds)}${b.approximate ? '*' : ''}</div><div class="critical">${b.status === 'running' ? '仍在等待 / 执行：' : '最后结束：'}${esc(b.critical_workflow || '未知')}</div></div><div class="detail" id="${ids.detailId}"><div class="detail-meta">起点：${b.start_at ? fmtDate(b.start_at) + '（' + core.startSourceLabel(b) + '）' : '无本次起点证据，E2E 留空'} · 合入分支：${esc(b.base_branch)} · ${b.end_at ? '结束：' + fmtDate(b.end_at) : '截至采集时间仍未结束'}</div>${(b.missing || []).map(x => `<div class="notice">${esc(x)}</div>`).join('')}${(b.workflows || []).map(w => wfHtml(w, b)).join('')}</div></article>`;
+      return `<article class="row" id="${ids.rowId}"><div class="row-main"><button type="button" class="row-toggle" aria-expanded="false" aria-controls="${ids.detailId}" aria-label="${esc(core.markLabel(b, 'e2e'))}"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button><div>${identityHtml(b)}<div class="sub">${esc((b.sha || '未知').slice(0, 7))}${b.kind === 'rerun' ? ' · 重跑' : ''}</div></div><div class="title">${esc(b.title)}<div class="sub reasons">${reasons.map(reason => `<span class="pill">${esc(reason)}</span>`).join(' · ')}</div><div class="sub">${esc(b.author || '未知作者')} · ${esc(b.branch || '未知来源')} → ${esc(b.base_branch)}</div></div><div class="status ${esc(b.status)}">${statusLabels[b.status] || esc(b.status)}</div><div class="sub">${b.start_at ? fmtDate(b.start_at) : '起点未知'}</div><div class="duration">${core.sampleEligible(b) ? '' : '已观测 '}${dur(b.duration_seconds)}${b.approximate ? '*' : ''}${qualificationHtml(b)}</div><div class="critical">${b.status === 'running' ? '仍在等待 / 执行：' : '最后结束：'}${esc(b.critical_workflow || '未知')}</div></div><div class="detail" id="${ids.detailId}"><div class="detail-meta">起点：${b.start_at ? fmtDate(b.start_at) + '（' + core.startSourceLabel(b) + '）' : '无本次起点证据，E2E 留空'} · 合入分支：${esc(b.base_branch)} · ${b.end_at ? '结束：' + fmtDate(b.end_at) : '截至采集时间仍未结束'}</div>${(b.missing || []).map(x => `<div class="notice">${esc(x)}</div>`).join('')}${(b.workflows || []).map(w => wfHtml(w, b)).join('')}</div></article>`;
     }
 
     function renderRows() {
@@ -538,8 +561,15 @@
       const groups = showAll
         ? [{ key: 'all', label: '全部批次', rows: pool.slice().sort((a, b) => +new Date(b.start_at) - +new Date(a.start_at)) }]
         : core.attentionGroups(pageSet(), summary.p90, searchInput.value);
+      const entries = new Map();
+      function addEntry(batch, reason) {
+        if (!entries.has(batch.id)) entries.set(batch.id, { batch, reasons: new Set() });
+        if (reason) entries.get(batch.id).reasons.add(reason);
+      }
+      for (const group of groups) for (const batch of group.rows) addEntry(batch, showAll ? null : group.label);
+      if (!showAll) for (const batch of pool) if ((batch.missing || []).length) addEntry(batch, '证据缺口');
       priorityNoteEl.textContent = core.attentionNote(summary.valid);
-      attentionEl.innerHTML = groups.map(group => `<div class="group-title">${group.label}<span class="count">${group.rows.length}</span></div><div class="rows">${group.rows.length ? group.rows.map(b => rowHtml(b, group.key)).join('') : '<div class="empty">当前没有此类批次</div>'}</div>`).join('');
+      attentionEl.innerHTML = `<div class="group-title">${showAll ? '全部批次' : '关注批次'}<span class="count">${entries.size}</span></div><div class="rows">${entries.size ? [...entries.values()].map(entry => rowHtml(entry.batch, showAll ? 'all' : 'priority', [...entry.reasons])).join('') : '<div class="empty">当前没有匹配批次</div>'}</div>`;
       all('.row').forEach(row => {
         const main = row.querySelector('.row-main');
         main.onclick = e => {
@@ -567,7 +597,7 @@
       else searchInput.focus();
     }
 
-    /* ---- 新鲜度：北京时间 8/13/18/20 槽位 + 90 分钟宽限，每分钟检查 ---- */
+    /* ---- 新鲜度：生产北京时间 8/12/16/18/20 槽位 + 90 分钟宽限 ---- */
     function updateFreshness() {
       const result = core.freshnessSlots(Date.now(), D.collected_at);
       freshnessEl.hidden = !result.stale;
@@ -591,9 +621,21 @@
         const rows = [csvFields, ...searchPool().map(b => csvFields.map(key =>
           key === 'missing' ? (b.missing || []).join('; ') : key === 'approximate' ? (b.approximate ? 'True' : 'False') : b[key] ?? ''))];
         const file = await root.Metrics.saveCsv(rows, 'triton-batches.csv');
+        const qualification = { schema_version: 1, metric: 'triton_commit_attempt_e2e', collected_at: D.collected_at,
+          window_start: D.window_start, window_end: D.window_end,
+          analysis_scope: { start_at: new Date(viewStart).toISOString(), end_at: new Date(viewEnd).toISOString(), branches: [...selectedBranches], query: searchInput.value },
+          batches: searchPool().map(b => ({ id: b.id, pr: b.pr ?? null,
+            workflow_attempts: (b.workflows || []).map(w => ({ run_id: w.id, attempt: w.attempt || 1 })),
+            e2e_sample_eligible: core.sampleEligible(b), e2e_exclusion_reason: b.e2e_exclusion_reason || (b.pr == null ? 'unresolved_pr_batch_identity' : core.sampleEligible(b) ? null : 'non_sample_result') })) };
+        const metaUrl = root.URL.createObjectURL(new root.Blob([JSON.stringify(qualification, null, 2)], {type: 'application/json'}));
+        const metaLink = root.document.createElement('a');
+        metaLink.href = metaUrl;
+        metaLink.download = 'triton-qualifications-v1.json';
+        metaLink.click();
+        root.URL.revokeObjectURL(metaUrl);
         notice.innerHTML = file.mode === 'saved'
-          ? `已保存到本地：<a href="${esc(file.url)}" download="${esc(file.name)}">${esc(file.name)} ↓</a>`
-          : '已下载：' + esc(file.name);
+          ? `CSV 已保存到本地：<a href="${esc(file.url)}" download="${esc(file.name)}">${esc(file.name)} ↓</a>；资格元数据已由浏览器下载。`
+          : '已下载：' + esc(file.name) + ' 与 triton-qualifications-v1.json';
       } catch (err) {
         notice.textContent = '导出失败：' + (err && err.message ? err.message : err);
       } finally {
@@ -640,6 +682,7 @@
       } else {
         navDrag = { mode, origin: at, start: viewStart, end: viewEnd };
       }
+      navDrag.pointerId = e.pointerId;
       navSvg.setPointerCapture(e.pointerId);
       updateGlobal();
     };
@@ -688,6 +731,14 @@
 
     active = {
       destroy() {
+        tipPinned = false;
+        tip.style.display = 'none';
+        lastPinnedMark = null;
+        if (navDrag && navDrag.pointerId != null && navSvg.releasePointerCapture) {
+          try { navSvg.releasePointerCapture(navDrag.pointerId); } catch (_) { /* capture may already have ended */ }
+        }
+        navDrag = null;
+        navSvg.onpointerdown = navSvg.onpointermove = navSvg.onpointerup = navSvg.onpointercancel = navSvg.onkeydown = null;
         clearInterval(freshTimer);
         clearTimeout(tipTimer);
         window.removeEventListener('resize', onResize);
@@ -701,5 +752,5 @@
     mounted = { payload: D, container };
   }
 
-  return { render };
+  return { render, deactivate };
 });

@@ -378,6 +378,15 @@ class SyntheticTreeTests(unittest.TestCase):
         self.assertIn('app.js:rep_expand_flag',
                       report['source_contracts']['missing'])
 
+    def test_tampered_route_context_cleanup_exit_one(self):
+        root = self.build_tree()
+        self.tamper(root, 'app.js',
+                    'detailPR=null;detailRepo=null;detailSnapshot=null;}',
+                    'detailPR=null;detailSnapshot=null;}')
+        code, report = self.run_tool(root)
+        self.assertEqual(code, 1)
+        self.assertIn('app.js:route_context_cleanup', report['source_contracts']['missing'])
+
     def test_tampered_minute_threshold_exit_one(self):
         root = self.build_tree()
         self.tamper(root, 'app.js', "ms<600?'<0.01'", "ms<700?'<0.01'")

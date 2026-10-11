@@ -1,0 +1,11 @@
+{
+  "recorded_at": "2026-10-11T23:51:23.314137+00:00",
+  "baseline_branch_protection": {
+    "http_status": 404,
+    "message": "Branch not protected"
+  },
+  "baseline_rulesets": [],
+  "status": "local_verified_pending_remote_checks",
+  "required_check": "Dashboard quality gate",
+  "production_migration": "legacy maintained; unified production not activated"
+}

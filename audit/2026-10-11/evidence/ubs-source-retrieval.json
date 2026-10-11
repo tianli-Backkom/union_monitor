@@ -1,0 +1,68 @@
+[
+  {
+    "key": "ubs-pr-1600",
+    "url": "https://api.gitcode.com/api/v5/repos/openeuler/ubs-engine/pulls/1600",
+    "retrieved_at": "2026-10-11T15:32:57.070648+00:00",
+    "status": 200,
+    "sha256": "2b6f979bbdc0b1270725947edea6021a59bc4cfe719bd59b4925efe315b251fd",
+    "headers": {
+      "Date": "Sun, 11 Oct 2026 15:32:57 GMT",
+      "Content-Type": "application/json",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "Set-Cookie": "HWWAFSESID=071e3b2e194d0c9a04; path=/",
+      "trace-id": "3d717222839d42645f8d310ac3d5f240",
+      "x-uid": "-",
+      "x-arts-id": "-",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Headers": "Cookie,Authorization,Origin,content-type,Accept,x-ca-key,x-ca-nonce,x-ca-signature,x-ca-signature-headers,x-ca-stage,x-ca-signed-content-type,token,x-auth-token,page-ref,page-uri,page-repo-id,page-title,gitcode-utm-source",
+      "Access-Control-Max-Age": "1728000",
+      "Server": "elb"
+    }
+  },
+  {
+    "key": "ubs-jenkins-0",
+    "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7469/api/json?tree=number%2Curl%2Ctimestamp%2Cduration%2Cresult%2Cbuilding%2Cactions%5BwaitingTimeMillis%2CblockedTimeMillis%2CbuildableTimeMillis%5D",
+    "retrieved_at": "2026-10-11T15:32:55.785758+00:00",
+    "status": 200,
+    "sha256": "5feaa63c8b93c19380755daf6261ee1173080037740cc74ea3c06e533c910677",
+    "headers": {
+      "Date": "Sun, 11 Oct 2026 15:32:56 GMT",
+      "Content-Type": "application/json;charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "Set-Cookie": "HWWAFSESTIME=1791732776191; path=/",
+      "Vary": "Accept-Encoding",
+      "X-Content-Type-Options": "nosniff",
+      "X-Jenkins-Language": "zh_CN",
+      "X-Jenkins": "2.516.3",
+      "X-Jenkins-Session": "2538d326",
+      "X-Frame-Options": "deny",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Server": "elb"
+    }
+  },
+  {
+    "key": "ubs-jenkins-1",
+    "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/aarch64/job/ubs-engine/7467/api/json?tree=number%2Curl%2Ctimestamp%2Cduration%2Cresult%2Cbuilding%2Cactions%5BwaitingTimeMillis%2CblockedTimeMillis%2CbuildableTimeMillis%5D",
+    "retrieved_at": "2026-10-11T15:32:55.783798+00:00",
+    "status": 200,
+    "sha256": "62ad066e3c3868db0869008ac8c728d0b17eb0117b97ea91d5b19c3797758afd",
+    "headers": {
+      "Date": "Sun, 11 Oct 2026 15:32:56 GMT",
+      "Content-Type": "application/json;charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "Set-Cookie": "HWWAFSESTIME=1791732776191; path=/",
+      "Vary": "Accept-Encoding",
+      "X-Content-Type-Options": "nosniff",
+      "X-Jenkins-Language": "zh_CN",
+      "X-Jenkins": "2.516.3",
+      "X-Jenkins-Session": "2538d326",
+      "X-Frame-Options": "deny",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Server": "elb"
+    }
+  }
+]

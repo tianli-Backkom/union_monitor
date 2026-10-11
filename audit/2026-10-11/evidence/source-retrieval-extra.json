@@ -1,0 +1,82 @@
+[
+  {
+    "key": "ubs-comm-trigger",
+    "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4268/api/json?tree=number%2Curl%2Ctimestamp%2Cduration%2Cresult%2Cbuilding%2Cactions%5BwaitingTimeMillis%2CblockedTimeMillis%2CbuildableTimeMillis%5D",
+    "retrieved_at": "2026-10-11T15:33:59.064801+00:00",
+    "status": 200,
+    "sha256": "29de2fc5036175f4131ab569859a16186438f199a141583c463bf064a449ab71",
+    "headers": {
+      "Date": "Sun, 11 Oct 2026 15:33:59 GMT",
+      "Content-Type": "application/json;charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "Set-Cookie": "HWWAFSESTIME=1791732839466; path=/",
+      "Vary": "Accept-Encoding",
+      "X-Content-Type-Options": "nosniff",
+      "X-Jenkins-Language": "zh_CN",
+      "X-Jenkins": "2.516.3",
+      "X-Jenkins-Session": "2538d326",
+      "X-Frame-Options": "deny",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Server": "elb"
+    }
+  },
+  {
+    "key": "ubs-comm-dt",
+    "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/DT/job/ubs-comm/4042/api/json?tree=number%2Curl%2Ctimestamp%2Cduration%2Cresult%2Cbuilding%2Cactions%5BwaitingTimeMillis%2CblockedTimeMillis%2CbuildableTimeMillis%5D",
+    "retrieved_at": "2026-10-11T15:33:59.060237+00:00",
+    "status": 200,
+    "sha256": "221355aff218fa328dd7d4f4ac5d12bec09e992ad66048d93e18124f0f43f3e6",
+    "headers": {
+      "Date": "Sun, 11 Oct 2026 15:33:59 GMT",
+      "Content-Type": "application/json;charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "Set-Cookie": "HWWAFSESTIME=1791732839466; path=/",
+      "Vary": "Accept-Encoding",
+      "X-Content-Type-Options": "nosniff",
+      "X-Jenkins-Language": "zh_CN",
+      "X-Jenkins": "2.516.3",
+      "X-Jenkins-Session": "2538d326",
+      "X-Frame-Options": "deny",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Server": "elb"
+    }
+  },
+  {
+    "key": "pr-2513-commits",
+    "url": "https://api.github.com/repos/triton-lang/triton-ascend/pulls/2513/commits?per_page=100",
+    "retrieved_at": "2026-10-11T15:34:04.435759+00:00",
+    "status": 200,
+    "sha256": "9a6e7c0a67a7097f7c178b9a3c1123efc4c25ba0394d199c750e8cebb42a40d8",
+    "headers": {
+      "Date": "Sun, 11 Oct 2026 15:34:04 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "public, max-age=60, s-maxage=60",
+      "Vary": "Accept,Accept-Encoding, Accept, X-Requested-With",
+      "ETag": "W/\"c325f728d6f28901d17aba7066d26b83844ec39571903d3614aa47efc70b2544\"",
+      "Last-Modified": "Sun, 11 Oct 2026 09:09:13 GMT",
+      "X-GitHub-Media-Type": "github.v3",
+      "x-github-api-version-selected": "2022-11-28",
+      "Access-Control-Expose-Headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning",
+      "Access-Control-Allow-Origin": "*",
+      "Strict-Transport-Security": "max-age=31536000; includeSubdomains; preload",
+      "X-Frame-Options": "deny",
+      "X-Content-Type-Options": "nosniff",
+      "X-XSS-Protection": "0",
+      "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "Content-Security-Policy": "default-src 'none'",
+      "Server": "github.com",
+      "Accept-Ranges": "bytes",
+      "X-RateLimit-Limit": "60",
+      "X-RateLimit-Remaining": "59",
+      "X-RateLimit-Used": "1",
+      "X-RateLimit-Resource": "core",
+      "X-RateLimit-Reset": "1791736444",
+      "Content-Length": "3222",
+      "X-GitHub-Request-Id": "7424:1A5AF3:31131D6:392CB2F:6ACBAC6C",
+      "x-github-edge-region": "sea",
+      "connection": "close"
+    }
+  }
+]

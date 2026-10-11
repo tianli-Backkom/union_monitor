@@ -163,7 +163,7 @@ jobs:
           fi
           if [ -n "$missing" ]; then
             echo "::error::[ensure-UBS-data] still missing after fallback:$missing"
-            echo "[ensure-UBS-data] summary: cache=$cache_count fallback=$fallback_count mirrored=$mirror_count missing=$(echo $missing | wc -w); NOT complete — bundle verification will block this deploy"
+            echo "[ensure-UBS-data] summary: cache=$cache_count fallback=$fallback_count mirrored=$mirror_count missing=$(echo "$missing" | wc -w); NOT complete — bundle verification will block this deploy"
           else
             echo "[ensure-UBS-data] summary: cache=$cache_count fallback=$fallback_count mirrored=$mirror_count missing=0"
             echo "[ensure-UBS-data] UBS index verified; UBS data ensured (sources logged above; bundle fingerprint checked by validate_bundle.py)"

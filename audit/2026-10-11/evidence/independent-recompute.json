@@ -1,0 +1,2219 @@
+{
+  "captured_at": "2026-10-11T15:31:59.140589+00:00",
+  "code_baseline": "e98c6af7c0640605e220c6696515528c31d343e8",
+  "ubs": [
+    {
+      "repository": "openeuler/ubs-engine",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:37:36.605931+00:00",
+      "errors": 0,
+      "expected_prs": 63,
+      "collected_prs": 63,
+      "actual_prs": 63,
+      "unique_prs": 63,
+      "batches": 223,
+      "status": {
+        "success": 134,
+        "failure": 89
+      },
+      "cancelled_flag": 3,
+      "cancelled_eligible": 3,
+      "valid_e2e": {
+        "n": 63,
+        "mean": 1286735.365079365,
+        "median": 912180.0,
+        "p90": 1444897.8
+      },
+      "pr_rows": [
+        {
+          "pr": 1663,
+          "created_ms": 1791626012000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7727/",
+          "e2e_ms": 922125,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1661,
+          "created_ms": 1791595089000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7719/",
+          "e2e_ms": 912180,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 1656,
+          "created_ms": 1791443270000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7706/",
+          "e2e_ms": 913623,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 1655,
+          "created_ms": 1791423789000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7703/",
+          "e2e_ms": 154219,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 1654,
+          "created_ms": 1790768057000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7725/",
+          "e2e_ms": 1352169,
+          "batches": 5,
+          "submission_count": 5
+        },
+        {
+          "pr": 1653,
+          "created_ms": 1790740124000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7700/",
+          "e2e_ms": 967144,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1651,
+          "created_ms": 1790663796000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7686/",
+          "e2e_ms": 147725,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1648,
+          "created_ms": 1790584051000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7664/",
+          "e2e_ms": 975502,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1647,
+          "created_ms": 1790581537000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7666/",
+          "e2e_ms": 971480,
+          "batches": 8,
+          "submission_count": 6
+        },
+        {
+          "pr": 1646,
+          "created_ms": 1790566163000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7654/",
+          "e2e_ms": 903371,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1645,
+          "created_ms": 1790564420000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7695/",
+          "e2e_ms": 985738,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1642,
+          "created_ms": 1790252159000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7641/",
+          "e2e_ms": 624455,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1641,
+          "created_ms": 1790243010000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7658/",
+          "e2e_ms": 1020178,
+          "batches": 5,
+          "submission_count": 5
+        },
+        {
+          "pr": 1639,
+          "created_ms": 1790231735000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7636/",
+          "e2e_ms": 154502,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1636,
+          "created_ms": 1790133243000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7621/",
+          "e2e_ms": 883958,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1634,
+          "created_ms": 1790131512000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7618/",
+          "e2e_ms": 913028,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1633,
+          "created_ms": 1790129896000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7617/",
+          "e2e_ms": 152616,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1632,
+          "created_ms": 1790078449000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7614/",
+          "e2e_ms": 46417,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1630,
+          "created_ms": 1790042828000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7601/",
+          "e2e_ms": 1033000,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1629,
+          "created_ms": 1789998887000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7597/",
+          "e2e_ms": 159705,
+          "batches": 4,
+          "submission_count": 4
+        },
+        {
+          "pr": 1628,
+          "created_ms": 1789985997000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7594/",
+          "e2e_ms": 606169,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1627,
+          "created_ms": 1789982610000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7604/",
+          "e2e_ms": 997459,
+          "batches": 9,
+          "submission_count": 8
+        },
+        {
+          "pr": 1625,
+          "created_ms": 1789894652000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7645/",
+          "e2e_ms": 986171,
+          "batches": 8,
+          "submission_count": 7
+        },
+        {
+          "pr": 1624,
+          "created_ms": 1789885046000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7564/",
+          "e2e_ms": 685324,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1623,
+          "created_ms": 1789874350000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7567/",
+          "e2e_ms": 1003848,
+          "batches": 5,
+          "submission_count": 4
+        },
+        {
+          "pr": 1622,
+          "created_ms": 1789870118000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7560/",
+          "e2e_ms": 491303,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 1620,
+          "created_ms": 1789704293000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7545/",
+          "e2e_ms": 1446709,
+          "batches": 5,
+          "submission_count": 5
+        },
+        {
+          "pr": 1619,
+          "created_ms": 1789702244000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7531/",
+          "e2e_ms": 149381,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1618,
+          "created_ms": 1789702105000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7556/",
+          "e2e_ms": 728656,
+          "batches": 4,
+          "submission_count": 2
+        },
+        {
+          "pr": 1617,
+          "created_ms": 1789700765000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7553/",
+          "e2e_ms": 1437653,
+          "batches": 6,
+          "submission_count": 5
+        },
+        {
+          "pr": 1616,
+          "created_ms": 1789699523000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7528/",
+          "e2e_ms": 661044,
+          "batches": 8,
+          "submission_count": 8
+        },
+        {
+          "pr": 1614,
+          "created_ms": 1789695807000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7520/",
+          "e2e_ms": 663993,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 1613,
+          "created_ms": 1789645905000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7517/",
+          "e2e_ms": 650726,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1612,
+          "created_ms": 1789635322000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7518/",
+          "e2e_ms": 1388309,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 1610,
+          "created_ms": 1789629594000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7510/",
+          "e2e_ms": 931820,
+          "batches": 3,
+          "submission_count": 1
+        },
+        {
+          "pr": 1609,
+          "created_ms": 1789627899000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7509/",
+          "e2e_ms": 904097,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 1608,
+          "created_ms": 1789613132000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7552/",
+          "e2e_ms": 174785,
+          "batches": 4,
+          "submission_count": 3
+        },
+        {
+          "pr": 1607,
+          "created_ms": 1789559305000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7499/",
+          "e2e_ms": 267131,
+          "batches": 4,
+          "submission_count": 4
+        },
+        {
+          "pr": 1606,
+          "created_ms": 1789539191000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7491/",
+          "e2e_ms": 222109,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1605,
+          "created_ms": 1789533523000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7488/",
+          "e2e_ms": 265724,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 1604,
+          "created_ms": 1789529947000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7600/",
+          "e2e_ms": 1319562,
+          "batches": 3,
+          "submission_count": 2
+        },
+        {
+          "pr": 1603,
+          "created_ms": 1789526601000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7479/",
+          "e2e_ms": 2713614,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1602,
+          "created_ms": 1789525268000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7475/",
+          "e2e_ms": 4041584,
+          "batches": 6,
+          "submission_count": 6
+        },
+        {
+          "pr": 1601,
+          "created_ms": 1789488921000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7470/",
+          "e2e_ms": 11021462,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1600,
+          "created_ms": 1789482999000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7469/",
+          "e2e_ms": 11064101,
+          "batches": 5,
+          "submission_count": 1
+        },
+        {
+          "pr": 1599,
+          "created_ms": 1789476076000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7472/",
+          "e2e_ms": 8870437,
+          "batches": 6,
+          "submission_count": 4
+        },
+        {
+          "pr": 1597,
+          "created_ms": 1789466135000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7450/",
+          "e2e_ms": 1035062,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 1596,
+          "created_ms": 1789464275000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7465/",
+          "e2e_ms": 1532166,
+          "batches": 7,
+          "submission_count": 4
+        },
+        {
+          "pr": 1595,
+          "created_ms": 1789461036000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7441/",
+          "e2e_ms": 941635,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1594,
+          "created_ms": 1789457102000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7437/",
+          "e2e_ms": 1020018,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1593,
+          "created_ms": 1789444611000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7452/",
+          "e2e_ms": 756927,
+          "batches": 11,
+          "submission_count": 11
+        },
+        {
+          "pr": 1592,
+          "created_ms": 1789444401000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7428/",
+          "e2e_ms": 195583,
+          "batches": 10,
+          "submission_count": 10
+        },
+        {
+          "pr": 1591,
+          "created_ms": 1789441910000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7467/",
+          "e2e_ms": 745104,
+          "batches": 9,
+          "submission_count": 9
+        },
+        {
+          "pr": 1590,
+          "created_ms": 1789439090000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7419/",
+          "e2e_ms": 771073,
+          "batches": 4,
+          "submission_count": 4
+        },
+        {
+          "pr": 1589,
+          "created_ms": 1789391956000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7414/",
+          "e2e_ms": 671961,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1588,
+          "created_ms": 1789389069000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7410/",
+          "e2e_ms": 948127,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 1587,
+          "created_ms": 1789386379000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7412/",
+          "e2e_ms": 168420,
+          "batches": 8,
+          "submission_count": 8
+        },
+        {
+          "pr": 1586,
+          "created_ms": 1789383442000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7405/",
+          "e2e_ms": 951232,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1585,
+          "created_ms": 1789378839000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7402/",
+          "e2e_ms": 170159,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1584,
+          "created_ms": 1789366641000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7398/",
+          "e2e_ms": 953510,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 1583,
+          "created_ms": 1789353022000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7433/",
+          "e2e_ms": 868594,
+          "batches": 6,
+          "submission_count": 4
+        },
+        {
+          "pr": 1580,
+          "created_ms": 1789198176000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7372/",
+          "e2e_ms": 158613,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 1579,
+          "created_ms": 1789182001000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7400/",
+          "e2e_ms": 1289838,
+          "batches": 5,
+          "submission_count": 4
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 63,
+            "mean": 8511.920634920634,
+            "median": 8709.0,
+            "p90": 12339.4
+          },
+          "duration": {
+            "n": 63,
+            "mean": 231.38095238095238,
+            "median": 136.0,
+            "p90": 437.6
+          },
+          "total": {
+            "n": 63,
+            "mean": 8743.301587301587,
+            "median": 8900.0,
+            "p90": 12629.0
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 63,
+            "mean": 5910.206349206349,
+            "median": 5102.0,
+            "p90": 8781.4
+          },
+          "duration": {
+            "n": 63,
+            "mean": 48979.23809523809,
+            "median": 56151.0,
+            "p90": 86119.80000000002
+          },
+          "total": {
+            "n": 63,
+            "mean": 54889.444444444445,
+            "median": 62613.0,
+            "p90": 91317.60000000002
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 61,
+            "mean": 252604.68852459016,
+            "median": 5648.0,
+            "p90": 9788.0
+          },
+          "duration": {
+            "n": 61,
+            "mean": 528958.1967213114,
+            "median": 611666.0,
+            "p90": 847967.0
+          },
+          "total": {
+            "n": 61,
+            "mean": 781562.8852459016,
+            "median": 738200.0,
+            "p90": 1209869.0
+          }
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-comm",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:39:39.949031+00:00",
+      "errors": 0,
+      "expected_prs": 20,
+      "collected_prs": 20,
+      "actual_prs": 20,
+      "unique_prs": 20,
+      "batches": 82,
+      "status": {
+        "success": 20,
+        "failure": 62
+      },
+      "cancelled_flag": 4,
+      "cancelled_eligible": 4,
+      "valid_e2e": {
+        "n": 20,
+        "mean": 176122854.8,
+        "median": 1494478.0,
+        "p90": 168052579.30000228
+      },
+      "pr_rows": [
+        {
+          "pr": 1106,
+          "created_ms": 1791448624000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4327/",
+          "e2e_ms": 1475354,
+          "batches": 5,
+          "submission_count": 5
+        },
+        {
+          "pr": 1104,
+          "created_ms": 1790651164000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4318/",
+          "e2e_ms": 1609960,
+          "batches": 5,
+          "submission_count": 5
+        },
+        {
+          "pr": 1103,
+          "created_ms": 1790334421000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4312/",
+          "e2e_ms": 1435347,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 1102,
+          "created_ms": 1790232348000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4314/",
+          "e2e_ms": 1420289,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1101,
+          "created_ms": 1790218899000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4317/",
+          "e2e_ms": 1649803,
+          "batches": 6,
+          "submission_count": 6
+        },
+        {
+          "pr": 1100,
+          "created_ms": 1790132455000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4308/",
+          "e2e_ms": 1410882,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1099,
+          "created_ms": 1790060789000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4302/",
+          "e2e_ms": 1513602,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1098,
+          "created_ms": 1790051461000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4301/",
+          "e2e_ms": 1597424,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1097,
+          "created_ms": 1789960312000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4296/",
+          "e2e_ms": 1804464,
+          "batches": 3,
+          "submission_count": 2
+        },
+        {
+          "pr": 1096,
+          "created_ms": 1789893825000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4292/",
+          "e2e_ms": 865722,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 1095,
+          "created_ms": 1789888304000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4293/",
+          "e2e_ms": 1610703343,
+          "batches": 11,
+          "submission_count": 11
+        },
+        {
+          "pr": 1094,
+          "created_ms": 1789876352000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4290/",
+          "e2e_ms": 879067,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 1093,
+          "created_ms": 1789696961000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4281/",
+          "e2e_ms": 959915,
+          "batches": 9,
+          "submission_count": 9
+        },
+        {
+          "pr": 1092,
+          "created_ms": 1789540762000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4268/",
+          "e2e_ms": 1873442421,
+          "batches": 15,
+          "submission_count": 15
+        },
+        {
+          "pr": 1091,
+          "created_ms": 1789526055000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4256/",
+          "e2e_ms": 3740858,
+          "batches": 3,
+          "submission_count": 1
+        },
+        {
+          "pr": 1090,
+          "created_ms": 1789482607000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4253/",
+          "e2e_ms": 877068,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 1089,
+          "created_ms": 1789456580000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4254/",
+          "e2e_ms": 7578924,
+          "batches": 4,
+          "submission_count": 4
+        },
+        {
+          "pr": 1088,
+          "created_ms": 1789443254000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4248/",
+          "e2e_ms": 906210,
+          "batches": 3,
+          "submission_count": 2
+        },
+        {
+          "pr": 1087,
+          "created_ms": 1789394949000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4255/",
+          "e2e_ms": 7758050,
+          "batches": 4,
+          "submission_count": 3
+        },
+        {
+          "pr": 1086,
+          "created_ms": 1789355619000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4239/",
+          "e2e_ms": 828393,
+          "batches": 1,
+          "submission_count": 1
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 20,
+            "mean": 9742.3,
+            "median": 10490.5,
+            "p90": 12638.400000000005
+          },
+          "duration": {
+            "n": 20,
+            "mean": 137526.65,
+            "median": 138286.0,
+            "p90": 147382.6
+          },
+          "total": {
+            "n": 20,
+            "mean": 147268.95,
+            "median": 150244.0,
+            "p90": 155926.4
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 20,
+            "mean": 6239.6,
+            "median": 5194.0,
+            "p90": 11001.0
+          },
+          "duration": {
+            "n": 20,
+            "mean": 281424.75,
+            "median": 271806.0,
+            "p90": 341249.10000000015
+          },
+          "total": {
+            "n": 20,
+            "mean": 287664.35,
+            "median": 277201.0,
+            "p90": 347133.5000000001
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 17,
+            "mean": 583949.3529411765,
+            "median": 10746.0,
+            "p90": 1171174.600000001
+          },
+          "duration": {
+            "n": 17,
+            "mean": 1039806.3529411765,
+            "median": 1249650.0,
+            "p90": 1414612.4
+          },
+          "total": {
+            "n": 17,
+            "mean": 1623755.705882353,
+            "median": 1271651.0,
+            "p90": 2336735.2000000007
+          }
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-virt",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:43:56.371362+00:00",
+      "errors": 0,
+      "expected_prs": 27,
+      "collected_prs": 27,
+      "actual_prs": 27,
+      "unique_prs": 27,
+      "batches": 215,
+      "status": {
+        "failure": 123,
+        "success": 92
+      },
+      "cancelled_flag": 1,
+      "cancelled_eligible": 1,
+      "valid_e2e": {
+        "n": 27,
+        "mean": 753107.1851851852,
+        "median": 676556.0,
+        "p90": 1063536.6000000003
+      },
+      "pr_rows": [
+        {
+          "pr": 297,
+          "created_ms": 1791614300000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1651/",
+          "e2e_ms": 401388,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 296,
+          "created_ms": 1791598197000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1649/",
+          "e2e_ms": 1155498,
+          "batches": 8,
+          "submission_count": 8
+        },
+        {
+          "pr": 295,
+          "created_ms": 1791427539000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1638/",
+          "e2e_ms": 384445,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 294,
+          "created_ms": 1790675009000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1647/",
+          "e2e_ms": 872444,
+          "batches": 9,
+          "submission_count": 9
+        },
+        {
+          "pr": 292,
+          "created_ms": 1790242351000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1608/",
+          "e2e_ms": 389219,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 291,
+          "created_ms": 1790222185000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1606/",
+          "e2e_ms": 522059,
+          "batches": 7,
+          "submission_count": 7
+        },
+        {
+          "pr": 290,
+          "created_ms": 1790068309000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1579/",
+          "e2e_ms": 554994,
+          "batches": 10,
+          "submission_count": 7
+        },
+        {
+          "pr": 289,
+          "created_ms": 1790066713000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1571/",
+          "e2e_ms": 270775,
+          "batches": 6,
+          "submission_count": 5
+        },
+        {
+          "pr": 288,
+          "created_ms": 1790064078000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1580/",
+          "e2e_ms": 676556,
+          "batches": 10,
+          "submission_count": 10
+        },
+        {
+          "pr": 285,
+          "created_ms": 1790041103000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1559/",
+          "e2e_ms": 780714,
+          "batches": 8,
+          "submission_count": 8
+        },
+        {
+          "pr": 284,
+          "created_ms": 1789990700000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1553/",
+          "e2e_ms": 384699,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 283,
+          "created_ms": 1789977254000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1544/",
+          "e2e_ms": 408744,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 282,
+          "created_ms": 1789973686000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1539/",
+          "e2e_ms": 528738,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 281,
+          "created_ms": 1789967911000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1538/",
+          "e2e_ms": 735561,
+          "batches": 19,
+          "submission_count": 19
+        },
+        {
+          "pr": 279,
+          "created_ms": 1789887525000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1512/",
+          "e2e_ms": 773985,
+          "batches": 4,
+          "submission_count": 4
+        },
+        {
+          "pr": 278,
+          "created_ms": 1789875912000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1506/",
+          "e2e_ms": 1002229,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 277,
+          "created_ms": 1789871986000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1503/",
+          "e2e_ms": 979629,
+          "batches": 9,
+          "submission_count": 7
+        },
+        {
+          "pr": 275,
+          "created_ms": 1789698908000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1502/",
+          "e2e_ms": 700897,
+          "batches": 15,
+          "submission_count": 14
+        },
+        {
+          "pr": 273,
+          "created_ms": 1789630045000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1470/",
+          "e2e_ms": 745845,
+          "batches": 8,
+          "submission_count": 8
+        },
+        {
+          "pr": 272,
+          "created_ms": 1789626153000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1504/",
+          "e2e_ms": 1216946,
+          "batches": 8,
+          "submission_count": 8
+        },
+        {
+          "pr": 271,
+          "created_ms": 1789625909000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1463/",
+          "e2e_ms": 622598,
+          "batches": 5,
+          "submission_count": 6
+        },
+        {
+          "pr": 270,
+          "created_ms": 1789625124000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1618/",
+          "e2e_ms": 870059,
+          "batches": 25,
+          "submission_count": 24
+        },
+        {
+          "pr": 269,
+          "created_ms": 1789617563000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1459/",
+          "e2e_ms": 977601,
+          "batches": 8,
+          "submission_count": 7
+        },
+        {
+          "pr": 267,
+          "created_ms": 1789525729000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1416/",
+          "e2e_ms": 3785943,
+          "batches": 36,
+          "submission_count": 33
+        },
+        {
+          "pr": 265,
+          "created_ms": 1789484146000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1413/",
+          "e2e_ms": 189650,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 263,
+          "created_ms": 1789471871000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1411/",
+          "e2e_ms": 178386,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 261,
+          "created_ms": 1789201096000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-virt/1395/",
+          "e2e_ms": 224292,
+          "batches": 1,
+          "submission_count": 1
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 27,
+            "mean": 7499.962962962963,
+            "median": 7041.0,
+            "p90": 10721.000000000002
+          },
+          "duration": {
+            "n": 27,
+            "mean": 8690.814814814816,
+            "median": 1834.0,
+            "p90": 15361.800000000063
+          },
+          "total": {
+            "n": 27,
+            "mean": 16190.777777777777,
+            "median": 9742.0,
+            "p90": 24642.600000000057
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 27,
+            "mean": 6494.740740740741,
+            "median": 4950.0,
+            "p90": 11191.2
+          },
+          "duration": {
+            "n": 27,
+            "mean": 42795.7037037037,
+            "median": 48595.0,
+            "p90": 77741.00000000003
+          },
+          "total": {
+            "n": 27,
+            "mean": 49290.444444444445,
+            "median": 53526.0,
+            "p90": 85751.8
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 26,
+            "mean": 9181.115384615385,
+            "median": 8734.5,
+            "p90": 14137.5
+          },
+          "duration": {
+            "n": 26,
+            "mean": 153389.26923076922,
+            "median": 171173.0,
+            "p90": 218662.5
+          },
+          "total": {
+            "n": 26,
+            "mean": 162570.38461538462,
+            "median": 182156.5,
+            "p90": 231572.0
+          }
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-io",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:44:30.354311+00:00",
+      "errors": 0,
+      "expected_prs": 5,
+      "collected_prs": 5,
+      "actual_prs": 5,
+      "unique_prs": 5,
+      "batches": 11,
+      "status": {
+        "success": 4,
+        "failure": 7
+      },
+      "cancelled_flag": 0,
+      "cancelled_eligible": 0,
+      "valid_e2e": {
+        "n": 5,
+        "mean": 823160.8,
+        "median": 845918.0,
+        "p90": 886998.4
+      },
+      "pr_rows": [
+        {
+          "pr": 305,
+          "created_ms": 1789626658000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-io/1141/",
+          "e2e_ms": 854812,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 301,
+          "created_ms": 1789483900000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-io/1115/",
+          "e2e_ms": 908456,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 300,
+          "created_ms": 1789470157000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-io/1113/",
+          "e2e_ms": 736364,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 298,
+          "created_ms": 1789387186000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-io/1105/",
+          "e2e_ms": 845918,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 297,
+          "created_ms": 1789371636000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-io/1102/",
+          "e2e_ms": 770254,
+          "batches": 3,
+          "submission_count": 2
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 5,
+            "mean": 6048.2,
+            "median": 6339.0,
+            "p90": 6755.2
+          },
+          "duration": {
+            "n": 5,
+            "mean": 480369.2,
+            "median": 467842.0,
+            "p90": 561954.2
+          },
+          "total": {
+            "n": 5,
+            "mean": 486417.4,
+            "median": 473943.0,
+            "p90": 568661.0
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 5,
+            "mean": 4626.0,
+            "median": 4624.0,
+            "p90": 5056.8
+          },
+          "duration": {
+            "n": 5,
+            "mean": 476231.2,
+            "median": 507995.0,
+            "p90": 537525.4
+          },
+          "total": {
+            "n": 5,
+            "mean": 480857.2,
+            "median": 513207.0,
+            "p90": 542026.4
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 5,
+            "mean": 5670.6,
+            "median": 5584.0,
+            "p90": 6482.2
+          },
+          "duration": {
+            "n": 5,
+            "mean": 666855.2,
+            "median": 680672.0,
+            "p90": 717781.0
+          },
+          "total": {
+            "n": 5,
+            "mean": 672525.8,
+            "median": 686256.0,
+            "p90": 723803.2
+          }
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-mem",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:45:18.982025+00:00",
+      "errors": 0,
+      "expected_prs": 6,
+      "collected_prs": 6,
+      "actual_prs": 6,
+      "unique_prs": 6,
+      "batches": 26,
+      "status": {
+        "failure": 13,
+        "success": 13
+      },
+      "cancelled_flag": 0,
+      "cancelled_eligible": 0,
+      "valid_e2e": {
+        "n": 6,
+        "mean": 848700.6666666666,
+        "median": 889840.0,
+        "p90": 1290612.5
+      },
+      "pr_rows": [
+        {
+          "pr": 108,
+          "created_ms": 1789982118000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-mem/455/",
+          "e2e_ms": 457538,
+          "batches": 4,
+          "submission_count": 4
+        },
+        {
+          "pr": 107,
+          "created_ms": 1789615846000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-mem/450/",
+          "e2e_ms": 273761,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 106,
+          "created_ms": 1789477445000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-mem/447/",
+          "e2e_ms": 700048,
+          "batches": 6,
+          "submission_count": 1
+        },
+        {
+          "pr": 105,
+          "created_ms": 1789378340000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-mem/442/",
+          "e2e_ms": 1079632,
+          "batches": 4,
+          "submission_count": 4
+        },
+        {
+          "pr": 104,
+          "created_ms": 1789353847000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-mem/443/",
+          "e2e_ms": 1162616,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 103,
+          "created_ms": 1789198579000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-mem/436/",
+          "e2e_ms": 1418609,
+          "batches": 9,
+          "submission_count": 9
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 6,
+            "mean": 12677.5,
+            "median": 11667.5,
+            "p90": 20107.5
+          },
+          "duration": {
+            "n": 6,
+            "mean": 1964.6666666666667,
+            "median": 1499.5,
+            "p90": 3246.5
+          },
+          "total": {
+            "n": 6,
+            "mean": 14642.166666666666,
+            "median": 13066.5,
+            "p90": 23346.5
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 6,
+            "mean": 41695.166666666664,
+            "median": 7317.0,
+            "p90": 113131.5
+          },
+          "duration": {
+            "n": 6,
+            "mean": 179356.5,
+            "median": 179901.5,
+            "p90": 249160.5
+          },
+          "total": {
+            "n": 6,
+            "mean": 221051.66666666666,
+            "median": 197510.0,
+            "p90": 349578.0
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 6,
+            "mean": 42155.0,
+            "median": 7850.5,
+            "p90": 113496.0
+          },
+          "duration": {
+            "n": 6,
+            "mean": 335601.0,
+            "median": 237635.0,
+            "p90": 609556.0
+          },
+          "total": {
+            "n": 6,
+            "mean": 377756.0,
+            "median": 244510.0,
+            "p90": 722280.0
+          }
+        }
+      }
+    },
+    {
+      "repository": "openeuler/OmniStateStore",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:46:34.796894+00:00",
+      "errors": 0,
+      "expected_prs": 17,
+      "collected_prs": 17,
+      "actual_prs": 17,
+      "unique_prs": 17,
+      "batches": 58,
+      "status": {
+        "success": 33,
+        "failure": 25
+      },
+      "cancelled_flag": 3,
+      "cancelled_eligible": 3,
+      "valid_e2e": {
+        "n": 17,
+        "mean": 3880437.2352941176,
+        "median": 1546177.0,
+        "p90": 8536850.4
+      },
+      "pr_rows": [
+        {
+          "pr": 148,
+          "created_ms": 1791624821000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/326/",
+          "e2e_ms": 1018010,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 147,
+          "created_ms": 1790664392000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/322/",
+          "e2e_ms": 1086430,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 146,
+          "created_ms": 1790651516000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/321/",
+          "e2e_ms": 1137060,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 145,
+          "created_ms": 1790559600000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/318/",
+          "e2e_ms": 1130451,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 144,
+          "created_ms": 1790213214000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/313/",
+          "e2e_ms": 1075999,
+          "batches": 6,
+          "submission_count": 6
+        },
+        {
+          "pr": 143,
+          "created_ms": 1790043137000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/307/",
+          "e2e_ms": 1510002,
+          "batches": 6,
+          "submission_count": 6
+        },
+        {
+          "pr": 142,
+          "created_ms": 1789723188000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/302/",
+          "e2e_ms": 1546177,
+          "batches": 7,
+          "submission_count": 7
+        },
+        {
+          "pr": 141,
+          "created_ms": 1789697174000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/297/",
+          "e2e_ms": 1495608,
+          "batches": 5,
+          "submission_count": 1
+        },
+        {
+          "pr": 140,
+          "created_ms": 1789609815000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/289/",
+          "e2e_ms": 1436723,
+          "batches": 9,
+          "submission_count": 9
+        },
+        {
+          "pr": 139,
+          "created_ms": 1789521149000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/281/",
+          "e2e_ms": 8587554,
+          "batches": 3,
+          "submission_count": 1
+        },
+        {
+          "pr": 138,
+          "created_ms": 1789481508000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/282/",
+          "e2e_ms": 8351556,
+          "batches": 5,
+          "submission_count": 1
+        },
+        {
+          "pr": 137,
+          "created_ms": 1789385714000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/277/",
+          "e2e_ms": 9892176,
+          "batches": 4,
+          "submission_count": 2
+        },
+        {
+          "pr": 136,
+          "created_ms": 1789385358000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/274/",
+          "e2e_ms": 8503048,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 135,
+          "created_ms": 1789384814000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/273/",
+          "e2e_ms": 7082347,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 134,
+          "created_ms": 1789383466000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/272/",
+          "e2e_ms": 4108754,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 133,
+          "created_ms": 1789383297000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/271/",
+          "e2e_ms": 4340690,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 132,
+          "created_ms": 1789382647000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/OmniStateStore/270/",
+          "e2e_ms": 3664848,
+          "batches": 2,
+          "submission_count": 2
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 17,
+            "mean": 10862.35294117647,
+            "median": 10127.0,
+            "p90": 12259.0
+          },
+          "duration": {
+            "n": 17,
+            "mean": 582610.4117647059,
+            "median": 401700.0,
+            "p90": 904271.2000000001
+          },
+          "total": {
+            "n": 17,
+            "mean": 593472.7647058824,
+            "median": 413065.0,
+            "p90": 915723.0
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 17,
+            "mean": 7478.764705882353,
+            "median": 4885.0,
+            "p90": 11437.200000000003
+          },
+          "duration": {
+            "n": 17,
+            "mean": 688029.8823529412,
+            "median": 425176.0,
+            "p90": 1344064.0
+          },
+          "total": {
+            "n": 17,
+            "mean": 695508.6470588235,
+            "median": 433088.0,
+            "p90": 1348973.8
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 16,
+            "mean": 10273.5,
+            "median": 8401.0,
+            "p90": 14095.0
+          },
+          "duration": {
+            "n": 16,
+            "mean": 1057430.625,
+            "median": 1207301.5,
+            "p90": 1306474.0
+          },
+          "total": {
+            "n": 16,
+            "mean": 1067704.125,
+            "median": 1218851.5,
+            "p90": 1312996.0
+          }
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ham",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:47:02.203721+00:00",
+      "errors": 0,
+      "expected_prs": 1,
+      "collected_prs": 1,
+      "actual_prs": 1,
+      "unique_prs": 1,
+      "batches": 7,
+      "status": {
+        "failure": 7
+      },
+      "cancelled_flag": 0,
+      "cancelled_eligible": 0,
+      "valid_e2e": {
+        "n": 1,
+        "mean": 232188.0,
+        "median": 232188.0,
+        "p90": 232188.0
+      },
+      "pr_rows": [
+        {
+          "pr": 18,
+          "created_ms": 1789479077000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ham/33/",
+          "e2e_ms": 232188,
+          "batches": 7,
+          "submission_count": 1
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 1,
+            "mean": 6374.0,
+            "median": 6374.0,
+            "p90": 6374.0
+          },
+          "duration": {
+            "n": 1,
+            "mean": 169.0,
+            "median": 169.0,
+            "p90": 169.0
+          },
+          "total": {
+            "n": 1,
+            "mean": 6543.0,
+            "median": 6543.0,
+            "p90": 6543.0
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 1,
+            "mean": 4284.0,
+            "median": 4284.0,
+            "p90": 4284.0
+          },
+          "duration": {
+            "n": 1,
+            "mean": 58339.0,
+            "median": 58339.0,
+            "p90": 58339.0
+          },
+          "total": {
+            "n": 1,
+            "mean": 62623.0,
+            "median": 62623.0,
+            "p90": 62623.0
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 1,
+            "mean": 6310.0,
+            "median": 6310.0,
+            "p90": 6310.0
+          },
+          "duration": {
+            "n": 1,
+            "mean": 41949.0,
+            "median": 41949.0,
+            "p90": 41949.0
+          },
+          "total": {
+            "n": 1,
+            "mean": 48259.0,
+            "median": 48259.0,
+            "p90": 48259.0
+          }
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubturbo",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:49:09.363264+00:00",
+      "errors": 0,
+      "expected_prs": 21,
+      "collected_prs": 21,
+      "actual_prs": 21,
+      "unique_prs": 21,
+      "batches": 78,
+      "status": {
+        "success": 44,
+        "failure": 34
+      },
+      "cancelled_flag": 5,
+      "cancelled_eligible": 5,
+      "valid_e2e": {
+        "n": 21,
+        "mean": 3345370.619047619,
+        "median": 469584.0,
+        "p90": 3992587.0
+      },
+      "pr_rows": [
+        {
+          "pr": 463,
+          "created_ms": 1791439965000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2396/",
+          "e2e_ms": 388099,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 462,
+          "created_ms": 1790561206000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2380/",
+          "e2e_ms": 377726,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 461,
+          "created_ms": 1790242218000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2376/",
+          "e2e_ms": 415346,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 459,
+          "created_ms": 1790231770000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2373/",
+          "e2e_ms": 383937,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 457,
+          "created_ms": 1790076031000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2368/",
+          "e2e_ms": 404256,
+          "batches": 5,
+          "submission_count": 2
+        },
+        {
+          "pr": 456,
+          "created_ms": 1789983666000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2354/",
+          "e2e_ms": 469584,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 455,
+          "created_ms": 1789979948000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2349/",
+          "e2e_ms": 396377,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 454,
+          "created_ms": 1789961950000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2344/",
+          "e2e_ms": 483591,
+          "batches": 4,
+          "submission_count": 4
+        },
+        {
+          "pr": 453,
+          "created_ms": 1789953322000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2343/",
+          "e2e_ms": 521475,
+          "batches": 7,
+          "submission_count": 7
+        },
+        {
+          "pr": 452,
+          "created_ms": 1789875651000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2337/",
+          "e2e_ms": 513351,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 451,
+          "created_ms": 1789648405000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2330/",
+          "e2e_ms": 392651,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 450,
+          "created_ms": 1789629176000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2317/",
+          "e2e_ms": 450948,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 449,
+          "created_ms": 1789549470000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2294/",
+          "e2e_ms": 477673,
+          "batches": 3,
+          "submission_count": 3
+        },
+        {
+          "pr": 448,
+          "created_ms": 1789540720000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2293/",
+          "e2e_ms": 542849,
+          "batches": 10,
+          "submission_count": 8
+        },
+        {
+          "pr": 447,
+          "created_ms": 1789484365000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2283/",
+          "e2e_ms": 3971045,
+          "batches": 12,
+          "submission_count": 1
+        },
+        {
+          "pr": 446,
+          "created_ms": 1789484355000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2282/",
+          "e2e_ms": 3992587,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 445,
+          "created_ms": 1789473717000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2280/",
+          "e2e_ms": 402092,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 444,
+          "created_ms": 1789472565000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2285/",
+          "e2e_ms": 4038020,
+          "batches": 6,
+          "submission_count": 4
+        },
+        {
+          "pr": 443,
+          "created_ms": 1789460844000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2277/",
+          "e2e_ms": 383434,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 442,
+          "created_ms": 1789386497000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2274/",
+          "e2e_ms": 50640069,
+          "batches": 1,
+          "submission_count": 1
+        },
+        {
+          "pr": 440,
+          "created_ms": 1789206702000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubturbo/2249/",
+          "e2e_ms": 607673,
+          "batches": 9,
+          "submission_count": 11
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 21,
+            "mean": 8944.57142857143,
+            "median": 9868.0,
+            "p90": 12153.0
+          },
+          "duration": {
+            "n": 21,
+            "mean": 227.04761904761904,
+            "median": 180.0,
+            "p90": 403.0
+          },
+          "total": {
+            "n": 21,
+            "mean": 9171.619047619048,
+            "median": 10210.0,
+            "p90": 12438.0
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 21,
+            "mean": 8746.047619047618,
+            "median": 7298.0,
+            "p90": 17279.0
+          },
+          "duration": {
+            "n": 21,
+            "mean": 227364.57142857142,
+            "median": 214082.0,
+            "p90": 258675.0
+          },
+          "total": {
+            "n": 21,
+            "mean": 236110.61904761905,
+            "median": 223303.0,
+            "p90": 265237.0
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 18,
+            "mean": 8910.333333333334,
+            "median": 8830.0,
+            "p90": 12426.3
+          },
+          "duration": {
+            "n": 18,
+            "mean": 253543.05555555556,
+            "median": 190996.5,
+            "p90": 303208.00000000006
+          },
+          "total": {
+            "n": 18,
+            "mean": 262453.3888888889,
+            "median": 198442.5,
+            "p90": 311454.50000000006
+          }
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-atomic",
+      "index_status": "success",
+      "window_matches": true,
+      "observed_at": "2026-10-11T12:49:48.516729+00:00",
+      "errors": 0,
+      "expected_prs": 7,
+      "collected_prs": 7,
+      "actual_prs": 7,
+      "unique_prs": 7,
+      "batches": 20,
+      "status": {
+        "failure": 6,
+        "success": 14
+      },
+      "cancelled_flag": 0,
+      "cancelled_eligible": 0,
+      "valid_e2e": {
+        "n": 7,
+        "mean": 345411.14285714284,
+        "median": 330844.0,
+        "p90": 473576.80000000005
+      },
+      "pr_rows": [
+        {
+          "pr": 76,
+          "created_ms": 1790169667000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-atomic/199/",
+          "e2e_ms": 255173,
+          "batches": 4,
+          "submission_count": 3
+        },
+        {
+          "pr": 75,
+          "created_ms": 1790057549000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-atomic/194/",
+          "e2e_ms": 266336,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 74,
+          "created_ms": 1789892804000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-atomic/192/",
+          "e2e_ms": 224352,
+          "batches": 2,
+          "submission_count": 2
+        },
+        {
+          "pr": 73,
+          "created_ms": 1789482038000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-atomic/190/",
+          "e2e_ms": 439350,
+          "batches": 3,
+          "submission_count": 1
+        },
+        {
+          "pr": 72,
+          "created_ms": 1789441270000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-atomic/186/",
+          "e2e_ms": 330844,
+          "batches": 3,
+          "submission_count": 4
+        },
+        {
+          "pr": 71,
+          "created_ms": 1789385776000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-atomic/184/",
+          "e2e_ms": 376906,
+          "batches": 2,
+          "submission_count": 1
+        },
+        {
+          "pr": 70,
+          "created_ms": 1789356394000,
+          "representative_batch": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-atomic/179/",
+          "e2e_ms": 524917,
+          "batches": 4,
+          "submission_count": 4
+        }
+      ],
+      "task_stats": {
+        "x86": {
+          "queue": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p90": null
+          },
+          "duration": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p90": null
+          },
+          "total": {
+            "n": 0,
+            "mean": null,
+            "median": null,
+            "p90": null
+          }
+        },
+        "arm": {
+          "queue": {
+            "n": 7,
+            "mean": 13755.57142857143,
+            "median": 7613.0,
+            "p90": 25926.200000000004
+          },
+          "duration": {
+            "n": 7,
+            "mean": 118473.71428571429,
+            "median": 84791.0,
+            "p90": 179893.0
+          },
+          "total": {
+            "n": 7,
+            "mean": 132229.2857142857,
+            "median": 103098.0,
+            "p90": 203203.6
+          }
+        },
+        "dt": {
+          "queue": {
+            "n": 7,
+            "mean": 11218.857142857143,
+            "median": 6575.0,
+            "p90": 23496.800000000007
+          },
+          "duration": {
+            "n": 7,
+            "mean": 1783.5714285714287,
+            "median": 1365.0,
+            "p90": 2651.200000000001
+          },
+          "total": {
+            "n": 7,
+            "mean": 13002.42857142857,
+            "median": 7975.0,
+            "p90": 26762.400000000005
+          }
+        }
+      }
+    }
+  ],
+  "triton": {
+    "summary_recomputed": {
+      "prs": 53,
+      "batches": 371,
+      "valid": 349,
+      "median": 227.0,
+      "p90": 2359.2,
+      "approximate": 371,
+      "incomplete": 276
+    },
+    "summary_mismatch": {},
+    "statistics_all": {
+      "n": 349,
+      "mean": 1542.3868194842407,
+      "median": 227.0,
+      "p90": 2359.2
+    },
+    "statistics_known": {
+      "n": 93,
+      "mean": 4930.817204301075,
+      "median": 1580.0,
+      "p90": 6428.399999999999
+    },
+    "statistics_unknown": {
+      "n": 256,
+      "mean": 311.43359375,
+      "median": 16.5,
+      "p90": 1075.5
+    },
+    "known_batches": 95,
+    "unknown_batches": 276,
+    "unknown_share": 0.7439353099730458,
+    "unknown_distinct_sha": 35,
+    "unknown_branches": 276,
+    "status": {
+      "success": 246,
+      "failure": 103,
+      "cancelled": 22
+    },
+    "kind": {
+      "initial": 343,
+      "rerun": 28
+    },
+    "window_start": "2026-10-08T12:49:49Z",
+    "window_end": "2026-10-11T12:49:49Z",
+    "window_hours": 72.0,
+    "collected_at": "2026-10-11T12:54:59.972508Z",
+    "id_duplicates": 0,
+    "workflow_attempt_duplicates": 0,
+    "outside_window": [],
+    "duration_mismatches": [],
+    "npu_jobs": 293,
+    "inverted_npu_sources": 11,
+    "queue_mismatches": [],
+    "npu_missing_batches": 8,
+    "npu_queue_points": 108,
+    "manifest_passed": true,
+    "manifest_warnings": 287,
+    "manifest_runs": 887
+  },
+  "bundle": {
+    "triton_canonical_sha_matches": true,
+    "ubs_hashes": {
+      "repos/OmniStateStore.json": true,
+      "repos/ham.json": true,
+      "repos/ubs-atomic.json": true,
+      "repos/ubs-comm.json": true,
+      "repos/ubs-engine.json": true,
+      "repos/ubs-io.json": true,
+      "repos/ubs-mem.json": true,
+      "repos/ubs-virt.json": true,
+      "repos/ubturbo.json": true,
+      "repositories.json": true,
+      "snapshot.json": true
+    },
+    "ubs_manifest_self_fingerprint_matches": true
+  },
+  "ubs_derived_mismatches": [],
+  "ubs_duplicate_batch_urls": 0,
+  "ubs_global_e2e": {
+    "n": 167,
+    "mean": 22586428.79041916,
+    "median": 877068.0,
+    "p90": 4010760.2
+  },
+  "ubs_total_prs": 167
+}

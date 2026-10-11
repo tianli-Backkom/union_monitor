@@ -1,0 +1,8 @@
+{
+  "name": "union-monitor-checks",
+  "private": true,
+  "description": "Development-only browser checks; the dashboard remains dependency-free.",
+  "scripts": {"test:browser": "playwright test"},
+  "devDependencies": {"@playwright/test": "1.64.0"},
+  "engines": {"node": ">=22"}
+}

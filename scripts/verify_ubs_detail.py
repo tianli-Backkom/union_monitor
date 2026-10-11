@@ -337,14 +337,17 @@ APP_CONTRACTS = [
     ('close_button', "$('closeDetail').onclick=()=>$('detail').close();"),
     ('close_cleanup',
      "addEventListener('close',()=>{if(!$('detail').open){detailPR=null;"
-     'detailSnapshot=null;}});'),
+     'detailSnapshot=null;detailRepo=null;}});'),
+    ('route_context_cleanup',
+     "function closeDetailContext(){if($('detail').open)$('detail').close();"
+     'detailPR=null;detailRepo=null;detailSnapshot=null;}'),
     ('outside_click_close',
      "if(e.target===$('detail')){const r=$('detail')."
      'getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||'
      "e.clientY<r.top||e.clientY>r.bottom)$('detail').close()}"),
     ('route_switch_close',
      "if((detailPR||$('detail').open)&&(domain!=='ubs'||!repo||"
-     "currentRepository!==detailRepo))$('detail').close();"),
+     "currentRepository!==detailRepo))closeDetailContext();"),
     ('max_e2e_fn',
      "function maxE2E(prs){const p=Metrics.sortPRs(prs,'e2e')[0],"
      'm=p&&Metrics.metrics(p.batches);return {p,m};}'),

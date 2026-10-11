@@ -28,6 +28,12 @@ class ProfileRegistryTests(unittest.TestCase):
         self.assertEqual(doc["schema_version"], 1)
         self.assertTrue(doc["metrics"])
 
+    def test_triton_e2e_describes_identity_exclusions(self):
+        metric = m.profile_metrics("triton-commit-attempt-v1")[0]
+        self.assertIn("可靠 PR", metric["terminal_and_observed_rule"])
+        self.assertIn("未知 PR", metric["eligibility"])
+        self.assertIn("attempt", metric["eligibility"])
+
     def test_unknown_profile_is_a_clear_error(self):
         with self.assertRaises(KeyError):
             m.profile_metrics("nope")

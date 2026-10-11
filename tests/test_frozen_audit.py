@@ -44,7 +44,11 @@ def same(actual, expected):
 def recompute_summary(batches):
     values = [b['duration_seconds'] for b in batches
               if b['status'] in ('success', 'failure')
+              and b.get('pr') is not None
+              and b.get('e2e_sample_eligible') is not False
               and isinstance(b.get('duration_seconds'), (int, float))
+              and not isinstance(b['duration_seconds'], bool)
+              and math.isfinite(b['duration_seconds'])
               and b['duration_seconds'] >= 0]
     return {
         'prs': len({b['pr'] for b in batches if b.get('pr')}),
@@ -237,7 +241,17 @@ class ContractShapeTests(unittest.TestCase):
                 continue
             start, end = stamp(batch.get('start_at')), stamp(batch.get('end_at'))
             self.assertIsNotNone(start, batch['id'])
-            self.assertIsNotNone(end, batch['id'])
+            qualified = (batch['status'] in ('success', 'failure') and batch.get('pr') is not None
+                         and batch.get('e2e_sample_eligible') is not False)
+            if qualified:
+                self.assertIsNotNone(end, batch['id'])
+            elif end is None:
+                self.assertTrue(batch['status'] in ('running', 'cancelled') or
+                                (batch.get('e2e_sample_eligible') is False and batch.get('e2e_exclusion_reason')), batch['id'])
+                end = stamp(payload.get('window_end'))
+                self.assertIsNotNone(end, batch['id'])
+            self.assertFalse(isinstance(batch['duration_seconds'], bool), batch['id'])
+            self.assertTrue(math.isfinite(batch['duration_seconds']) and batch['duration_seconds'] >= 0, batch['id'])
             self.assertAlmostEqual(end - start, batch['duration_seconds'], delta=0.5, msg=batch['id'])
 
 

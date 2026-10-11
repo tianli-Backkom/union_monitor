@@ -5,6 +5,9 @@ web/exports/
 *.tmp
 .pytest_cache/
 .superpowers/
+node_modules/
+test-results/
+playwright-report/
 .omo/
 .codegraph/
 .playwright-mcp/

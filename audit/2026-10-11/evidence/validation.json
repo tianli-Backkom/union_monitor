@@ -1,0 +1,49 @@
+{
+  "verified_at": "2026-10-11T23:51:23.310842+00:00",
+  "runtime": {
+    "python": "3.12.3",
+    "node": "22.23.3",
+    "os": "Linux via WSL",
+    "browser": "Playwright 1.64.0 Chromium"
+  },
+  "python": {
+    "ran": 702,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "skip_reason": "no local live Triton artifacts; source-backed checks separately recorded",
+    "log_sha256": "33d0310b97a1b2fbf19d9f2d3859a24df8cc17ec38f70f0fadd69f2287c30d25"
+  },
+  "node": {
+    "ran": 237,
+    "passed": 237,
+    "skipped": 0,
+    "log_sha256": "bf9329639c5b29c8a1e60faa96b071da44aaacf669b45bb16d50f1b6890aeeea"
+  },
+  "chromium": {
+    "ran": 8,
+    "passed": 8,
+    "mode": "offline fixtures, production-style browser downloads",
+    "log_sha256": "01d81354f871e610d9f4ed7f19dfc282e753c7f9f95b04edb4d38e737269817b"
+  },
+  "workflow_lint": {
+    "version": "1.7.12",
+    "archive_sha256": "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8",
+    "shellcheck": true,
+    "exit_code": 0
+  },
+  "browser_red": {
+    "baseline_sha": "e98c6af7c0640605e220c6696515528c31d343e8",
+    "tests": 2,
+    "failures": 2,
+    "cases": [
+      "project entry opens wrong view",
+      "390px hides batch result"
+    ]
+  },
+  "limits": [
+    "offline/browser checks are not proof of complete upstream ingestion",
+    "native Windows runtime differs from supported CI runtime",
+    "frozen audit bytes preserved; no historical conclusions rewritten"
+  ]
+}
