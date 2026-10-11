@@ -79,6 +79,15 @@ class WorkflowTimeGateTests(unittest.TestCase):
     def test_completed_workflow_with_missing_or_unparseable_timestamps_fails(self):
         self.assertFalse(validate([self.run_row(updated_at=None)],{"batches":[]})["passed"])
         self.assertFalse(validate([self.run_row(updated_at="not-a-timestamp")],{"batches":[]})["passed"])
+    def test_unresolved_pr_is_a_warning_not_a_refresh_failure(self):
+        row=self.run_row(pr=None,pr_url=None,base_branch=None,pr_title=None,
+                         pr_evidence={"method":"unresolved","run_id":1,"error":"ambiguous"})
+        p=build_payload([row],"2026-09-21T00:00:00Z","2026-09-23T00:00:00Z","2026-09-23T00:00:00Z")
+        self.assertIsNone(p["batches"][0]["pr"])
+        self.assertIn("未可靠关联 PR"," ".join(p["batches"][0]["missing"]))
+        report=validate([row],p)
+        self.assertTrue(report["passed"],report["errors"])
+        self.assertTrue(any("unresolved" in w for w in report["warnings"]))
     def test_completion_beyond_as_of_is_flagged(self):
         row=self.run_row(updated_at="2026-09-30T00:00:00Z")
         report=validate([row],{"batches":[],"window_end":"2026-09-29T00:00:00Z"})

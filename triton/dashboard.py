@@ -523,7 +523,11 @@ def collect(hours=72, as_of=None):
             row.update(resolver.resolve(r))
         except Exception as exc:
             association_errors.append({"run_id":r["id"],"url":r.get("html_url"),"error":str(exc)})
-            continue
+            # REQ-018/REQ-019: an unresolvable PR is never guessed. It is kept as
+            # an unresolved batch whose evidence gap is surfaced ("未可靠关联 PR")
+            # rather than silently dropped and rather than failing the refresh.
+            row.update(pr=None,pr_url=None,pr_title=None,base_branch=None,
+                       pr_evidence={"method":"unresolved","run_id":r["id"],"error":str(exc)})
         row.update(author=(r.get("actor") or {}).get("login"),branch=r.get("head_branch"),
                    trigger_at=None,trigger_exact=False)
         attempt=int(r.get("run_attempt") or 1)
@@ -552,8 +556,9 @@ def collect(hours=72, as_of=None):
         _write_json(EVIDENCE/"collection-errors.json", failed_jobs)
         raise RuntimeError(f"{len(failed_jobs)} workflow job lists could not be collected; refusing to publish incomplete refresh")
     if association_errors:
+        # Unresolved PR identities are reported for traceability but are not
+        # fatal: their batches publish with the "未可靠关联 PR" evidence gap.
         _write_json(EVIDENCE/"pr-association-errors.json",association_errors)
-        raise RuntimeError(f"{len(association_errors)} runs have unresolved PR identities; refusing to publish. See pr-association-errors.json")
 
     _write_json(EVIDENCE/"enriched-runs.json", enriched)
     return build_payload(enriched, iso(start), iso(end), iso(datetime.now(UTC)), api.calls)

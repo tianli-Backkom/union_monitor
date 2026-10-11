@@ -416,6 +416,41 @@ class AttemptEnumerationTests(unittest.TestCase):
         report = quality_validate(enriched, payload)
         self.assertTrue(report["passed"], report["errors"])
 
+    def test_collect_keeps_unresolved_pr_runs_as_unresolved_batches(self):
+        # REQ-018: an unresolvable PR is never guessed and never fails the whole
+        # refresh; it stays as an unresolved batch with its evidence gap marked.
+        run = {"id": 21, "name": "Integration Tests", "head_sha": "def", "event": "pull_request",
+               "created_at": "2026-10-08T00:00:00Z", "run_started_at": "2026-10-08T06:00:00Z",
+               "updated_at": "2026-10-08T06:10:00Z", "status": "completed", "conclusion": "success",
+               "run_attempt": 1, "html_url": "https://github.com/example/actions/runs/21",
+               "actor": {"login": "dev"}, "head_branch": "feature"}
+        tmp = Path(tempfile.mkdtemp(prefix="triton-unresolved-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+
+        def fake_get(self, url):
+            if url.endswith("per_page=1"):
+                return {"total_count": 1, "workflow_runs": [run]}, {}
+            if "/jobs" in url:
+                return {"total_count": 0, "jobs": []}, {}
+            return {"workflow_runs": [run]}, {}
+
+        def fake_resolve(*args, **kwargs):
+            raise ValueError("PR identity unresolved/ambiguous: {'matches': []}")
+
+        with patch.object(GitHub, "get", fake_get), \
+                patch("triton.pr_identity.PRResolver.resolve", fake_resolve), \
+                patch("triton.dashboard.EVIDENCE", tmp):
+            payload = collect(hours=72, as_of="2026-10-09T00:00:00Z")
+
+        self.assertEqual(len(payload["batches"]), 1)
+        batch = payload["batches"][0]
+        self.assertIsNone(batch["pr"])
+        self.assertIn("unresolved", batch["id"])
+        self.assertIn("未可靠关联 PR", " ".join(batch["missing"]))
+        enriched = json.loads((tmp / "enriched-runs.json").read_text("utf-8"))
+        report = quality_validate(enriched, payload)
+        self.assertTrue(report["passed"], report["errors"])
+
     def test_collect_keeps_attempt_identity_when_jobs_lack_timing(self):
         # The frozen adversarial probe's shape: jobs carry only id/name, so the
         # attempt rows keep their identity while E2E stays empty, never fabricated.
