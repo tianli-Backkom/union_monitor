@@ -5,7 +5,79 @@
     "message": "Branch not protected"
   },
   "baseline_rulesets": [],
-  "status": "local_verified_pending_remote_checks",
+  "status": "main_protection_verified_pr_checks_success",
   "required_check": "Dashboard quality gate",
-  "production_migration": "legacy maintained; unified production not activated"
+  "production_migration": "legacy maintained; unified production not activated",
+  "pr_url": "https://github.com/tianli-Backkom/union_monitor/pull/1",
+  "verified_code_head": "3135fd37c0792c696e2c300507b01fdcac52400a",
+  "workflow_run": {
+    "id": 38186105499,
+    "url": "https://github.com/tianli-Backkom/union_monitor/actions/runs/38186105499",
+    "conclusion": "success",
+    "jobs": {
+      "python-tests": "success",
+      "frontend-tests": "success",
+      "collector-contracts": "success",
+      "workflow-lint": "success",
+      "Dashboard quality gate": "success"
+    }
+  },
+  "protection": {
+    "verified_at": "2026-10-11T23:57:15.474378+00:00",
+    "main_protection": {
+      "url": "https://api.github.com/repos/tianli-Backkom/union_monitor/branches/main/protection",
+      "required_status_checks": {
+        "url": "https://api.github.com/repos/tianli-Backkom/union_monitor/branches/main/protection/required_status_checks",
+        "strict": true,
+        "contexts": [
+          "Dashboard quality gate"
+        ],
+        "contexts_url": "https://api.github.com/repos/tianli-Backkom/union_monitor/branches/main/protection/required_status_checks/contexts",
+        "checks": [
+          {
+            "context": "Dashboard quality gate",
+            "app_id": 15368
+          }
+        ]
+      },
+      "required_pull_request_reviews": {
+        "url": "https://api.github.com/repos/tianli-Backkom/union_monitor/branches/main/protection/required_pull_request_reviews",
+        "dismiss_stale_reviews": true,
+        "require_code_owner_reviews": false,
+        "require_last_push_approval": false,
+        "required_approving_review_count": 0
+      },
+      "required_signatures": {
+        "url": "https://api.github.com/repos/tianli-Backkom/union_monitor/branches/main/protection/required_signatures",
+        "enabled": false
+      },
+      "enforce_admins": {
+        "url": "https://api.github.com/repos/tianli-Backkom/union_monitor/branches/main/protection/enforce_admins",
+        "enabled": true
+      },
+      "required_linear_history": {
+        "enabled": false
+      },
+      "allow_force_pushes": {
+        "enabled": false
+      },
+      "allow_deletions": {
+        "enabled": false
+      },
+      "block_creations": {
+        "enabled": false
+      },
+      "required_conversation_resolution": {
+        "enabled": true
+      },
+      "lock_branch": {
+        "enabled": false
+      },
+      "allow_fork_syncing": {
+        "enabled": false
+      }
+    },
+    "status": "main_required_check_enabled"
+  },
+  "merge_status": "pending_evidence_commit_checks"
 }

@@ -70,7 +70,7 @@ UBS 捕获九仓均为 success，**167 PR / 720 批次**；PR、批次身份及�
 
 这些防护降低功能回归和坏数据发布风险，并暴露延迟/失败，**不能保证外部 API、网络或 GitHub 定时调度永不失败**。定时事件可能延迟或丢弃，长期无活动的公开仓库可能被禁用；见 [GitHub schedule 说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)。当前同组仅保留一个排队运行，仍不满足目标的整轮排队要求。运行失败后应查看失败 step/健康报告、排查来源配额或缺证据，再手动补采；不得绕过门禁部署。部署核验失败当前不会自动恢复。
 
-仓库必需检查需通过保护规则实际绑定，[GitHub 保护分支说明](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)；本轮读取/设置结果与 PR 检查记录见交付证据。代码中存在 workflow 文件不等于分支保护生效，也不能以离线绿色测试证明今日来源采集成功。
+仓库必需检查已通过 main 保护规则绑定 `Dashboard quality gate`（GitHub Actions app 15368），启用 strict 和管理员约束，要求 PR，禁止强推/删除；依据 [GitHub 保护分支说明](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)。[PR #1](https://github.com/tianli-Backkom/union_monitor/pull/1) 的首轮检查 [38186105499](https://github.com/tianli-Backkom/union_monitor/actions/runs/38186105499) 五个 job 均 success；读取/设置结果见交付证据。代码中存在 workflow 文件不等于分支保护生效，也不能以离线绿色测试证明今日来源采集成功。
 
 ## 验证与证据入口
 
@@ -81,5 +81,6 @@ UBS 捕获九仓均为 success，**167 PR / 720 批次**；PR、批次身份及�
 | 修复同输入回放 | [数据回放](evidence/post-fix-data-replay.json)，保留身份/条数且删除攻击失败 |
 | 真实生产历史 | 基线 SHA 的 [legacy run 38139646786](https://github.com/tianli-Backkom/union_monitor/actions/runs/38139646786) build/deploy/verify 成功；不证明统一架构完成 |
 | 新防护回归 | [本轮验证记录](evidence/validation.json)、[远端 PR/保护状态](evidence/delivery.json) |
+| 公开健康检查 | [生产快照 smoke](evidence/published-health-smoke.json)，只证明该时刻的公开一致性/新鲜度 |
 
 测试按“用户能力→实际入口→故障”追踪：路由/搜索/导出/详情/窄屏由 Chromium 及 Node 运行测试保护；样本资格/覆盖/时间与 sidecar 由 Triton Python/Node 测试保护；采集状态/真实 adapter/错归属/缺报告/错指纹由 Python 契约测试保护；CI 失败传播、日程和文档由 workflow/health/README 测试保护。保留旧审计冻结文件作为历史证据，不重写历史测试结论。本轮只提交任务文件，原工作目录的三份未提交日志未纳入。

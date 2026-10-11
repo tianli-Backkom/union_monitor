@@ -1,0 +1,87 @@
+{
+  "site": "https://tianli-backkom.github.io/union_monitor",
+  "checked_at": "2026-10-11T23:52:14.951976+00:00",
+  "scope": "public integrity and freshness",
+  "timestamps": {
+    "ubs": "2026-10-11T12:49:48.530487+00:00",
+    "triton": "2026-10-11T12:54:59.972508Z"
+  },
+  "checks": {
+    "triton": {
+      "file": "triton.json",
+      "url": "https://tianli-backkom.github.io/union_monitor/data/triton.json",
+      "fingerprint": "4de92085df2bc4dd5f74563009e6fd2d5cf13536832a47c512014819bd5170a8",
+      "collected_at": "2026-10-11T12:54:59.972508Z"
+    },
+    "ubs": {
+      "files": [
+        {
+          "file": "repos/OmniStateStore.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/OmniStateStore.json",
+          "sha256": "fce9cd7e79f961a945a698810b41c90201b1c5f182d8567a3cd98e054232a08a"
+        },
+        {
+          "file": "repos/ham.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/ham.json",
+          "sha256": "3bb78816d476b2f5889535e8d94b20c8bd508ba44c986a8b8ecb196c0437f796"
+        },
+        {
+          "file": "repos/ubs-atomic.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/ubs-atomic.json",
+          "sha256": "1a8f0597021b2179095744d7e4fbfec1b63615cdfe5d3a6f3b8d41e1403f7402"
+        },
+        {
+          "file": "repos/ubs-comm.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/ubs-comm.json",
+          "sha256": "6a5f1b4824718017fb7ea1baed696a0b62f6478642e73ef16af2b42dfb7d8a64"
+        },
+        {
+          "file": "repos/ubs-engine.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/ubs-engine.json",
+          "sha256": "08b6ba9c53704443532d458fde890248482be87cd6e05eaec1578539244078e2"
+        },
+        {
+          "file": "repos/ubs-io.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/ubs-io.json",
+          "sha256": "d292c70a516b489533e2747b756889637c76005ed5149f3e5ed49fa47c4453fb"
+        },
+        {
+          "file": "repos/ubs-mem.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/ubs-mem.json",
+          "sha256": "23b605a09e6040bf964b2fe598da1a359d58eff8f09d66bcdd48c58d48111564"
+        },
+        {
+          "file": "repos/ubs-virt.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/ubs-virt.json",
+          "sha256": "d49e089a6e3fcf471edd303f59d19a2bc460c7506bb38df8a2699badafbec585"
+        },
+        {
+          "file": "repos/ubturbo.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repos/ubturbo.json",
+          "sha256": "e5dc54318d6a8cfbf09f32d677a94284822d4f3bba5db44050c21883c30cf3ab"
+        },
+        {
+          "file": "repositories.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/repositories.json",
+          "sha256": "7d2c1e97d09786f3a39b6c37b62446e4d83aa949904236fbe96c02e2b7fb37a7"
+        },
+        {
+          "file": "snapshot.json",
+          "url": "https://tianli-backkom.github.io/union_monitor/data/snapshot.json",
+          "sha256": "08b6ba9c53704443532d458fde890248482be87cd6e05eaec1578539244078e2"
+        }
+      ],
+      "file_count": 11,
+      "fingerprint": "sha256:3c1d3e5be774b31b5c342541124e51e395e3e959ea37b2310269cdb4b6539c26",
+      "generated_at": "2026-10-11T12:56:41.382783+00:00"
+    },
+    "manifests": {
+      "published_manifests": [
+        "triton-manifest.json",
+        "ubs-manifest.json"
+      ]
+    }
+  },
+  "problems": [],
+  "success": true
+}
