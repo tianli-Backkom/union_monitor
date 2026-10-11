@@ -2,8 +2,8 @@ name: Refresh Triton dashboard
 
 on:
   schedule:
-    # 08:00, 13:00, 18:00 and 20:00 Asia/Shanghai (UTC+8)
-    - cron: "0 0,5,10,12 * * *"
+    # 08:00, 12:00, 16:00, 18:00 and 20:00 Asia/Shanghai (UTC+8)
+    - cron: "0 0,4,8,10,12 * * *"
   workflow_dispatch:
 
 permissions:
@@ -169,7 +169,7 @@ jobs:
 
       - name: Collect Triton gate data
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python -X utf8 -m triton.dashboard --hours 72
 
       - name: Run Python tests

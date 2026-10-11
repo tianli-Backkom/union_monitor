@@ -17,7 +17,7 @@ class TritonWorkflowTests(unittest.TestCase):
         cls.pages = PAGES_WORKFLOW.read_text(encoding="utf-8")
 
     def test_schedule_matches_beijing_refresh_slots(self):
-        self.assertRegex(self.workflow, r"(?m)^\s{4}- cron: ['\"]0 0,5,10,12 \* \* \*['\"]$")
+        self.assertRegex(self.workflow, r"(?m)^\s{4}- cron: ['\"]0 0,4,8,10,12 \* \* \*['\"]$")
         self.assertEqual(self.workflow.count("cron:"), 1)
         self.assertRegex(self.workflow, r"(?m)^\s{2}workflow_dispatch:\s*$")
         # The incremental refresh must never trigger UBS collection or run on push.
@@ -44,7 +44,7 @@ class TritonWorkflowTests(unittest.TestCase):
         commands = [
             "uses: actions/cache/restore@v4",
             "SITE_FALLBACK_URL",
-            "GH_TOKEN: ${{ github.token }}",
+            "GH_TOKEN: ${{ secrets.GH_TOKEN }}",
             "python -X utf8 -m triton.dashboard --hours 72",
             "python -m unittest discover -s tests",
             "node --test tests/*.test.cjs",

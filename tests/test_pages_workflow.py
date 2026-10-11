@@ -65,6 +65,9 @@ class PagesWorkflowTests(unittest.TestCase):
             r"shutil\.copy\('catalog\.json','web/data/catalog\.json'\)",
         )
 
+    def test_triton_collection_uses_the_repo_secret_for_rate_limit(self):
+        self.assertRegex(self.workflow, r"(?ms)Collect Triton gating data\s*\n\s+env:\s*\n\s+GH_TOKEN: \$\{\{ secrets\.GH_TOKEN \}\}")
+
 
 if __name__ == "__main__":
     unittest.main()

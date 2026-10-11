@@ -2,6 +2,7 @@ name: Collect and deploy dashboard
 
 on:
   schedule:
+    # 每日全量采集（北京时间 07:30）；Triton 增量刷新见 triton-refresh.yml
     - cron: '30 23 * * *'
   workflow_dispatch:
   push:
@@ -65,7 +66,7 @@ jobs:
 
       - name: Collect Triton gating data
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python -X utf8 -m triton.dashboard --hours 72
 
       - name: Run Python tests
