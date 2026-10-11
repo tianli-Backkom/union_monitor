@@ -50,11 +50,11 @@ jobs:
 
       - name: Ensure UBS data (确保 UBS 数据)
         env:
-          SITE_FALLBACK_URL: https://tianli-backkom.github.io/ubs_core_monitor
+          SITE_FALLBACK_URL: https://tianli-backkom.github.io/union_monitor
         run: |
           set -euo pipefail
 
-          fallback="${SITE_FALLBACK_URL:-https://tianli-backkom.github.io/ubs_core_monitor}"
+          fallback="${SITE_FALLBACK_URL:-https://tianli-backkom.github.io/union_monitor}"
           echo "[ensure-UBS-data] fallback site: $fallback"
 
           fetch() {

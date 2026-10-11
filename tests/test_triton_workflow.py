@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "triton-refresh.yml"
 PAGES_WORKFLOW = ROOT / ".github" / "workflows" / "pages.yml"
 
-FALLBACK_URL = "https://tianli-backkom.github.io/ubs_core_monitor"
+FALLBACK_URL = "https://tianli-backkom.github.io/union_monitor"
 
 
 class TritonWorkflowTests(unittest.TestCase):
