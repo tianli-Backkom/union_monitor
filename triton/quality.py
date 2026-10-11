@@ -33,6 +33,11 @@ def validate(runs, payload):
         if mismatches:
             errors.append("payload summary contradicts its batches: "+"; ".join(mismatches))
     represented={j.get("id") for b in payload["batches"] for j in b.get("npu_jobs",[])}
+    # Runs whose batch is excluded by the display window are association evidence
+    # only (build_batches drops batches that start before the window). Their NPU
+    # jobs are therefore legitimately absent from `represented`, so the job-level
+    # aggregation check below must only apply to runs actually in the payload.
+    batched={(w.get("id"), int(w.get("attempt") or 1)) for b in payload["batches"] for w in b.get("workflows",[])}
     for run in runs:
         prefix=f"run {run.get('id')}"
         if run.get("event") in ("pull_request","pull_request_target"):
@@ -72,7 +77,8 @@ def validate(runs, payload):
             # Independent of the collector's runner-name matcher.
             candidate="integration-tests-ascend (" in name or bool(re.search(r"linux-(?:amd64|aarch64)-a[0-9]",name))
             if not candidate: continue
-            if job.get("id") not in represented: errors.append(prefix+": NPU job absent from aggregated data")
+            if (run.get("id"), int(run.get("run_attempt") or 1)) in batched and job.get("id") not in represented:
+                errors.append(prefix+": NPU job absent from aggregated data")
             key=prefix+f" job {job.get('id')}: "
             from .dashboard import _is_npu_job, focus_from_jobs
             if not _is_npu_job(job): errors.append(key+"unrecognized NPU runner")

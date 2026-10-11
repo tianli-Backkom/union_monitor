@@ -88,6 +88,17 @@ class WorkflowTimeGateTests(unittest.TestCase):
         report=validate([row],p)
         self.assertTrue(report["passed"],report["errors"])
         self.assertTrue(any("unresolved" in w for w in report["warnings"]))
+    def test_out_of_window_run_jobs_are_not_flagged_absent_from_payload(self):
+        # A run whose batch starts before the display window is dropped from the
+        # payload as association evidence only; its NPU jobs are legitimately
+        # absent from the aggregated data, so they must not fail the gate.
+        job={"id":7,"name":"integration-tests-ascend (linux-amd64-a5-2, py3.12)","status":"completed","conclusion":"success",
+             "created_at":"2026-09-22T02:00:00Z","started_at":"2026-09-22T02:00:14Z","completed_at":"2026-09-22T02:05:00Z"}
+        row=self.run_row(jobs=[job],created_at="2026-09-22T02:00:00Z",updated_at="2026-09-22T02:05:00Z")
+        p=build_payload([row],"2026-09-23T00:00:00Z","2026-09-24T00:00:00Z","2026-09-24T00:00:00Z")
+        self.assertEqual(len(p["batches"]),0)
+        report=validate([row],p)
+        self.assertTrue(report["passed"],report["errors"])
     def test_completion_beyond_as_of_is_flagged(self):
         row=self.run_row(updated_at="2026-09-30T00:00:00Z")
         report=validate([row],{"batches":[],"window_end":"2026-09-29T00:00:00Z"})
