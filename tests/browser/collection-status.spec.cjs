@@ -88,6 +88,19 @@ test('unavailable project shows unavailable and unknown concern, not fake zero',
   await expect(triton.locator('dt', { hasText: '关注' }).locator('..')).toContainText('—');
 });
 
+test('workbench stays catalog-driven when no release manifest is published', async ({ page }) => {
+  // A missing release.json must not collapse the workbench into the legacy
+  // fallback renderer: cards keep their project identity and show an explicit
+  // unavailable status instead of fabricated success/zero states.
+  await page.route('**/data/release.json*', route =>
+    route.fulfill({ status: 404, contentType: 'application/json', body: '{}' }));
+  await gotoWorkbench(page);
+  await expect(page.locator('.project-card')).toHaveCount(2);
+  await expect(card(page, 'ubs')).toBeVisible();
+  await expect(card(page, 'ubs')).toContainText('不可用');
+  await expect(card(page, 'ubs').locator('dt', { hasText: '关注' }).locator('..')).toContainText('—');
+});
+
 test('project card navigates into the project overview', async ({ page }) => {
   await gotoWorkbench(page);
   await card(page, 'triton').locator('a[href="#projects/triton/overview"]').click();

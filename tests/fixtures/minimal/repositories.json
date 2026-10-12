@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
-  "start_ms": 1,
-  "end_ms": 2,
+  "start_ms": 1788220800000,
+  "end_ms": 1790812800000,
   "generated_at": "2026-10-01T00:00:00+00:00",
   "repositories": [
     {
@@ -12,8 +12,8 @@
       "meta": {
         "repository": "openeuler/ubs-engine",
         "branch": "master",
-        "start_ms": 1,
-        "end_ms": 2,
+        "start_ms": 1788220800000,
+        "end_ms": 1790812800000,
         "collected_at": "2026-10-01T00:00:00+00:00",
         "days": 30,
         "errors": []

@@ -116,6 +116,8 @@ class BootstrapTests(unittest.TestCase):
                 patch("sys.argv", ["devdata.py", "--offline"]), contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(devdata.main(), 0)
         self.assert_outputs()
+        self.assertEqual(json.loads((self.web_data / "release.json").read_bytes()),
+                         json.loads((self.FIXTURES / "release.json").read_bytes()))
 
 
 if __name__ == "__main__":

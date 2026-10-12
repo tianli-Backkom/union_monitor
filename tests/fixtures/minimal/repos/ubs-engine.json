@@ -1,100 +1,64 @@
 {
   "meta": {
     "repository": "openeuler/ubs-engine",
-    "start_ms": 1,
-    "end_ms": 2,
+    "start_ms": 1788220800000,
+    "end_ms": 1790812800000,
     "collected_at": "2026-10-01T00:00:00+00:00"
   },
   "prs": [
     {
       "repository": "openeuler/ubs-engine",
       "number": 1,
-      "title": "feat: add engine core scheduler",
+      "title": "feat: add engine core scheduler #1",
       "state": "merged",
       "author": "alice",
       "url": "https://gitcode.com/openeuler/ubs-engine/pull/1",
-      "created_ms": 1000,
-      "merged_ms": 3600000,
-      "closed_ms": 3600000,
-      "head_sha": "abc123",
-      "submission_count": 1,
+      "created_ms": 1788307200000,
+      "merged_ms": 1788350400000,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000001",
+      "submission_count": 2,
       "events": [
         {
-          "id": "c1",
+          "id": "e1",
           "kind": "create",
-          "time_ms": 1000,
-          "sha": "abc123"
+          "time_ms": 1788307200000,
+          "sha": "0000000000000000000000000000000000000001"
         }
       ],
       "batches": [
         {
-          "number": 100,
-          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/100/",
-          "status": "success",
-          "eligible": true,
-          "e2e_ms": 3600000,
-          "request_ms": 1000,
-          "end_ms": 3601000,
-          "jenkins_ms": 3500000,
-          "event_id": "c1",
-          "event_type": "create",
-          "sha": "abc123",
-          "children": [
-            {
-              "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/x86/1/",
-              "kind": "x86",
-              "result": "SUCCESS",
-              "association_valid": true,
-              "building": false,
-              "queue_ms": 60000,
-              "duration_ms": 3000000,
-              "total_ms": 3060000
-            },
-            {
-              "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/arm/1/",
-              "kind": "arm",
-              "result": "SUCCESS",
-              "association_valid": true,
-              "building": false,
-              "queue_ms": 90000,
-              "duration_ms": 2900000,
-              "total_ms": 2990000
-            }
-          ],
-          "issues": []
-        },
-        {
           "number": 101,
           "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/101/",
-          "status": "failure",
+          "status": "success",
           "eligible": true,
-          "e2e_ms": 1800000,
-          "request_ms": 1000,
-          "end_ms": 1801000,
-          "jenkins_ms": 1700000,
-          "event_id": "c1",
+          "e2e_ms": 3660000,
+          "request_ms": 1788307200000,
+          "end_ms": 1788310860000,
+          "jenkins_ms": 3560000,
+          "event_id": "e1",
           "event_type": "create",
-          "sha": "abc123",
+          "sha": "0000000000000000000000000000000000000001",
           "children": [],
           "issues": []
         }
       ],
       "issues": [],
       "metrics": {
-        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/100/",
-        "representative_batch_number": 100,
-        "e2e_ms": 3600000,
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/101/",
+        "representative_batch_number": 101,
+        "e2e_ms": 3660000,
         "x86": {
-          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/x86/1/",
-          "queue_ms": 60000,
-          "duration_ms": 3000000,
-          "total_ms": 3060000
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
         },
         "arm": {
-          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/arm/1/",
-          "queue_ms": 90000,
-          "duration_ms": 2900000,
-          "total_ms": 2990000
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
         },
         "dt": {
           "url": null,
@@ -107,21 +71,21 @@
     {
       "repository": "openeuler/ubs-engine",
       "number": 2,
-      "title": "fix: resolve queue stall on cold start",
+      "title": "fix: resolve queue stall on cold start #2",
       "state": "open",
       "author": "bob",
       "url": "https://gitcode.com/openeuler/ubs-engine/pull/2",
-      "created_ms": 2000,
+      "created_ms": 1788393600000,
       "merged_ms": null,
       "closed_ms": null,
-      "head_sha": "def456",
-      "submission_count": 1,
+      "head_sha": "0000000000000000000000000000000000000002",
+      "submission_count": 3,
       "events": [
         {
-          "id": "c2",
+          "id": "e2",
           "kind": "create",
-          "time_ms": 2000,
-          "sha": "def456"
+          "time_ms": 1788393600000,
+          "sha": "0000000000000000000000000000000000000002"
         }
       ],
       "batches": [
@@ -130,13 +94,13 @@
           "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/102/",
           "status": "success",
           "eligible": true,
-          "e2e_ms": 7200000,
-          "request_ms": 2000,
-          "end_ms": 7202000,
-          "jenkins_ms": 7000000,
-          "event_id": "c2",
+          "e2e_ms": 3720000,
+          "request_ms": 1788393600000,
+          "end_ms": 1788397320000,
+          "jenkins_ms": 3620000,
+          "event_id": "e2",
           "event_type": "create",
-          "sha": "def456",
+          "sha": "0000000000000000000000000000000000000002",
           "children": [],
           "issues": []
         }
@@ -145,7 +109,1123 @@
       "metrics": {
         "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/102/",
         "representative_batch_number": 102,
-        "e2e_ms": 7200000,
+        "e2e_ms": 3720000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 3,
+      "title": "feat: multiarch build pipeline #3",
+      "state": "merged",
+      "author": "carol",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/3",
+      "created_ms": 1788480000000,
+      "merged_ms": 1788523200000,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000003",
+      "submission_count": 1,
+      "events": [
+        {
+          "id": "e3",
+          "kind": "create",
+          "time_ms": 1788480000000,
+          "sha": "0000000000000000000000000000000000000003"
+        }
+      ],
+      "batches": [
+        {
+          "number": 103,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/103/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 3780000,
+          "request_ms": 1788480000000,
+          "end_ms": 1788483780000,
+          "jenkins_ms": 3680000,
+          "event_id": "e3",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000003",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/103/",
+        "representative_batch_number": 103,
+        "e2e_ms": 3780000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 4,
+      "title": "perf: reduce e2e latency #4",
+      "state": "closed",
+      "author": "dave",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/4",
+      "created_ms": 1788566400000,
+      "merged_ms": 1788609600000,
+      "closed_ms": 1788652800000,
+      "head_sha": "0000000000000000000000000000000000000004",
+      "submission_count": 2,
+      "events": [
+        {
+          "id": "e4",
+          "kind": "create",
+          "time_ms": 1788566400000,
+          "sha": "0000000000000000000000000000000000000004"
+        }
+      ],
+      "batches": [
+        {
+          "number": 104,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/104/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 3840000,
+          "request_ms": 1788566400000,
+          "end_ms": 1788570240000,
+          "jenkins_ms": 3740000,
+          "event_id": "e4",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000004",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/104/",
+        "representative_batch_number": 104,
+        "e2e_ms": 3840000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 5,
+      "title": "fix: correct arm association #5",
+      "state": "merged",
+      "author": "alice",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/5",
+      "created_ms": 1788652800000,
+      "merged_ms": 1788696000000,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000005",
+      "submission_count": 3,
+      "events": [
+        {
+          "id": "e5",
+          "kind": "create",
+          "time_ms": 1788652800000,
+          "sha": "0000000000000000000000000000000000000005"
+        }
+      ],
+      "batches": [
+        {
+          "number": 105,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/105/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 3900000,
+          "request_ms": 1788652800000,
+          "end_ms": 1788656700000,
+          "jenkins_ms": 3800000,
+          "event_id": "e5",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000005",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/105/",
+        "representative_batch_number": 105,
+        "e2e_ms": 3900000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 6,
+      "title": "feat: dt smoke coverage #6",
+      "state": "open",
+      "author": "bob",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/6",
+      "created_ms": 1788739200000,
+      "merged_ms": null,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000006",
+      "submission_count": 1,
+      "events": [
+        {
+          "id": "e6",
+          "kind": "create",
+          "time_ms": 1788739200000,
+          "sha": "0000000000000000000000000000000000000006"
+        }
+      ],
+      "batches": [
+        {
+          "number": 106,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/106/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 3960000,
+          "request_ms": 1788739200000,
+          "end_ms": 1788743160000,
+          "jenkins_ms": 3860000,
+          "event_id": "e6",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000006",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/106/",
+        "representative_batch_number": 106,
+        "e2e_ms": 3960000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 7,
+      "title": "feat: add engine core scheduler #7",
+      "state": "merged",
+      "author": "carol",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/7",
+      "created_ms": 1788825600000,
+      "merged_ms": 1788868800000,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000007",
+      "submission_count": 2,
+      "events": [
+        {
+          "id": "e7",
+          "kind": "create",
+          "time_ms": 1788825600000,
+          "sha": "0000000000000000000000000000000000000007"
+        }
+      ],
+      "batches": [
+        {
+          "number": 107,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/107/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4020000,
+          "request_ms": 1788825600000,
+          "end_ms": 1788829620000,
+          "jenkins_ms": 3920000,
+          "event_id": "e7",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000007",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/107/",
+        "representative_batch_number": 107,
+        "e2e_ms": 4020000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 8,
+      "title": "fix: resolve queue stall on cold start #8",
+      "state": "closed",
+      "author": "dave",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/8",
+      "created_ms": 1788912000000,
+      "merged_ms": 1788955200000,
+      "closed_ms": 1788998400000,
+      "head_sha": "0000000000000000000000000000000000000008",
+      "submission_count": 3,
+      "events": [
+        {
+          "id": "e8",
+          "kind": "create",
+          "time_ms": 1788912000000,
+          "sha": "0000000000000000000000000000000000000008"
+        }
+      ],
+      "batches": [
+        {
+          "number": 108,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/108/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4080000,
+          "request_ms": 1788912000000,
+          "end_ms": 1788916080000,
+          "jenkins_ms": 3980000,
+          "event_id": "e8",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000008",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/108/",
+        "representative_batch_number": 108,
+        "e2e_ms": 4080000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 9,
+      "title": "feat: multiarch build pipeline #9",
+      "state": "merged",
+      "author": "alice",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/9",
+      "created_ms": 1788998400000,
+      "merged_ms": 1789041600000,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000009",
+      "submission_count": 1,
+      "events": [
+        {
+          "id": "e9",
+          "kind": "create",
+          "time_ms": 1788998400000,
+          "sha": "0000000000000000000000000000000000000009"
+        }
+      ],
+      "batches": [
+        {
+          "number": 109,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/109/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4140000,
+          "request_ms": 1788998400000,
+          "end_ms": 1789002540000,
+          "jenkins_ms": 4040000,
+          "event_id": "e9",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000009",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/109/",
+        "representative_batch_number": 109,
+        "e2e_ms": 4140000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 10,
+      "title": "perf: reduce e2e latency #10",
+      "state": "open",
+      "author": "bob",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/10",
+      "created_ms": 1789084800000,
+      "merged_ms": null,
+      "closed_ms": null,
+      "head_sha": "000000000000000000000000000000000000000a",
+      "submission_count": 2,
+      "events": [
+        {
+          "id": "e10",
+          "kind": "create",
+          "time_ms": 1789084800000,
+          "sha": "000000000000000000000000000000000000000a"
+        }
+      ],
+      "batches": [
+        {
+          "number": 110,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/110/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4200000,
+          "request_ms": 1789084800000,
+          "end_ms": 1789089000000,
+          "jenkins_ms": 4100000,
+          "event_id": "e10",
+          "event_type": "create",
+          "sha": "000000000000000000000000000000000000000a",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/110/",
+        "representative_batch_number": 110,
+        "e2e_ms": 4200000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 11,
+      "title": "fix: correct arm association #11",
+      "state": "merged",
+      "author": "carol",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/11",
+      "created_ms": 1789171200000,
+      "merged_ms": 1789214400000,
+      "closed_ms": null,
+      "head_sha": "000000000000000000000000000000000000000b",
+      "submission_count": 3,
+      "events": [
+        {
+          "id": "e11",
+          "kind": "create",
+          "time_ms": 1789171200000,
+          "sha": "000000000000000000000000000000000000000b"
+        }
+      ],
+      "batches": [
+        {
+          "number": 111,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/111/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4260000,
+          "request_ms": 1789171200000,
+          "end_ms": 1789175460000,
+          "jenkins_ms": 4160000,
+          "event_id": "e11",
+          "event_type": "create",
+          "sha": "000000000000000000000000000000000000000b",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/111/",
+        "representative_batch_number": 111,
+        "e2e_ms": 4260000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 12,
+      "title": "feat: dt smoke coverage #12",
+      "state": "closed",
+      "author": "dave",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/12",
+      "created_ms": 1789257600000,
+      "merged_ms": 1789300800000,
+      "closed_ms": 1789344000000,
+      "head_sha": "000000000000000000000000000000000000000c",
+      "submission_count": 1,
+      "events": [
+        {
+          "id": "e12",
+          "kind": "create",
+          "time_ms": 1789257600000,
+          "sha": "000000000000000000000000000000000000000c"
+        }
+      ],
+      "batches": [
+        {
+          "number": 112,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/112/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4320000,
+          "request_ms": 1789257600000,
+          "end_ms": 1789261920000,
+          "jenkins_ms": 4220000,
+          "event_id": "e12",
+          "event_type": "create",
+          "sha": "000000000000000000000000000000000000000c",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/112/",
+        "representative_batch_number": 112,
+        "e2e_ms": 4320000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 13,
+      "title": "feat: add engine core scheduler #13",
+      "state": "merged",
+      "author": "alice",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/13",
+      "created_ms": 1789344000000,
+      "merged_ms": 1789387200000,
+      "closed_ms": null,
+      "head_sha": "000000000000000000000000000000000000000d",
+      "submission_count": 2,
+      "events": [
+        {
+          "id": "e13",
+          "kind": "create",
+          "time_ms": 1789344000000,
+          "sha": "000000000000000000000000000000000000000d"
+        }
+      ],
+      "batches": [
+        {
+          "number": 113,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/113/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4380000,
+          "request_ms": 1789344000000,
+          "end_ms": 1789348380000,
+          "jenkins_ms": 4280000,
+          "event_id": "e13",
+          "event_type": "create",
+          "sha": "000000000000000000000000000000000000000d",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/113/",
+        "representative_batch_number": 113,
+        "e2e_ms": 4380000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 14,
+      "title": "fix: resolve queue stall on cold start #14",
+      "state": "open",
+      "author": "bob",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/14",
+      "created_ms": 1789430400000,
+      "merged_ms": null,
+      "closed_ms": null,
+      "head_sha": "000000000000000000000000000000000000000e",
+      "submission_count": 3,
+      "events": [
+        {
+          "id": "e14",
+          "kind": "create",
+          "time_ms": 1789430400000,
+          "sha": "000000000000000000000000000000000000000e"
+        }
+      ],
+      "batches": [
+        {
+          "number": 114,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/114/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4440000,
+          "request_ms": 1789430400000,
+          "end_ms": 1789434840000,
+          "jenkins_ms": 4340000,
+          "event_id": "e14",
+          "event_type": "create",
+          "sha": "000000000000000000000000000000000000000e",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/114/",
+        "representative_batch_number": 114,
+        "e2e_ms": 4440000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 15,
+      "title": "feat: multiarch build pipeline #15",
+      "state": "merged",
+      "author": "carol",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/15",
+      "created_ms": 1789516800000,
+      "merged_ms": 1789560000000,
+      "closed_ms": null,
+      "head_sha": "000000000000000000000000000000000000000f",
+      "submission_count": 1,
+      "events": [
+        {
+          "id": "e15",
+          "kind": "create",
+          "time_ms": 1789516800000,
+          "sha": "000000000000000000000000000000000000000f"
+        }
+      ],
+      "batches": [
+        {
+          "number": 115,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/115/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4500000,
+          "request_ms": 1789516800000,
+          "end_ms": 1789521300000,
+          "jenkins_ms": 4400000,
+          "event_id": "e15",
+          "event_type": "create",
+          "sha": "000000000000000000000000000000000000000f",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/115/",
+        "representative_batch_number": 115,
+        "e2e_ms": 4500000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 16,
+      "title": "perf: reduce e2e latency #16",
+      "state": "closed",
+      "author": "dave",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/16",
+      "created_ms": 1789603200000,
+      "merged_ms": 1789646400000,
+      "closed_ms": 1789689600000,
+      "head_sha": "0000000000000000000000000000000000000010",
+      "submission_count": 2,
+      "events": [
+        {
+          "id": "e16",
+          "kind": "create",
+          "time_ms": 1789603200000,
+          "sha": "0000000000000000000000000000000000000010"
+        }
+      ],
+      "batches": [
+        {
+          "number": 116,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/116/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4560000,
+          "request_ms": 1789603200000,
+          "end_ms": 1789607760000,
+          "jenkins_ms": 4460000,
+          "event_id": "e16",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000010",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/116/",
+        "representative_batch_number": 116,
+        "e2e_ms": 4560000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 17,
+      "title": "fix: correct arm association #17",
+      "state": "merged",
+      "author": "alice",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/17",
+      "created_ms": 1789689600000,
+      "merged_ms": 1789732800000,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000011",
+      "submission_count": 3,
+      "events": [
+        {
+          "id": "e17",
+          "kind": "create",
+          "time_ms": 1789689600000,
+          "sha": "0000000000000000000000000000000000000011"
+        }
+      ],
+      "batches": [
+        {
+          "number": 117,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/117/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4620000,
+          "request_ms": 1789689600000,
+          "end_ms": 1789694220000,
+          "jenkins_ms": 4520000,
+          "event_id": "e17",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000011",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/117/",
+        "representative_batch_number": 117,
+        "e2e_ms": 4620000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 18,
+      "title": "feat: dt smoke coverage #18",
+      "state": "open",
+      "author": "bob",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/18",
+      "created_ms": 1789776000000,
+      "merged_ms": null,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000012",
+      "submission_count": 1,
+      "events": [
+        {
+          "id": "e18",
+          "kind": "create",
+          "time_ms": 1789776000000,
+          "sha": "0000000000000000000000000000000000000012"
+        }
+      ],
+      "batches": [
+        {
+          "number": 118,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/118/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4680000,
+          "request_ms": 1789776000000,
+          "end_ms": 1789780680000,
+          "jenkins_ms": 4580000,
+          "event_id": "e18",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000012",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/118/",
+        "representative_batch_number": 118,
+        "e2e_ms": 4680000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 19,
+      "title": "feat: add engine core scheduler #19",
+      "state": "merged",
+      "author": "carol",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/19",
+      "created_ms": 1789862400000,
+      "merged_ms": 1789905600000,
+      "closed_ms": null,
+      "head_sha": "0000000000000000000000000000000000000013",
+      "submission_count": 2,
+      "events": [
+        {
+          "id": "e19",
+          "kind": "create",
+          "time_ms": 1789862400000,
+          "sha": "0000000000000000000000000000000000000013"
+        }
+      ],
+      "batches": [
+        {
+          "number": 119,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/119/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4740000,
+          "request_ms": 1789862400000,
+          "end_ms": 1789867140000,
+          "jenkins_ms": 4640000,
+          "event_id": "e19",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000013",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/119/",
+        "representative_batch_number": 119,
+        "e2e_ms": 4740000,
+        "x86": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "arm": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        },
+        "dt": {
+          "url": null,
+          "queue_ms": null,
+          "duration_ms": null,
+          "total_ms": null
+        }
+      }
+    },
+    {
+      "repository": "openeuler/ubs-engine",
+      "number": 20,
+      "title": "fix: resolve queue stall on cold start #20",
+      "state": "closed",
+      "author": "dave",
+      "url": "https://gitcode.com/openeuler/ubs-engine/pull/20",
+      "created_ms": 1789948800000,
+      "merged_ms": 1789992000000,
+      "closed_ms": 1790035200000,
+      "head_sha": "0000000000000000000000000000000000000014",
+      "submission_count": 3,
+      "events": [
+        {
+          "id": "e20",
+          "kind": "create",
+          "time_ms": 1789948800000,
+          "sha": "0000000000000000000000000000000000000014"
+        }
+      ],
+      "batches": [
+        {
+          "number": 120,
+          "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/120/",
+          "status": "success",
+          "eligible": true,
+          "e2e_ms": 4800000,
+          "request_ms": 1789948800000,
+          "end_ms": 1789953600000,
+          "jenkins_ms": 4700000,
+          "event_id": "e20",
+          "event_type": "create",
+          "sha": "0000000000000000000000000000000000000014",
+          "children": [],
+          "issues": []
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "representative_batch_url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/120/",
+        "representative_batch_number": 120,
+        "e2e_ms": 4800000,
         "x86": {
           "url": null,
           "queue_ms": null,
