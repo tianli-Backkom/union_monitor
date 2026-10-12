@@ -1,0 +1,17 @@
+{
+  "frozen_input": {
+    "udr_001": {
+      "expected_records": 371,
+      "expected_qualified_batches": 93,
+      "available": false,
+      "note": "2026-10-11 full enriched Triton evidence is not bundled; the legacy tests/fixtures/triton-audit-freeze.json (66 batches) must not substitute for the 371/93 replay."
+    },
+    "udr_005": {
+      "manifest_runs": 887,
+      "public_workflow_attempts": 885,
+      "available": false,
+      "note": "Full per-identity enriched evidence is not bundled; the 2-identity gap stays unverified (see tests/test_triton_coverage_ledger.py)."
+    }
+  },
+  "policy": "Unavailable frozen input is reported as 'unverified', never skipped and never guessed into a passing replay."
+}
