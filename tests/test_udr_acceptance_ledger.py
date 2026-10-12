@@ -38,10 +38,11 @@ class LedgerStructureTests(unittest.TestCase):
                 self.assertTrue(entry["note"].strip())
 
     def test_policy_declares_browser_blocker(self):
+        self.assertIn("resolved", self.doc["browser_blocker"])
         self.assertIn("ETIMEDOUT", self.doc["browser_blocker"])
         self.assertIn("@playwright/test", self.doc["browser_blocker"])
         self.assertIn("Chromium", self.doc["browser_blocker"])
-        self.assertIn("unverified", self.doc["policy"])
+        self.assertIn("run", self.doc["policy"])
 
 
 class LedgerHonestyTests(unittest.TestCase):

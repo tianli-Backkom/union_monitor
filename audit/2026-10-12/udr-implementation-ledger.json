@@ -1,8 +1,8 @@
 {
   "generated_at": "2026-10-12",
   "scope": "UDR-001..UDR-038 unified dashboard audit requirements",
-  "policy": "Every 'verified' entry names a real, currently-passing test file and command in this repository. Requirements whose only remaining evidence is a browser (Playwright/Chromium) check are marked 'unverified' here because the browser dependency cannot be installed in this offline environment — the check is not run and is never reported as passed.",
-  "browser_blocker": "pnpm install @playwright/test failed with ETIMEDOUT (registry.npmjs.org unreachable); Chromium can therefore not be provisioned, so tests/browser/*.spec.cjs cannot execute locally.",
+  "policy": "Every 'verified' entry names a real, currently-passing test file and command in this repository. Browser checks now run locally (Playwright + Chromium via the system proxy), so they are implemented and verified rather than blocked.",
+  "browser_blocker": "resolved — pnpm install @playwright/test initially failed with ETIMEDOUT because Node.js did not inherit the Windows system proxy; setting HTTP_PROXY/HTTPS_PROXY to http://127.0.0.1:7897 and forcing --proxy-server=direct:// in playwright.config.cjs enabled Chromium and the browser suite.",
   "requirements": [
     {"id": "UDR-001", "status": "部分实现", "evidence": ["tests/test_triton_audit_gates.py", "tests/triton_audit_gates.test.cjs", "tests/test_audit_freeze_status.py"], "note": "E2E qualification regression kept; the 371/93 frozen replay is unavailable so it stays unverified (not substituted with the 66-batch freeze)."},
     {"id": "UDR-002", "status": "已实现", "evidence": ["tests/test_pr_identity_recovery.py", "triton/pr_identity.py"], "note": "Trusted PR association recovery, in-place recovery with migration records and propagated source failures."},
@@ -35,7 +35,7 @@
     {"id": "UDR-029", "status": "已实现", "evidence": ["tests/test_public_release_verifier.py", "monitor/public_verify.py"], "note": "Public byte-level verification with transient retry and receipts."},
     {"id": "UDR-030", "status": "已实现", "evidence": ["tests/test_release_rollback_integration.py", "monitor/rollback.py"], "note": "Real recovery deployment from archive + post-rollback re-verification."},
     {"id": "UDR-031", "status": "已实现", "evidence": ["tests/test_publication_boundaries.py", "monitor/boundaries.py"], "note": "Cache/source/public/permission boundaries; Pages/OIDC write scoped to deploy job."},
-    {"id": "UDR-032", "status": "部分实现", "evidence": ["tests/test_run_report.py", "monitor/run_report.py", "monitor/status_view.py"], "note": "Three-axis run report with honest unknowns; the collection-status browser entry has no runnable browser."},
+    {"id": "UDR-032", "status": "已实现", "evidence": ["tests/test_run_report.py", "monitor/run_report.py", "monitor/status_view.py", "tests/browser/collection-status.spec.cjs", "web/app.js"], "note": "Three-axis run report with honest unknowns; the catalog-driven workbench renders task/data/time axes with failed-fallback and unavailable handling."},
     {"id": "UDR-033", "status": "回归保持", "evidence": ["tests/test_published_health.py", "tests/test_freshness.py"], "note": "Scheduled freshness and public health checks kept."},
     {"id": "UDR-034", "status": "已实现", "evidence": ["tests/test_third_project_end_to_end.py"], "note": "Third project joins by config through the shared chain; 25h window not rounded, no community branch."},
     {"id": "UDR-035", "status": "部分实现", "evidence": ["tests/test_monitor_identity.py", "tests/test_monitor_catalog.py", "tests/test_monitor_duration.py", "tests/test_metric_profile_compat.py"], "note": "Stable composite identity, duration precision and explicit metric-profile compatibility pinned; old-CLI byte-for-byte migration parity remains to be supplemented."},
