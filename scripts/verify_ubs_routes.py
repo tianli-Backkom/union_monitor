@@ -334,7 +334,7 @@ APP_CONTRACTS = [
      "'method-view'])$(id).hidden=id!==(ubs?(repo?'ubs-repo-view':"
      "'ubs-view'):domain+'-view');"),
     ('nav_highlight',
-     "markNavActive(domain==='triton'?'triton':domain==='method'?($('sideProjectSelector')?.value||'ubs'):'ubs',domain==='triton'?'trends':domain==='method'?'method':cross?'overview':quality?'quality':'records')"),
+     "markNavActive(domain==='triton'?'triton':domain==='method'?($('sideProjectSelector')?.value||'ubs'):'ubs',domain==='triton'?(tritonRecordsMode?'records':'trends'):domain==='method'?'method':cross?'overview':quality?'quality':'records')"),
     ('repo_quality_toggle',
      "if(repo){$('repoMain').hidden=quality;$('quality').hidden=!quality;}"),
     ('title_repo',

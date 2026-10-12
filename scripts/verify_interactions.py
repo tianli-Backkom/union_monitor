@@ -514,7 +514,8 @@ APP_CONTRACTS = [
      "for(const id of ['ubs-view','ubs-repo-view','triton-view','method-view'])"
      "$(id).hidden=id!==(ubs?(repo?'ubs-repo-view':'ubs-view'):domain+'-view');"),
     ('cross_domain_render',
-     "if(ubs)render();else if(domain==='triton')renderTritonView();"),
+     "if(ubs)render();else if(domain==='triton')(tritonRecordsMode?"
+     "renderTritonRecords():renderTritonView());"),
 ]
 
 INDEX_HTML_CONTRACTS = [

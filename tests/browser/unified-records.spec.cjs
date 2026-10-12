@@ -54,3 +54,23 @@ test('records default to batches and the entity toggle switches back to PR', asy
   await page.locator('#entity').selectOption('batches');
   await expect(page.locator('#prRows tr[data-batch]').first()).toBeVisible();
 });
+
+// UDR-018-TC01: Triton also uses the common batch records task — the same
+// records model (Records.tritonBatchRecords) drives a Triton batch list with
+// the same stable sort-before-pagination control, so both projects share one
+// records task instead of a bespoke Triton table.
+test('triton records task renders the common batch records model', async ({ page }) => {
+  await page.goto('./#projects/triton/records');
+  await expect(page.locator('#reload')).toBeEnabled();
+  await expect(page.locator('#triton-view')).toBeVisible();
+  await expect(page.locator('#triton-view h2')).toContainText('批次记录');
+  await expect(page.locator('#crumb')).toContainText('批次记录');
+  await expect(page.locator('#triton-view tr[data-batch]').first()).toBeVisible();
+  const n = Number(await page.locator('#triton-view .count').innerText());
+  expect(n).toBeGreaterThan(0);
+  for (const size of [15, 30, 50]) {
+    await page.locator('#triton-view [data-role="pageSize"]').selectOption(String(size));
+    await expect(page.locator('#triton-view [data-role="rowInfo"]')).toContainText(`1–${Math.min(size, n)}`);
+    await expect(page.locator('#triton-view [data-role="rowInfo"]')).toContainText(`/ ${n} 条`);
+  }
+});
