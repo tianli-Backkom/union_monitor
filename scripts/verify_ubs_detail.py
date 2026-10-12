@@ -275,7 +275,7 @@ APP_CONTRACTS = [
     ('open_detail_find', 'detailPR=snapshot.prs.find(p=>p.number===n)'),
     ('open_detail_state',
      'detailRepo=currentRepository;detailSnapshot=snapshot;'),
-    ('open_detail_metrics_groups', 'detailGroups=Metrics.detailGroups(p);'),
+    ('open_detail_metrics_groups', 'detailGroups=Metrics.detailGroups(p),'),
     ('open_detail_full_rerender', "$('detailBody').innerHTML="),
     ('open_detail_show_modal',
      "if(!$('detail').open)$('detail').showModal();"),
@@ -283,12 +283,22 @@ APP_CONTRACTS = [
     ('unmatched_note', '；批次身份与 Jenkins 链接保留，不伪造事件'),
     ('empty_event_placeholder', '此事件未关联到 trigger，详见数据质量提示'),
     ('rep_expand_flag',
-     'bs.map(b=>batchHTML(b,b.url===s.representative_batch_url))'),
+     'bs.map(b=>batchHTML(b,mode(b)))'),
+    ('default_expanded_choice',
+     'Detail.defaultExpandedBatch(p.batches,{entryId,'
+     'representativeUrl:s.representative_batch_url,'
+     'representativeNumber:s.representative_batch_number})'),
+    ('no_representative_note',
+     "data-role=\"no-representative\">该 PR 无代表批次：展示最近采集批次"),
+    ('detail_evidence_line',
+     'data-role="evidence">${esc(evidence)}'),
     ('batch_details_attrs',
-     'data-batch-url="${esc(b.url)}" class="batch '
-     "${expand?'representative':''}\" ${expand?'open':''}"),
+     'data-batch-url="${esc(b.url)}" data-expand-reason="${esc(mode||\'\')}" '
+     'class="batch ${cls}" ${open?\'open\':\'\'}>'),
     ('batch_label',
-     "expand?'用于 PR 效率汇总':b.eligible?'有效批次':'未纳入 E2E 统计'"),
+     "mode==='representative'?'用于 PR 效率汇总':mode==='entry'?'选中批次':"
+     "mode==='no-representative'?'无代表 · 最近批次':"
+     "b.eligible?'有效批次':'未纳入 E2E 统计'"),
     ('batch_context_range',
      '请求：${date(b.request_ms)} → 全批结束：${date(b.end_ms)}'),
     ('batch_e2e_minute', 'E2E ${minute(b.e2e_ms)} min'),
@@ -328,10 +338,7 @@ APP_CONTRACTS = [
      "p.batches.some(x=>x.status==='success'&&x.request_ms>"
      "b.request_ms)?' · 后续批次有成功':''"),
     ('failed_wait_onclick',
-     "const target=[...$('detailBody').querySelectorAll("
-     "'[data-batch-url]')].find(x=>x.dataset.batchUrl===el.dataset."
-     'batch);if(target){target.open=true;target.scrollIntoView('
-     '{block:\'center\'});}'),
+     'openDetail(Number(el.dataset.pr),el.dataset.batch);'),
     ('quality_drill',
      'if(Number(a.dataset.open))openDetail(Number(a.dataset.open))'),
     ('close_button', "$('closeDetail').onclick=()=>$('detail').close();"),

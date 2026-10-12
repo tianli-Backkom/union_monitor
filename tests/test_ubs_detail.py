@@ -371,8 +371,8 @@ class SyntheticTreeTests(unittest.TestCase):
     def test_tampered_rep_expand_exit_one(self):
         root = self.build_tree()
         self.tamper(root, 'app.js',
-                    'bs.map(b=>batchHTML(b,b.url===s.representative_batch_url))',
-                    'bs.map(b=>batchHTML(b,b.url!==s.representative_batch_url))')
+                    'bs.map(b=>batchHTML(b,mode(b)))',
+                    'bs.map(b=>batchHTML(b,"representative"))')
         code, report = self.run_tool(root)
         self.assertEqual(code, 1)
         self.assertIn('app.js:rep_expand_flag',

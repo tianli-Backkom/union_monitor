@@ -26,6 +26,7 @@ function createApp({ fetch, setTimeout, clearTimeout } = {}) {
     history: { pushState(_s, _t, hash) { context.location.hash = hash; }, replaceState(_s, _t, hash) { context.location.hash = hash; } },
     Metrics: require('../../web/core.js'), Router: require('../../web/router.js'),
     Catalog: require('../../web/catalog.js'), Units: require('../../web/units.js'),
+    Detail: require('../../web/detail.js'),
     URL, AbortController, console, fetch: fetch || (async () => { throw new Error('unexpected network read'); }),
     setTimeout: setTimeout || globalThis.setTimeout, clearTimeout: clearTimeout || globalThis.clearTimeout,
   };

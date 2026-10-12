@@ -160,7 +160,8 @@ test('REQ-016 AC03/AC04: unmatched group keeps batch links and the representativ
   assert.equal(unmatched.event.sha,undefined);
   const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
   assert.ok(source.includes('for(const b of detailPR.batches)'),'the batch CSV iterates the full detail batch set, independent of grouping');
-  assert.ok(source.includes('batchHTML(b,b.url===s.representative_batch_url)'),'representative marking is positional and applies to every group');
+  assert.ok(source.includes('batchHTML(b,mode(b))'),'representative marking is positional and applies to every group');
+  assert.ok(source.includes("b.url===s.representative_batch_url?'representative'"),'the mode helper still marks the representative batch positionally');
 });
 
 test('REQ-020 AC02: first-failed and pending repositories show 未获取, never fabricated success',()=>{
