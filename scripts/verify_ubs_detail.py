@@ -354,10 +354,10 @@ APP_CONTRACTS = [
     ('close_button', "$('closeDetail').onclick=()=>{closeDetailContext();syncRecordsUrl('replace');};"),
     ('close_cleanup',
      "addEventListener('close',()=>{if(!$('detail').open){detailPR=null;"
-     'detailSnapshot=null;detailRepo=null;detailChoice=null;}});'),
+     'detailSnapshot=null;detailRepo=null;detailChoice=null;tritonDetailBatch=null;}});'),
     ('route_context_cleanup',
      "function closeDetailContext(){if($('detail').open)$('detail').close();"
-     'detailPR=null;detailRepo=null;detailSnapshot=null;detailChoice=null;}'),
+     'detailPR=null;detailRepo=null;detailSnapshot=null;detailChoice=null;tritonDetailBatch=null;}'),
     ('outside_click_close',
      "if(e.target===$('detail')){const r=$('detail')."
      'getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||'

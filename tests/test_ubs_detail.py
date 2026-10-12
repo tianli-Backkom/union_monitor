@@ -382,7 +382,7 @@ class SyntheticTreeTests(unittest.TestCase):
     def test_tampered_route_context_cleanup_exit_one(self):
         root = self.build_tree()
         self.tamper(root, 'app.js',
-                    'detailPR=null;detailRepo=null;detailSnapshot=null;detailChoice=null;}',
+                    'detailPR=null;detailRepo=null;detailSnapshot=null;detailChoice=null;tritonDetailBatch=null;}',
                     'detailPR=null;detailSnapshot=null;}')
         code, report = self.run_tool(root)
         self.assertEqual(code, 1)

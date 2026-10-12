@@ -187,3 +187,76 @@ test('deduplicated-concern export collapses duplicate reasons by batch identity'
   await expect(page.locator('.export-notice')).toContainText('实体：去重关注');
   await expect(page.locator('.export-notice')).toContainText('条数：1');
 });
+
+// UDR-017-TC02: Triton records rows open the same #detail skeleton as UBS
+// (batch → workflow/attempt → jobs → source evidence). A known PR shows its
+// identity; an unknown-PR batch stays locatable with its exclusion reason, and
+// closing returns to the records list without losing the list state.
+function tritonFixture() {
+  return {
+    collected_at: '2026-10-12T00:00:00Z',
+    window_start: '2026-10-09T00:00:00Z',
+    window_end: '2026-10-12T00:00:00Z',
+    batches: [
+      { id: 'run-1', pr: 100, title: 'PR 100 title', status: 'success',
+        duration_seconds: 300, npu_queue_seconds: 10,
+        start_at: '2026-10-11T10:00:00Z', end_at: '2026-10-11T10:05:00Z',
+        sha: 'deadbeef', kind: 'push', base_branch: 'main', start_source: 'trigger_event',
+        approximate: false, e2e_index: 1, e2e_total: 1,
+        action_url: 'https://github.com/triton-lang/triton-ascend/actions/runs/1',
+        pr_url: 'https://github.com/triton-lang/triton-ascend/pull/100',
+        missing: [],
+        workflows: [{ id: '1001', name: 'E2E CI', attempt: 1,
+          url: 'https://github.com/triton-lang/triton-ascend/actions/runs/1001',
+          created_at: '2026-10-11T10:00:00Z', updated_at: '2026-10-11T10:05:00Z',
+          conclusion: 'success',
+          jobs: [{ name: 'build', conclusion: 'success', wait_seconds: 1, run_seconds: 60, failed_steps: [] }] }],
+        focus_jobs: [{ key: 'a3-py310', url: 'https://github.com/triton-lang/triton-ascend/actions/jobs/11',
+          status: 'completed', conclusion: 'success', wait_seconds: 1, run_seconds: 60 }] },
+      { id: 'run-2', pr: null, title: '', status: 'failure',
+        duration_seconds: 400, npu_queue_seconds: 5,
+        start_at: '2026-10-11T11:00:00Z', end_at: '2026-10-11T11:06:40Z',
+        sha: 'cafebabe', kind: 'push', base_branch: 'main', start_source: 'workflow_created',
+        approximate: true, e2e_index: 1, e2e_total: 1,
+        action_url: 'https://github.com/triton-lang/triton-ascend/actions/runs/2',
+        pr_url: '', missing: [],
+        workflows: [{ id: '2001', name: 'E2E CI', attempt: 1,
+          url: 'https://github.com/triton-lang/triton-ascend/actions/runs/2001',
+          created_at: '2026-10-11T11:00:00Z', updated_at: '2026-10-11T11:06:40Z',
+          conclusion: 'failure', jobs: [] }],
+        focus_jobs: [] },
+    ],
+  };
+}
+
+async function serveTriton(page, payload) {
+  await page.route('**/data/triton.json*', route =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(payload) }));
+}
+
+test('triton records rows open the unified detail and closing returns to the list', async ({ page }) => {
+  await serveTriton(page, tritonFixture());
+  await page.goto('./#projects/triton/records');
+  const dialog = page.locator('#detail');
+  await expect(page.locator('#triton-view tr[data-batch]').first()).toBeVisible();
+
+  // Known PR batch → identity, evidence and GitHub Actions evidence path.
+  await page.locator('#triton-view tr[data-batch="run-1"]').click();
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('.detail-title')).toContainText('PR #100');
+  await expect(dialog.locator('[data-role="evidence"]')).toContainText('Triton 门禁批次');
+  await expect(dialog.locator('.event-heading', { hasText: 'GitHub Actions' })).toBeVisible();
+  await expect(dialog.locator('.wf-name a[target="_blank"]').first()).toBeVisible();
+  await page.locator('#closeDetail').click();
+  await expect(dialog).toBeHidden();
+  await expect(page.locator('#triton-view tr[data-batch]').first()).toBeVisible();
+
+  // Unknown-PR batch → still locatable, exclusion reason surfaced.
+  await page.locator('#triton-view tr[data-batch="run-2"]').click();
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('.detail-title')).toContainText('未知 PR 身份');
+  await expect(dialog.locator('.batch-issues')).toContainText('E2E 排除');
+  await page.locator('#closeDetail').click();
+  await expect(dialog).toBeHidden();
+  await expect(page.locator('#triton-view tr[data-batch="run-2"]')).toBeVisible();
+});
