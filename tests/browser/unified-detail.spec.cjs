@@ -1,5 +1,12 @@
 const { test, expect } = require('@playwright/test');
 
+async function readDownload(download) {
+  const stream = await download.createReadStream();
+  const chunks = [];
+  for await (const chunk of stream) chunks.push(chunk);
+  return Buffer.concat(chunks).toString('utf8');
+}
+
 // UDR-017: unified detail + source evidence path. List / chart (exception) /
 // attention (failed-wait) all enter the same #detail modal; a PR defaults to
 // its representative batch, a direct batch entry expands that batch, and a
@@ -34,7 +41,9 @@ function fixture() {
     issues: [],
     batches: [
       makeBatch(1, 3000, 'e1'),
-      makeBatch(2, 5000, 'e2'),
+      makeBatch(2, 5000, 'e2', { children: [
+        { kind: 'x86', number: 12, url: 'https://ci.openeuler.openatom.cn/job/ubs-engine/x86/12/', queue_ms: 500, duration_ms: 2000, total_ms: 2500, result: 'SUCCESS' },
+      ] }),
       makeBatch(3, 4000, 'e3', { result: 'FAILURE', status: 'failure' }),
     ],
   };
@@ -138,4 +147,23 @@ test('unknown-association batches stay locatable and closing returns to the list
   await page.locator('#closeDetail').click();
   await expect(dialog).toBeHidden();
   await expect(page.locator('#prRows')).toBeVisible();
+});
+
+test('selected-batch task export binds the selected batch tasks, never the whole PR', async ({ page }) => {
+  await serveUbs(page, fixture());
+  await page.goto('./#ubs/repo/ubs-engine');
+  await expect(page.locator('#prRows tr[data-pr="100"]')).toBeVisible();
+  await page.locator('#prRows tr[data-pr="100"]').click();
+  const dialog = page.locator('#detail');
+  await expect(dialog).toBeVisible();
+  // Default selection is the representative (batch 2) with two tasks.
+  await expect(dialog.locator('details[data-batch-url$="/key/2/"]')).toHaveAttribute('open', '');
+  const downloadEvent = page.waitForEvent('download');
+  await page.locator('#exportBatchTasks').click();
+  const csv = await readDownload(await downloadEvent);
+  const lines = csv.replace(/^\uFEFF/, '').trim().split(/\r?\n/);
+  expect(lines[0]).toMatch(/^"仓库","PR","批次","任务类型"/);
+  expect(lines.length - 1).toBe(2);
+  await expect(dialog.locator('.export-notice')).toContainText('实体：选中批次任务');
+  await expect(dialog.locator('.export-notice')).toContainText('条数：2');
 });

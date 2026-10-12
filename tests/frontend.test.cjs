@@ -67,7 +67,7 @@ test('navigation or reload closes a stale PR detail and clears its reference',()
  assert.match(source,/detailRepo=currentRepository;/,'openDetail must record the repository the detail was opened from');
  assert.ok(source.includes("(detailPR||$('detail').open)&&(domain!=='ubs'||!repo||currentRepository!==detailRepo)"),'context-changing navigation (domain, repository or leaving the repo view) must close the detail dialog');
  assert.ok(source.includes("reloadGate.begin();$('detail').close();"),'a reload attempt must close the open detail at start, before fetching');
- assert.ok(source.includes("addEventListener('close',()=>{if(!$('detail').open){detailPR=null;detailSnapshot=null;detailRepo=null;}})"),'any dialog close (button, overlay, Esc) must clear the stale detail reference, snapshot and repository binding');
+ assert.ok(source.includes("addEventListener('close',()=>{if(!$('detail').open){detailPR=null;detailSnapshot=null;detailRepo=null;detailChoice=null;}})"),'any dialog close (button, overlay, Esc) must clear the stale detail reference, snapshot and repository binding');
 });
 
 test('detail CSV export is bound to the detail entity, not the global current repository',()=>{
