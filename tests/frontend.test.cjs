@@ -18,7 +18,7 @@ test('localhost export posts CSV to the local save endpoint',async()=>{
  const result=await M.saveCsv([['仓库'],['openeuler/ubs-engine']],'a.csv',env);
  assert.equal(request.url,'/api/export');assert.equal(request.options.method,'POST');assert.match(request.options.body,/openeuler\/ubs-engine/);assert.equal(result.mode,'saved');
 });
-test('dashboard routes every CSV download through the environment-aware exporter',()=>{const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');assert.match(source,/Metrics\.saveCsv\(rows,name\)/);});
+test('dashboard routes every CSV download through the environment-aware exporter',()=>{const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');assert.match(source,/Metrics\.saveCsv\(rows,name,window,meta\)/);});
 test('PR sorting has deterministic E2E, execution-count and creation orders',()=>{
  const p=(number,e2e,batches,created)=>({number,created_ms:created,batches:Array.from({length:batches},(_,i)=>({number:i+1,url:`t/${number}/${i}`,eligible:true,e2e_ms:e2e,children:[]}))});
  const slow=p(1,30,2,10),many=p(2,20,5,20),newer=p(3,20,1,30);
