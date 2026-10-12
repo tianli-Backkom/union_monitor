@@ -77,7 +77,7 @@ test('detail CSV export is bound to the detail entity, not the global current re
  assert.ok(source.includes('${detailRepo}-pr-${detailPR.number}-batches.csv'),'the batch CSV filename must use the detail-bound repository');
  assert.ok(source.includes("if(!detailPR||!detailSnapshot){ensureNotice().textContent='无法导出批次：当前没有打开有效的 PR 详情。';return;}"),'a missing detail context must block export with an explanatory notice');
  const start=source.indexOf('function exportBatches');
- const end=source.indexOf('async function load');
+ const end=source.indexOf('function exportBatchTasks');
  assert.ok(start>-1&&end>start,'exportBatches source found');
  const exportSrc=source.slice(start,end);
   assert.ok(!exportSrc.includes('currentRepository'),'exportBatches must not read the global current repository');

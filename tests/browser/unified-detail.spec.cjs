@@ -50,7 +50,7 @@ function fixture() {
   const pr200 = {
     number: 200, state: 'open', created_ms: 700, merged_ms: null, closed_ms: null,
     title: 'PR 200 no representative', author: 'dev', submission_count: 1, head_sha: 'bbb',
-    events: [], issues: [],
+    events: [], issues: ['创建请求与 PR 关联未知', '2 个批次非有效样本'],
     batches: [
       makeBatch(4, 6000, 'e9', { eligible: false }),
       makeBatch(5, 9000, 'e9', { eligible: false }),
@@ -166,4 +166,20 @@ test('selected-batch task export binds the selected batch tasks, never the whole
   expect(lines.length - 1).toBe(2);
   await expect(dialog.locator('.export-notice')).toContainText('实体：选中批次任务');
   await expect(dialog.locator('.export-notice')).toContainText('条数：2');
+});
+
+test('deduplicated-concern export collapses duplicate reasons by batch identity', async ({ page }) => {
+  await serveUbs(page, fixture());
+  await page.goto('./#ubs/repo/ubs-engine/quality');
+  await expect(page.locator('#qualityContent .quality-row')).toHaveCount(2);
+  const downloadEvent = page.waitForEvent('download');
+  await page.locator('#exportQuality').click();
+  const csv = await readDownload(await downloadEvent);
+  const lines = csv.replace(/^\uFEFF/, '').trim().split(/\r?\n/);
+  expect(lines[0]).toMatch(/^"仓库","PR","批次","原因"/);
+  expect(lines.length - 1).toBe(1);
+  expect(lines[1]).toContain('创建请求与 PR 关联未知');
+  expect(lines[1]).toContain('2 个批次非有效样本');
+  await expect(page.locator('.export-notice')).toContainText('实体：去重关注');
+  await expect(page.locator('.export-notice')).toContainText('条数：1');
 });
