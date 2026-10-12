@@ -379,6 +379,13 @@ class GitHub:
                 if exc.code >= 500 and attempt < 3:
                     time.sleep(2 ** attempt); continue
                 raise
+            except (urllib.error.URLError, OSError) as exc:
+                # Transient transport failures (SSL EOF, connection reset) are
+                # retried like 5xx: a dropped TLS read is not a data gap, and it
+                # must never be reported as a missing job list (REQ-018/UDR-004).
+                if attempt < 3:
+                    time.sleep(2 ** attempt); continue
+                raise
 
     def pages(self, path, field=None, limit=None):
         out=[]; page=1; expected=None; seen=set()

@@ -4,7 +4,9 @@ import re
 import shutil
 import tempfile
 import unittest
+import urllib.error
 import urllib.parse
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
@@ -47,6 +49,50 @@ def run(run_id, name, sha, created, updated, status="completed", conclusion="suc
         "trigger_at": "2026-09-22T00:00:00Z",
         "trigger_exact": True,
     }
+
+
+class GitHubRetryTests(unittest.TestCase):
+    class _Response:
+        headers = {"Content-Type": "application/json"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def read(self):
+            return b'{"ok": true}'
+
+    def test_transient_urlerror_is_retried_until_success(self):
+        gh = GitHub()
+        gh.token = None
+        calls = {"n": 0}
+
+        def fake_urlopen(req, *args, **kwargs):
+            calls["n"] += 1
+            if calls["n"] < 3:
+                raise urllib.error.URLError("SSL EOF occurred in violation of protocol")
+            return self._Response()
+
+        with patch("triton.dashboard.urllib.request.urlopen", fake_urlopen), \
+                patch("triton.dashboard.time.sleep"):
+            data, headers = gh.get("/repos/x/actions/runs")
+
+        self.assertEqual(calls["n"], 3)
+        self.assertEqual(data, {"ok": True})
+
+    def test_transient_urlerror_exhausts_retries_then_raises(self):
+        gh = GitHub()
+        gh.token = None
+
+        def always_eof(req, *args, **kwargs):
+            raise urllib.error.URLError("SSL EOF")
+
+        with patch("triton.dashboard.urllib.request.urlopen", always_eof), \
+                patch("triton.dashboard.time.sleep"):
+            with self.assertRaises(urllib.error.URLError):
+                gh.get("/repos/x/actions/runs")
 
 
 class BatchAggregationTests(unittest.TestCase):
