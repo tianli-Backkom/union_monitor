@@ -1,7 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const stateName={open:'开启中',merged:'已合入',closed:'已关闭未合入'},resultName={success:'成功',failure:'失败',running:'执行中',incomplete:'数据不完整'},kindName={create:'创建 PR',push:'推送提交',retest:'重跑请求',unknown:'请求未关联',note:'评论触发',merge_request:'PR 事件'},taskName={x86:'x86 构建',arm:'ARM 构建',dt:'DT 测试','pre-commit':'pre-commit','issue-check':'Issue 关联',other:'其他子任务'};
-let snapshot,filtered=[],page=1,view='ubs',detailPR=null,detailRepo=null,detailSnapshot=null,repositoryIndex=null,repositorySnapshots={},currentRepository='ubs-engine',tritonStatus='loading',tritonError=null,ubsStatus='loading';const PAGE_SIZE=15;
+let snapshot,filtered=[],page=1,view='ubs',detailPR=null,detailRepo=null,detailSnapshot=null,repositoryIndex=null,repositorySnapshots={},currentRepository='ubs-engine',tritonStatus='loading',tritonError=null,ubsStatus='loading',catalog=null,release=null;const PAGE_SIZE=15;
 const reloadGate=Metrics.createReloadGate();
 function num(n,d=2){return n==null?'—':Number(n).toLocaleString('zh-CN',{maximumFractionDigits:d,minimumFractionDigits:d});}
 function minute(ms){return ms!=null&&ms>0&&ms<600?'<0.01':num(ms==null?null:ms/60000);}
@@ -33,6 +33,17 @@ function updateFreshness(){const t=freshnessText();$('freshness').textContent=t?
 function closeDetailContext(){if($('detail').open)$('detail').close();detailPR=null;detailRepo=null;detailSnapshot=null;}
 function leaveTriton(next){if(view==='triton'&&next!=='triton'&&window.TritonView?.deactivate)window.TritonView.deactivate();}
 function renderWorkbench(){
+ if(catalog&&window.Workbench&&window.WorkbenchView){
+  const statuses={},concernRows=[];
+  if(release&&release.projects){for(const pid of Object.keys(release.projects)){const e=release.projects[pid]||{};statuses[pid]={task_status:e.task_status,data_mode:e.data_mode,collected_at:e.collected_at,validation_status:e.validation_status,snapshot_version:e.snapshot_version,window:e.window};}}
+  const model={catalog:catalog,statuses:statuses,time:{schedule_time:release&&release.schedule_time,published_at:release&&release.published_at},concern_rows:concernRows,active_project_id:''};
+  $('workbench-view').innerHTML='<h2>工作台</h2><p class="workbench-note">此页展示已启用项目的本轮任务、数据版本与采集时间（三维独立）。采集任务报告与跨项目关注聚合当前未提供；重新加载快照只读取已发布文件，不触发采集。</p>';
+  const mount=document.createElement('div');mount.id='workbench-mount';$('workbench-view').appendChild(mount);
+  window.WorkbenchView.mount(mount,model);
+  const sel=document.getElementById('projectSelector');
+  if(sel)sel.onchange=()=>{const v=sel.value;if(v)navigate('#projects/'+encodeURIComponent(v)+'/overview');};
+  return;
+ }
  const projects=[{id:'ubs',name:'openEuler UBS',loaded:!!repositoryIndex,status:ubsStatus,time:repositoryIndex?.generated_at,count:repositoryIndex?.repositories.length,label:'个仓库',error:ubsStatus==='failed'?'UBS 快照重新读取失败，当前数据未更新':''},{id:'triton',name:'Triton-Ascend',loaded:!!window.tritonPayload,status:tritonStatus,time:window.tritonPayload?.collected_at,count:window.tritonPayload?.batches?.length,label:'个已采集批次',error:tritonError}];
  $('workbench-view').innerHTML=`<h2>工作台</h2><p class="workbench-note">此页展示已加载快照的读取状态。采集任务报告、发布版本与跨项目关注聚合当前未提供，请进入项目核对记录。重新加载快照只读取已发布文件，不触发采集。</p><div class="workbench-cards">${projects.map(p=>`<article class="project-card"><h3>${esc(p.name)}</h3><p>${p.loaded?(p.status==='failed'?'保留上次有效快照 · 最近读取失败':p.status==='loading'?'保留当前快照 · 正在重新读取':'快照读取完成'):p.status==='loading'?'快照读取中…':'快照未读取'}</p><p>${p.time?'快照采集于 '+date(Date.parse(p.time)):'采集时间未获取'}</p><p>${p.loaded?`${p.count??'—'} ${p.label}`:'记录数量未知'}</p>${p.error?`<p class="workbench-error">${esc(p.error)}</p>`:''}<a class="button" href="#projects/${p.id}/overview">进入项目</a></article>`).join('')}</div>`;
 }
@@ -159,6 +170,8 @@ async function load(){
  closeDetailContext();if(window.TritonView?.deactivate)window.TritonView.deactivate();for(const controller of activeReads)controller.abort();activeReads.clear();if(view==='workbench')renderWorkbench();
  const tritonTask=(async()=>{try{const d=await readJSON('data/triton.json','Triton 数据');if(!d||typeof d!=='object'||!Array.isArray(d.batches))throw Error('Triton 数据格式无效');if(reloadGate.isCurrent(gen)){window.tritonPayload=d;tritonStatus='ok'}}catch(err){if(reloadGate.isCurrent(gen)){tritonStatus='failed';tritonError=err.message}}})();
  tritonTask.then(()=>{if(!reloadGate.isCurrent(gen))return;updateFreshness();if(view==='triton')navigate(location.hash);else if(view==='workbench')renderWorkbench();});
+ const shellTask=(async()=>{try{const [cat,rel]=await Promise.all([readJSON('data/catalog.json','项目目录'),readJSON('data/release.json','发布状态')]);if(!reloadGate.isCurrent(gen))return;catalog=cat;release=rel;}catch(err){if(!reloadGate.isCurrent(gen))return;catalog=null;release=null;}})();
+ shellTask.then(()=>{if(!reloadGate.isCurrent(gen))return;if(view==='workbench')renderWorkbench();});
  try{
  $('loading').hidden=true;const skel=n=>Array.from({length:n},()=>`<div class="skel skel-card"></div>`).join(''),skelRows=(n,c)=>Array.from({length:n},()=>`<tr><td colspan="${c}"><div class="skel skel-row"></div></td></tr>`).join('');if(!repositoryIndex){$('kpis').innerHTML=skel(5);$('repositoryKpis').innerHTML=skel(5);$('prRows').innerHTML=skelRows(5,9);$('repositoryRows').innerHTML=skelRows(5,8);}const index=await readJSON('data/repositories.json','仓库索引');if(!Array.isArray(index.repositories))throw Error('仓库索引格式无效');if(!reloadGate.isCurrent(gen))return;const snapshots={};await Promise.all(index.repositories.map(async entry=>{if(!entry.snapshot)return;try{const data=await readJSON('data/'+entry.snapshot,'仓库快照');if(!data.meta||!Array.isArray(data.prs)||data.meta.repository!==entry.repository)throw Error('仓库快照格式或归属不匹配');snapshots[entry.name]=data}catch(error){entry.status='failed';entry.error='快照读取失败：'+error.message;const prior=repositorySnapshots[entry.name];if(prior?.meta?.repository===entry.repository&&Array.isArray(prior.prs))snapshots[entry.name]=prior;}}));if(!reloadGate.isCurrent(gen))return;repositoryIndex=index;repositorySnapshots=snapshots;ubsStatus='ok';$('repositorySelect').innerHTML=index.repositories.map(r=>`<option value="${esc(r.name)}">${esc(r.name)}</option>`).join('');$('loading').hidden=true;updateFreshness();navigate(location.hash)
  }catch(e){
