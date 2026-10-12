@@ -1,0 +1,57 @@
+{
+  "status": "verified",
+  "evidence": {
+    "window_start": "2026-10-09T07:43:33Z",
+    "window_end": "2026-10-12T07:43:33Z",
+    "collected_at": "2026-10-12T07:45:35.555699Z",
+    "payload_window_start": "2026-10-09T07:43:33Z",
+    "payload_window_end": "2026-10-12T07:43:33Z",
+    "window_matches_payload": true,
+    "raw_run_count": 607,
+    "job_evidence_files": 607,
+    "pr_association_files": 824,
+    "published_batches": 204,
+    "published_prs": 43
+  },
+  "categories": {
+    "workflow_attempt_enumeration": {
+      "category": "workflow_attempt_enumeration",
+      "applicable": 607,
+      "verified_consistent": 607,
+      "verified_absent": 0,
+      "derived_consistent": 0,
+      "differences": 0,
+      "missing_evidence": 0,
+      "missing": [],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "verified"
+    },
+    "job_enumeration": {
+      "category": "job_enumeration",
+      "applicable": 607,
+      "verified_consistent": 607,
+      "verified_absent": 0,
+      "derived_consistent": 0,
+      "differences": 0,
+      "missing_evidence": 0,
+      "missing": [],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "verified"
+    },
+    "pr_association": {
+      "category": "pr_association",
+      "applicable": 43,
+      "verified_consistent": 43,
+      "verified_absent": 0,
+      "derived_consistent": 0,
+      "differences": 0,
+      "missing_evidence": 0,
+      "missing": [],
+      "missing_truncated": false,
+      "difference_details": [],
+      "status": "verified"
+    }
+  }
+}

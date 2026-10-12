@@ -60,11 +60,11 @@ class LedgerHonestyTests(unittest.TestCase):
 
     def test_blocked_acceptance_criteria_are_honestly_not_claimed_implemented(self):
         """The remaining open acceptance criteria are blocked on external inputs
-        (frozen 371/93 replay, live Triton full-source enumeration, real old/new
-        CLI shadow) and must stay 部分实现 with the blocker named — never 已实现,
-        so no blocked evidence is presented as a verified pass."""
+        (frozen 371/93 replay and real old/new CLI shadow) and must stay
+        部分实现 with the blocker named — never 已实现, so no blocked evidence is
+        presented as a verified pass."""
         by_id = {r["id"]: r for r in self.requirements}
-        for req_id in ("UDR-001", "UDR-004", "UDR-035"):
+        for req_id in ("UDR-001", "UDR-035"):
             with self.subTest(req=req_id):
                 self.assertEqual(by_id[req_id]["status"], "部分实现", req_id)
         self.assertIn("371/93", by_id["UDR-001"]["note"])
