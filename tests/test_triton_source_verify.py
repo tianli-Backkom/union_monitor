@@ -13,6 +13,7 @@ from pathlib import Path
 
 from triton.source_verify import (
     verify_enumeration,
+    build_coverage_evidence,
     raw_identities,
     load_job_files,
     published_workflow_attempts,
@@ -44,9 +45,12 @@ def write_job(jobs_dir, row_id, attempt=1, rows=None, corrupt=False):
     return path
 
 
-def write_pr(pr_dir, row_id, matches):
+def write_pr(pr_dir, row_id, pr):
     path = pr_dir / f"{row_id}.json"
-    path.write_text(json.dumps({"run_id": row_id, "matches": matches}), encoding="utf-8")
+    path.write_text(
+        json.dumps({"pr": pr, "pr_evidence": {"method": "source_repository+branch+head_sha"}}),
+        encoding="utf-8",
+    )
 
 
 class EnumerationVerificationTests(unittest.TestCase):
@@ -60,8 +64,8 @@ class EnumerationVerificationTests(unittest.TestCase):
             for r in runs:
                 write_job(jobs_dir, r["id"], r["run_attempt"])
             payload = {"batches": [batch(1, 1, pr=100), batch(2, 1, pr=101)]}
-            write_pr(pr_dir, 1, [100])
-            write_pr(pr_dir, 2, [101])
+            write_pr(pr_dir, 1, 100)
+            write_pr(pr_dir, 2, 101)
             report = verify_enumeration(runs, jobs_dir, payload, pr_dir=pr_dir)
             self.assertEqual(report["status"], "verified")
             for category in ("workflow_attempt_enumeration", "job_enumeration", "pr_association"):
@@ -118,7 +122,7 @@ class EnumerationVerificationTests(unittest.TestCase):
             for r in runs:
                 write_job(jobs_dir, r["id"], r["run_attempt"])
             payload = {"batches": [batch(1, 1, pr=100), batch(2, 1, pr=2513)]}
-            write_pr(pr_dir, 1, [100])  # PR 2513 has no raw match
+            write_pr(pr_dir, 1, 100)  # PR 2513 has no raw resolved association
             report = verify_enumeration(runs, jobs_dir, payload, pr_dir=pr_dir)
             cat = report["categories"]["pr_association"]
             self.assertEqual(cat["missing_evidence"], 1)
@@ -146,6 +150,48 @@ class EnumerationVerificationTests(unittest.TestCase):
         payload = {"batches": [batch(1, 1), batch(1, 2)]}
         self.assertEqual(published_workflow_attempts(payload), {(1, 1), (1, 2)})
         self.assertEqual(published_prs({"batches": [batch(1, 1, pr=5), batch(2, 1)]}), {5})
+
+    def test_evidence_block_records_raw_artifacts_and_window_match(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            jobs_dir = Path(tmp) / "jobs"
+            jobs_dir.mkdir()
+            pr_dir = Path(tmp) / "pr"
+            pr_dir.mkdir()
+            runs_json = {
+                "window_start": "2026-10-09T07:43:33Z",
+                "window_end": "2026-10-12T07:43:33Z",
+                "collected_at": "2026-10-12T08:05:33Z",
+                "runs": [run(1, 1), run(2, 1)],
+            }
+            for r in runs_json["runs"]:
+                write_job(jobs_dir, r["id"], r["run_attempt"])
+            payload = {
+                "window_start": "2026-10-09T07:43:33Z",
+                "window_end": "2026-10-12T07:43:33Z",
+                "batches": [batch(1, 1, pr=100), batch(2, 1, pr=101)],
+            }
+            write_pr(pr_dir, 1, 100)
+            write_pr(pr_dir, 2, 101)
+            doc = build_coverage_evidence(runs_json, jobs_dir, payload, pr_dir=pr_dir)
+            self.assertEqual(doc["status"], "verified")
+            ev = doc["evidence"]
+            self.assertTrue(ev["window_matches_payload"])
+            self.assertEqual(ev["raw_run_count"], 2)
+            self.assertEqual(ev["job_evidence_files"], 2)
+            self.assertEqual(ev["pr_association_files"], 2)
+            self.assertEqual(ev["published_batches"], 2)
+            self.assertEqual(ev["published_prs"], 2)
+            self.assertEqual(set(doc["categories"]), {"workflow_attempt_enumeration", "job_enumeration", "pr_association"})
+
+    def test_evidence_window_mismatch_is_recorded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            jobs_dir = Path(tmp) / "jobs"
+            jobs_dir.mkdir()
+            runs_json = {"window_start": "A", "window_end": "B", "runs": [run(1, 1)]}
+            write_job(jobs_dir, 1, 1)
+            payload = {"window_start": "C", "window_end": "D", "batches": [batch(1, 1)]}
+            doc = build_coverage_evidence(runs_json, jobs_dir, payload)
+            self.assertFalse(doc["evidence"]["window_matches_payload"])
 
 
 if __name__ == "__main__":
