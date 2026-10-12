@@ -83,6 +83,58 @@
     });
   }
 
+  /* UDR-009: build the cross-project attention concern set. UBS batches use a
+     repository-qualified stable identity (same-number PRs/batches in different
+     repositories stay separate rows); collection-level errors keep their own
+     source identity and never merge into a PR. Triton batches use the stable
+     batch id, flag unknown PRs as an independent source identity and treat a
+     P90-comparable duration as 偏长 without removing the failure/running flag. */
+  function tritonP90(rows) {
+    const completed = (rows || [])
+      .filter(function (b) {
+        return b && (b.status === 'success' || b.status === 'failure')
+          && typeof b.duration_seconds === 'number' && Number.isFinite(b.duration_seconds) && b.duration_seconds >= 0
+          && b.e2e_sample_eligible !== false
+          && !(Object.prototype.hasOwnProperty.call(b, 'pr') && b.pr == null);
+      })
+      .map(function (b) { return b.duration_seconds; })
+      .sort(function (a, b) { return a - b; });
+    if (!completed.length) return null;
+    const pos = (completed.length - 1) * 0.9, lo = Math.floor(pos), hi = Math.ceil(pos);
+    return lo === hi ? completed[lo] : completed[lo] + (completed[hi] - completed[lo]) * (pos - lo);
+  }
+
+  function buildWorkbenchConcerns(repositorySnapshots, tritonPayload) {
+    const concerns = [];
+    for (const entry of Object.values(repositorySnapshots || {})) {
+      const repo = entry && entry.meta && entry.meta.repository;
+      if (!repo) continue;
+      for (const p of entry.prs || []) {
+        for (const reason of p.issues || []) concerns.push({ project_id: 'ubs', repository_id: repo, batch_id: repo + '#PR' + p.number, reason: String(reason), source_url: p.url || '' });
+        for (const b of p.batches || []) {
+          const bid = repo + '#' + p.number + '::' + b.number;
+          if (b.status === 'failure') concerns.push({ project_id: 'ubs', repository_id: repo, batch_id: bid, reason: '失败', source_url: b.url || '' });
+          for (const reason of b.issues || []) concerns.push({ project_id: 'ubs', repository_id: repo, batch_id: bid, reason: String(reason), source_url: b.url || '' });
+        }
+      }
+      for (const e of (entry.meta && Array.isArray(entry.meta.errors) ? entry.meta.errors : [])) concerns.push({ project_id: 'ubs', repository_id: repo, batch_id: repo + '::collection:' + (e.source || ''), reason: '采集 ' + (e.reason || ''), source_url: '' });
+    }
+    if (tritonPayload && Array.isArray(tritonPayload.batches)) {
+      const repoId = 'github:triton-lang/triton-ascend';
+      const p90 = tritonP90(tritonPayload.batches);
+      for (const b of tritonPayload.batches) {
+        const reasons = [];
+        if (b.status === 'failure') reasons.push('失败');
+        else if (b.status === 'running') reasons.push('执行中');
+        if (b.pr == null) reasons.push('未知 PR 身份');
+        if (p90 != null && b.status !== 'running' && b.duration_seconds >= p90) reasons.push('耗时偏长');
+        const url = b.action_url || (b.workflows && b.workflows[0] && b.workflows[0].url) || '';
+        for (const reason of reasons) concerns.push({ project_id: 'triton', repository_id: repoId, batch_id: repoId + '#' + String(b.id), reason: reason, source_url: url });
+      }
+    }
+    return concerns;
+  }
+
   const api = {
     FIXED_TASKS,
     taskLabel,
@@ -92,6 +144,7 @@
     defaultRepositoryId,
     tasksForProject,
     concernRows,
+    buildWorkbenchConcerns,
   };
   if (typeof module !== 'undefined') module.exports = api;
   else root.Shell = api;
