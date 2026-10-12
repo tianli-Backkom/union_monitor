@@ -15,7 +15,7 @@ module.exports=defineConfig({
     trace:'retain-on-failure',
     screenshot:'only-on-failure',
     acceptDownloads:true,
-    launchOptions:{args:['--host-resolver-rules=MAP dashboard.test 127.0.0.1','--no-proxy-server']},
+    launchOptions:{args:['--host-resolver-rules=MAP dashboard.test 127.0.0.1','--proxy-server=direct://']},
   },
   webServer:process.env.DASHBOARD_TEST_URL ? undefined : {
     command:(process.env.PYTHON || 'python')+' serve.py --port 8877',
