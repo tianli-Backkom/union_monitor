@@ -29,7 +29,7 @@
     {"id": "UDR-023", "status": "回归保持", "evidence": ["tests/test_collection_status_gate.py"], "note": "Legacy UBS collection failure cannot fake green."},
     {"id": "UDR-024", "status": "已实现", "evidence": ["tests/test_unified_production_workflow.py", "monitor/orchestrate.py"], "note": "Single production round orchestration: shared cutoff, per-project deadlines, wait-for-all, precheck isolation."},
     {"id": "UDR-025", "status": "已实现", "evidence": ["tests/test_release_concurrency.py", "monitor/release_lock.py"], "note": "FIFO whole-round queue, mutual-exclusion release lock, anti-old-overwrite gating."},
-    {"id": "UDR-026", "status": "已实现", "evidence": ["tests/test_release_bundle.py", "monitor/bundle.py"], "note": "Complete bundle build and verification, version-mixing and closure checks."},
+    {"id": "UDR-026", "status": "已实现", "evidence": ["tests/test_release_bundle.py", "monitor/bundle.py"], "note": "Complete bundle build and verification, version-mixing and closure checks, plus the full bypassed-loader fake-success matrix (run/code SHA/cutoff/config/hash/missing/extra)."},
     {"id": "UDR-027", "status": "已实现", "evidence": ["tests/test_degraded_release.py", "monitor/release_policy.py"], "note": "Degraded release with verified-archive fallback and baseline-fault blocking."},
     {"id": "UDR-028", "status": "已实现", "evidence": ["tests/test_release_baseline.py", "monitor/baseline.py"], "note": "Persistent verified baseline, immutable archive, atomic non-force pointer promotion."},
     {"id": "UDR-029", "status": "已实现", "evidence": ["tests/test_public_release_verifier.py", "monitor/public_verify.py"], "note": "Public byte-level verification with transient retry and receipts."},
