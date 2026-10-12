@@ -44,6 +44,8 @@ python serve.py --port 8765
 
 ## 本地验证与 PR 门禁
 
+审查整改及后续实施统一按 [38 项需求与自动化验收规格](docs/requirements/2026-10-12-unified-dashboard-audit-requirements.md) 追踪；每项包含描述、输入/操作/断言、验收条件及已有/待补测试，规格完整不代表业务验收通过。
+
 目标运行时：**Python 3.12 / Node 22**。网页运行本身不依赖 Node 包；浏览器测试使用锁定的 Playwright / Chromium。[PR 工作流](.github/workflows/pr-gate.yml) 汇总 Python、前端、采集契约和工作流语法检查，最终检查名为 `Dashboard quality gate`。
 
 ```powershell
