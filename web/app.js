@@ -4,7 +4,7 @@ const stateName={open:'开启中',merged:'已合入',closed:'已关闭未合入'
 let snapshot,filtered=[],batchList=[],page=1,view='ubs',detailPR=null,detailRepo=null,detailSnapshot=null,detailChoice=null,repositoryIndex=null,repositorySnapshots={},currentRepository='ubs-engine',tritonStatus='loading',tritonError=null,ubsStatus='loading',catalog=null,release=null,pageSize=15,entity='batches';
 const reloadGate=Metrics.createReloadGate();
 function num(n,d=2){return n==null?'—':Number(n).toLocaleString('zh-CN',{maximumFractionDigits:d,minimumFractionDigits:d});}
-function minute(ms){return ms!=null&&ms>0&&ms<600?'<0.01':num(ms==null?null:ms/60000);}
+function minute(ms){return Units.minutesValue(ms);}
 function exact(ms){if(ms==null)return '—';return ms<1000?num(ms,0)+' ms':num(ms/1000,3)+' s';}
 function date(ms,short=false){if(!ms)return '—';return new Date(ms).toLocaleString('sv-SE',{timeZone:'Asia/Shanghai',...(short?{year:'numeric',month:'2-digit',day:'2-digit'}:{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'})});}
 function link(url,label){let safe='';try{const u=new URL(url);if(u.protocol==='https:'&&['gitcode.com','ci.openeuler.openatom.cn'].includes(u.hostname))safe=u.href}catch{}return safe?`<a href="${esc(safe)}" target="_blank" rel="noreferrer">${label} <svg class="icon icon-sm" aria-hidden="true"><use href="#i-external-link"/></svg></a>`:label;}

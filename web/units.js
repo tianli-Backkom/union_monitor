@@ -14,6 +14,16 @@
     return (ms / MIN).toFixed(2) + ' min';
   }
 
+  /* Value-only minute form shared by the public list/detail renderers: the
+     same zero/unknown/small/extreme rules as `minutes`, without the unit
+     suffix (the surrounding cell adds its own unit label). */
+  function minutesValue(ms) {
+    if (ms == null || !Number.isFinite(ms) || ms < 0) return '—';
+    if (ms === 0) return '0.00';
+    if (ms < MIN * 0.01) return '<0.01';
+    return Number(ms / MIN).toLocaleString('zh-CN', { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+  }
+
   /* Unknown with the reason attached, never drawn as a zero point. */
   function missing(reason) {
     return '— · ' + (reason || '缺值');
@@ -46,7 +56,7 @@
     return 'P90 ' + minutes(ms) + ' · n=' + n + (n <= 1 ? ' · 样本不足' : '');
   }
 
-  const api = { minutes, missing, withReason, observed, approximate, exact, p90 };
+  const api = { minutes, minutesValue, missing, withReason, observed, approximate, exact, p90 };
   if (typeof module !== 'undefined') module.exports = api;
   else root.Units = api;
 })(typeof window !== 'undefined' ? window : globalThis);

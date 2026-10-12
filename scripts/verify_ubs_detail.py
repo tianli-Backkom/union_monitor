@@ -166,9 +166,10 @@ function extractFn(name) {
   }
   return appSrc.slice(at, i);
 }
-const fmt = new Function(
+const Units = require(process.argv[6]);
+const fmt = new Function('Units',
   extractFn('num') + extractFn('minute') + extractFn('exact')
-  + ';return {num:num,minute:minute,exact:exact};')();
+  + ';return {num:num,minute:minute,exact:exact};')(Units);
 const payload = JSON.parse(fs.readFileSync(process.argv[4], 'utf8'));
 const index = JSON.parse(fs.readFileSync(payload.index_path, 'utf8'));
 const snapshots = {};
@@ -245,7 +246,8 @@ def _node_check(root, minute_samples):
             fh.write(_NODE_SCRIPT)
         proc = subprocess.run(
             ['node', script_path, str(root / 'web/core.js'),
-             str(root / 'web/app.js'), payload_path, result_path],
+             str(root / 'web/app.js'), payload_path, result_path,
+             str(root / 'web/units.js')],
             capture_output=True, text=True, timeout=300)
         if proc.returncode != 0:
             return {'status': 'error', 'stderr': proc.stderr[-2000:]}
@@ -269,6 +271,15 @@ CORE_CONTRACTS = [
      'event_id 不在事件列表`'),
     ('detailGroups_unmatched_group',
      "out.push({event:{kind:'unmatched'},batches:unmatched,reason:"),
+]
+
+# 公共单位渲染源（app.js 的 minute 委托到 units.js 的 minutesValue）：
+# 锁定 value-only 分钟的 0/未知/小值/极端值边界与 '(0,0.01min)' 的小值标记。
+UNITS_CONTRACTS = [
+    ('minutes_value_small',
+     "if (ms < MIN * 0.01) return '<0.01';"),
+    ('minutes_value_unknown',
+     "if (ms == null || !Number.isFinite(ms) || ms < 0) return '—';"),
 ]
 
 APP_CONTRACTS = [
@@ -318,8 +329,7 @@ APP_CONTRACTS = [
      "toLocaleString('zh-CN',{maximumFractionDigits:d,"
      'minimumFractionDigits:d});}'),
     ('minute_fn',
-     "function minute(ms){return ms!=null&&ms>0&&ms<600?'<0.01':"
-     'num(ms==null?null:ms/60000);}'),
+     "function minute(ms){return Units.minutesValue(ms);}"),
     ('exact_fn',
      "function exact(ms){if(ms==null)return '—';return ms<1000?"
      "num(ms,0)+' ms':num(ms/1000,3)+' s';}"),
@@ -364,6 +374,7 @@ APP_CONTRACTS = [
 def _check_source_contracts(root):
     app = (root / 'web/app.js').read_text(encoding='utf-8')
     core = (root / 'web/core.js').read_text(encoding='utf-8')
+    units = (root / 'web/units.js').read_text(encoding='utf-8')
     missing = []
     for name, needle in APP_CONTRACTS:
         if needle not in app:
@@ -371,7 +382,10 @@ def _check_source_contracts(root):
     for name, needle in CORE_CONTRACTS:
         if needle not in core:
             missing.append(f'core.js:{name}')
-    return {'checked': len(APP_CONTRACTS) + len(CORE_CONTRACTS),
+    for name, needle in UNITS_CONTRACTS:
+        if needle not in units:
+            missing.append(f'units.js:{name}')
+    return {'checked': len(APP_CONTRACTS) + len(CORE_CONTRACTS) + len(UNITS_CONTRACTS),
             'missing': missing}
 
 

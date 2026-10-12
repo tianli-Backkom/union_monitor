@@ -15,6 +15,19 @@ test('P-009: a non-zero value below 0.01 min keeps the small-value marker', () =
   assert.equal(U.minutes(600), '0.01 min');
 });
 
+test('UDR-006: minutesValue shares the public zero/unknown/small/extreme rules', () => {
+  assert.equal(U.minutesValue(0), '0.00');        // real zero, not unknown
+  assert.equal(U.minutesValue(100), '<0.01');     // tiny non-zero marker
+  assert.equal(U.minutesValue(600), '0.01');
+  assert.equal(U.minutesValue(null), '—');
+  assert.equal(U.minutesValue(undefined), '—');
+  assert.equal(U.minutesValue(NaN), '—');
+  assert.equal(U.minutesValue(-5), '—');          // negative never coerced to zero
+  assert.equal(U.minutesValue(60000), '1.00');
+  // 21.68-day extreme value is retained, never dropped as "偏长".
+  assert.equal(U.minutesValue(21.68 * 86400000), '31,219.20');
+});
+
 test('P-009: unknown is "—" with a reason, never a zero point', () => {
   assert.equal(U.minutes(null), '—');
   assert.equal(U.minutes(undefined), '—');

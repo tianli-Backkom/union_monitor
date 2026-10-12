@@ -308,6 +308,7 @@ class SyntheticTreeTests(unittest.TestCase):
             json.dumps(beta), 'utf-8')
         shutil.copy(ROOT / 'web/core.js', root / 'web/core.js')
         shutil.copy(ROOT / 'web/app.js', root / 'web/app.js')
+        shutil.copy(ROOT / 'web/units.js', root / 'web/units.js')
         return root
 
     def run_tool(self, root):
@@ -389,10 +390,12 @@ class SyntheticTreeTests(unittest.TestCase):
 
     def test_tampered_minute_threshold_exit_one(self):
         root = self.build_tree()
-        self.tamper(root, 'app.js', "ms<600?'<0.01'", "ms<700?'<0.01'")
+        self.tamper(root, 'units.js',
+                    "if (ms < MIN * 0.01) return '<0.01';",
+                    "if (ms < MIN * 0.02) return '<0.01';")
         code, report = self.run_tool(root)
         self.assertEqual(code, 1)
-        self.assertIn('app.js:minute_fn',
+        self.assertIn('units.js:minutes_value_small',
                       report['source_contracts']['missing'])
         self.assertTrue(report['minute_exact']['mismatches'])
 
