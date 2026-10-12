@@ -156,6 +156,7 @@ h1 span{color:var(--accent)}
 .filter-note{font-size:12px;color:var(--text-3);margin-left:auto}
 .active-conditions{display:flex;gap:var(--sp-4);align-items:center;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);padding:var(--sp-3) var(--sp-4);border-radius:var(--r-card);margin-bottom:var(--sp-5);font-size:12px;color:var(--text-2)}
 .active-conditions strong{color:var(--ink)}
+.page-size{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2)}
 .filters label,.check{display:flex;align-items:center;gap:var(--sp-2);font-size:12px;color:var(--text-2)}
 .filters .search{flex:1;min-width:200px;color:var(--text-3)}
 .search input{border:0;outline:none;background:none;min-width:120px;width:100%;font-size:13px;color:var(--ink)}
