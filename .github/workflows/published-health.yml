@@ -1,0 +1,36 @@
+name: Published dashboard health
+
+on:
+  schedule:
+    # Read-only check after each current production increment's grace period.
+    - cron: '45 1,5,9,11,13 * * *'
+    # Daily UBS build: 07:30 + 180 min timeout + 15 min publication allowance.
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: published-dashboard-health
+  cancel-in-progress: false
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify public files and overdue collection slots
+        run: python -B -m scripts.published_health
+      - name: Retain health report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-health-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-results/published-health.json
+          if-no-files-found: warn
+          retention-days: 14

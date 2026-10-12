@@ -48,7 +48,7 @@ jobs:
       - name: Upload frozen context
         uses: actions/upload-artifact@v4
         with:
-          name: shadow-context-${{ github.run_id }}
+          name: shadow-context-${{ github.run_id }}-${{ github.run_attempt }}
           path: .shadow/context.json
 
   checks:
@@ -93,9 +93,11 @@ jobs:
       - name: Download frozen context
         uses: actions/download-artifact@v4
         with:
-          name: shadow-context-${{ github.run_id }}
+          name: shadow-context-${{ github.run_id }}-${{ github.run_attempt }}
           path: .shadow
       - name: Collect project ${{ matrix.project_id }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
         run: |
           mkdir -p .shadow/work/${{ matrix.project_id }}
           python -m monitor collect \
@@ -108,7 +110,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: project-bundle-${{ matrix.project_id }}-${{ github.run_id }}
+          name: project-bundle-${{ matrix.project_id }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: .shadow/work/${{ matrix.project_id }}
 
   assemble:
@@ -129,23 +131,25 @@ jobs:
       - name: Download frozen context
         uses: actions/download-artifact@v4
         with:
-          name: shadow-context-${{ github.run_id }}
+          name: shadow-context-${{ github.run_id }}-${{ github.run_attempt }}
           path: .shadow
       - name: Download project bundles
         uses: actions/download-artifact@v4
         with:
-          pattern: project-bundle-*-${{ github.run_id }}
+          pattern: project-bundle-*-${{ github.run_id }}-${{ github.run_attempt }}
           path: .shadow/bundles
-          merge-multiple: true
+          merge-multiple: false
       - name: Assemble candidate release
         id: assemble
         run: |
           python - <<'PY'
           import json, pathlib, os
-          reports = {}
-          for rp in pathlib.Path('.shadow/bundles').rglob('collection-report.json'):
-              rep = json.loads(rp.read_text(encoding='utf-8'))
-              reports[rep.get('project_id')] = rep
+          from monitor.artifacts import load_project_reports
+          from monitor.catalog import Catalog
+          from monitor.context import RunContext
+          catalog = Catalog.load('catalog.json')
+          context = RunContext.from_dict(json.loads(pathlib.Path('.shadow/context.json').read_text(encoding='utf-8')))
+          reports = load_project_reports('.shadow/bundles', catalog, context)
           pathlib.Path('.shadow/inputs.json').write_text(
               json.dumps({'projects': reports}, ensure_ascii=False), encoding='utf-8')
           PY
@@ -168,5 +172,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: shadow-candidate-${{ github.run_id }}
+          name: shadow-candidate-${{ github.run_id }}-${{ github.run_attempt }}
           path: .shadow/candidate.json

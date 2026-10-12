@@ -506,7 +506,10 @@ STYLE_CONTRACTS = [
 
 APP_CONTRACTS = [
     ('triton_mount', 'window.TritonView.render(window.tritonPayload,el)'),
-    ('triton_fetch', "fetch('data/triton.json',{cache:'no-store'})"),
+    ('triton_fetch', "readJSON('data/triton.json','Triton 数据')"),
+    ('json_fetch_options', "fetch(url,{cache:'no-store',signal:controller.signal})"),
+    ('json_body_in_read', 'return response.json();'),
+    ('json_full_read_timeout', 'await readWithTimeout(reading,label,()=>controller.abort())'),
     ('view_switch',
      "for(const id of ['ubs-view','ubs-repo-view','triton-view','method-view'])"
      "$(id).hidden=id!==(ubs?(repo?'ubs-repo-view':'ubs-view'):domain+'-view');"),

@@ -1,0 +1,48 @@
+{
+  "captured_at": "2026-10-11T23:35:00.200754+00:00",
+  "mode": "local replay only; not a deployment or source refresh",
+  "published_baseline_summary": {
+    "prs": 53,
+    "batches": 371,
+    "valid": 349,
+    "median": 227.0,
+    "p90": 2359.2,
+    "approximate": 371,
+    "incomplete": 276,
+    "api_calls": 1021
+  },
+  "local_corrected_summary": {
+    "prs": 53,
+    "batches": 371,
+    "valid": 93,
+    "median": 1580.0,
+    "p90": 6428.399999999999,
+    "approximate": 371,
+    "incomplete": 276,
+    "api_calls": 0
+  },
+  "batch_count_preserved": 371,
+  "original_batch_ids_preserved": true,
+  "gate_attack_originally_passed": true,
+  "gate_attack_after_fix": {
+    "passed": false,
+    "errors": [
+      "run 1 attempt 1: in-window workflow absent from aggregated data",
+      "run 1: NPU job absent from aggregated data"
+    ],
+    "warnings": [],
+    "runs": 1,
+    "batches": 0,
+    "npu_points": 0
+  },
+  "python_related_tests": {
+    "ran": 129,
+    "skipped": 1,
+    "result": "passed"
+  },
+  "node_related_tests": {
+    "ran": 67,
+    "result": "passed"
+  },
+  "full_linux_and_browser_verification": "root-owned; not asserted here"
+}

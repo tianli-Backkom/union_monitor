@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import time
 import urllib.request
 from datetime import datetime, timezone
@@ -36,8 +37,21 @@ def verify_triton(site, triton_manifest):
     if fingerprint(payload) != manifest["sha256"]:
         raise DeploymentMismatch(
             f"triton.json at {url}: published data differs from this build (expected fingerprint {manifest['sha256']})")
-    return {"file": "triton.json", "url": url, "fingerprint": manifest["sha256"],
-            "collected_at": manifest.get("collected_at")}
+    record = {"file": "triton.json", "url": url, "fingerprint": manifest["sha256"],
+              "collected_at": manifest.get("collected_at")}
+    # Presence is versioned: legacy manifests do not claim qualification
+    # verification, while a new manifest cannot silently skip a missing file.
+    if 'qualifications_sha256' in manifest:
+        filename = manifest.get('qualifications_file', 'triton-qualifications-v1.json')
+        expected = manifest['qualifications_sha256']
+        if filename != 'triton-qualifications-v1.json' or not isinstance(expected, str) or not re.fullmatch(r'[0-9a-f]{64}', expected):
+            raise DeploymentMismatch('qualifications manifest filename or sha256 is invalid')
+        qualification_url = site.rstrip('/') + '/data/' + filename
+        actual = sha256_bytes(fetch(qualification_url))
+        if actual != expected:
+            raise DeploymentMismatch(f'{filename} at {qualification_url}: published sha256 {actual}, this build recorded {expected}')
+        record['qualifications'] = {'file': filename, 'url': qualification_url, 'sha256': expected}
+    return record
 
 
 def _required_files_from_index(index_bytes, url):
@@ -146,6 +160,9 @@ def success_markdown(record):
              f"- Triton：{triton['url']} 指纹 `{triton['fingerprint']}`（采集时间 {triton.get('collected_at')}）",
              f"- UBS：{ubs['file_count']} 个公开文件逐一比对通过，束指纹 `{ubs['fingerprint']}`",
              "- 公开 manifest：triton-manifest.json 与 ubs-manifest.json 与本次构建逐字节一致"]
+    if triton.get('qualifications'):
+        qualification = triton['qualifications']
+        lines.append(f"- Triton 指标资格：{qualification['url']} 逐字节指纹 `{qualification['sha256']}`")
     return "\n".join(lines) + "\n"
 
 

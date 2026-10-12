@@ -27,7 +27,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from ..context import iso_utc
+from ..context import iso_utc, utc_time
 
 
 class AdapterError(Exception):
@@ -70,7 +70,7 @@ def write_snapshot(work_dir, project_id: str, snapshot: dict):
     return path, hashlib.sha256(data).hexdigest()
 
 
-def collect_repositories(project: dict, context, work_dir, *, runner, now=None, schema_version: int = 3) -> dict:
+def collect_repositories(project: dict, context, work_dir, *, runner, validator=None, now=None, schema_version: int = 3) -> dict:
     """Run each repository's collector and aggregate one project snapshot.
 
     ``runner(repository, project, context) -> dict`` is injected for tests; the
@@ -88,10 +88,24 @@ def collect_repositories(project: dict, context, work_dir, *, runner, now=None, 
     repos = project.get("repositories") or []
     failures: list = []
     snapshots: dict = {}
+    warnings = []
+    observations = []
 
     for repo in repos:
         try:
-            snapshots[repo["repository_id"]] = runner(repo, project, context)
+            payload = runner(repo, project, context)
+            if not isinstance(payload, dict):
+                raise ValueError('repository collector did not return an object')
+            if validator is None:
+                raise ValueError('no project quality validator was supplied')
+            validation = validator(repo, project, context, payload)
+            if not isinstance(validation, dict) or validation.get('passed') is not True:
+                reasons = validation.get('errors') if isinstance(validation, dict) else None
+                raise ValueError('; '.join(map(str, reasons or ['project quality validation failed'])))
+            observed = payload.get('collected_at') or (payload.get('meta') or {}).get('collected_at')
+            observations.append(utc_time(observed))
+            warnings.extend(validation.get('warnings') or [])
+            snapshots[repo["repository_id"]] = payload
         except Exception as exc:  # noqa: BLE001 - a failed repo is recorded, not fatal
             failures.append({"repository_id": repo["repository_id"], "reason": repr(exc)})
 
@@ -99,14 +113,19 @@ def collect_repositories(project: dict, context, work_dir, *, runner, now=None, 
         return {
             "collection_status": "failed",
             "task_status": "failed",
+            "validation_status": "failed",
+            "exit_code": 1,
+            "error": '; '.join(f['reason'] for f in failures) or 'no repository data collected',
             "errors": [f["reason"] for f in failures] or ["no repository data collected"],
             "warnings": [],
         }
 
-    collected_at = clock()
+    collected_at = iso_utc(max(observations))
     snapshot = {
         "schema_version": schema_version,
         "project_id": project["project_id"],
+        "run_id": context.run_id,
+        "code_sha": context.code_sha,
         "collector": project["collector"],
         "window": window,
         "collected_at": collected_at,
@@ -116,14 +135,18 @@ def collect_repositories(project: dict, context, work_dir, *, runner, now=None, 
     snapshot_path, snapshot_sha256 = write_snapshot(work_dir, project["project_id"], snapshot)
     error_reasons = [f["reason"] for f in failures]
     return {
-        "collection_status": "success",
+        "collection_status": "failed" if failures else "success",
         "task_status": "partial" if failures else "success",
+        "validation_status": "failed" if failures else "passed",
+        "validation_scope": "adapter_project_gate",
+        "exit_code": 1 if failures else 0,
         "snapshot_version": f'{project["project_id"]}@{collected_at}',
-        "snapshot_path": str(snapshot_path),
+        "snapshot_path": snapshot_path.name,
         "snapshot_sha256": snapshot_sha256,
         "window": window,
         "collected_at": collected_at,
-        "artifact": str(snapshot_path),
+        "artifact": snapshot_path.name,
+        "error": '; '.join(error_reasons) if failures else None,
         "errors": error_reasons,
-        "warnings": [],
+        "warnings": warnings,
     }

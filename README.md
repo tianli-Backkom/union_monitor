@@ -1,124 +1,99 @@
 # 统一工程监控看板（openEuler UBS × Triton-Ascend）
 
-双域统一工程监控看板：
+查看 PR 门禁耗时、失败批次、排队和来源证据。UBS 覆盖 ubs-engine、ubs-comm、ubs-virt、ubs-io、ubs-mem、OmniStateStore、ham、ubturbo、ubs-atomic 九仓；Triton 采集 [triton-lang/triton-ascend](https://github.com/triton-lang/triton-ascend) 最近 72 小时的 GitHub Actions 门禁。
 
-- **openEuler UBS**：覆盖 ubs-engine、ubs-comm、ubs-virt、ubs-io、ubs-mem、OmniStateStore、ham、ubturbo、ubs-atomic 九个仓库的 PR 工程效率（E2E、x86、ARM、DT 耗时与排队、门禁）。
-- **Triton-Ascend**：采集 [triton-lang/triton-ascend](https://github.com/triton-lang/triton-ascend) 最近 72 小时的 PR 门禁任务，监控门禁效率。
+## 直接使用
 
-两域共用一个侧边栏界面。纯 Python 标准库采集 + SQLite + 无外部依赖网页，由 GitHub Actions 每日自动采集、验证并发布到 GitHub Pages。
+- [工作台](https://tianli-backkom.github.io/union_monitor/#workbench)：查看已加载快照和进入项目。
+- [UBS 跨仓总览](https://tianli-backkom.github.io/union_monitor/#ubs)：九仓对比 → 单仓 PR → 批次与任务；另有数据质量和统计口径。
+- [Triton 看板](https://tianli-backkom.github.io/union_monitor/#triton)：E2E / NPU 排队趋势、关注批次及来源链接。
 
-## 在线地址
+「重新加载快照」只读取已发布文件，不触发采集。页面使用各快照的原采集时间；读取失败时会提示，并尽可能保留已加载的有效数据。当前工作台未接入统一运行报告、发布版本和跨项目关注聚合，不能用它判断本轮采集成功或“没有关注记录”。
 
-合并看板 Pages 地址（待部署后填写）：`https://<user>.github.io/<repo>/`
+## 本地启动
 
-## 看板功能
-
-侧边栏分两组导航：openEuler UBS 与 Triton-Ascend。
-
-### openEuler UBS
-
-- 跨仓总览（默认首页，九仓对比与跨仓指标）、单仓页、数据质量、统计口径。
-- PR 工程效率：E2E/x86/ARM/DT 平均与 P90、代表批次，支持下钻全部提交、重跑、批次与任务。
-- 筛选与排序：状态/搜索/完整性，按创建时间、E2E、批次数或排队/执行/总耗时排序。
-- 数据质量：未匹配事件、无门禁 PR、不完整批次、采集异常。
-- 旧链接自动跳转：`#overview`/`#prs` → ubs-engine 单仓页，`#repositories` → 跨仓首页。
-
-### Triton-Ascend
-
-- E2E 时长趋势与 NPU Job 最长排队时长趋势，按分支、状态、时间范围（6/12/24/48/72 小时）联动，两图共用时间导航器（拖拽 / 键盘可操作）。
-- 平均值、P50、P90 与样本数随筛选实时更新。
-- PR、GitHub Actions、重点 NPU Job 的直达链接；关注列表按耗时偏长 / 执行中 / 失败归类并支持搜索。
-
-### 统一交互
-
-- 统一 CSV 导出；「重新加载快照」一次刷新两域数据并各自独立提交。
-- 窄屏（含 390px 手机）自适应，键盘可访问，旧链接哈希自动规范化。
-
-## 本地运行与采集
+在仓库根目录运行，开发快照会写入本地数据目录：
 
 ```powershell
-cd D:\ubs_core_monitor
+python -B scripts/devdata.py --offline    # 固定最小 fixture，无需访问源站
 python serve.py --port 8765
 ```
 
-打开 http://127.0.0.1:8765 ，服务仅监听本机，Ctrl+C 停止。
+打开 [本地工作台](http://127.0.0.1:8765/#workbench)，Ctrl+C 停止。服务只监听本机并仅公开 `web/`。需要线上已发布快照时运行 `python -B scripts/devdata.py`：默认从 `union_monitor/data/` 读取 UBS 索引、各仓快照和 `triton.json`，不会重新采集 GitCode / GitHub。`--ubs-url BASE`、`--triton-url URL` 可覆盖地址；显式传入旧 Triton `index.html` URL 仍可提取内嵌 JSON。
 
-### openEuler UBS
+## 筛选、口径与导出
+
+- **UBS**：列表搜索只定位 PR，不改变 KPI / 趋势；状态、完整性、触发类别筛选会改变统计样本。排序支持代表 E2E、批次数、创建时间；排队 / 执行 / 总计选择切换任务指标列。
+- **Triton**：分支和时间范围控制全页分析范围；每张图的状态按钮只改变该图及图内统计。列表搜索只改变列表和导出集合。关注按批次去重，同批次可有多个原因标签。
+- **E2E 不跨项目混算**：UBS 每 PR 取最长合格 E2E 的代表批次，并列按 trigger 编号和 URL 决定；x86 / ARM / DT 均取该批次内唯一、关联有效的终态任务。Triton 按提交及重跑 attempt 形成批次，只有成功 / 失败且耗时有限非负、E2E 关联资格有效的批次进入终态分位数；未关联 PR 的观测记录仍保留，NPU 资格独立判断。
+- UBS 排队 = `waiting + blocked + buildable`，总计 = 排队 + 执行；缺失分项留空。取消处理保留各项目口径，不能统一当失败或统一排除。空值不补零，合法 0 保留；P90 使用 `(n−1)×0.9` 线性插值，是样本分位数，不是 SLA。
+- **CSV 仍保留各项目原字段与单位**（UBS 毫秒、Triton 秒），分页 / 折叠不截断导出。Triton 另下载 `triton-qualifications-v1.json` 说明每批次资格，这不是完整统一导出格式。本地 CSV 保存到 `web/exports/`，资格 JSON 由浏览器下载；Pages 上两者均由浏览器下载。
+
+## 生产采集与迁移状态
+
+当前生产继续使用两条流程，均可在 Actions 手动运行：
+
+| 流程 | 北京时间计划启动 | 范围 |
+|---|---|---|
+| [每日采集与发布](.github/workflows/pages.yml) | 07:30 | UBS 九仓最近 30 天 + Triton 最近 72 小时 |
+| [Triton 增量](.github/workflows/triton-refresh.yml) | 08:00/12:00/16:00/18:00/20:00 | 仅重采 Triton，复用经校验的 UBS 快照 |
+
+这是启动日程，不是更新时间保证。两流程共用 `pages` 并发组且 `cancel-in-progress: false`，保护正在运行的构建；排队中的运行遵循平台默认替换规则（queue: single，同组仅保留最新排队运行）。构建门禁失败会阻止该构建进入部署；部署后的验证失败不会自动回滚。
+
+[统一 shadow 流程](.github/workflows/unified-shadow.yml) 仅手动生成候选工件，不部署 Pages。完整任务导航、统一数据版本发布、全站可信回退及自动回滚尚未上线；当前新路由提供已有项目能力的兼容入口，未提供的任务会明确说明。目标态与迁移约束见 [产品方案](docs/design/2026-10-10-unified-dashboard-product.md)、[技术方案](docs/design/2026-10-10-unified-dashboard-architecture.md)；本轮门禁工作见 [实施计划](docs/superpowers/plans/2026-10-11-adversarial-audit-and-pr-gates.md)。
+
+## 本地验证与 PR 门禁
+
+目标运行时：**Python 3.12 / Node 22**。网页运行本身不依赖 Node 包；浏览器测试使用锁定的 Playwright / Chromium。[PR 工作流](.github/workflows/pr-gate.yml) 汇总 Python、前端、采集契约和工作流语法检查，最终检查名为 `Dashboard quality gate`。
 
 ```powershell
-python -X utf8 collect.py --all --days 30              # 刷新全部九仓最近 30 天
-python -X utf8 collect.py --repo ubs-comm --days 30    # 单仓更新
-python -X utf8 collect.py --days 30 --until "2026-09-09T21:58:38.753+08:00"   # 指定滚动截止
-```
-
-`--offline` 仅从缓存重算（验证幂等性）；`--limit N` 诊断抽样。本地手动更新，线上由 GitHub Actions 定时更新。
-
-### Triton-Ascend
-
-```powershell
-$env:GH_TOKEN = '<GitHub Token>'      # 可选，提高 API 配额
-python -X utf8 -m triton.dashboard --hours 72
-python -X utf8 -m triton.dashboard --from-evidence   # 仅用已存证据重生成
-```
-
-### 开发数据引导
-
-```powershell
-python scripts/devdata.py   # 从线上站点拉取真实数据；--offline 用最小 fixtures
-```
-
-## 目录结构
-
-| 位置 | 用途 |
-|---|---|
-| `collect.py`、`metrics.py`、`repository_store.py` | GitCode/Jenkins 采集、统计与多仓隔离发布 |
-| `triton/dashboard.py`、`quality.py` | GitHub Actions 采集与发布前质量校验 |
-| `data/` | SQLite、原始缓存、各仓快照（不入库） |
-| `web/` | 无依赖前端（`app.js`、`core.js`、`triton-core.js` 等） |
-| `validate*.py`、`source_coverage.py` | 数据一致性、跨仓隔离与来源覆盖独立审计 |
-| `scripts/verify_*.py` | 各需求的独立保持性审计 |
-| `tests/` | Python 与 Node 测试 |
-
-原始缓存、SQLite、历史 CSV 与备份不进入 Git 提交或 Pages 工件；Pages 只公开看板所需的派生 JSON。
-
-## 计算口径（要点）
-
-- 每个 trigger 是一个独立批次。E2E = 提交/重跑起点到全部子任务结束的最长可测终态耗时；每 PR 选 E2E 最长的可测终态批次作代表批次（并列取 trigger 编号较大者），任务耗时全部取自代表批次。
-- 排队 = `waiting + blocked + buildable`，执行 = `duration`，总计 = 排队 + 执行；缺任一分项时排队/总计留空。
-- 成功、失败、取消（已结束）批次纳入 E2E；执行中、不完整、缺起点的不纳入。
-- P90 用 `(n−1)×0.9` 线性插值（同 Excel `PERCENTILE.INC`）。
-- Triton：批次按 PR head SHA 聚合，手动重跑按 run+attempt 独立成批；有效耗时必须是有限非负数值，缺失、NaN、无穷不补 0。
-
-## 自动发布
-
-- **每日全量**（`.github/workflows/pages.yml`）：北京时间 07:30 采集九仓（30 天）+ Triton（72 小时）、跑测试与审计、部署 Pages，并校验公开数据指纹；失败保留上一版。
-- **Triton 增量**（`.github/workflows/triton-refresh.yml`）：北京时间 08:00/13:00/18:00/20:00 仅重采 Triton 并发布。
-- 两流程共用 concurrency group `pages` 且 `cancel-in-progress: false`：正在运行的构建不被新触发取消，排队中的运行遵循平台默认替换规则（queue: single，同一并发组仅保留最新一个排队运行）。均支持 `workflow_dispatch` 手动运行。
-
-## 验证
-
-CI 目标运行时：Python 3.12 / Node 22。
-
-```
-python -m unittest discover -s tests -v
+python -m pip install PyYAML==6.0.3
+python -B scripts/devdata.py --offline
+python -B -m unittest discover -s tests -v
 node --test tests/*.test.cjs
+npm ci --ignore-scripts
+npx playwright install --with-deps chromium
+npm run test:browser
+```
+
+Chromium 测试自动启动本地服务，使用确定性 fixture，覆盖路由、列表搜索、详情 / 浮层清理、重载失败、导出和 390px 布局。失败证据位于 `test-results/`；离线 fixture 通过不等于线上来源数据完整。
+
+公开站点健康检查：
+
+```powershell
+python -B -m scripts.published_health
+```
+
+[健康工作流](.github/workflows/published-health.yml) 只验证公开文件一致性、仓库状态和按生产日程计算的新鲜度，输出 `test-results/published-health.json`；不补采、不部署、不回滚，也不证明发布来源可信或源站数据全量完整。网络、采集、部署延迟都可能使检查失败。
+
+既有数据与需求审计（需先准备相应快照 / 证据）：
+
+```powershell
 python validate.py
 python validate_bundle.py
-python -X utf8 scripts/verify_artifacts.py
-python -X utf8 scripts/verify_ubs_semantics.py
-python -X utf8 scripts/verify_ubs_filtering.py
-python -X utf8 scripts/verify_ubs_sorting.py
-python -X utf8 scripts/verify_ubs_csv.py
-python -X utf8 scripts/verify_ubs_detail.py
-python -X utf8 scripts/verify_ubs_routes.py
 python -X utf8 scripts/verify_interactions.py
 python -X utf8 scripts/verify_freshness.py
 python -X utf8 scripts/verify_acceptance.py --delivering REQ-051
 python -X utf8 scripts/verify_requirements_doc.py
-python -X utf8 -m triton.verify_deployment <site-url> --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
+python -X utf8 -m triton.verify_deployment https://tianli-backkom.github.io/union_monitor/ --triton-manifest web/data/triton-manifest.json --ubs-manifest web/data/ubs-manifest.json
 ```
 
-## 接口依据
+最后一条使用本地预期构建 manifest 对照线上文件；与仅使用线上 manifest 的健康检查不同。
 
-- openEuler UBS：GitCode 官方 API v5 的 `pulls`、`comments`、`operate_logs` 及 Jenkins 只读接口。参考 [GitCode PR API 文档](https://docs.gitcode.com/v1-docs/docs/openapi/repos/pulls/)。
-- Triton-Ascend：GitHub Actions API 的 workflow runs、jobs 与 PR 关联只读接口；`GH_TOKEN` 可选。
+## 手动采集与代码入口
+
+```powershell
+python -X utf8 collect.py --all --days 30           # UBS 九仓
+python -X utf8 collect.py --repo ubs-comm --days 30 # UBS 单仓
+python -X utf8 -m triton.dashboard --hours 72       # Triton，GH_TOKEN 可选
+```
+
+UBS 的 `--offline` 从缓存重算，`--limit N` 用于诊断抽样；Triton 的 `--from-evidence` 从已存证据重生成。原始缓存、SQLite 和历史导出不公开到 Pages。
+
+| 位置 | 用途 |
+|---|---|
+| `collect.py`、`metrics.py`、`repository_store.py` | GitCode / Jenkins 采集与 UBS 统计 |
+| `triton/` | GitHub Actions 采集、质量和部署验证 |
+| `catalog.json`、`monitor/` | 项目配置、适配器及 shadow 统一采集 / 候选工件 |
+| `web/` | 当前网页和派生快照 |
+| `tests/`、`scripts/verify_*.py` | Python、Node、Chromium 回归及独立审计 |

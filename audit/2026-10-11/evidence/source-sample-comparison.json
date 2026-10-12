@@ -1,0 +1,154 @@
+{
+  "captured_at": "2026-10-11T15:35:27.754918+00:00",
+  "github": [
+    {
+      "run_id": 38118759113,
+      "attempt": 1,
+      "batch_id": "1701344b7cea7fe27b910f1fbfa34824dd49e116-unresolved-38118759113-1",
+      "pr": null,
+      "status": "failure",
+      "public_job_count": 4,
+      "api_job_count": 4,
+      "api_returned_jobs": 4,
+      "job_identity_equal": true,
+      "differences": [],
+      "batch_duration_seconds": 851.0,
+      "batch_start_at": "2026-10-11T06:39:13Z",
+      "source_run_started_at": "2026-10-11T06:39:13Z",
+      "source_updated_at": "2026-10-11T06:53:24Z"
+    },
+    {
+      "run_id": 37760585973,
+      "attempt": 3,
+      "batch_id": "2450-d2b2b95457e6c0749cede0161bb0f351d0e290f9-rerun-37760585973-3",
+      "pr": 2450,
+      "status": "success",
+      "public_job_count": 4,
+      "api_job_count": 4,
+      "api_returned_jobs": 4,
+      "job_identity_equal": true,
+      "differences": [],
+      "batch_duration_seconds": 771.0,
+      "batch_start_at": "2026-10-10T20:36:17Z",
+      "source_run_started_at": "2026-10-10T20:36:17Z",
+      "source_updated_at": "2026-10-10T20:49:08Z"
+    },
+    {
+      "run_id": 37780054513,
+      "attempt": 1,
+      "batch_id": "2467-bce7cc10e0dc1f0fc767f5853b388091daa1fc69-initial",
+      "pr": 2467,
+      "status": "success",
+      "public_job_count": 3,
+      "api_job_count": 3,
+      "api_returned_jobs": 3,
+      "job_identity_equal": true,
+      "differences": [],
+      "batch_duration_seconds": 1462.0,
+      "batch_start_at": "2026-10-08T12:52:44Z",
+      "source_run_started_at": "2026-10-08T12:52:47Z",
+      "source_updated_at": "2026-10-08T13:17:06Z"
+    }
+  ],
+  "ubs": [
+    {
+      "source_key": "ubs-jenkins-0",
+      "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-engine/7469/",
+      "queue_components": {
+        "waitingTimeMillis": 5009,
+        "blockedTimeMillis": 0,
+        "buildableTimeMillis": 12116
+      },
+      "queue_recomputed": 17125,
+      "published_queue_ms": 17125,
+      "duration_ms": 11046292,
+      "result": "ABORTED",
+      "differences": []
+    },
+    {
+      "source_key": "ubs-jenkins-1",
+      "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/aarch64/job/ubs-engine/7467/",
+      "queue_components": {
+        "waitingTimeMillis": 0,
+        "blockedTimeMillis": 0,
+        "buildableTimeMillis": 5026
+      },
+      "queue_recomputed": 5026,
+      "published_queue_ms": 5026,
+      "duration_ms": 105166,
+      "result": "SUCCESS",
+      "differences": []
+    },
+    {
+      "source_key": "ubs-comm-trigger",
+      "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/openeuler/job/trigger/job/ubs-comm/4268/",
+      "queue_components": {
+        "waitingTimeMillis": 7919,
+        "blockedTimeMillis": 0,
+        "buildableTimeMillis": 12283
+      },
+      "queue_recomputed": 20202,
+      "published_queue_ms": 20202,
+      "duration_ms": 7653374,
+      "result": "ABORTED",
+      "differences": []
+    },
+    {
+      "source_key": "ubs-comm-dt",
+      "url": "https://ci.openeuler.openatom.cn/job/multiarch/job/manual-jobs/job/openeuler/job/UBSCore/job/DT/job/ubs-comm/4042/",
+      "queue_components": {
+        "waitingTimeMillis": 0,
+        "blockedTimeMillis": 0,
+        "buildableTimeMillis": 18709
+      },
+      "queue_recomputed": 18709,
+      "published_queue_ms": 18709,
+      "duration_ms": 1873223724,
+      "result": "ABORTED",
+      "differences": []
+    }
+  ],
+  "scope": "purposeful small sample; not random and not a full source audit",
+  "unresolved_source_check": {
+    "pr_candidate": 2513,
+    "current_head_sha": "64c3da1dc2a84a1d2fd6e37a397d12932c47e6e6",
+    "run_head_sha": "1701344b7cea7fe27b910f1fbfa34824dd49e116",
+    "run_pull_requests": [],
+    "same_fork_id": true,
+    "same_branch": true,
+    "sha_in_current_pr_commits": false,
+    "current_commit_count": 1,
+    "conclusion": "current public evidence still cannot prove the historical PR+commit association; preserve unresolved rather than assign from branch alone"
+  },
+  "ubs_pr_sample": {
+    "pr": 1600,
+    "number_matches": true,
+    "title_matches": true,
+    "created_ms_matches": true,
+    "source_updated_at": "2026-09-20T19:00:18+08:00",
+    "public_meta_collected_at": "2026-10-11T12:37:36.605931+00:00"
+  },
+  "csv": {
+    "rows": 371,
+    "batches": 371,
+    "fields": [
+      "pr",
+      "title",
+      "sha",
+      "base_branch",
+      "kind",
+      "start_at",
+      "end_at",
+      "status",
+      "duration_seconds",
+      "npu_queue_seconds",
+      "approximate",
+      "start_source",
+      "critical_workflow",
+      "missing",
+      "pr_url",
+      "action_url"
+    ],
+    "differences": []
+  }
+}

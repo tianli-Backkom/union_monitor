@@ -265,9 +265,25 @@ class SyntheticTreeTests(unittest.TestCase):
         self.assertEqual(report['time_rules']['mismatches'], {})
         self.assertEqual(report['time_rules']['total'], 145)
         self.assertEqual(report['source_contracts'],
-                         {'checked': 52, 'missing': []})
+                         {'checked': 55, 'missing': []})
         self.assertEqual(report['views']['total'], 5)  # 1 仓 ×2 + 3 全局
         self.assertEqual(report['baseline']['status'], 'not_applicable')
+
+    def test_whole_json_read_contract_rejects_missing_cache_signal_or_body_timeout(self):
+        cases = [
+            ("fetch(url,{cache:'no-store',signal:controller.signal})",
+             "fetch(url,{cache:'default'})", 'json_fetch_options'),
+            ('return response.json();', 'return response;', 'json_body_in_read'),
+            ('await readWithTimeout(reading,label,()=>controller.abort())',
+             'await reading', 'json_full_read_timeout'),
+        ]
+        for old, new, contract in cases:
+            with self.subTest(contract=contract):
+                root = self.build_tree()
+                self.tamper(root, 'app.js', old, new)
+                code, report = self.run_tool(root)
+                self.assertEqual(code, 1)
+                self.assertIn(f'app.js:{contract}', report['source_contracts']['missing'])
 
     def test_tampered_min_span_exit_one(self):
         root = self.build_tree()

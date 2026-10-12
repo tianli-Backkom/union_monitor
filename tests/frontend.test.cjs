@@ -55,7 +55,7 @@ test('reload failure keeps the previous snapshot visible with its collection tim
   assert.ok(branchEnd>-1,'the has-snapshot branch must return before the first-load fallback runs');
   const branch=failPath.slice(hasDataBranch,branchEnd);
   assert.ok(branch.includes('navigate(location.hash);'),'the has-snapshot branch re-renders the current view');
-  assert.ok(branch.indexOf('navigate(location.hash);')<branch.indexOf("$('loading').hidden=false"),'the failure banner must be revealed after the re-render so the render path cannot hide it again');
+  assert.ok(branch.indexOf('navigate(location.hash);')<branch.indexOf("$('loading').hidden="),'the context-appropriate failure banner must be set after re-render; its visible behavior is covered by app_runtime');
   const fallback=failPath.slice(branchEnd);
   assert.ok(fallback.includes('navigate(location.hash);'),'REQ-010: the first-load fallback must still route the current view instead of hiding it');
   assert.ok(!failPath.includes("for(const id of ['ubs-view'"),'REQ-010: a UBS index failure must not hide the triton and method views');
@@ -67,7 +67,7 @@ test('navigation or reload closes a stale PR detail and clears its reference',()
  assert.match(source,/detailRepo=currentRepository;/,'openDetail must record the repository the detail was opened from');
  assert.ok(source.includes("(detailPR||$('detail').open)&&(domain!=='ubs'||!repo||currentRepository!==detailRepo)"),'context-changing navigation (domain, repository or leaving the repo view) must close the detail dialog');
  assert.ok(source.includes("reloadGate.begin();$('detail').close();"),'a reload attempt must close the open detail at start, before fetching');
- assert.ok(source.includes("addEventListener('close',()=>{if(!$('detail').open){detailPR=null;detailSnapshot=null;}})"),'any dialog close (button, overlay, Esc) must clear the stale detail reference and snapshot binding');
+ assert.ok(source.includes("addEventListener('close',()=>{if(!$('detail').open){detailPR=null;detailSnapshot=null;detailRepo=null;}})"),'any dialog close (button, overlay, Esc) must clear the stale detail reference, snapshot and repository binding');
 });
 
 test('detail CSV export is bound to the detail entity, not the global current repository',()=>{
@@ -84,18 +84,16 @@ test('detail CSV export is bound to the detail entity, not the global current re
   assert.ok(!exportSrc.includes('snapshot.meta.repository'),'exportBatches must not read the global snapshot');
 });
 
-test('REQ-010/A06: the two domains read and commit independently — a hanging request cannot block a healthy domain',()=>{
-  const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
-  const tritonStart=source.indexOf('const tritonTask=(async()=>{');
-  const ubsStart=source.indexOf("const response=await readWithTimeout(fetch('data/repositories.json'");
-  assert.ok(tritonStart>-1&&ubsStart>-1,'load() must define both domain read tasks');
-  assert.ok(tritonStart<ubsStart,'the Triton fetch must start before the UBS index fetch so an index failure can never prevent it');
-  assert.ok(source.includes('await Promise.all(index.repositories.map('),'the UBS success path commits after only its own repository reads (A06: a hanging Triton request must not block the UBS domain)');
-  assert.ok(!source.includes('tritonTask]);'),'the UBS commit must not await the Triton task');
-  assert.match(source,/readWithTimeout\(fetch\('data\/triton\.json',\{cache:'no-store'\}\),'Triton 数据'\)/,'the Triton read carries a timeout so a hang ends in a distinct failure prompt instead of infinite loading (AC04)');
-  assert.match(source,/读取超时（'\+READ_TIMEOUT_MS\/1000\+' 秒未完成）/,'timeout failures carry a dedicated prompt naming the wait');
-  assert.ok(!source.includes('window.tritonPayload=null'),'a failed Triton re-read must keep the previous payload visible instead of nulling it');
-  assert.ok(source.includes("if(view==='ubs')$('loading').hidden=false;"),'the first-load UBS failure banner only takes over UBS views, leaving #triton usable');
+test('REQ-010/A06: a stalled Triton JSON body cannot block a healthy UBS domain',async()=>{
+  const {createApp}=require('./helpers/app-harness.cjs');
+  const runtime=createApp({
+    fetch:async url=>({ok:true,json:()=>url.includes('triton')?new Promise(()=>{}):Promise.resolve({generated_at:'2026-10-11T00:00:00Z',start_ms:1,end_ms:2,repositories:[]})}),
+    setTimeout(){return 1;},clearTimeout(){}
+  });
+  await runtime.run('load()');
+  assert.equal(runtime.run('ubsStatus'),'ok');
+  assert.equal(runtime.run('repositoryIndex.repositories.length'),0);
+  assert.equal(runtime.run('tritonStatus'),'loading');
 });
 
 test('REQ-010: Triton view states distinguish in-flight, failure and previous data',()=>{
@@ -111,7 +109,7 @@ test('REQ-010: per-repo read failures degrade locally with distinct notices',()=
   const source=fs.readFileSync(path.join(__dirname,'../web/app.js'),'utf8');
   assert.ok(source.includes("data.meta.repository!==entry.repository"),'a snapshot whose repository does not match its index entry must be rejected (no cross-repo borrowing)');
   assert.ok(source.includes("entry.status='failed';entry.error='快照读取失败：'+error.message"),'a failing repository is marked failed without aborting the other reads');
-  assert.match(source,/readWithTimeout\(fetch\('data\/'\+entry\.snapshot/,'a hanging repository snapshot read times out locally and degrades to the same failed-entry path instead of blocking the domain commit (A06)');
+  assert.match(source,/readJSON\('data\/'\+entry\.snapshot/,'the whole repository JSON read uses the timeout-protected path (body timeout behavior is covered by app_runtime)');
   assert.ok(source.includes("entry?.status==='failed'?'该仓库'+(entry.error||'数据不可用')+'。其他仓库与 Triton 数据不受影响。'"),'a read-failed repository must be told apart from a never-collected one');
   assert.ok(source.includes('该仓库尚未获取数据，请查看采集状态后运行采集命令。'),'the pending (未获取) notice stays distinct from the failure notice');
   assert.ok(source.includes("?' · 快照读取失败':' · 未获取数据'"),'the footer labels failure and never-collected differently');

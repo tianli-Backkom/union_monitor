@@ -10,13 +10,13 @@ Files produced (online fetch or offline copy):
   web/data/<repositories[].snapshot>          per-repo snapshots (e.g. repos/ubs-engine.json)
   data/snapshot.json                          ubs-engine compat snapshot at repo root
                                               (tests/frontend.test.cjs requires ../data/snapshot.json)
-  web/data/triton.json                        Triton dashboard payload extracted from its index.html
+  web/data/triton.json                        Triton dashboard JSON (legacy HTML also accepted)
 
 URL overrides (also handy for error-path testing):
   --ubs-url BASE    Base URL of the UBS monitor site.
-                    Default: https://tianli-backkom.github.io/ubs_core_monitor
-  --triton-url URL  Full URL of the Triton monitor index.html.
-                    Default: https://tianli-backkom.github.io/Triton-Ascend_monitor/index.html
+                    Default: https://tianli-backkom.github.io/union_monitor
+  --triton-url URL  Full URL of Triton JSON, or an explicit legacy index.html.
+                    Default: https://tianli-backkom.github.io/union_monitor/data/triton.json
 
 Examples:
   python3 scripts/devdata.py
@@ -31,12 +31,13 @@ import shutil
 import sys
 from pathlib import Path, PurePosixPath
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 USER_AGENT = "merged-monitor-devdata/1.0"
 TIMEOUT_SECONDS = 30
-DEFAULT_UBS_BASE = "https://tianli-backkom.github.io/ubs_core_monitor"
-DEFAULT_TRITON_URL = "https://tianli-backkom.github.io/Triton-Ascend_monitor/index.html"
+DEFAULT_UBS_BASE = "https://tianli-backkom.github.io/union_monitor"
+DEFAULT_TRITON_URL = DEFAULT_UBS_BASE + "/data/triton.json"
 TRITON_DATA_RE = re.compile(r'<script type="application/json" id="data">(.*?)</script>', re.S)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -156,11 +157,15 @@ def run_online(ubs_base: str, triton_url: str, written: list) -> None:
 
     publish_catalog(written=written)
 
-    html = fetch(triton_url).decode("utf-8")
-    match = TRITON_DATA_RE.search(html)
-    if not match:
-        raise DevDataError(f"{triton_url}: no <script type=\"application/json\" id=\"data\"> payload found")
-    triton_payload = parse_json(match.group(1).encode("utf-8"), "triton payload")
+    triton_data = fetch(triton_url)
+    if urlsplit(triton_url).path.lower().endswith(".json") or triton_data.lstrip().startswith((b"{", b"[")):
+        triton_payload = parse_json(triton_data, triton_url)
+    else:
+        html = triton_data.decode("utf-8")
+        match = TRITON_DATA_RE.search(html)
+        if not match:
+            raise DevDataError(f"{triton_url}: no <script type=\"application/json\" id=\"data\"> payload found")
+        triton_payload = parse_json(match.group(1).encode("utf-8"), "triton payload")
     require_keys(triton_payload, ["repo", "window_start", "batches", "summary"], "triton payload")
     write_file(WEB_DATA_DIR / "triton.json",
                json.dumps(triton_payload, ensure_ascii=False, indent=2).encode("utf-8") + b"\n", written)
@@ -212,7 +217,7 @@ def main() -> int:
     parser.add_argument("--ubs-url", metavar="BASE", default=DEFAULT_UBS_BASE,
                         help=f"UBS monitor base URL (default: {DEFAULT_UBS_BASE})")
     parser.add_argument("--triton-url", metavar="URL", default=DEFAULT_TRITON_URL,
-                        help=f"Triton monitor index.html URL (default: {DEFAULT_TRITON_URL})")
+                        help=f"Triton JSON or legacy index.html URL (default: {DEFAULT_TRITON_URL})")
     args = parser.parse_args()
 
     written: list = []

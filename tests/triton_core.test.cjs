@@ -363,7 +363,8 @@ test('REQ-029 AC01: circleMark emits a focusable named button for keyboard users
 
 test('REQ-029 AC01: markLabel falls back for incomplete batch identity', () => {
   assert.ok(markLabel(null, 'e2e').includes('PR #?'));
-  assert.ok(markLabel({}, 'e2e').includes('第 1/1 次'));
+  assert.ok(markLabel({}, 'e2e').includes('未关联 PR'));
+  assert.ok(markLabel({}, 'e2e').includes('attempt 1'));
   assert.ok(markLabel({ pr: 1 }, 'npu').includes('未知'));
 });
 
@@ -452,7 +453,7 @@ test('freshnessSlots finds the latest grace-elapsed Beijing slot', () => {
   // 2026-10-09 21:35 Beijing == 13:35 UTC: the 20:00 slot's 90-minute grace has elapsed.
   const now = Date.UTC(2026, 9, 9, 13, 35);
   const result = freshnessSlots(now, Date.UTC(2026, 9, 9, 11, 0));
-  assert.equal(result.slots.length, 5);
+  assert.equal(result.slots.length, 6);
   assert.equal(result.latest, Date.UTC(2026, 9, 9, 12, 0), 'latest slot is Beijing 20:00');
   assert.equal(result.stale, true, 'collection before the latest slot is stale');
   assert.equal(freshnessSlots(now, Date.UTC(2026, 9, 9, 12, 30)).stale, false, 'collection after the latest slot is fresh');

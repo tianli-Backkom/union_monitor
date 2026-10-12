@@ -1,9 +1,9 @@
 """REQ-049 · 新鲜度与异常/空态表达保持 — 测试。
 
 锁定 scripts/verify_freshness.py 的独立镜像语义：
-- freshnessSlots：北京时间 08:00/13:00/18:00/20:00 计划槽位（含前夜
+- freshnessSlots：北京时间 08:00/12:00/16:00/18:00/20:00 计划槽位（含前夜
   20:00）、90 分钟宽限、严格小于判定；AC01 精确案例（旧 08:17 快照在
-  13:00 槽位宽限结束的 14:30 显示延迟、14:29 不延迟）
+  12:00 槽位宽限结束的 13:30 显示延迟、13:29 不延迟）
 - 合成目录树：干净树退出码 0；篡改槽位小时表、提醒文案、导出恢复
   finally、HTTP 状态错误抛出退出码 1（M04/A04/F02 口径）
 - 提交证据（freshness-evidence.json）：冻结输入基线回放与结论
@@ -33,34 +33,34 @@ class FreshnessMirrorTests(unittest.TestCase):
     """freshnessSlots 镜像：槽位、宽限与延迟判定（AC01）。"""
 
     def test_ac01_exact_case(self):
-        # 北京时间 14:30 恰过 13:00 槽位宽限，08:17 快照 → 延迟
-        result = vfr.own_freshness_slots(utc(2026, 10, 9, 6, 30),
+        # 北京时间 13:30 恰过 12:00 槽位宽限，08:17 快照 → 延迟
+        result = vfr.own_freshness_slots(utc(2026, 10, 9, 5, 30),
                                          utc(2026, 10, 9, 0, 17))
         self.assertTrue(result['stale'])
-        self.assertEqual(result['latest'], utc(2026, 10, 9, 5, 0))  # 13:00
-        # 存活槽位：前夜 20:00、08:00、13:00（18/20 尚未到）
+        self.assertEqual(result['latest'], utc(2026, 10, 9, 4, 0))  # 12:00
+        # 存活槽位：前夜 20:00、08:00、12:00（18/20 尚未到）
         self.assertEqual(result['slots'],
                          [utc(2026, 10, 8, 12, 0), utc(2026, 10, 9, 0, 0),
-                          utc(2026, 10, 9, 5, 0)])
+                          utc(2026, 10, 9, 4, 0)])
 
     def test_before_grace_not_stale(self):
-        # 14:29 未过 13:00 槽位宽限 → 最新槽位仍 08:00，08:17 不延迟
-        result = vfr.own_freshness_slots(utc(2026, 10, 9, 6, 29),
+        # 13:29 未过 12:00 槽位宽限 → 最新槽位仍 08:00，08:17 不延迟
+        result = vfr.own_freshness_slots(utc(2026, 10, 9, 5, 29),
                                          utc(2026, 10, 9, 0, 17))
         self.assertFalse(result['stale'])
         self.assertEqual(result['latest'], utc(2026, 10, 9, 0, 0))
 
     def test_strict_comparison_and_newer(self):
-        now = utc(2026, 10, 9, 6, 30)
+        now = utc(2026, 10, 9, 5, 30)
         # 采集恰好等于最新槽位：严格小于才延迟
         self.assertFalse(vfr.own_freshness_slots(
-            now, utc(2026, 10, 9, 5, 0))['stale'])
-        # 采集晚于最新槽位（13:30 采集 > 13:00 槽位）
+            now, utc(2026, 10, 9, 4, 0))['stale'])
+        # 采集晚于最新槽位（12:30 采集 > 12:00 槽位）
         self.assertFalse(vfr.own_freshness_slots(
-            now, utc(2026, 10, 9, 5, 30))['stale'])
+            now, utc(2026, 10, 9, 4, 30))['stale'])
 
     def test_missing_collected(self):
-        result = vfr.own_freshness_slots(utc(2026, 10, 9, 6, 30), None)
+        result = vfr.own_freshness_slots(utc(2026, 10, 9, 5, 30), None)
         self.assertFalse(result['stale'])
         self.assertIsNotNone(result['latest'])
 
@@ -106,16 +106,16 @@ class FreshnessMirrorTests(unittest.TestCase):
             utc(2026, 10, 9, 12, 0))  # 20:00
 
     def test_bj_day_start_integer_math(self):
-        # BJ 14:30 → 位移坐标当日零点 = 当日 UTC 00:00 纪元
-        self.assertEqual(vfr._bj_day_start(utc(2026, 10, 9, 6, 30)),
+        # BJ 13:30 → 位移坐标当日零点 = 当日 UTC 00:00 纪元
+        self.assertEqual(vfr._bj_day_start(utc(2026, 10, 9, 5, 30)),
                          utc(2026, 10, 9, 0, 0))
         # BJ 零点整：日期已翻至次日
         self.assertEqual(vfr._bj_day_start(utc(2026, 10, 9, 16, 0)),
                          utc(2026, 10, 10, 0, 0))
         # 槽位折算：day + (hours-8)h 即北京时间槽位
-        day = vfr._bj_day_start(utc(2026, 10, 9, 6, 30))
+        day = vfr._bj_day_start(utc(2026, 10, 9, 5, 30))
         self.assertEqual(day + (8 - 8) * 3600000, utc(2026, 10, 9, 0, 0))
-        self.assertEqual(day + (13 - 8) * 3600000, utc(2026, 10, 9, 5, 0))
+        self.assertEqual(day + (12 - 8) * 3600000, utc(2026, 10, 9, 4, 0))
         self.assertEqual(day + (-4 - 8) * 3600000, utc(2026, 10, 8, 12, 0))
 
 
@@ -151,7 +151,7 @@ class SyntheticTreeTests(unittest.TestCase):
         self.assertEqual(report['overall'], {'status': 'verified',
                                              'problems': []})
         self.assertEqual(report['freshness_slots'],
-                         {'cases': {'freshnessSlots': 17}, 'total': 17,
+                         {'cases': {'freshnessSlots': 19}, 'total': 19,
                           'node_status': 'ok', 'mismatches': {}})
         self.assertEqual(report['source_contracts'],
                          {'checked': 36, 'missing': []})
@@ -159,8 +159,8 @@ class SyntheticTreeTests(unittest.TestCase):
 
     def test_tampered_slots_hours_exit_one(self):
         root = self.build_tree()
-        self.tamper(root, 'triton-core.js', '[-4, 8, 13, 18, 20]',
-                    '[-4, 8, 13, 18, 21]')
+        self.tamper(root, 'triton-core.js', '[-4, 8, 12, 16, 18, 20]',
+                    '[-4, 8, 12, 16, 18, 21]')
         code, report = self.run_tool(root)
         self.assertEqual(code, 1)
         self.assertIn('triton-core.js:slots_hours',
@@ -187,8 +187,8 @@ class SyntheticTreeTests(unittest.TestCase):
 
     def test_tampered_http_error_exit_one(self):
         root = self.build_tree()
-        self.tamper(root, 'app.js', "throw Error('HTTP '+r.status)",
-                    "throw Error(r.status)")
+        self.tamper(root, 'app.js', "throw Error(label+' HTTP '+response.status)",
+                    "throw Error(response.status)")
         code, report = self.run_tool(root)
         self.assertEqual(code, 1)
         self.assertIn('app.js:http_error',

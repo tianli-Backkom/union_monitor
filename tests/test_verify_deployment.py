@@ -198,6 +198,54 @@ class VerifyDeploymentTests(unittest.TestCase):
             self.assertIn("page_url: ${{ steps.deployment.outputs.page_url }}", text, name)
             self.assertIn("needs.deploy.outputs.page_url", text, name)
 
+    def qualification_manifest(self):
+        sidecar = json.dumps({'schema_version': 1, 'metric': 'triton_commit_attempt_e2e',
+                              'collected_at': self.triton_payload['collected_at'],
+                              'window_start': self.triton_payload['window_start'],
+                              'window_end': self.triton_payload['window_end'], 'batches': []}).encode('utf-8')
+        manifest = json.loads(self.triton_manifest.read_text('utf-8'))
+        manifest.update(qualifications_file='triton-qualifications-v1.json',
+                        qualifications_sha256=hashlib.sha256(sidecar).hexdigest())
+        self.triton_manifest.write_text(json.dumps(manifest), encoding='utf-8')
+        return sidecar
+
+    def test_new_manifest_verifies_qualification_bytes_and_records_the_file(self):
+        sidecar = self.qualification_manifest()
+        fake_fetch, calls = self.publish(**{'triton-qualifications-v1.json': sidecar})
+        with patch('triton.verify_deployment.fetch', fake_fetch):
+            record = run(SITE, self.triton_manifest, self.ubs_manifest)
+        checked = record['triton'].get('qualifications')
+        self.assertIsNotNone(checked, 'the published qualifications must be independently fetched and checked')
+        self.assertEqual(checked['sha256'], hashlib.sha256(sidecar).hexdigest())
+        self.assertIn(SITE+'/data/triton-qualifications-v1.json', calls)
+
+    def test_new_manifest_missing_or_changed_qualification_bytes_fails_closed(self):
+        sidecar = self.qualification_manifest()
+        # Same parsed JSON with different whitespace still has wrong bytes.
+        for overrides in ({}, {'triton-qualifications-v1.json': sidecar+b'\n'}):
+            with self.subTest(overrides=bool(overrides)):
+                fake_fetch, _ = self.publish(**overrides)
+                with patch('triton.verify_deployment.fetch', fake_fetch), patch('triton.verify_deployment.time.sleep'):
+                    with self.assertRaisesRegex(DeploymentMismatch, 'triton-qualifications-v1.json'):
+                        run(SITE, self.triton_manifest, self.ubs_manifest)
+
+    def test_qualification_hash_key_present_but_invalid_is_not_legacy_success(self):
+        self.qualification_manifest()
+        manifest = json.loads(self.triton_manifest.read_text('utf-8'))
+        manifest['qualifications_sha256'] = None
+        self.triton_manifest.write_text(json.dumps(manifest), encoding='utf-8')
+        fake_fetch, _ = self.publish()
+        with patch('triton.verify_deployment.fetch', fake_fetch), patch('triton.verify_deployment.time.sleep'):
+            with self.assertRaisesRegex(DeploymentMismatch, 'qualifications'):
+                run(SITE, self.triton_manifest, self.ubs_manifest)
+
+    def test_legacy_manifest_does_not_invent_qualification_success(self):
+        fake_fetch, calls = self.publish()
+        with patch('triton.verify_deployment.fetch', fake_fetch):
+            record = run(SITE, self.triton_manifest, self.ubs_manifest)
+        self.assertNotIn('qualifications', record['triton'])
+        self.assertFalse(any('qualifications' in url for url in calls))
+
 
 if __name__ == "__main__":
     unittest.main()

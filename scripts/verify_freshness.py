@@ -2,10 +2,10 @@
 """REQ-049 · 新鲜度与异常/空态表达保持 — 独立验证工具。
 
 镜像 web/triton-core.js 的 freshnessSlots（上海时间、北京时间
-08:00/13:00/18:00/20:00 计划槽位含前夜 20:00、90 分钟采集宽限、
+08:00/12:00/16:00/18:00/20:00 计划槽位含前夜 20:00、90 分钟采集宽限、
 每分钟检查由视图层 setInterval 承担），构造含 AC01 精确案例
-（旧 08:17 快照在 13:00 槽位宽限结束的 14:30 仍未更新 → 显示延迟；
-14:29 尚未越界不提醒）在内的矩阵，与真实 triton-core.js 单次 node
+（旧 08:17 快照在 12:00 槽位宽限结束的 13:30 仍未更新 → 显示延迟；
+13:29 尚未越界不提醒）在内的矩阵，与真实 triton-core.js 单次 node
 调用逐项核对。锁定 triton-view.js 提醒文案（表达最后一次成功采集
 结果与应检查 Actions，不说成已证实的采集失败）、60 秒定时器与
 销毁清理、各类空态（暂无数据/无匹配批次/选区无有效样本/NPU 明细
@@ -58,7 +58,7 @@ def own_freshness_slots(now, collected_at):
     collected = None if collected_at is None else collected_at
     day = _bj_day_start(t)
     slots = [day + (hours - 8) * 3600000
-             for hours in (-4, 8, 13, 18, 20)]
+             for hours in (-4, 8, 12, 16, 18, 20)]
     slots = [slot for slot in slots if slot + 90 * 60000 <= t]
     latest = max(slots) if slots else None
     stale = (latest is not None and collected is not None
@@ -70,18 +70,18 @@ def own_freshness_slots(now, collected_at):
 # 日期取 2026-10-09（北京时间），UTC = 北京时间 − 8 小时。
 
 FRESHNESS_MATRIX = [
-    # AC01：13:00 槽位宽限恰在 14:30 结束，旧 08:17 快照 → 延迟
-    [_utc_ms(2026, 10, 9, 6, 30), _utc_ms(2026, 10, 9, 0, 17)],
-    # 14:29 尚未越过宽限，最新槽位仍是 08:00，08:17 快照不延迟
-    [_utc_ms(2026, 10, 9, 6, 29), _utc_ms(2026, 10, 9, 0, 17)],
-    # 14:30:59 已越界 → 延迟
-    [_utc_ms(2026, 10, 9, 6, 30, 59), _utc_ms(2026, 10, 9, 0, 17)],
+    # AC01：12:00 槽位宽限恰在 13:30 结束，旧 08:17 快照 → 延迟
+    [_utc_ms(2026, 10, 9, 5, 30), _utc_ms(2026, 10, 9, 0, 17)],
+    # 13:29 尚未越过宽限，最新槽位仍是 08:00，08:17 快照不延迟
+    [_utc_ms(2026, 10, 9, 5, 29), _utc_ms(2026, 10, 9, 0, 17)],
+    # 13:30:59 已越界 → 延迟
+    [_utc_ms(2026, 10, 9, 5, 30, 59), _utc_ms(2026, 10, 9, 0, 17)],
     # 采集恰好落在最新槽位上：严格小于才延迟
-    [_utc_ms(2026, 10, 9, 6, 30), _utc_ms(2026, 10, 9, 5, 0)],
-    # 采集晚于最新槽位（13:30）→ 不延迟
-    [_utc_ms(2026, 10, 9, 6, 30), _utc_ms(2026, 10, 9, 5, 30)],
+    [_utc_ms(2026, 10, 9, 5, 30), _utc_ms(2026, 10, 9, 4, 0)],
+    # 采集晚于最新槽位（12:30）→ 不延迟
+    [_utc_ms(2026, 10, 9, 5, 30), _utc_ms(2026, 10, 9, 4, 30)],
     # 采集时间缺失 → 不判定延迟
-    [_utc_ms(2026, 10, 9, 6, 30), None],
+    [_utc_ms(2026, 10, 9, 5, 30), None],
     # 凌晨 03:00：最新槽位为前夜 20:00；20:17 快照不延迟
     [_utc_ms(2026, 10, 8, 19, 0), _utc_ms(2026, 10, 8, 12, 17)],
     # 凌晨 03:00：19:00 快照早于前夜 20:00 槽位 → 延迟
@@ -99,8 +99,11 @@ FRESHNESS_MATRIX = [
     [_utc_ms(2026, 10, 9, 0, 0), _utc_ms(2026, 10, 8, 12, 17)],
     # 次日 10:00：跨日后最新槽位为当日 08:00，昨日 08:17 快照延迟
     [_utc_ms(2026, 10, 10, 2, 0), _utc_ms(2026, 10, 9, 0, 17)],
-    # 12:59：13:00 槽位宽限未到，最新槽位仍 08:00
+    # 12:59：12:00 槽位宽限未到，最新槽位仍 08:00
     [_utc_ms(2026, 10, 9, 4, 59), _utc_ms(2026, 10, 9, 0, 17)],
+    # 17:29/17:30：16:00 槽位的90分钟宽限边界
+    [_utc_ms(2026, 10, 9, 9, 29), _utc_ms(2026, 10, 9, 4, 17)],
+    [_utc_ms(2026, 10, 9, 9, 30), _utc_ms(2026, 10, 9, 4, 17)],
 ]
 
 MATRICES = {'freshnessSlots': FRESHNESS_MATRIX}
@@ -206,14 +209,14 @@ APP_CONTRACTS = [
     ('ubs_unaffected', 'UBS 数据不受影响'),
     ('loading_state', '正在读取 Triton 数据…'),
     ('no_data_state', '暂无 Triton 数据'),
-    ('http_error', "throw Error('HTTP '+r.status)"),
+    ('http_error', "throw Error(label+' HTTP '+response.status)"),
     ('payload_invalid', "throw Error('Triton 数据格式无效')"),
     ('stale_guard', 'reloadGate.isCurrent(gen)'),
-    ('fetch_no_store', "fetch('data/triton.json',{cache:'no-store'})"),
+    ('fetch_no_store', "fetch(url,{cache:'no-store',signal:controller.signal})"),
 ]
 
 CORE_CONTRACTS = [
-    ('slots_hours', '[-4, 8, 13, 18, 20]'),
+    ('slots_hours', '[-4, 8, 12, 16, 18, 20]'),
     ('grace_90', 'slot + 90 * 60000 <= t'),
     ('stale_strict',
      'const stale = latest != null && collected != null && collected'

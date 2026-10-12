@@ -1,0 +1,121 @@
+name: Dashboard PR checks
+
+on:
+  pull_request:
+    branches: [main]
+  merge_group:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dashboard-pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install workflow parser for contract tests
+        run: python -m pip install PyYAML==6.0.3
+      - name: Python regression and adversarial contracts
+        run: python -B -m unittest discover -s tests -v
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Bootstrap deterministic offline display fixtures
+        run: python -B scripts/devdata.py --offline
+      - name: Node regression
+        run: node --test tests/*.test.cjs
+      - name: Install pinned browser test dependencies
+        run: npm ci --ignore-scripts
+      - name: Install Chromium and system libraries
+        run: npx playwright install --with-deps chromium
+      - name: Real browser routing, filtering, export and narrow-screen checks
+        run: npm run test:browser
+      - name: Retain browser failure evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-results-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-results
+          if-no-files-found: ignore
+          retention-days: 14
+
+  collector-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Actual adapter boundaries and isolated project artifacts
+        run: |
+          python -B -m unittest discover -s tests -p 'test_monitor_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_triton_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_cache_chain.py' -v
+          python -B -m unittest discover -s tests -p 'test_verify_deployment.py' -v
+
+  workflow-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check workflow syntax and expressions using pinned actionlint
+        env:
+          ACTIONLINT_VERSION: '1.7.12'
+          ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+        run: |
+          archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl -fsSL --retry 3 --retry-delay 2 --max-time 90 -o "$RUNNER_TEMP/$archive" \
+            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/$archive"
+          echo "$ACTIONLINT_SHA256  $RUNNER_TEMP/$archive" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -color
+
+  quality-gate:
+    name: Dashboard quality gate
+    needs: [python-tests, frontend-tests, collector-contracts, workflow-lint]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fail closed unless every required prerequisite succeeded
+        env:
+          RESULTS_JSON: ${{ toJSON(needs) }}
+        run: python scripts/ci_gate.py
