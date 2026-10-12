@@ -141,6 +141,25 @@ class BundleAssemblyTests(unittest.TestCase):
                               release_id="rel-1", published_at="2026-10-10T00:30:00Z",
                               resource_spec=spec)
 
+    def test_fake_success_wrong_identity_and_config_is_rejected(self):
+        # UDR-026-TC02: a bypassed loader must still reject wrong code SHA,
+        # cutoff/window and collector/config before any deployable bundle.
+        for mutation, field, value in (
+            ("code_sha", "code_sha", "f" * 40),
+            ("cutoff", "window", windows()["ubs"] | {"end_at": "2026-10-08T23:30:00Z"}),
+            ("config", "collector", "some-other-collector"),
+        ):
+            with self.subTest(mutation=mutation):
+                reports, spec = materialize(self.root)
+                if mutation == "cutoff":
+                    reports["ubs"]["window"] = value
+                else:
+                    reports["ubs"][field] = value
+                with self.assertRaises(RuntimeError, msg=mutation):
+                    assemble_verified(CATALOG, context(), reports, self.root,
+                                      release_id="rel-1", published_at="2026-10-10T00:30:00Z",
+                                      resource_spec=spec)
+
     def test_missing_snapshot_is_rejected(self):
         reports, spec = materialize(self.root)
         (self.root / "data/projects/ubs/snapshots/ubs-20261010.json").unlink()
