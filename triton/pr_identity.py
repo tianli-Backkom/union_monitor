@@ -82,3 +82,60 @@ class PRResolver:
         if self.evidence_dir:
             self.evidence_dir.mkdir(parents=True,exist_ok=True)
             (self.evidence_dir/f"{run['id']}.json").write_text(json.dumps(value,ensure_ascii=False,indent=2),encoding="utf-8")
+
+
+def association_error_kind(exc):
+    """Classify an association failure for honest reporting (UDR-002).
+
+    A ``ValueError`` is an ordinary unknown outcome (no evidence, or ambiguous
+    candidates); anything else — a network error, rate limit or other source
+    request failure — is a source failure that must never be re-labelled
+    ``unknown`` and never become a "verified" association.
+    """
+    return "unknown" if isinstance(exc, ValueError) else "source_failure"
+
+
+def recover_identities(runs, resolver):
+    """Re-attempt association for runs previously left ``unresolved`` (UDR-002).
+
+    Each run/attempt is updated **in place** (never duplicated), so every
+    identity still appears exactly once. Returns a list of recovery records
+    that keep the previous unknown state and the new evidence-backed
+    association as migration evidence.
+
+    - A run that resolves now is recovered and recorded with ``recovery``
+      migration evidence; its previous ``unresolved`` state is preserved in
+      that record, not discarded.
+    - A run that is still unresolved for lack or ambiguity of evidence stays
+      untouched (NOT claimed recovered).
+    - A source request failure propagates (raises) instead of being downgraded
+      to ``unknown`` or wrapped as a recovered success.
+    """
+    records = []
+    for run in runs:
+        evidence = run.get("pr_evidence") or {}
+        if evidence.get("method") != "unresolved":
+            continue
+        previous = {"method": "unresolved", "error": evidence.get("error"),
+                    "run_id": run.get("id")}
+        try:
+            result = resolver.resolve(run)
+        except ValueError:
+            # Ordinary unknown/ambiguous: keep the run's honest unresolved gap.
+            continue
+        # Any non-ValueError (source request failure) propagates unchanged.
+        for key in ("pr", "pr_url", "pr_title", "base_branch", "head_sha", "pr_evidence"):
+            if key in result:
+                run[key] = result[key]
+        method = (result.get("pr_evidence") or {}).get("method")
+        record = {
+            "run_id": run.get("id"),
+            "attempt": int(run.get("run_attempt") or 1),
+            "previous": previous,
+            "recovered_method": method,
+            "pr": result.get("pr"),
+            "head_sha": result.get("head_sha"),
+        }
+        run["recovery"] = record
+        records.append(record)
+    return records
