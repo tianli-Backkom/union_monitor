@@ -19,8 +19,8 @@ function readFilters(){return {query:$('query').value,state:$('state').value,qua
 /* UDR-020: the records/quality list state (S/L conditions, sort, page size,
    page) round-trips through the #projects/ubs/{records|quality} query. Default
    values are omitted so the canonical URL stays short and stable. */
-function recordsState(){return {q:$('query').value,entity:entity,sort:$('sort').value,tm:$('tableMetric').value,state:$('state').value,tf:$('triggerFilter').value,qf:$('qualityFilter').value,ps:pageSize,page:page,pr:detailPR?detailPR.number:''};}
-function recordsUrl(){if(view!=='ubs-repo'&&view!=='ubs-quality')return null;const task=view==='ubs-quality'?'quality':'records',s=recordsState(),def={q:'',entity:'batches',sort:entity==='batches'?'duration':'e2e',tm:'total',state:'',tf:'',qf:'',ps:15,page:1,pr:''},clean={};for(const k of Object.keys(s))if(String(s[k])!==String(def[k]))clean[k]=s[k];return '#projects/ubs/'+task+Router.serializeQuery(clean);}
+function recordsState(){return {q:$('query').value,entity:entity,repository:'gitcode:openeuler/'+currentRepository,branch:snapshot?.meta?.branch||'',from:snapshot?.meta?.start_ms??repositoryIndex?.start_ms??'',to:snapshot?.meta?.end_ms??repositoryIndex?.end_ms??'',basis:'pr_created_at',sort:$('sort').value,tm:$('tableMetric').value,state:$('state').value,tf:$('triggerFilter').value,qf:$('qualityFilter').value,ps:pageSize,page:page,pr:detailPR?detailPR.number:''};}
+function recordsUrl(){if(view!=='ubs-repo'&&view!=='ubs-quality')return null;const task=view==='ubs-quality'?'quality':'records',s=recordsState(),def={q:'',entity:'batches',repository:'',branch:'',from:'',to:'',basis:'pr_created_at',sort:entity==='batches'?'duration':'e2e',tm:'total',state:'',tf:'',qf:'',ps:15,page:1,pr:''},clean={};for(const k of Object.keys(s))if(String(s[k])!==String(def[k]))clean[k]=s[k];return '#projects/ubs/'+task+Router.serializeQuery(clean);}
 function syncRecordsUrl(mode){const url=recordsUrl();if(url==null||url===location.hash)return;(mode==='push'?history.pushState:history.replaceState).call(history,null,'',url);}
 function renderActiveConditions(analysisSet){const f=readFilters(),parts=[];if(f.state)parts.push('PR 状态＝'+$('state').selectedOptions[0].textContent);if(f.trigger)parts.push('触发方式＝'+$('triggerFilter').selectedOptions[0].textContent);if(f.quality)parts.push('数据完整性＝'+$('qualityFilter').selectedOptions[0].textContent);const active=parts.length>0;$('activeConditions').hidden=!active;if(active){$('activeConditions').innerHTML='<span>分析集合筛选：'+parts.map(esc).join(' · ')+'</span><strong>有效分母 '+analysisSet.length+' 个 PR</strong><button id="clearConditions" class="text-button">清除高级条件</button>';$('clearConditions').onclick=()=>{for(const id of ['state','triggerFilter','qualityFilter'])$(id).value='';page=1;render();};}}
 /* UDR-018: common records task. The analysis set S stays PR-level (KPI/chart);
@@ -100,10 +100,16 @@ function applyProjectRoute(route){
   if(['15','30','50'].includes(String(q.ps))){pageSize=Number(q.ps);$('pageSize').value=String(q.ps);}
   if(q.page&&/^\d+$/.test(q.page))page=Math.max(1,Number(q.page));
   const pendingPr=(q.pr&&/^\d+$/.test(q.pr))?Number(q.pr):null;
+  const urlFrom=(q.from&&/^\d+$/.test(q.from))?Number(q.from):null;
+  const urlTo=(q.to&&/^\d+$/.test(q.to))?Number(q.to):null;
+  const urlBranch=typeof q.branch==='string'?q.branch:null;
   applyRoute({domain:'ubs',...(repository?{repo:repository}:{}),...(route.task==='quality'?{sub:'quality'}:{})});
+  let scopeNotice=null;
+  if((urlFrom!=null||urlTo!=null||urlBranch!=null)&&snapshot){const meta=snapshot.meta||{};const ok=(urlFrom==null||meta.start_ms===urlFrom)&&(urlTo==null||meta.end_ms===urlTo)&&(urlBranch==null||meta.branch===urlBranch);if(!ok)scopeNotice='URL 中的时间范围或分支与当前快照不符（快照可能已更新），已按当前快照显示。';}
   if(pendingPr!=null){if(snapshot&&snapshot.prs.some(p=>p.number===pendingPr))openDetail(pendingPr,null,true);else{$('notice').hidden=false;$('notice').textContent='未找到该 PR 详情（可能已过期或不存在），已返回记录列表。';}}
+  else if(scopeNotice){$('notice').hidden=false;$('notice').textContent=scopeNotice;}
  }
- if(Object.keys(q).some(k=>!['repository','entity','q','sort','page','tm','state','tf','qf','ps','pr'].includes(k))||(route.project==='triton'&&Object.keys(q).length)){$('notice').hidden=false;$('notice').textContent='当前兼容视图尚未提供 URL 时间、分支或列表条件的完整恢复，请使用页面控件确认范围。';}
+ if(Object.keys(q).some(k=>!['repository','entity','branch','from','to','basis','q','sort','page','tm','state','tf','qf','ps','pr'].includes(k))||(route.project==='triton'&&Object.keys(q).length)){$('notice').hidden=false;$('notice').textContent='当前兼容视图不支持部分 URL 条件，请使用页面控件确认范围。';}
 }
 function applyRoute(route){
   const prevRepo=currentRepository;

@@ -51,3 +51,11 @@ test('opening and closing a detail carries its identity in the URL', async ({ pa
   await expect(page.locator('#detail')).toBeHidden();
   expect(page.url()).not.toContain('pr=');
 });
+
+test('an out-of-window URL explains and shows the current snapshot, not another entity', async ({ page }) => {
+  await page.goto('./#projects/ubs/records?repository=gitcode%3Aopeneuler%2Fubs-engine&from=1&to=2');
+  await expect(page.locator('#reload')).toBeEnabled();
+  await expect(page.locator('#prRows')).not.toBeEmpty();
+  await expect(page.locator('#notice')).toBeVisible();
+  await expect(page.locator('#notice')).toContainText('时间范围或分支与当前快照不符');
+});
