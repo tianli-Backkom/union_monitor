@@ -1,5 +1,5 @@
 {
-  "recorded_at": "2026-10-11T23:51:23.314137+00:00",
+  "recorded_at": "2026-10-11T23:57:15.474378+00:00",
   "baseline_branch_protection": {
     "http_status": 404,
     "message": "Branch not protected"
@@ -79,5 +79,34 @@
     },
     "status": "main_required_check_enabled"
   },
-  "merge_status": "pending_evidence_commit_checks"
+  "record_scope": "pre-merge audit evidence; see canonical PR URL for current merge/check state",
+  "final_code_validation": {
+    "head": "0acb28f5011b929b5f9ed219bd2ae60554730f3d",
+    "run_id": 38186278604,
+    "url": "https://github.com/tianli-Backkom/union_monitor/actions/runs/38186278604",
+    "conclusion": "success",
+    "python": {
+      "collected": 705,
+      "passed": 702,
+      "skipped": 3,
+      "skip_reasons": [
+        "no local Triton snapshot",
+        "no local UBS snapshot",
+        "no local Triton artifacts"
+      ]
+    },
+    "node": {
+      "passed": 237
+    },
+    "chromium": {
+      "passed": 8
+    },
+    "jobs": {
+      "python-tests": "success",
+      "frontend-tests": "success",
+      "collector-contracts": "success",
+      "workflow-lint": "success",
+      "Dashboard quality gate": "success"
+    }
+  }
 }
