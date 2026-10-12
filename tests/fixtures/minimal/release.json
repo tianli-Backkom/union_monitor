@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "release_id": "offline-fixture",
+  "run_id": "offline-fixture",
+  "code_sha": "0123456789abcdef0123456789abcdef01234567",
+  "cutoff_at": "2026-10-11T01:14:59Z",
+  "published_at": "2026-10-11T01:18:38Z",
+  "schedule_time": null,
+  "release_status": "verified",
+  "projects": {
+    "ubs": {
+      "task_status": "success",
+      "data_mode": "fresh",
+      "collected_at": "2026-10-11T01:14:59Z",
+      "window": {"time_basis": "pr_created_at", "start_at": null, "end_at": null},
+      "snapshot_version": "sha256:60acaf382c3df86a6b14c713d061587d388d6b44e666df7914f7df39751169df",
+      "snapshot_sha256": "dbe14ad68a72aa4939f8009d8e53e32e130e47696570a3d9945363372ec999af",
+      "validation_status": "passed"
+    },
+    "triton": {
+      "task_status": "success",
+      "data_mode": "fresh",
+      "collected_at": "2026-10-09T05:58:02Z",
+      "window": {"time_basis": "batch_started_at", "start_at": "2026-10-06T05:52:57Z", "end_at": "2026-10-09T05:52:57Z"},
+      "snapshot_version": null,
+      "snapshot_sha256": "91cffcd81fcec98bc1a807a7969296f1f34e350629f4a7d4f9546d89d6a9d2e9",
+      "validation_status": "passed"
+    }
+  }
+}

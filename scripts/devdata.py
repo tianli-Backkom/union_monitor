@@ -179,12 +179,12 @@ def run_offline(written: list) -> None:
     if not index_path.is_file():
         raise DevDataError(
             f"offline fixture missing: {index_path}\n"
-            f"(expected tests/fixtures/minimal/ with repositories.json, repos/<name>.json, snapshot.json, triton.json)"
+            f"(expected tests/fixtures/minimal/ with repositories.json, repos/<name>.json, snapshot.json, triton.json, release.json)"
         )
     index_payload = parse_json(index_path.read_bytes(), str(index_path))
     require_keys(index_payload, ["repositories"], str(index_path))
 
-    needed = ["repositories.json", "snapshot.json", "triton.json"]
+    needed = ["repositories.json", "snapshot.json", "triton.json", "release.json"]
     for entry in index_payload["repositories"]:
         snapshot = entry.get("snapshot")
         if snapshot:
