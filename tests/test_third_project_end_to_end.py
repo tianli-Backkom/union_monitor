@@ -1,6 +1,8 @@
 """UDR-034: a third project joins by configuration through the real full chain."""
 import copy
 import json
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -46,6 +48,9 @@ class ThirdProjectEndToEndTests(unittest.TestCase):
         self.assertEqual(project["repositories"][0]["repository_id"], "github:acme/eng-dashboard")
         self.assertEqual(project["repositories"][0]["target_branches"], ["release"])
 
+        work_dir = Path(tempfile.mkdtemp(prefix="third-project-"))
+        self.addCleanup(shutil.rmtree, work_dir, ignore_errors=True)
+
         def runner(repo, proj, ctx):
             self.assertEqual(repo["repository_id"], "github:acme/eng-dashboard")
             return {"collected_at": "2026-10-10T00:05:00Z", "repository": repo["repository_id"]}
@@ -54,7 +59,7 @@ class ThirdProjectEndToEndTests(unittest.TestCase):
             self.assertEqual(payload["repository"], "github:acme/eng-dashboard")
             return {"passed": True, "errors": [], "warnings": []}
 
-        partial = collect_repositories(project, self.context, str(ROOT / ".tmp-third"),
+        partial = collect_repositories(project, self.context, str(work_dir),
                                        runner=runner, validator=validator)
         report = build_report({"run_id": RUN_ID, "project_id": "acme", "code_sha": CODE_SHA,
                                "collector": "github-actions-v1",
