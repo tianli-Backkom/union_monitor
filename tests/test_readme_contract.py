@@ -40,6 +40,10 @@ class ReadmeContractTests(unittest.TestCase):
             with self.subTest(target=target):
                 self.assertTrue((ROOT / target.split("#", 1)[0]).is_file())
 
+    def test_unified_audit_requirements_are_discoverable(self):
+        self.assertIn('docs/requirements/2026-10-12-unified-dashboard-audit-requirements.md', self.readme)
+        self.assertIn('规格完整不代表业务验收通过', self.readme)
+
 
 if __name__ == "__main__":
     unittest.main()
