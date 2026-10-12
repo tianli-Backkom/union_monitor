@@ -71,6 +71,30 @@ class ArtifactFolderTests(unittest.TestCase):
             with self.assertRaisesRegex(module.ArtifactError,'duplicate'):
                 module.load_project_reports(root,CATALOG,CONTEXT)
 
+    def test_unknown_or_disabled_project_report_is_rejected(self):
+        module=self.loader()
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder); directory,report,_=self.bundle(root,'ubs')
+            report['project_id']='github:ghost/unlisted'
+            (directory/'collection-report.json').write_text(json.dumps(report),encoding='utf-8')
+            with self.assertRaisesRegex(module.ArtifactError,'unknown or disabled project'):
+                module.load_project_reports(root,CATALOG,CONTEXT)
+
+    def test_stale_previous_attempt_bundle_is_rejected_by_run_identity(self):
+        # run_id embeds run_attempt, so a prior attempt's bundle mismatches the
+        # frozen context and must not be reused as this round's fresh input.
+        module=self.loader()
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder); directory,report,snapshot=self.bundle(root,'ubs')
+            report['run_id']='run-files-1-attempt-1'   # previous attempt
+            snapshot['run_id']=report['run_id']
+            raw=json.dumps(snapshot, sort_keys=True).encode()
+            (directory/'snapshot.json').write_bytes(raw)
+            report['snapshot_sha256']=hashlib.sha256(raw).hexdigest()
+            (directory/'collection-report.json').write_text(json.dumps(report),encoding='utf-8')
+            with self.assertRaisesRegex(module.ArtifactError,'does not match context'):
+                module.load_project_reports(root,CATALOG,CONTEXT)
+
     def test_wrong_hash_missing_file_and_escape_are_rejected(self):
         module=self.loader()
         for mutation in ('hash','missing','escape'):
