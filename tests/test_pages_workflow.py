@@ -16,8 +16,11 @@ class PagesWorkflowTests(unittest.TestCase):
         self.assertRegex(self.workflow, r"(?m)^\s{4}- cron: ['\"]30 23 \* \* \*['\"]$")
         self.assertRegex(self.workflow, r"(?m)^\s{2}workflow_dispatch:\s*$")
         self.assertRegex(self.workflow, r"(?ms)^\s{2}push:\s*\n\s{4}branches:\s*\[main\]")
-        for permission in ("contents: read", "pages: write", "id-token: write"):
-            self.assertEqual(self.workflow.count(permission), 1)
+        # The collect/build job holds contents: read only; Pages/OIDC write is
+        # scoped to the deploy job (top-level + deploy job = 2 read occurrences).
+        self.assertEqual(self.workflow.count("contents: read"), 2)
+        self.assertEqual(self.workflow.count("pages: write"), 1)
+        self.assertEqual(self.workflow.count("id-token: write"), 1)
 
     def test_collection_validation_and_pages_upload_are_ordered(self):
         commands = [
