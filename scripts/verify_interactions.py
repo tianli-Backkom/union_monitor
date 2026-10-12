@@ -446,9 +446,10 @@ TRITON_VIEW_CONTRACTS = [
     ('mark_hover_leave',
      'mark.onmouseleave = () => { if (!tipPinned) tipTimer ='
      ' setTimeout(() => hideTip(mark), 180); };'),
-    ('mark_click_pin',
-     "mark.onclick = e => { e.stopPropagation(); tipPinned = true;"
-     ' lastPinnedMark = mark; placeTip(e, b, html); };'),
+    ('mark_click_open_detail',
+     "mark.onclick = e => { e.stopPropagation(); hideTip();"
+     " if (mark.dataset.kind !== 'npu' && root.openTritonDetail) root.openTritonDetail(b);"
+     ' else { tipPinned = true; lastPinnedMark = mark; placeTip(e, b, html); } };'),
     ('mark_keyboard_pin', "if (e.key !== 'Enter' && e.key !== ' ') return;"),
     ('tip_escape_close',
      "tip.onkeydown = e => { if (e.key === 'Escape') { e.preventDefault();"

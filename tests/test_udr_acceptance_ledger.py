@@ -58,13 +58,17 @@ class LedgerHonestyTests(unittest.TestCase):
                     with self.subTest(req=entry["id"], file=rel):
                         self.assertTrue((ROOT / rel).is_file(), f"{rel} missing for {entry['id']}")
 
-    def test_browser_gated_entries_are_honestly_unverified(self):
-        browser_gated = [r for r in self.requirements
-                         if r["status"] not in IMPLEMENTED]
-        self.assertTrue(browser_gated)
-        for entry in browser_gated:
-            self.assertTrue(entry["status"].startswith("未实现"))
-            self.assertIn("待浏览器验证", entry["status"])
+    def test_blocked_acceptance_criteria_are_honestly_not_claimed_implemented(self):
+        """The remaining open acceptance criteria are blocked on external inputs
+        (frozen 371/93 replay, live Triton full-source enumeration, real old/new
+        CLI shadow) and must stay 部分实现 with the blocker named — never 已实现,
+        so no blocked evidence is presented as a verified pass."""
+        by_id = {r["id"]: r for r in self.requirements}
+        for req_id in ("UDR-001", "UDR-004", "UDR-035"):
+            with self.subTest(req=req_id):
+                self.assertEqual(by_id[req_id]["status"], "部分实现", req_id)
+        self.assertIn("371/93", by_id["UDR-001"]["note"])
+        self.assertIn("byte-for-byte", by_id["UDR-035"]["note"])
 
     def test_all_new_release_modules_are_claimed_implemented_with_tests(self):
         implemented = {r["id"] for r in self.requirements if r["status"] == "已实现"}

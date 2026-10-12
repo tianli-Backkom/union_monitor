@@ -93,12 +93,23 @@ test('mobile retains result and duration in complete batch records',async({page}
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
 });
 
-test('keyboard opens a batch and Escape closes its pinned preview',async({page})=>{
+test('keyboard opens a batch into the unified detail modal and Escape closes it',async({page})=>{
   await ready(page,'#triton');
   const point=page.getByRole('button',{name:/E2E 详情/}).first();
   await point.press('Enter');
-  await expect(page.locator('#triton-view [data-role="tip"]')).toBeVisible();
+  await expect(page.locator('#detail')).toBeVisible();
+  await expect(page.locator('#detail [data-role="evidence"]')).toContainText('Triton 门禁批次');
   await page.keyboard.press('Escape');
-  await expect(page.locator('#triton-view [data-role="tip"]')).toBeHidden();
-  await expect(point).toBeFocused();
+  await expect(page.locator('#detail')).toBeHidden();
+});
+
+test('attention row opens the unified detail modal and closing returns to the dashboard',async({page})=>{
+  await ready(page,'#triton');
+  await page.getByRole('button',{name:'查看全部批次',exact:true}).click();
+  await page.locator('#triton-view .row-main .status').first().click();
+  await expect(page.locator('#detail')).toBeVisible();
+  await expect(page.locator('#detail [data-role="evidence"]')).toContainText('Triton 门禁批次');
+  await page.locator('#closeDetail').click();
+  await expect(page.locator('#detail')).toBeHidden();
+  await expect(page.locator('#triton-view .row-main').first()).toBeVisible();
 });

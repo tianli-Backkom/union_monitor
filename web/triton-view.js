@@ -495,12 +495,14 @@
         mark.onmouseenter = e => { clearTimeout(tipTimer); placeTip(e, b, html); };
         mark.onmousemove = e => { if (!tipPinned) placeTip(e, b, html); };
         mark.onmouseleave = () => { if (!tipPinned) tipTimer = setTimeout(() => hideTip(mark), 180); };
-        mark.onclick = e => { e.stopPropagation(); tipPinned = true; lastPinnedMark = mark; placeTip(e, b, html); };
+        mark.onclick = e => { e.stopPropagation(); hideTip(); if (mark.dataset.kind !== 'npu' && root.openTritonDetail) root.openTritonDetail(b); else { tipPinned = true; lastPinnedMark = mark; placeTip(e, b, html); } };
         /* REQ-029 AC01: SVG marks carry no native button activation, so
-           Enter/Space pin the same card from the keyboard. */
+           Enter/Space open the same unified detail from the keyboard. */
         mark.onkeydown = e => {
           if (e.key !== 'Enter' && e.key !== ' ') return;
           e.preventDefault();
+          hideTip();
+          if (mark.dataset.kind !== 'npu' && root.openTritonDetail) { root.openTritonDetail(b); return; }
           tipPinned = true;
           lastPinnedMark = mark;
           const r = mark.getBoundingClientRect();
@@ -537,7 +539,7 @@
          expanded state and controlled region; the row surface keeps working
          as a mouse shortcut through the row-main click handler. */
       const ids = core.rowDomIds(esc(b.id), groupKey);
-      return `<article class="row" id="${ids.rowId}"><div class="row-main"><button type="button" class="row-toggle" aria-expanded="false" aria-controls="${ids.detailId}" aria-label="${esc(core.markLabel(b, 'e2e'))}"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button><div>${identityHtml(b)}<div class="sub">${esc((b.sha || '未知').slice(0, 7))}${b.kind === 'rerun' ? ' · 重跑' : ''}</div></div><div class="title">${esc(b.title)}<div class="sub reasons">${reasons.map(reason => `<span class="pill">${esc(reason)}</span>`).join(' · ')}</div><div class="sub">${esc(b.author || '未知作者')} · ${esc(b.branch || '未知来源')} → ${esc(b.base_branch)}</div></div><div class="status ${esc(b.status)}">${statusLabels[b.status] || esc(b.status)}</div><div class="sub">${b.start_at ? fmtDate(b.start_at) : '起点未知'}</div><div class="duration">${core.sampleEligible(b) ? '' : '已观测 '}${dur(b.duration_seconds)}${b.approximate ? '*' : ''}${qualificationHtml(b)}</div><div class="critical">${b.status === 'running' ? '仍在等待 / 执行：' : '最后结束：'}${esc(b.critical_workflow || '未知')}</div></div><div class="detail" id="${ids.detailId}"><div class="detail-meta">起点：${b.start_at ? fmtDate(b.start_at) + '（' + core.startSourceLabel(b) + '）' : '无本次起点证据，E2E 留空'} · 合入分支：${esc(b.base_branch)} · ${b.end_at ? '结束：' + fmtDate(b.end_at) : '截至采集时间仍未结束'}</div>${(b.missing || []).map(x => `<div class="notice">${esc(x)}</div>`).join('')}${(b.workflows || []).map(w => wfHtml(w, b)).join('')}</div></article>`;
+      return `<article class="row" id="${ids.rowId}" data-batch-id="${esc(b.id)}"><div class="row-main"><button type="button" class="row-toggle" aria-expanded="false" aria-controls="${ids.detailId}" aria-label="${esc(core.markLabel(b, 'e2e'))}"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button><div>${identityHtml(b)}<div class="sub">${esc((b.sha || '未知').slice(0, 7))}${b.kind === 'rerun' ? ' · 重跑' : ''}</div></div><div class="title">${esc(b.title)}<div class="sub reasons">${reasons.map(reason => `<span class="pill">${esc(reason)}</span>`).join(' · ')}</div><div class="sub">${esc(b.author || '未知作者')} · ${esc(b.branch || '未知来源')} → ${esc(b.base_branch)}</div></div><div class="status ${esc(b.status)}">${statusLabels[b.status] || esc(b.status)}</div><div class="sub">${b.start_at ? fmtDate(b.start_at) : '起点未知'}</div><div class="duration">${core.sampleEligible(b) ? '' : '已观测 '}${dur(b.duration_seconds)}${b.approximate ? '*' : ''}${qualificationHtml(b)}</div><div class="critical">${b.status === 'running' ? '仍在等待 / 执行：' : '最后结束：'}${esc(b.critical_workflow || '未知')}</div></div><div class="detail" id="${ids.detailId}"><div class="detail-meta">起点：${b.start_at ? fmtDate(b.start_at) + '（' + core.startSourceLabel(b) + '）' : '无本次起点证据，E2E 留空'} · 合入分支：${esc(b.base_branch)} · ${b.end_at ? '结束：' + fmtDate(b.end_at) : '截至采集时间仍未结束'}</div>${(b.missing || []).map(x => `<div class="notice">${esc(x)}</div>`).join('')}${(b.workflows || []).map(w => wfHtml(w, b)).join('')}</div></article>`;
     }
 
     function renderRows() {
@@ -573,8 +575,10 @@
       all('.row').forEach(row => {
         const main = row.querySelector('.row-main');
         main.onclick = e => {
-          if (e.target.closest('a')) return; /* REQ-028 AC02: activating a link navigates, it must not also toggle the row */
-          setRowOpen(row, !row.classList.contains('open'));
+          if (e.target.closest('a')) return; /* REQ-028 AC02: activating a link navigates, it must not also open the detail */
+          const b = D.batches.find(x => String(x.id) === row.dataset.batchId);
+          if (b && root.openTritonDetail) root.openTritonDetail(b);
+          else setRowOpen(row, !row.classList.contains('open'));
         };
       });
       restoreListFocus(activeRowId);
