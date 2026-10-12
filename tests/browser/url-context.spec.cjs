@@ -39,3 +39,14 @@ test('plain search replaces the URL as the user types, without a condition bar',
   await expect(page.locator('#prRows')).not.toBeEmpty();
   expect(page.url()).toContain('q=ubs-engine');
 });
+
+test('opening and closing a detail carries its identity in the URL', async ({ page }) => {
+  await readyRepo(page);
+  const firstPr = await page.locator('#prRows tr[data-pr]').first().getAttribute('data-pr');
+  await page.locator('#prRows tr[data-pr]').first().click();
+  await expect(page.locator('#detail')).toBeVisible();
+  expect(page.url()).toContain(`pr=${firstPr}`);
+  await page.locator('#closeDetail').click();
+  await expect(page.locator('#detail')).toBeHidden();
+  expect(page.url()).not.toContain('pr=');
+});

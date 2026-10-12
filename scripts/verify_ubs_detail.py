@@ -341,7 +341,7 @@ APP_CONTRACTS = [
      'openDetail(Number(el.dataset.pr),el.dataset.batch);'),
     ('quality_drill',
      'if(Number(a.dataset.open))openDetail(Number(a.dataset.open))'),
-    ('close_button', "$('closeDetail').onclick=()=>$('detail').close();"),
+    ('close_button', "$('closeDetail').onclick=()=>{closeDetailContext();syncRecordsUrl('replace');};"),
     ('close_cleanup',
      "addEventListener('close',()=>{if(!$('detail').open){detailPR=null;"
      'detailSnapshot=null;detailRepo=null;detailChoice=null;}});'),
@@ -351,7 +351,7 @@ APP_CONTRACTS = [
     ('outside_click_close',
      "if(e.target===$('detail')){const r=$('detail')."
      'getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||'
-     "e.clientY<r.top||e.clientY>r.bottom)$('detail').close()}"),
+     "e.clientY<r.top||e.clientY>r.bottom){closeDetailContext();syncRecordsUrl('replace');}}"),
     ('route_switch_close',
      "if((detailPR||$('detail').open)&&(domain!=='ubs'||!repo||"
      "currentRepository!==detailRepo))closeDetailContext();"),
