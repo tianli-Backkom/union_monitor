@@ -12,9 +12,10 @@ UBS 排序与分页语义，经 REQ-001..042 整改后须保持。本工具以�
   仓名下等价）（AC01）
 - 分页数学：15 条/页，pages=max(1,ceil(n/15))，页码越界约束到合法页，全部页
   切片恰好划分序列、无重复遗漏；0/1/15/16/30/31 边界逐项核对（AC02/AC03）
-- app.js 分页源码契约：PAGE_SIZE=15、ceil/min/slice 公式、上一/下一页禁用条件、
-  空态提示、筛选/排序/耗时类型切换回第一页、三种排序说明文案（AC02/AC03/AC04
-  的源码级锁定；浏览器级表现由审计 U14–U19 与 REQ-048 回归覆盖）
+- app.js 分页源码契约：pageSize 默认 15（可选 15/30/50）、ceil/min/slice 公式、
+  上一/下一页禁用条件、空态提示、筛选/排序/耗时类型/页长切换回第一页、
+  三种排序说明文案（AC02/AC03/AC04 的源码级锁定；浏览器级表现由审计 U14–U19
+  与 REQ-048 回归覆盖）
 - 指纹匹配审计冻结输入时回放 U18 三种排序首页 15 条、U15 第二页、U16 末页与
   5/5 页数、U17 筛选后 1/1、A08 六个边界与 A14 仓库 P90 顺序；输入更新后基线
   比对记 not_applicable，契约检查照常（不硬编码数量）
@@ -44,10 +45,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import verify_ubs_semantics as vsm  # noqa: E402 - 独立重算口径（非生产代码）
 
 SOURCE_CONTRACTS = (
-    ('page_size_15', 'const PAGE_SIZE=15'),
-    ('pages_ceil', 'Math.max(1,Math.ceil(filtered.length/PAGE_SIZE))'),
+    ('page_size_15', 'pageSize=15'),
+    ('pages_ceil', 'Math.max(1,Math.ceil(filtered.length/pageSize))'),
     ('page_clamp', 'page=Math.min(page,pages)'),
-    ('rows_slice', 'filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE)'),
+    ('rows_slice', 'filtered.slice((page-1)*pageSize,page*pageSize)'),
     ('prev_disabled', "$('prev').disabled=page<=1"),
     ('next_disabled', "$('next').disabled=page>=pages"),
     ('page_info_format', '${page} / ${pages}'),

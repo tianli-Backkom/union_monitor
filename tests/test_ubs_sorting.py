@@ -7,7 +7,7 @@
   （并列同上）、创建时间降序（并列保持原序）（AC01）
 - 仓库排序：P90 降序（空→-1）、PR 数降序、名称不区分大小写升序（AC01）
 - 合成目录树：干净树退出码 0；篡改 web/core.js E2E 并列规则或 web/app.js
-  PAGE_SIZE 退出码 1（非循环锁定）
+  pageSize=15 退出码 1（非循环锁定）
 - 提交证据（ubs-sorting-evidence.json）：冻结输入 9 仓 27 序列零失配、
   仓库三种排序与 P90 独立值一致、源码契约齐全、U14–U18/A08/A14 基线 matched
 """
@@ -232,7 +232,7 @@ class SyntheticTreeTests(unittest.TestCase):
 
     def test_tampered_page_size_exit_one(self):
         root = self.build_tree()
-        self.tamper(root, 'app.js', 'const PAGE_SIZE=15', 'const PAGE_SIZE=10')
+        self.tamper(root, 'app.js', 'pageSize=15', 'pageSize=10')
         code, report = self.run_tool(root)
         self.assertEqual(code, 1)
         self.assertFalse(report['source_contracts']['all_found'])
