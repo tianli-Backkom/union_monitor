@@ -25,7 +25,7 @@ test('project links enter a project and legacy navigation clears the workbench',
   await expect(page.locator('#triton-view')).toBeVisible();
   await expect(page.locator('#workbench-view')).toBeHidden();
   await page.getByRole('link',{name:'工作台',exact:true}).click();
-  await page.getByRole('link',{name:'门禁效率趋势',exact:true}).click();
+  await page.locator('#sideProjectSelector').selectOption('triton');
   await expect(page.locator('#triton-view')).toBeVisible();
   await expect(page.locator('#workbench-view')).toBeHidden();
 });
@@ -63,7 +63,7 @@ test('route changes close bound PR details and browser history restores the acti
   await page.evaluate(()=>{location.hash='#workbench';});
   await expect(page.locator('#detail')).toBeHidden();
   await expect(page.locator('#workbench-view')).toBeVisible();
-  await page.getByRole('link',{name:'门禁效率趋势',exact:true}).click();
+  await page.locator('#sideProjectSelector').selectOption('triton');
   await expect(page.locator('#triton-view')).toBeVisible();
   await page.goBack();
   await expect(page.locator('#workbench-view')).toBeVisible();

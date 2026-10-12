@@ -334,8 +334,7 @@ APP_CONTRACTS = [
      "'method-view'])$(id).hidden=id!==(ubs?(repo?'ubs-repo-view':"
      "'ubs-view'):domain+'-view');"),
     ('nav_highlight',
-     "a.dataset.nav===(ubs?(repo?(quality?'ubs-quality':'ubs-repo')"
-     ":'ubs-overview'):domain)"),
+     "markNavActive(domain==='triton'?'triton':domain==='method'?($('sideProjectSelector')?.value||'ubs'):'ubs',domain==='triton'?'trends':domain==='method'?'method':cross?'overview':quality?'quality':'records')"),
     ('repo_quality_toggle',
      "if(repo){$('repoMain').hidden=quality;$('quality').hidden=!quality;}"),
     ('title_repo',
@@ -353,7 +352,7 @@ APP_CONTRACTS = [
      ":' · 未获取数据')"),
     ('hashchange_boot',
      "window.addEventListener('hashchange',()=>navigate(location.hash));"
-     'navigate(location.hash);load();'),
+     'renderSideNav();navigate(location.hash);load();'),
 ]
 
 

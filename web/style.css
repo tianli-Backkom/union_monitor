@@ -115,6 +115,8 @@ body:has(dialog[open]){overflow:hidden}
 .side-bottom a:hover{color:var(--accent)}
 .local-dot{display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;margin-right:6px}
 .side-nav nav,.sidebar nav{margin-top:var(--sp-2)}
+.nav-select{width:100%;margin:0 0 var(--sp-3);border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;background:var(--surface);color:var(--ink)}
+.nav-tasks{display:flex;flex-direction:column}
 
 /* ---------- 5. Topbar ---------- */
 .workspace{margin-left:230px;flex:1;min-width:0}
@@ -547,6 +549,7 @@ footer{display:flex;color:var(--text-3);font-family:var(--font-num);font-size:12
   .nav-item{flex-direction:column;gap:5px;padding:11px 4px;justify-content:center;font-size:10px;line-height:1.35;text-align:center}
   .nav-item .icon{width:20px;height:20px}
   .nav-item i{display:none}
+  .nav-select{width:100%;font-size:10px;padding:6px 4px;text-align:center}
   .side-nav nav,.sidebar nav{margin-top:var(--sp-8)}
   .workspace{margin-left:76px}
   main,.app-shell main{padding:var(--sp-5) var(--sp-4)}

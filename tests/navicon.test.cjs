@@ -1,11 +1,13 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');
 const css=fs.readFileSync(path.join(__dirname,'..','web','style.css'),'utf8');
 const html=fs.readFileSync(path.join(__dirname,'..','web','index.html'),'utf8');
+const app=fs.readFileSync(path.join(__dirname,'..','web','app.js'),'utf8');
 
-/* ---- REQ-032: icon rail keeps every entry identifiable (static layout contract) ---- */
+/* ---- REQ-032: icon rail keeps every entry identifiable (static layout contract).
+   UDR-015: the fixed task navigation is catalog-driven (rendered in app.js from
+   Shell.FIXED_TASKS) instead of hardcoded per-community menus. ---- */
 
 const block=(css.match(/@media\(max-width:800px\)\{[\s\S]*?\n\}/)?.[0] ?? '').replace(/\/\*[\s\S]*?\*\//g,'');
-const LABELS={ 'ubs-overview':'九仓效率总览','ubs-repo':'单仓效率','ubs-quality':'数据质量','triton':'门禁效率趋势','method':'统计口径' };
 
 test('REQ-032 AC01: icon rail shows real labels — font-size:0 hiding is gone, entries stack icon over 10px label',()=>{
   assert.ok(block,'≤800px block exists');
@@ -21,7 +23,7 @@ test('REQ-032 AC01: rail width fits 6-char CJK labels and the workspace margin m
   assert.match(block,/\.workspace\{margin-left:76px\}/);
 });
 
-test('REQ-032 AC01: group headers stay visible in the icon rail for domain context',()=>{
+test('REQ-032 AC01: group headers stay visible in the icon rail for context',()=>{
   const hiddenRules=[...block.matchAll(/([^{]+)\{display:none\}/g)].map(m=>m[1]);
   assert.ok(hiddenRules.length>0,'the block still hides non-essential chrome');
   for(const sel of hiddenRules) assert.doesNotMatch(sel,/\.nav-group/,'group headers must not be hidden: '+sel);
@@ -31,19 +33,19 @@ test('REQ-032 AC01: group headers stay visible in the icon rail for domain conte
   assert.match(groupRule[0],/text-align:center/);
 });
 
-test('REQ-032 AC01/AC03: every nav entry keeps a real text label in the DOM (accessible name source)',()=>{
-  for(const [key,label] of Object.entries(LABELS)){
-    const anchor=html.match(new RegExp(`<a [^>]*data-nav="${key}"[\\s\\S]*?</a>`));
-    assert.ok(anchor,`nav item ${key} exists`);
-    assert.ok(anchor[0].includes(label),`${key} keeps visible label ${label}`);
-  }
+test('REQ-032 AC01/AC03: workbench entry keeps a real text label and the fixed tasks are catalog-driven',()=>{
+  const anchor=html.match(/<a href="#workbench"[^>]*data-nav="workbench"[^>]*>/);
+  assert.ok(anchor,'workbench nav item exists');
+  assert.ok(anchor[0].includes('工作台'),'workbench keeps visible label');
+  assert.match(html,/id="sideProjectSelector"/,'catalog-driven project selector');
+  assert.match(html,/id="sideTasks"/,'fixed task container');
+  assert.match(app,/Shell\.FIXED_TASKS/,'fixed tasks render from the shell model');
+  assert.match(app,/data-task="\$\{task\}"/,'task links carry a task identity');
+  assert.match(app,/title="\$\{esc\(t\.label\)\}"/,'each task link exposes its label as title');
 });
 
-test('REQ-032 AC02: hover/focus/touch can get the name — native title mirrors every label, brand included',()=>{
-  for(const [key,label] of Object.entries(LABELS)){
-    const tag=html.match(new RegExp(`<a [^>]*data-nav="${key}"[^>]*>`))[0];
-    assert.match(tag,new RegExp(`title="${label}"`),`${key} carries a tooltip`);
-  }
+test('REQ-032 AC02: hover/focus/touch can get the name — workbench title mirrors the label, brand included',()=>{
+  assert.match(html.match(/<a href="#workbench"[^>]*>/)[0],/title="工作台"/,'workbench carries a tooltip');
   assert.match(html.match(/<a class="brand"[^>]*>/)[0],/title="监控中心/);
 });
 
