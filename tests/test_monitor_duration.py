@@ -96,5 +96,40 @@ class ObservedFormattingTests(unittest.TestCase):
         self.assertEqual(format_observed(8.2 * 60_000), "已观测 8.20 min")
 
 
+class Udr006BoundaryValueTests(unittest.TestCase):
+    """UDR-006-TC02: named boundary values and legal-extreme retention.
+
+    Legal zero stays zero, sub-centiminute values collapse to ``<0.01``,
+    ``null``/inverted values are unknown (never zero), and a proven ~21.68-day
+    UBS sample is retained rather than deleted for being "too long".
+    """
+
+    DAY_MS = 24 * 3600 * 1000
+    EXTREME_MS = int(21.68 * DAY_MS)  # ≈ 21.68-day observed UBS sample
+
+    def test_named_values_round_trip_without_mutation(self):
+        self.assertTrue(valid_duration(0))
+        self.assertTrue(valid_duration(100))    # 100 ms is valid, renders sub-centiminute
+        self.assertTrue(valid_duration(600))    # 600 ms is valid
+        self.assertFalse(valid_duration(None))
+        self.assertEqual(format_minutes(0), "0.00 min")
+        self.assertEqual(format_minutes(100), "<0.01 min")
+        self.assertEqual(format_minutes(600), "0.01 min")
+        self.assertEqual(format_minutes(None), "—")
+
+    def test_legal_extreme_duration_is_retained_not_deleted_as_outlier(self):
+        self.assertTrue(valid_duration(self.EXTREME_MS))
+        self.assertEqual(format_minutes(self.EXTREME_MS), "31219.20 min")
+
+    def test_queue_inversion_negative_is_unknown_not_a_valid_value(self):
+        self.assertFalse(valid_duration(-600))   # inverted start/end -> unknown
+        self.assertEqual(format_minutes(-600), "—")
+
+    def test_display_does_not_mutate_the_source_value(self):
+        value = self.EXTREME_MS
+        format_minutes(value)
+        self.assertEqual(value, self.EXTREME_MS)
+
+
 if __name__ == "__main__":
     unittest.main()
