@@ -13,6 +13,7 @@ async function readyRepo(page, hash = '#ubs/repo/ubs-engine') {
 
 test('confirmed changes push into the query and a shared URL restores the controls', async ({ page, context }) => {
   await readyRepo(page);
+  await page.locator('#entity').selectOption('prs');
   await page.locator('#state').selectOption('merged');
   await page.locator('#sort').selectOption('batches');
   await page.locator('#pageSize').selectOption('30');

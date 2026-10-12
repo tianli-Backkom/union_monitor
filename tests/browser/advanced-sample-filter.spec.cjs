@@ -29,6 +29,7 @@ test('advanced entry reveals trigger/quality filters and a condition bar', async
 
 test('state filter changes the analysis denominator and is clearable', async ({ page }) => {
   await readyRepo(page);
+  await page.locator('#entity').selectOption('prs');
   await page.locator('#state').selectOption('merged');
   const bar = page.locator('#activeConditions');
   await expect(bar).toBeVisible();

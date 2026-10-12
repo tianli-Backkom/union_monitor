@@ -36,7 +36,8 @@ test('P-004: searchPRs matches number/title/author/sha and ignores empty query',
 
 test('P-004: app.js drives KPI/trend from analysisSet and only the list from search', () => {
   assert.match(app, /const f=readFilters\(\),analysisSet=Metrics\.filterPRs\(snapshot\.prs,f\)/);
-  assert.match(app, /filtered=Metrics\.sortPRs\(Metrics\.searchPRs\(analysisSet,f\.query\),\$\('sort'\)\.value\)/);
+  assert.match(app, /filtered=Metrics\.sortPRs\(Metrics\.searchPRs\(analysisSet,f\.query\),prSort\)/);
+  assert.match(app, /batchList=entity==='batches'\?buildBatchList\(analysisSet,f\.query\):\[\]/);
   assert.match(app, /\$\('kpis'\)\.innerHTML=kpiHTML\(analysisSet\)/);
   assert.match(app, /drawTrend\(analysisSet\)/);
   assert.match(app, /const pct=analysisSet\.length\?s\.e2e\.n\/analysisSet\.length/);

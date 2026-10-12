@@ -38,3 +38,19 @@ test('changing page length resets to page 1', async ({ page }) => {
   await page.locator('#pageSize').selectOption('30');
   await expect(page.locator('#pageInfo')).toContainText('1 /');
 });
+
+test('records default to batches and the entity toggle switches back to PR', async ({ page }) => {
+  await readyRepo(page);
+  // Default entity is batch (UDR-018).
+  await expect(page.locator('#entity')).toHaveValue('batches');
+  await expect(page.locator('#recordTitle')).toHaveText('批次效率明细');
+  await expect(page.locator('#prRows tr[data-batch]').first()).toBeVisible();
+  // Toggle to PR: batch rows disappear, PR rows appear, count label flips.
+  await page.locator('#entity').selectOption('prs');
+  await expect(page.locator('#recordTitle')).toHaveText('PR 效率明细');
+  await expect(page.locator('#prRows tr[data-batch]')).toHaveCount(0);
+  await expect(page.locator('#prRows tr[data-pr]').first()).toBeVisible();
+  // Back to batches.
+  await page.locator('#entity').selectOption('batches');
+  await expect(page.locator('#prRows tr[data-batch]').first()).toBeVisible();
+});

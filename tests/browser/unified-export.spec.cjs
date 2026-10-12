@@ -14,6 +14,7 @@ async function readDownload(download) {
 
 test('L record export binds the full filtered set and versioned metadata, not page-truncated', async ({ page }) => {
   await page.goto('./#ubs/repo/ubs-engine');
+  await page.locator('#entity').selectOption('prs');
   await expect(page.locator('#prRows')).not.toBeEmpty();
   const total = Number(await page.locator('#prCount').innerText());
   expect(total).toBeGreaterThan(15);
@@ -47,6 +48,7 @@ test('S summary export declares its analysis scope and version', async ({ page }
 
 test('PR all-batch export from the detail binds the PR identity and batch count', async ({ page }) => {
   await page.goto('./#ubs/repo/ubs-engine');
+  await page.locator('#entity').selectOption('prs');
   await expect(page.locator('#prRows tr[data-pr]').first()).toBeVisible();
   await page.locator('#prRows tr[data-pr]').first().click();
   await expect(page.locator('#detail')).toBeVisible();

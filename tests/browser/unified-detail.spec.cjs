@@ -84,6 +84,7 @@ test('three entries converge on one detail; representative default vs selected b
 
   // List entry (repo view) → default representative (batch 2) expanded.
   await page.goto('./#ubs/repo/ubs-engine');
+  await page.locator('#entity').selectOption('prs');
   await expect(page.locator('#prRows tr[data-pr="100"]')).toBeVisible();
   await page.locator('#prRows tr[data-pr="100"]').click();
   await expect(dialog).toBeVisible();
@@ -119,6 +120,7 @@ test('three entries converge on one detail; representative default vs selected b
 test('no-representative PR shows the reason and the most-recent batch, never a fabricated representative', async ({ page }) => {
   await serveUbs(page, fixture());
   await page.goto('./#ubs/repo/ubs-engine');
+  await page.locator('#entity').selectOption('prs');
   await expect(page.locator('#prRows tr[data-pr="200"]')).toBeVisible();
   await page.locator('#prRows tr[data-pr="200"]').click();
   const dialog = page.locator('#detail');
@@ -134,6 +136,7 @@ test('no-representative PR shows the reason and the most-recent batch, never a f
 test('unknown-association batches stay locatable and closing returns to the list', async ({ page }) => {
   await serveUbs(page, fixture());
   await page.goto('./#ubs/repo/ubs-engine');
+  await page.locator('#entity').selectOption('prs');
   await expect(page.locator('#prRows tr[data-pr="200"]')).toBeVisible();
   await page.locator('#prRows tr[data-pr="200"]').click();
   const dialog = page.locator('#detail');
@@ -152,6 +155,7 @@ test('unknown-association batches stay locatable and closing returns to the list
 test('selected-batch task export binds the selected batch tasks, never the whole PR', async ({ page }) => {
   await serveUbs(page, fixture());
   await page.goto('./#ubs/repo/ubs-engine');
+  await page.locator('#entity').selectOption('prs');
   await expect(page.locator('#prRows tr[data-pr="100"]')).toBeVisible();
   await page.locator('#prRows tr[data-pr="100"]').click();
   const dialog = page.locator('#detail');
