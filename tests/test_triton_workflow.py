@@ -40,6 +40,16 @@ class TritonWorkflowTests(unittest.TestCase):
         self.assertIn("name: github-pages", self.workflow)
         self.assertIn("uses: actions/deploy-pages@v4", self.workflow)
 
+    def test_branch_validation_does_not_deploy_and_retains_collection_evidence(self):
+        import yaml
+        workflow=yaml.safe_load(self.workflow)
+        self.assertEqual(workflow["jobs"]["deploy"]["if"], "github.ref == 'refs/heads/main'")
+        steps=workflow["jobs"]["build"]["steps"]
+        evidence=[step for step in steps if step.get("name")=="Retain Triton collection evidence"]
+        self.assertEqual(len(evidence),1)
+        self.assertEqual(evidence[0]["if"],"always()")
+        self.assertEqual(evidence[0]["with"]["path"],"evidence/triton/")
+
     def test_restore_fallback_collect_tests_upload_are_ordered(self):
         commands = [
             "uses: actions/cache/restore@v4",
