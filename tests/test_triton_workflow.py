@@ -41,14 +41,16 @@ class TritonWorkflowTests(unittest.TestCase):
         self.assertIn("uses: actions/deploy-pages@v4", self.workflow)
 
     def test_branch_validation_does_not_deploy_and_retains_collection_evidence(self):
-        import yaml
-        workflow=yaml.safe_load(self.workflow)
-        self.assertEqual(workflow["jobs"]["deploy"]["if"], "github.ref == 'refs/heads/main'")
-        steps=workflow["jobs"]["build"]["steps"]
-        evidence=[step for step in steps if step.get("name")=="Retain Triton collection evidence"]
-        self.assertEqual(len(evidence),1)
-        self.assertEqual(evidence[0]["if"],"always()")
-        self.assertEqual(evidence[0]["with"]["path"],"evidence/triton/")
+        # Keep this contract dependency-free: production and collector jobs
+        # deliberately do not install a YAML parser. actionlint checks syntax.
+        deploy=self.workflow.split("\n  deploy:",1)[1].split("\n  verify:",1)[0]
+        self.assertRegex(deploy, r"(?m)^    if: github.ref == 'refs/heads/main'$")
+        marker="      - name: Retain Triton collection evidence"
+        self.assertEqual(self.workflow.count(marker),1)
+        evidence=self.workflow.split(marker,1)[1].split("      - name:",1)[0]
+        self.assertRegex(evidence, r"(?m)^        if: always\(\)$")
+        self.assertRegex(evidence, r"(?m)^          path: evidence/triton/$")
+        self.assertIn("uses: actions/upload-artifact@v4",evidence)
 
     def test_restore_fallback_collect_tests_upload_are_ordered(self):
         commands = [
