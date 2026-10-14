@@ -360,14 +360,16 @@ class GitHub:
         self.token = os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
         self.calls = 0
 
-    def get(self, url):
+    def get(self, url, payload=None):
         target = url if url.startswith("https://") else API + url
         headers = {"Accept":"application/vnd.github+json", "User-Agent":"triton-gate-e2e-dashboard", "X-GitHub-Api-Version":"2022-11-28"}
         if self.token: headers["Authorization"] = "Bearer " + self.token
+        data = json.dumps(payload).encode() if payload is not None else None
+        if data is not None: headers["Content-Type"] = "application/json"
         for attempt in range(4):
             try:
                 self.calls += 1
-                with urllib.request.urlopen(urllib.request.Request(target, headers=headers), timeout=45) as response:
+                with urllib.request.urlopen(urllib.request.Request(target, data=data, headers=headers), timeout=45) as response:
                     return json.load(response), dict(response.headers)
             except urllib.error.HTTPError as exc:
                 if exc.code in (403, 429):
@@ -386,6 +388,39 @@ class GitHub:
                 if attempt < 3:
                     time.sleep(2 ** attempt); continue
                 raise
+
+    def force_push_history(self, number):
+        """Retrieve both sides of force pushes, including commits removed from REST history."""
+        query = """query($number:Int!, $cursor:String) {
+          repository(owner:"triton-lang", name:"triton-ascend") {
+            pullRequest(number:$number) {
+              timelineItems(first:100, after:$cursor, itemTypes:[HEAD_REF_FORCE_PUSHED_EVENT]) {
+                nodes { ... on HeadRefForcePushedEvent {
+                  id createdAt beforeCommit { oid } afterCommit { oid }
+                } }
+                pageInfo { hasNextPage endCursor }
+              }
+            }
+          }
+        }"""
+        out=[]; cursor=None; seen=set()
+        while True:
+            result,_=self.get("https://api.github.com/graphql", {
+                "query":query, "variables":{"number":number,"cursor":cursor}})
+            if result.get("errors"):
+                raise RuntimeError("GitHub PR history query failed: "+json.dumps(result["errors"],ensure_ascii=False))
+            try:
+                page=result["data"]["repository"]["pullRequest"]["timelineItems"]
+                nodes=page["nodes"]; info=page["pageInfo"]
+                if not isinstance(nodes,list) or not isinstance(info["hasNextPage"],bool): raise ValueError()
+            except (KeyError,TypeError,ValueError):
+                raise RuntimeError(f"PR {number} force-push history response incomplete") from None
+            out.extend(nodes)
+            if not info["hasNextPage"]: return out
+            cursor=info.get("endCursor")
+            if not nodes or not cursor or cursor in seen:
+                raise RuntimeError(f"PR {number} history pagination did not advance")
+            seen.add(cursor)
 
     def pages(self, path, field=None, limit=None):
         out=[]; page=1; expected=None; seen=set()
@@ -526,7 +561,7 @@ def collect(hours=72, as_of=None):
     _write_json(EVIDENCE/"runs.json", {"collected_at":iso(datetime.now(UTC)),"window_start":iso(start),"fetch_window_start":iso(fetch_start),"window_end":iso(end),"runs":runs})
 
     # PRs from forks can have empty run.pull_requests and commit/pulls responses.
-    from .pr_identity import PRResolver
+    from .pr_identity import PRResolver, association_error_kind
     resolver=PRResolver(api,EVIDENCE/"pr-associations")
     enriched=[]
     association_errors=[]
@@ -535,7 +570,8 @@ def collect(hours=72, as_of=None):
         try:
             row.update(resolver.resolve(r))
         except Exception as exc:
-            association_errors.append({"run_id":r["id"],"url":r.get("html_url"),"error":str(exc)})
+            association_errors.append({"run_id":r["id"],"url":r.get("html_url"),"error":str(exc),
+                                       "kind":association_error_kind(exc)})
             # REQ-018/REQ-019: an unresolvable PR is never guessed. It is kept as
             # an unresolved batch whose evidence gap is surfaced ("未可靠关联 PR")
             # rather than silently dropped and rather than failing the refresh.
@@ -572,6 +608,9 @@ def collect(hours=72, as_of=None):
         # Unresolved PR identities are reported for traceability but are not
         # fatal: their batches publish with the "未可靠关联 PR" evidence gap.
         _write_json(EVIDENCE/"pr-association-errors.json",association_errors)
+        source_failures=[error for error in association_errors if error["kind"]=="source_failure"]
+        if source_failures:
+            raise RuntimeError(f"PR association source requests failed for {len(source_failures)} runs; refusing to publish. See pr-association-errors.json")
 
     _write_json(EVIDENCE/"enriched-runs.json", enriched)
     return build_payload(enriched, iso(start), iso(end), iso(datetime.now(UTC)), api.calls)

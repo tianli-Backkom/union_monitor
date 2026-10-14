@@ -1,7 +1,11 @@
 """Regression coverage for fork PR identity and fail-closed association."""
 import copy
+import json
+from pathlib import Path
 import re
 import unittest
+import tempfile
+from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
 
 from triton.pr_identity import PRResolver
@@ -43,16 +47,26 @@ def pull(number, sha="a" * 40, repo=FORK, created="2026-10-01T00:00:00Z", closed
 
 class FakeAPI:
     """Supply GitHub-shaped responses; query filtering is part of the fake API boundary."""
-    def __init__(self, pulls, commits=None, failure=None):
+    def __init__(self, pulls, commits=None, failure=None, history=None, comparisons=None):
         self.pulls = {p["number"]: copy.deepcopy(p) for p in pulls}
         self.commits = commits or {}
         self.failure = failure
+        self.history = history or {}
+        self.comparisons = comparisons or {}
+
+    def force_push_history(self, number):
+        if self.failure:
+            raise self.failure
+        return copy.deepcopy(self.history.get(number, []))
 
     def response(self, request):
         if self.failure:
             raise self.failure
         parsed = urlsplit(request)
         path = parsed.path
+        if path.startswith("/compare/"):
+            key = path.removeprefix("/compare/")
+            return copy.deepcopy(self.comparisons.get(key, {"status": "diverged", "merge_base_commit": {"sha": "e" * 40}}))
         match = re.search(r"/pulls/(\d+)/commits$", path)
         if match:
             return [{"sha": sha} for sha in self.commits.get(int(match.group(1)), [])]
@@ -140,6 +154,217 @@ class PRIdentityTests(unittest.TestCase):
             PRResolver(FakeAPI([pull(42)], failure=RuntimeError("rate limited"))).resolve(
                 action_run(associations=[{"number": 42}]))
 
+    def test_force_push_before_commit_recovers_sha_removed_from_current_commits(self):
+        api = FakeAPI([pull(42, "c" * 40)], commits={42: ["c" * 40]}, history={42: [{
+            "createdAt": "2026-10-07T09:00:00Z",
+            "beforeCommit": {"oid": "a" * 40}, "afterCommit": {"oid": "c" * 40},
+        }]})
+        result = PRResolver(api).resolve(action_run())
+        self.assertEqual(result["pr"], 42)
+        self.assertEqual(result["head_sha"], "a" * 40)
+        self.assertEqual(result["pr_title"], "Compiler change 42")
+        self.assertTrue(result["pr_evidence"]["method"])
+
+    def test_force_push_after_commit_recovers_sha_absent_from_current_commits(self):
+        api = FakeAPI([pull(42, "c" * 40)], commits={42: ["c" * 40]}, history={42: [{
+            "createdAt": "2026-10-07T07:59:00Z",
+            "beforeCommit": {"oid": "d" * 40}, "afterCommit": {"oid": "a" * 40},
+        }]})
+        result = PRResolver(api).resolve(action_run())
+        self.assertEqual(result["pr"], 42)
+        self.assertEqual(result["head_sha"], "a" * 40)
+
+    def test_reused_branch_with_unrelated_force_push_history_remains_unresolved(self):
+        api = FakeAPI([pull(41, "c" * 40), pull(42, "d" * 40)],
+                      commits={41: ["c" * 40], 42: ["d" * 40]}, history={
+                          41: [{"createdAt": "2026-10-07T09:00:00Z",
+                                "beforeCommit": {"oid": "e" * 40}, "afterCommit": {"oid": "c" * 40}}],
+                          42: [{"createdAt": "2026-10-07T09:00:00Z",
+                                "beforeCommit": {"oid": "f" * 40}, "afterCommit": {"oid": "d" * 40}}],
+                      })
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run())
+
+    def test_force_push_after_commit_event_after_run_does_not_establish_identity(self):
+        api = FakeAPI([pull(42, "c" * 40)], commits={42: ["c" * 40]}, history={42: [{
+            "createdAt": "2026-10-07T09:00:00Z",
+            "beforeCommit": {"oid": "d" * 40}, "afterCommit": {"oid": "a" * 40},
+        }]})
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run())
+
+    def test_force_push_before_commit_event_before_run_does_not_establish_identity(self):
+        api = FakeAPI([pull(42, "c" * 40)], commits={42: ["c" * 40]}, history={42: [{
+            "createdAt": "2026-10-07T07:00:00Z",
+            "beforeCommit": {"oid": "a" * 40}, "afterCommit": {"oid": "c" * 40},
+        }]})
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run())
+
+    def test_same_source_and_force_push_sha_on_two_prs_is_ambiguous(self):
+        api = FakeAPI([pull(41, "c" * 40), pull(42, "d" * 40)], history={
+            41: [{"createdAt": "2026-10-07T09:00:00Z",
+                  "beforeCommit": {"oid": "a" * 40}, "afterCommit": {"oid": "c" * 40}}],
+            42: [{"createdAt": "2026-10-07T09:00:00Z",
+                  "beforeCommit": {"oid": "a" * 40}, "afterCommit": {"oid": "d" * 40}}],
+        })
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run())
+
+
+
+class HistoricalAncestorTests(unittest.TestCase):
+    def test_all_34_runs_from_failed_scheduled_refresh_resolve(self):
+        fixture=json.loads((Path(__file__).parent/"fixtures/historical-ancestry.json").read_text(encoding="utf-8"))
+        api=FakeAPI(list(fixture["pulls"].values()),
+                    history={int(n):events for n,events in fixture["histories"].items()},
+                    comparisons=fixture["comparisons"])
+        resolver=PRResolver(api)
+        self.assertEqual(len(fixture["runs"]),34)
+        expected={"feature/simd-simt-compile-mode-sync-main-v2":2545,
+                  "origin":2532,"gather-in-graph-opt-v3":2244,"fix/q3-scan-mode":2480}
+        for run in fixture["runs"]:
+            with self.subTest(run=run["id"]):
+                result=resolver.resolve(run)
+                self.assertEqual(result["pr"],expected[run["head_branch"]])
+                self.assertEqual(result["head_sha"],run["head_sha"])
+                self.assertIn("ancestry",result["pr_evidence"]["method"])
+
+    def test_recovered_histories_group_into_four_eligible_pr_batches(self):
+        from triton.dashboard import build_payload
+        from datetime import datetime, timedelta
+        fixture=json.loads((Path(__file__).parent/"fixtures/historical-ancestry.json").read_text(encoding="utf-8"))
+        api=FakeAPI(list(fixture["pulls"].values()),history={int(n):events for n,events in fixture["histories"].items()},comparisons=fixture["comparisons"])
+        resolver=PRResolver(api)
+        rows=[]
+        for run in fixture["runs"]:
+            row={**run,**resolver.resolve(run),"name":"Integration Tests","run_attempt":1,
+                 "status":"completed","conclusion":"success","jobs_complete":True,"jobs":[]}
+            started=datetime.fromisoformat(run["created_at"].replace("Z","+00:00"))
+            row["updated_at"]=(started+timedelta(minutes=20)).isoformat()
+            rows.append(row)
+        payload=build_payload(rows,"2026-10-11T09:00:00Z","2026-10-14T12:00:00Z","2026-10-14T12:00:00Z")
+        self.assertEqual({b["pr"] for b in payload["batches"]},{2545,2532,2244,2480})
+        self.assertEqual(len(payload["batches"]),4)
+        self.assertEqual(sum(len(b["workflows"]) for b in payload["batches"]),34)
+        self.assertTrue(all(b["e2e_sample_eligible"] for b in payload["batches"]))
+        self.assertEqual(payload["summary"]["valid"],4)
+
+    def fixture(self, status="ahead", merge_base=None):
+        old="a" * 40; anchor="d" * 40
+        event={"createdAt":"2026-10-07T09:00:00Z",
+               "beforeCommit":{"oid":anchor},"afterCommit":{"oid":"c" * 40}}
+        comparisons={old+"..."+"b" * 40:{"status":"diverged","merge_base_commit":{"sha":"e" * 40}},
+                     old+"..."+anchor:{"status":status,
+            "merge_base_commit":{"sha":merge_base or old}}}
+        return FakeAPI([pull(42,"c" * 40)],history={42:[event]},comparisons=comparisons)
+
+    def test_intermediate_push_removed_by_force_push_retains_original_identity(self):
+        result=PRResolver(self.fixture()).resolve(action_run())
+        self.assertEqual(result["pr"],42)
+        self.assertEqual(result["head_sha"],"a" * 40)
+        self.assertEqual(result["pr_evidence"]["force_push_event"]["beforeCommit"]["oid"],"d" * 40)
+
+    def test_target_run_with_real_fork_head_can_use_historical_ancestry(self):
+        result=PRResolver(self.fixture()).resolve(action_run(event="pull_request_target"))
+        self.assertEqual(result["head_sha"],"a" * 40)
+
+    def test_diverged_history_cannot_establish_identity(self):
+        with self.assertRaises(ValueError):
+            PRResolver(self.fixture(status="diverged")).resolve(action_run())
+
+    def test_wrong_merge_base_cannot_establish_identity(self):
+        with self.assertRaises(ValueError):
+            PRResolver(self.fixture(merge_base="e" * 40)).resolve(action_run())
+
+    def test_base_branch_ancestor_cannot_be_mistaken_for_pr_head(self):
+        api=self.fixture()
+        api.comparisons["a" * 40+"..."+"b" * 40]={"status":"ahead","merge_base_commit":{"sha":"a" * 40}}
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run(event="pull_request_target"))
+
+    def test_history_before_run_does_not_prove_later_head(self):
+        api=self.fixture()
+        api.history[42][0]["createdAt"]="2026-10-07T07:00:00Z"
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run())
+
+    def test_historical_match_saves_compare_proof_for_audit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            result=PRResolver(self.fixture(),directory).resolve(action_run())
+            proofs=list(Path(directory).glob("compare-*.json"))
+            self.assertEqual(len(proofs),2)
+            statuses={json.loads(p.read_text(encoding="utf-8"))["status"] for p in proofs}
+            self.assertEqual(statuses,{"ahead","diverged"})
+            saved=json.loads((Path(directory)/"4001.json").read_text(encoding="utf-8"))
+            self.assertEqual(saved["head_sha"],"a" * 40)
+            self.assertEqual(saved["pr_evidence"],result["pr_evidence"])
+
+    def test_compare_api_failure_is_propagated(self):
+        api=self.fixture()
+        original=api.get
+        def get(path):
+            if path.startswith("/compare/"): raise RuntimeError("comparison unavailable")
+            return original(path)
+        api.get=get
+        with self.assertRaisesRegex(RuntimeError,"comparison unavailable"):
+            PRResolver(api).resolve(action_run())
+
+    def test_malformed_history_is_source_failure_not_missing_pr(self):
+        api=self.fixture()
+        api.history[42]=[{}]
+        with self.assertRaisesRegex(RuntimeError,"force-push event incomplete"):
+            PRResolver(api).resolve(action_run())
+
+    def test_invalid_history_timestamp_is_source_failure(self):
+        api=self.fixture()
+        api.history[42][0]["createdAt"]="not-a-date"
+        with self.assertRaisesRegex(RuntimeError,"force-push event"):
+            PRResolver(api).resolve(action_run())
+
+    def test_missing_comparison_status_blocks_publication(self):
+        api=self.fixture()
+        api.comparisons["a" * 40+"..."+"d" * 40]={}
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run())
+
+    def test_missing_base_comparison_status_blocks_publication(self):
+        api=self.fixture()
+        api.comparisons["a" * 40+"..."+"b" * 40]={}
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run())
+
+    def test_two_pr_histories_containing_old_sha_remain_ambiguous(self):
+        api=self.fixture()
+        api.pulls[43]=pull(43,"f" * 40)
+        api.history[43]=copy.deepcopy(api.history[42])
+        with self.assertRaises(ValueError):
+            PRResolver(api).resolve(action_run())
+
+
+class CollectorAssociationFailureTests(unittest.TestCase):
+    def collect_with(self, error):
+        from triton.dashboard import collect
+        run=action_run()
+        class API:
+            calls=0
+            def get(self,path): return {"total_count":1},{}
+            def pages(self,path,field=None):
+                if field=="workflow_runs": return [run]
+                if field=="jobs": return []
+                raise AssertionError(path)
+        with tempfile.TemporaryDirectory() as directory, patch("triton.dashboard.GitHub",return_value=API()), patch("triton.dashboard.EVIDENCE",Path(directory)), patch.object(PRResolver,"resolve",side_effect=error):
+            return collect(72,"2026-10-07T09:00:00Z")
+
+    def test_network_failure_is_not_published_as_unassociated_pr(self):
+        with self.assertRaisesRegex(RuntimeError,"PR association source"):
+            self.collect_with(RuntimeError("history unavailable"))
+
+    def test_genuine_unknown_evidence_remains_visible_without_guessing(self):
+        payload=self.collect_with(ValueError("no unique PR evidence"))
+        self.assertEqual(len(payload["batches"]),1)
+        self.assertIsNone(payload["batches"][0]["pr"])
+        self.assertFalse(payload["batches"][0]["e2e_sample_eligible"])
 
 if __name__ == "__main__":
     unittest.main()

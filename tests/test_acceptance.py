@@ -209,6 +209,10 @@ def build_tree(base: Path, name: str, req_commits: int, final_delivery: bool = F
             if not p.exists():
                 p.write_text("# stub\n", encoding="utf-8")
     _git_ok(tree, "init", "-q")
+    # Hundreds of fixture commits can trigger detached Git maintenance. Keep
+    # their object database stable while subsequent tests copy the whole tree.
+    _git_ok(tree, "config", "gc.auto", "0")
+    _git_ok(tree, "config", "maintenance.auto", "false")
     _git_ok(tree, "config", "user.email", "t@example.com")
     _git_ok(tree, "config", "user.name", "tester")
     _git_ok(tree, "config", "commit.gpgsign", "false")
@@ -289,6 +293,20 @@ class SyntheticTreeTests(unittest.TestCase):
                 self.assertTrue(e["version"])
             elif e["status"] == "未验证":
                 self.assertTrue(e["unverified_reason"])
+
+    def test_synthetic_git_objects_stay_stable_for_tree_copies(self):
+        # Commits must not start background maintenance while copytree enumerates
+        # loose objects (the production Actions failure on 2026-10-13).
+        for key, expected in (("gc.auto", "0"), ("maintenance.auto", "false")):
+            result=subprocess.run(["git","-C",str(self.tree),"config","--get",key],capture_output=True,text=True)
+            self.assertEqual(result.stdout.strip(),expected)
+        target=self.tmp/"stable-copy"
+        shutil.copytree(self.tree,target,symlinks=True)
+        try:
+            _git_ok(target,"fsck","--connectivity-only")
+            _git_ok(target,"rev-parse","HEAD~49")
+        finally:
+            shutil.rmtree(target,ignore_errors=True)
 
     def test_delivering_pending_without_commit_exit_zero(self):
         pending = self.tmp / "pending"

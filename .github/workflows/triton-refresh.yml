@@ -174,6 +174,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python -X utf8 -m triton.dashboard --hours 72
 
+      - name: Retain Triton collection evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: triton-collection-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/triton/
+          retention-days: 7
+          if-no-files-found: warn
+
       - name: Run Python tests
         run: python -m unittest discover -s tests
 
@@ -211,6 +220,7 @@ jobs:
 
   deploy:
     needs: build
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:

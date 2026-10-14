@@ -87,10 +87,14 @@ python -X utf8 -m triton.verify_deployment https://tianli-backkom.github.io/unio
 ```powershell
 python -X utf8 collect.py --all --days 30           # UBS 九仓
 python -X utf8 collect.py --repo ubs-comm --days 30 # UBS 单仓
-python -X utf8 -m triton.dashboard --hours 72       # Triton，GH_TOKEN 可选
+python -X utf8 -m triton.dashboard --hours 72       # Triton，GH_TOKEN 用于 API 配额和强推历史查询
 ```
 
 UBS 的 `--offline` 从缓存重算，`--limit N` 用于诊断抽样；Triton 的 `--from-evidence` 从已存证据重生成。原始缓存、SQLite 和历史导出不公开到 Pages。
+
+Triton 的历史 PR 关联读取完整的强推事件分页，并通过 GitHub Compare 证明中间提交属于后续强推前的历史，同时排除基础分支共同祖先。恢复后保留原运行 SHA，按 PR、提交和 attempt 重新归并，进入 E2E 统计。真正缺少唯一证据的记录仍保留为未关联观测；网络、认证或配额错误会阻止本次刷新，不再冒充未关联数据发布。
+
+每日和增量工作流无论成功或失败都保存 `triton-collection-*` 证据 7 天。可在修复分支手动运行 Triton 增量工作流验证真实采集与构建，仅 main 分支部署看板。
 
 | 位置 | 用途 |
 |---|---|
